@@ -333,7 +333,7 @@ exhibit/media/
 
 ### SQLITE
 
-*.db
+db.*
 
 ### VS Code
 .vscode/*
