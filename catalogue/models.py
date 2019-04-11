@@ -113,10 +113,11 @@ class Location(models.Model):
     description = models.TextField(blank=True)
 
     address_1 = models.CharField(_("address"), max_length=128)
-    address_2 = models.CharField(_("address cont'd"), max_length=128, blank=True)
+    address_2 = models.CharField(_("address cont'd"), max_length=128, 
+                                 blank=True)
 
     city = models.CharField(_("city"), max_length=64, default="Tel Aviv")
-    state = models.CharField(_("state"), blank=True, 
+    state = models.CharField(_("state"), blank=True, max_length=2,
                              help_text='US state, optional field')
     zip_code = models.CharField(_("zip code"), max_length=5, default="43701")
     country = models.CharField(max_length=100)  # change later
