@@ -2,7 +2,6 @@
 
 Artwork management tool
 
-
 ## ToDo
 
 - [ ] implement artwork model + other obvious ones
@@ -14,6 +13,7 @@ Artwork management tool
 - [ ] change list view into a search results table
 
 ### Further down goals
+
 - [ ] support image upload
 - [ ] change architecture to cookiecutter
 - [ ] add user login for views
