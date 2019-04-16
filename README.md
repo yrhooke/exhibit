@@ -4,7 +4,7 @@ Artwork management tool
 
 ## ToDo
 
-- [ ] implement artwork model + other obvious ones
+- [X] implement artwork model + other obvious ones
 - [ ] create top level template
 - [ ] create list view for artworks
 - [ ] create detail view for the artworks

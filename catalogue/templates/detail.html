@@ -1,5 +1,7 @@
-<html>
-    <body>
-    {{ form.as_table }}
-    </body>
-</html>
+{% extends 'generic.html' %}
+
+{% block content %}
+    <table>
+        {{ form.as_table }}
+    </table>
+{% endblock %}
