@@ -21,132 +21,125 @@ class ArtworkDetail(FormView):
         # Add in a QuerySet of all the books
         context['object'] = self.object
         return context
-    # def get(self, request):
-    #     return HttpResponse(f'{self.model} detail view')
 
+artwork_fields = [
+    'title',
+    'year',
+    'series',
+    'location',
+    'status',
+    'size',
+    'width_cm',
+    'height_cm',
+    'width_in',
+    'height_in',
+    'rolled',
+    'medium',
+    'price_nis',
+    'price_usd',
+    'owner',
+    'additional',
+]
 class ArtworkList(ListView):
     model = Artwork
 
-    # # def get(self, request, pk):
-    #     return HttpResponse(f'{self.model} list view')
 
 class ArtworkCreate(CreateView):
     model = Artwork
-    fields = ['title']
+    fields = artwork_fields
 
-    # def get(self, request):
-    #     return HttpResponse(f'{self.model} create view')
 
 class ArtworkUpdate(UpdateView):
     model = Artwork
-    fields = ['title']
+    fields = artwork_fields
 
-    # def get(self, request):
-    #     return HttpResponse(f'{self.model} update view')
 
 class ArtworkDelete(DeleteView):
     model = Artwork
     success_url = reverse_lazy('index')
 
-    # def get(self, request, pk):
-    #     return HttpResponse(f'{self.model} delete view')
 
 class SeriesDetail(FormView):
     model = Series
 
-    # def get(self, request):
-    #     return HttpResponse(f'{self.model} detail view')
 
 class SeriesList(ListView):
     model = Series
 
-    # # def get(self, request, pk):
-    #     return HttpResponse(f'{self.model} list view')
 
 class SeriesCreate(CreateView):
     model = Series
     fields = ['name']
 
-    # def get(self, request):
-    #     return HttpResponse(f'{self.model} create view')
 
 class SeriesUpdate(UpdateView):
     model = Series
     fields = ['name']
 
-    # def get(self, request):
-    #     return HttpResponse(f'{self.model} update view')
 
 class SeriesDelete(DeleteView):
     model = Series
     success_url = reverse_lazy('index')
 
-    # def get(self, request, pk):
-    #     return HttpResponse(f'{self.model} delete view')
 
 class ExhibitionDetail(FormView):
     model = Exhibition
 
-    # def get(self, request):
-    #     return HttpResponse(f'{self.model} detail view')
 
 class ExhibitionList(ListView):
     model = Exhibition
 
-    # # def get(self, request, pk):
-    #     return HttpResponse(f'{self.model} list view')
+exhibition_fields = [
+    'name',
+    'description',
+    'location',
+    'start_date',
+    'end_date',
+]
 
 class ExhibitionCreate(CreateView):
     model = Exhibition
-    fields = ['name']
+    fields = exhibition_fields
 
-    # def get(self, request):
-    #     return HttpResponse(f'{self.model} create view')
 
 class ExhibitionUpdate(UpdateView):
     model = Exhibition
-    fields = ['name']
+    fields = exhibition_fields
 
-    # def get(self, request):
-    #     return HttpResponse(f'{self.model} update view')
 
 class ExhibitionDelete(DeleteView):
     model = Exhibition
     success_url = reverse_lazy('index')
 
-    # def get(self, request, pk):
-    #     return HttpResponse(f'{self.model} delete view')
 
 class LocationDetail(FormView):
     model = Location
 
-    # def get(self, request):
-    #     return HttpResponse(f'{self.model} detail view')
 
 class LocationList(ListView):
     model = Location
 
-    # # def get(self, request, pk):
-    #     return HttpResponse(f'{self.model} list view')
+location_fields = [
+    'name',
+    'description',
+    'address_1',
+    'address_2',
+    'city',
+    'state',
+    'zip_code',
+    'country',
+]
 
 class LocationCreate(CreateView):
     model = Location
-    fields = ['name']
+    fields = location_fields
 
-    # def get(self, request):
-    #     return HttpResponse(f'{self.model} create view')
 
 class LocationUpdate(UpdateView):
     model = Location
-    fields = ['name']
+    fields = location_fields
 
-    # def get(self, request):
-    #     return HttpResponse(f'{self.model} update view')
 
 class LocationDelete(DeleteView):
     model = Location
     success_url = reverse_lazy('index')
-
-    # def get(self, request, pk):
-    #     return HttpResponse(f'{self.model} delete view')
-

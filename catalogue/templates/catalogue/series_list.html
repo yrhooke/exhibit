@@ -7,7 +7,7 @@
     </tr>
     {% for series in object_list %}
     <tr>
-        <td>{{ series.name }}</td>
+        <td><a href="/catalogue/series/{{ series.pk }}">{{ series.name }}</a></td>
     </tr>
     {% endfor %}
 </table>

@@ -51,7 +51,7 @@ class Artwork(models.Model):
                                     null=True,
                                     blank=True
                                     )
-    price_nis = models.DecimalField("Price in US Dollars",
+    price_usd = models.DecimalField("Price in US Dollars",
                                     max_digits=10,
                                     decimal_places=2, 
                                     null=True,

@@ -10,7 +10,7 @@
     </tr>
     {% for artwork in object_list %}
     <tr>
-        <td>{{ artwork.title }}</td>
+        <td><a href="/catalogue/artwork/{{ artwork.pk }}">{{ artwork.title }}</a></td>
         <td>{{ artwork.size }}</td>
         <td>{{ artwork.location }}</td>
         <td>{{ artwork.series }}</td>

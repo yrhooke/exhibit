@@ -9,7 +9,7 @@
     </tr>
     {% for location in object_list %}
     <tr>
-        <td>{{ location.name }}</td>
+        <td><a href="/catalogue/location/{{ location.pk }}">{{ location.name }}</a></td>
         <td>{{ location.city }}</td>
         <td>{{ location.country }}</td>
     </tr>

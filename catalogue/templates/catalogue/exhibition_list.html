@@ -9,7 +9,7 @@
     </tr>
     {% for exhibition in object_list %}
     <tr>
-        <td>{{ exhibition.name }}</td>
+        <td><a href="/catalogue/exhibition/{{ exhibition.pk }}">{{ exhibition.name }}</a></td>
         <td>{{ exhibition.start_date }}</td>
         <td>{{ exhibition.end_date }}</td>
     </tr>
