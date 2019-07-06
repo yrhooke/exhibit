@@ -1,0 +1,20 @@
+{% extends "generic.html" %}
+
+{% block content %}
+<h2>Artworks</h2>
+<table>
+    <th>Title</th>
+        <th>Size</th>
+        <th>Location</th>
+        <th>Series</th>
+    </tr>
+    {% for artwork in object_list %}
+    <tr>
+        <td>{{ artwork.title }}</td>
+        <td>{{ artwork.size }}</td>
+        <td>{{ artwork.location }}</td>
+        <td>{{ artwork.series }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}

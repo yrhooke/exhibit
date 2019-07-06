@@ -17,3 +17,11 @@ Artwork management tool
 - [ ] support image upload
 - [ ] change architecture to cookiecutter
 - [ ] add user login for views
+
+thoughts:
+
+what do I want to see?
+I want:
+1. for each model a list view and a detail (form view) - with links
+2. on submit of form model creates or updates
+3. see options with multiselect for foreign keys

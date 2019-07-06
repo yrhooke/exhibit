@@ -1,0 +1,14 @@
+{% extends "generic.html" %}
+
+{% block content %}
+<h2>{{ object.title }}</h2>
+<p>{{ object.series.name }}</p>
+<p>{{ object.location }}</p>
+<p>{{ object.size }}</p>
+{{ form }}
+<!-- <form>
+{% for field in fields %}
+<p>{{ field }}</p>
+{% endfor %}
+</form> -->
+{% endblock %}

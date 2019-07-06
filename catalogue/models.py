@@ -1,6 +1,6 @@
 from django.db import models
 from django.utils.translation import ugettext as _
-
+from django.urls import reverse
 
 class Artwork(models.Model):
     """A model representing an individual work of art"""
@@ -30,12 +30,12 @@ class Artwork(models.Model):
                                  help_text="height in inches",
                                  blank=True
                                  )
-    
+   
     SIZE_OPTIONS = (
         ('S', 'Small'),
         ('L', 'Large'),
     )
-    
+   
     size = models.CharField("size category",
                             max_length=1,
                             choices=SIZE_OPTIONS,
@@ -87,6 +87,9 @@ class Artwork(models.Model):
     def __str__(self):
         """string representation of model"""
         return self.title
+    
+    def get_absolute_url(self):
+        return reverse('artwork_detail', kwargs={'pk': self.pk})
 
 
 class Series(models.Model):
@@ -102,8 +105,8 @@ class Exhibition(models.Model):
     description = models.TextField(blank=True)
     location = models.ForeignKey('Location', on_delete=models.SET_NULL, 
                                  null=True)
-    start_date = models.DateField();
-    end_date = models.DateField();
+    start_date = models.DateField()
+    end_date = models.DateField()
 
 
 class Location(models.Model):

@@ -1,0 +1,14 @@
+{% extends "generic.html" %}
+
+{% block content %}
+<h2>Series</h2>
+<table>
+    <th>Name</th>
+    </tr>
+    {% for series in object_list %}
+    <tr>
+        <td>{{ series.name }}</td>
+    </tr>
+    {% endfor %}
+</table>
+{% endblock %}
