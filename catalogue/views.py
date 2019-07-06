@@ -1,11 +1,12 @@
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.views.generic import DetailView, FormView, ListView
-from django.urls import reverse_lazy
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
+from django.views.generic import ListView
+from django.urls import reverse_lazy
 
 from catalogue.models import Artwork, Series, Exhibition, Location
-from catalogue.forms import ArtworkViewForm
+
+# unused but let's keep the import as memo
+from django.shortcuts import render
+from django.http import HttpResponse
 
 
 class genericCreateView(CreateView):
