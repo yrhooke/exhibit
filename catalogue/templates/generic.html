@@ -78,8 +78,14 @@
     <div class="main">
         <h2>Exhibit - the artwork library</h2>
         <div class="content-wrapper">
-            {% block content %}
-            {% endblock %}
+            <div class="main-content">
+                {% block content %}
+                {% endblock %}
+            </div>
+            <div class="related-items">
+                {% block related %}
+                {% endblock %}
+            </div>
         </div>
     </div>
 </body>

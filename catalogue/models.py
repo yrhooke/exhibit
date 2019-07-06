@@ -146,3 +146,12 @@ class Location(models.Model):
 
     def get_absolute_url(self):
         return reverse('location_detail', kwargs={'pk': self.pk})
+
+
+class WorkInExhibition(models.Model):
+    """Class describing an artwork belonging to an exhibition"""
+
+    artwork = models.ForeignKey('Artwork', on_delete=models.SET_NULL,
+                                null=True)
+    exhibition = models.ForeignKey('Exhibition', on_delete=models.SET_NULL,
+                                   null=True)

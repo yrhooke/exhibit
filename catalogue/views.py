@@ -8,6 +8,9 @@ from catalogue.models import Artwork, Series, Exhibition, Location
 from django.shortcuts import render
 from django.http import HttpResponse
 
+create_action_button_text = 'Create'
+edit_action_button_text = 'Save Changes'
+
 
 class genericCreateView(CreateView):
     template_name = 'detail.html'
@@ -16,19 +19,24 @@ class genericCreateView(CreateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['action_name'] = 'Create'
+        context['action_name'] = create_action_button_text
         return context
 
 
-class genericUpdateView(UpdateView):
-    template_name = 'detail.html'
+# class genericUpdateView(UpdateView):
+#     template_name = 'detail.html'
 
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['action_name'] = 'Save Changes'
-        return context
+#     def get_context_data(self, **kwargs):
+#         # Call the base implementation first to get a context
+#         context = super().get_context_data(**kwargs)
+#         # Add in a QuerySet of all the books
+#         context['action_name'] = edit_action_button_text
+#         context['pk'] = self.object.pk
+#         context['model_name'] = self.model.__name__
+#         context['not_artwork'] = not (self.model == Artwork)
+#         if self.model != Artwork:
+#             context['members'] = self.object.artwork_set.all()
+#         return context
 
 
 artwork_fields = [
@@ -60,9 +68,21 @@ class ArtworkCreate(genericCreateView):
     fields = artwork_fields
 
 
-class ArtworkUpdate(genericUpdateView):
+class ArtworkUpdate(UpdateView):
     model = Artwork
     fields = artwork_fields
+    template_name = 'catalogue/artwork_detail.html'
+    # template_name = 'detail.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['action_name'] = edit_action_button_text
+        exhibitions = [
+            s.exhibition for s in self.object.workinexhibition_set.all()]
+        context['members'] = exhibitions
+        return context
 
 
 class ArtworkDelete(DeleteView):
@@ -79,9 +99,18 @@ class SeriesCreate(genericCreateView):
     fields = ['name']
 
 
-class SeriesUpdate(genericUpdateView):
+class SeriesUpdate(UpdateView):
     model = Series
     fields = ['name']
+    template_name = 'catalogue/series_detail.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['action_name'] = edit_action_button_text
+        context['members'] = self.object.artwork_set.all()
+        return context
 
 
 class SeriesDelete(DeleteView):
@@ -107,9 +136,19 @@ class ExhibitionCreate(genericCreateView):
     fields = exhibition_fields
 
 
-class ExhibitionUpdate(genericUpdateView):
+class ExhibitionUpdate(UpdateView):
     model = Exhibition
     fields = exhibition_fields
+    template_name = 'catalogue/exhibition_detail.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['action_name'] = edit_action_button_text
+        artworks = [s.artwork for s in self.object.workinexhibition_set.all()]
+        context['members'] = artworks
+        return context
 
 
 class ExhibitionDelete(DeleteView):
@@ -138,10 +177,18 @@ class LocationCreate(genericCreateView):
     fields = location_fields
 
 
-class LocationUpdate(genericUpdateView):
+class LocationUpdate(UpdateView):
     model = Location
     fields = location_fields
+    template_name = 'catalogue/location_detail.html'
 
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['action_name'] = edit_action_button_text
+        context['members'] = self.object.artwork_set.all()
+        return context
 
 class LocationDelete(DeleteView):
     model = Location

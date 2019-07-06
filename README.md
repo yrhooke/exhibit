@@ -25,3 +25,8 @@ I want:
 1. for each model a list view and a detail (form view) - with links
 2. on submit of form model creates or updates
 3. see options with multiselect for foreign keys
+
+for each artwork, the list of exhibitions it was in
+for each exhibition, the list of artworks in ti
+for each series, the list of artworks in it
+for each location, the list of artworks in it
