@@ -47,11 +47,29 @@ class ArtworkList(ListView):
 class ArtworkCreate(CreateView):
     model = Artwork
     fields = artwork_fields
+    template = 'detail.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['action_name'] = 'Create'
+        return context
 
 
 class ArtworkUpdate(UpdateView):
     model = Artwork
     fields = artwork_fields
+    template = 'detail.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['action_name'] = 'Save Changes'
+        return context
+
+
 
 
 class ArtworkDelete(DeleteView):
@@ -61,6 +79,7 @@ class ArtworkDelete(DeleteView):
 
 class SeriesDetail(FormView):
     model = Series
+    template = 'detail.html'
 
 
 class SeriesList(ListView):
@@ -70,11 +89,13 @@ class SeriesList(ListView):
 class SeriesCreate(CreateView):
     model = Series
     fields = ['name']
+    template = 'detail.html'
 
 
 class SeriesUpdate(UpdateView):
     model = Series
     fields = ['name']
+    template = 'detail.html'
 
 
 class SeriesDelete(DeleteView):
@@ -84,6 +105,7 @@ class SeriesDelete(DeleteView):
 
 class ExhibitionDetail(FormView):
     model = Exhibition
+    template = 'detail.html'
 
 
 class ExhibitionList(ListView):
@@ -100,11 +122,13 @@ exhibition_fields = [
 class ExhibitionCreate(CreateView):
     model = Exhibition
     fields = exhibition_fields
+    template = 'detail.html'
 
 
 class ExhibitionUpdate(UpdateView):
     model = Exhibition
     fields = exhibition_fields
+    template = 'detail.html'
 
 
 class ExhibitionDelete(DeleteView):
@@ -133,11 +157,13 @@ location_fields = [
 class LocationCreate(CreateView):
     model = Location
     fields = location_fields
+    template = 'detail.html'
 
 
 class LocationUpdate(UpdateView):
     model = Location
     fields = location_fields
+    template = 'detail.html'
 
 
 class LocationDelete(DeleteView):

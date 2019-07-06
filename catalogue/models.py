@@ -2,6 +2,7 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from django.urls import reverse
 
+
 class Artwork(models.Model):
     """A model representing an individual work of art"""
 
@@ -10,32 +11,32 @@ class Artwork(models.Model):
     # Mandatory Fields ##
     title = models.CharField('Title', max_length=200)
     series = models.ForeignKey('Series', on_delete=models.SET_NULL, null=True)
-    year = models.IntegerField('Year', help_text="Year of creation") 
+    year = models.IntegerField('Year', help_text="Year of creation")
     # @TODO: year maybe needs validators? idk if that's best practice for forms
-    
+
     # Optional Fields ##
     width_cm = models.FloatField(default=0.0,
                                  help_text="width in centimeters",
                                  blank=True
                                  )
     height_cm = models.FloatField(default=0.0,
-                                 help_text="height in centimeters",
-                                 blank=True
-                                 )
+                                  help_text="height in centimeters",
+                                  blank=True
+                                  )
     width_in = models.FloatField(default=0.0,
                                  help_text="width in inches",
                                  blank=True
                                  )
     height_in = models.FloatField(default=0.0,
-                                 help_text="height in inches",
-                                 blank=True
-                                 )
-   
+                                  help_text="height in inches",
+                                  blank=True
+                                  )
+
     SIZE_OPTIONS = (
         ('S', 'Small'),
         ('L', 'Large'),
     )
-   
+
     size = models.CharField("size category",
                             max_length=1,
                             choices=SIZE_OPTIONS,
@@ -53,7 +54,7 @@ class Artwork(models.Model):
                                     )
     price_usd = models.DecimalField("Price in US Dollars",
                                     max_digits=10,
-                                    decimal_places=2, 
+                                    decimal_places=2,
                                     null=True,
                                     blank=True
                                     )
@@ -62,7 +63,7 @@ class Artwork(models.Model):
                                  on_delete=models.SET_NULL,
                                  null=True
                                  )
-    
+
     ROLL_STATUS_CHOICES = (
         ('R', 'Rolled'),
         ('S', 'Stretched'),
@@ -75,11 +76,11 @@ class Artwork(models.Model):
         ('S', 'Sold'),
     )
 
-    rolled = models.CharField(max_length=1, choices=ROLL_STATUS_CHOICES, 
+    rolled = models.CharField(max_length=1, choices=ROLL_STATUS_CHOICES,
                               blank=True)
-    status = models.CharField(max_length=1, choices=OVERALL_STATUS_CHOICES, 
+    status = models.CharField(max_length=1, choices=OVERALL_STATUS_CHOICES,
                               default='D')
-    owner = models.CharField(max_length=200, default='Rotem Reshef')  
+    owner = models.CharField(max_length=200, default='Rotem Reshef')
     # @TODO convert owner to foreignkey
 
     additional = models.TextField("Additional info", blank=True)
@@ -87,26 +88,34 @@ class Artwork(models.Model):
     def __str__(self):
         """string representation of model"""
         return self.title
-    
+
     def get_absolute_url(self):
         return reverse('artwork_detail', kwargs={'pk': self.pk})
 
 
 class Series(models.Model):
     """A model representing a series of artworks"""
-    
+
     name = models.CharField(max_length=200)
+
+    def __str__(self):
+        """string representation of model"""
+        return self.name
 
 
 class Exhibition(models.Model):
     """A model representing an exhibition"""
-    
+
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    location = models.ForeignKey('Location', on_delete=models.SET_NULL, 
+    location = models.ForeignKey('Location', on_delete=models.SET_NULL,
                                  null=True)
     start_date = models.DateField()
     end_date = models.DateField()
+
+    def __str__(self):
+        """string representation of model"""
+        return self.name
 
 
 class Location(models.Model):
@@ -116,7 +125,7 @@ class Location(models.Model):
     description = models.TextField(blank=True)
 
     address_1 = models.CharField(_("address"), max_length=128)
-    address_2 = models.CharField(_("address cont'd"), max_length=128, 
+    address_2 = models.CharField(_("address cont'd"), max_length=128,
                                  blank=True)
 
     city = models.CharField(_("city"), max_length=64, default="Tel Aviv")
@@ -125,3 +134,6 @@ class Location(models.Model):
     zip_code = models.CharField(_("zip code"), max_length=5, default="43701")
     country = models.CharField(max_length=100)  # change later
 
+    def __str__(self):
+        """string representation of model"""
+        return self.name

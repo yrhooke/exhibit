@@ -4,16 +4,16 @@
 <h2>Artworks</h2>
 <table>
     <th>Title</th>
-        <th>Size</th>
-        <th>Location</th>
-        <th>Series</th>
+    <th>Size</th>
+    <th>Location</th>
+    <th>Series</th>
     </tr>
     {% for artwork in object_list %}
     <tr>
         <td><a href="/catalogue/artwork/{{ artwork.pk }}">{{ artwork.title }}</a></td>
         <td>{{ artwork.size }}</td>
-        <td>{{ artwork.location }}</td>
-        <td>{{ artwork.series }}</td>
+        <td><a href="/catalogue/location/{{ artwork.location.pk }}">{{ artwork.location }}</a></td>
+        <td><a href="/catalogue/series/{{ artwork.series.pk }}">{{ artwork.series }}</a></td>
     </tr>
     {% endfor %}
 </table>
