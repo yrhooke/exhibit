@@ -1,0 +1,25 @@
+{% extends "generic.html" %}
+
+{% block page_name %}
+<h3>Search</h3>
+{% endblock page_name %}
+
+{% block content %}
+<table>
+    <form action="" method='post'>
+        {% csrf_token %}
+        <th><label for="id_search_type">What are you looking for?</label></th>
+        <td><select name="search_type" required id="id_search_type">
+                <option value="Artwork" selected>Artwork</option>
+                <option value="Series">Series</option>
+                <option value="Exhibition">Exhibition</option>
+                <option value="Location">Location</option>
+            </select></td>
+        <td><input type="text" name="search_body" id="id_search_body"></td>
+        <td><input type="submit" value="Go"></td>
+        </tr>
+    </form>
+</table>
+
+
+{% endblock %}

@@ -8,6 +8,20 @@ from catalogue.models import Artwork, Series, Exhibition, Location
 from django.shortcuts import render
 from django.http import HttpResponse
 
+
+
+
+def search(request):
+    return render(request, 'search.html')
+
+
+
+
+
+
+
+
+
 create_action_button_text = 'Create'
 edit_action_button_text = 'Save Changes'
 
