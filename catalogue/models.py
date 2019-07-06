@@ -102,6 +102,9 @@ class Series(models.Model):
         """string representation of model"""
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('series_detail', kwargs={'pk': self.pk})
+
 
 class Exhibition(models.Model):
     """A model representing an exhibition"""
@@ -116,6 +119,9 @@ class Exhibition(models.Model):
     def __str__(self):
         """string representation of model"""
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('exhibition_detail', kwargs={'pk': self.pk})
 
 
 class Location(models.Model):
@@ -137,3 +143,6 @@ class Location(models.Model):
     def __str__(self):
         """string representation of model"""
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('location_detail', kwargs={'pk': self.pk})

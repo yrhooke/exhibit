@@ -8,19 +8,27 @@ from catalogue.models import Artwork, Series, Exhibition, Location
 from catalogue.forms import ArtworkViewForm
 
 
-def index(request):
-    return render(request, 'generic.html')
-
-
-class ArtworkDetail(FormView):
-    model = Artwork
+class genericCreateView(CreateView):
+    template_name = 'detail.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
-        context['object'] = self.object
+        context['action_name'] = 'Create'
         return context
+
+
+class genericUpdateView(UpdateView):
+    template_name = 'detail.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['action_name'] = 'Save Changes'
+        return context
+
 
 artwork_fields = [
     'title',
@@ -40,36 +48,20 @@ artwork_fields = [
     'owner',
     'additional',
 ]
+
+
 class ArtworkList(ListView):
     model = Artwork
 
 
-class ArtworkCreate(CreateView):
+class ArtworkCreate(genericCreateView):
     model = Artwork
     fields = artwork_fields
-    template = 'detail.html'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['action_name'] = 'Create'
-        return context
 
 
-class ArtworkUpdate(UpdateView):
+class ArtworkUpdate(genericUpdateView):
     model = Artwork
     fields = artwork_fields
-    template = 'detail.html'
-
-    def get_context_data(self, **kwargs):
-        # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['action_name'] = 'Save Changes'
-        return context
-
-
 
 
 class ArtworkDelete(DeleteView):
@@ -77,39 +69,24 @@ class ArtworkDelete(DeleteView):
     success_url = reverse_lazy('index')
 
 
-class SeriesDetail(FormView):
-    model = Series
-    template = 'detail.html'
-
-
 class SeriesList(ListView):
     model = Series
 
 
-class SeriesCreate(CreateView):
+class SeriesCreate(genericCreateView):
     model = Series
     fields = ['name']
-    template = 'detail.html'
 
 
-class SeriesUpdate(UpdateView):
+class SeriesUpdate(genericUpdateView):
     model = Series
     fields = ['name']
-    template = 'detail.html'
 
 
 class SeriesDelete(DeleteView):
     model = Series
     success_url = reverse_lazy('index')
 
-
-class ExhibitionDetail(FormView):
-    model = Exhibition
-    template = 'detail.html'
-
-
-class ExhibitionList(ListView):
-    model = Exhibition
 
 exhibition_fields = [
     'name',
@@ -119,29 +96,25 @@ exhibition_fields = [
     'end_date',
 ]
 
-class ExhibitionCreate(CreateView):
+
+class ExhibitionList(ListView):
     model = Exhibition
-    fields = exhibition_fields
-    template = 'detail.html'
 
 
-class ExhibitionUpdate(UpdateView):
+class ExhibitionCreate(genericCreateView):
     model = Exhibition
     fields = exhibition_fields
-    template = 'detail.html'
+
+
+class ExhibitionUpdate(genericUpdateView):
+    model = Exhibition
+    fields = exhibition_fields
 
 
 class ExhibitionDelete(DeleteView):
     model = Exhibition
     success_url = reverse_lazy('index')
 
-
-class LocationDetail(FormView):
-    model = Location
-
-
-class LocationList(ListView):
-    model = Location
 
 location_fields = [
     'name',
@@ -154,16 +127,19 @@ location_fields = [
     'country',
 ]
 
-class LocationCreate(CreateView):
+
+class LocationList(ListView):
     model = Location
-    fields = location_fields
-    template = 'detail.html'
 
 
-class LocationUpdate(UpdateView):
+class LocationCreate(genericCreateView):
     model = Location
     fields = location_fields
-    template = 'detail.html'
+
+
+class LocationUpdate(genericUpdateView):
+    model = Location
+    fields = location_fields
 
 
 class LocationDelete(DeleteView):
