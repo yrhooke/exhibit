@@ -1,7 +1,13 @@
-{% extends "generic.html" %}
+{% extends "list.html" %}
 
-{% block content %}
-<h2>Series</h2>
+{% block page_name %}
+<h3>Series List</h3>
+{% endblock page_name %}
+
+{% block create_url %}'/catalogue/series/new/'{% endblock %}
+
+
+{% block list_content %}
 <table>
     <th>Name</th>
     </tr>

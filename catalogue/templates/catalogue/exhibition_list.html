@@ -1,7 +1,12 @@
-{% extends "generic.html" %}
+{% extends "list.html" %}
 
-{% block content %}
-<h2>Exhibitions</h2>
+{% block page_name %}
+<h3>Exhibition List</h3>
+{% endblock page_name %}
+
+{% block create_url %}'/catalogue/exhibition/new/'{% endblock %}
+
+{% block list_content %}
 <table>
     <th>Name</th>
     <th>Start date</th>
