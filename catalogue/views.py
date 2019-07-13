@@ -9,17 +9,8 @@ from django.shortcuts import render
 from django.http import HttpResponse
 
 
-
-
 def search(request):
     return render(request, 'search.html')
-
-
-
-
-
-
-
 
 
 create_action_button_text = 'Create'
@@ -203,6 +194,7 @@ class LocationUpdate(UpdateView):
         context['action_name'] = edit_action_button_text
         context['members'] = self.object.artwork_set.all()
         return context
+
 
 class LocationDelete(DeleteView):
     model = Location

@@ -8,7 +8,8 @@ Artwork management tool
 - [ ] add search navigation
 - [ ] add image in update + create views (use whitenoise)
 - [ ] add some css
-- [ ] let user add artwork to exhibit
+- [ ] let user add artwork to an exhibition
+- [ ] add image in list views
 
 ### Further down goals
 
