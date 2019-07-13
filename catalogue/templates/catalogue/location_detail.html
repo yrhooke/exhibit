@@ -1,11 +1,6 @@
-{% extends "detail.html" %}
-
-{% block page_name %}
+{% extends "detail.html" %} {% block page_name %}
 <h3>Location</h3>
-{% endblock page_name %}
-
-
-{% block related %}
+{% endblock page_name %} {% block related %}
 <h3>Artworks in Location</h3>
 <table>
     <tr>
@@ -16,9 +11,9 @@
     </tr>
     {% for artwork in members %}
     <tr>
-        <td><a href="/catalogue/artwork/{{ artwork.pk }}">{{ artwork.title }}</a></td>
+        <td><a href="/artwork/{{ artwork.pk }}">{{ artwork.title }}</a></td>
         <td>{{ artwork.size }}</td>
-        <td><a href="/catalogue/location/{{ artwork.location.pk }}">{{ artwork.location }}</a></td>
+        <td><a href="/location/{{ artwork.location.pk }}">{{ artwork.location }}</a></td>
     </tr>
     {% endfor %}
 </table>

@@ -1,12 +1,6 @@
-{% extends "list.html" %}
-
-{% block page_name %}
+{% extends "list.html" %} {% block page_name %}
 <h3>Exhibition List</h3>
-{% endblock page_name %}
-
-{% block create_url %}'/catalogue/exhibition/new/'{% endblock %}
-
-{% block list_content %}
+{% endblock page_name %} {% block create_url %}'/catalogue/exhibition/new/'{% endblock %} {% block list_content %}
 <table>
     <th>Name</th>
     <th>Start date</th>
@@ -14,7 +8,7 @@
     </tr>
     {% for exhibition in object_list %}
     <tr>
-        <td><a href="/catalogue/exhibition/{{ exhibition.pk }}">{{ exhibition.name }}</a></td>
+        <td><a href="/exhibition/{{ exhibition.pk }}">{{ exhibition.name }}</a></td>
         <td>{{ exhibition.start_date }}</td>
         <td>{{ exhibition.end_date }}</td>
     </tr>

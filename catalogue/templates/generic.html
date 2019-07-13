@@ -1,9 +1,10 @@
+{% load static %}
 <!DOCTYPE html>
 <!--[if lt IE 7]>      <html class="no-js lt-ie9 lt-ie8 lt-ie7"> <![endif]-->
 <!--[if IE 7]>         <html class="no-js lt-ie9 lt-ie8"> <![endif]-->
 <!--[if IE 8]>         <html class="no-js lt-ie9"> <![endif]-->
 <!--[if gt IE 8]><!-->
-<html class="no-js">
+<html class="no-js" lang="en">
 <!--<![endif]-->
 
 <head>
@@ -12,54 +13,10 @@
     <title>{% block title %}Artwork{% endblock %}</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="">
-    <style>
-        body {
-            font-family: "Lato", sans-serif;
-        }
-
-        .sidenav {
-            height: 100%;
-            width: 160px;
-            position: fixed;
-            z-index: 1;
-            top: 0;
-            left: 0;
-            background-color: #111;
-            overflow-x: hidden;
-            padding-top: 20px;
-        }
-
-        .sidenav a {
-            padding: 6px 8px 6px 16px;
-            text-decoration: none;
-            font-size: 25px;
-            color: #818181;
-            display: block;
-        }
-
-        .sidenav a:hover {
-            color: #f1f1f1;
-        }
-
-        .main {
-            margin-left: 160px;
-            /* Same as the width of the sidenav */
-            font-size: 28px;
-            /* Increased text to enable scrolling */
-            padding: 0px 10px;
-        }
-
-        @media screen and (max-height: 450px) {
-            .sidenav {
-                padding-top: 15px;
-            }
-
-            .sidenav a {
-                font-size: 18px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    <link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css">
+    <link rel="stylesheet" href="{% static 'catalogue/css/style.css' %}">
 </head>
 
 <body>
@@ -67,28 +24,122 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
     <!-- Side navigation -->
-    <div class="sidenav">
-        <a href="/catalogue/artwork">Artworks</a>
-        <a href="/catalogue/series">Series</a>
-        <a href="/catalogue/exhibition">Exhibitions</a>
-        <a href="/catalogue/location">Locations</a>
+    <!-- <div class="wrapper">
+        <nav id="sidebar">
+            <div class="sidebar-header">
+            </div>
+            <ul class="list-unstyled components">
+                <li><a href="/catalogue/artwork">Artworks</a></li>
+                <li><a href="/catalogue/series">Series</a></li>
+                <li><a href="/catalogue/exhibition">Exhibitions</a></li>
+                <li><a href="/catalogue/location">Locations</a></li>
+            </ul>
+        </nav>
     </div>
-
-    <!-- Page content -->
-    <div class="main">
-        <h2>Exhibit - the artwork library</h2>
-        {% block page_name %}{% endblock %}
-        <div class="content-wrapper">
-            <div class="main-content">
-                {% block content %}
-                {% endblock %}
-            </div>
-            <div class="related-items">
-                {% block related %}
-                {% endblock %}
-            </div>
+    <div class="content"></div> -->
+    
+    
+    
+    <div class="d-flex" id="wrapper">
+        
+        <!-- Sidebar -->
+        <div class="bg-light border-right" id="sidebar-wrapper">
+            <div class="sidebar-heading">
+                    <h3>Exhibit</h3><small>a portfolio management tool</small>
         </div>
+      <div class="list-group list-group-flush">
+        <a href="/catalogue/artwork" class="list-group-item list-group-item-action bg-light">Artworks</a>
+        <a href="/catalogue/series" class="list-group-item list-group-item-action bg-light">Series</a>
+        <a href="/catalogue/exhibition" class="list-group-item list-group-item-action bg-light">Exhibitions</a>
+        <a  href="/catalogue/location" class="list-group-item list-group-item-action bg-light">Locations</a>
+      </div>
     </div>
+    <!-- /#sidebar-wrapper -->
+
+    <!-- Page Content -->
+    <div id="page-content-wrapper">
+
+      <nav class="navbar navbar-expand-lg navbar-light bg-light border-bottom">
+        <button class="btn btn-primary" id="menu-toggle">Toggle Menu</button>
+
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+          <ul class="navbar-nav ml-auto mt-2 mt-lg-0">
+            <li class="nav-item active">
+              <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#">Link</a>
+            </li>
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                Dropdown
+              </a>
+              <div class="dropdown-menu dropdown-menu-right" aria-labelledby="navbarDropdown">
+                <a class="dropdown-item" href="#">Action</a>
+                <a class="dropdown-item" href="#">Another action</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Something else here</a>
+              </div>
+            </li>
+          </ul>
+        </div>
+      </nav>
+
+      <div class="container-fluid">
+        <h1 class="mt-4">Simple Sidebar</h1>
+        <p>The starting state of the menu will appear collapsed on smaller screens, and will appear non-collapsed on larger screens. When toggled using the button below, the menu will change.</p>
+        <p>Make sure to keep all page content within the <code>#page-content-wrapper</code>. The top navbar is optional, and just for demonstration. Just create an element with the <code>#menu-toggle</code> ID which will toggle the menu when clicked.</p>
+      </div>
+    </div>
+    <!-- /#page-content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Bootstrap core JavaScript -->
+    <!-- optional javascript -->
+    <!-- jquery first, then popper.js, then bootstrap js -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <!-- Menu Toggle Script -->
+  <script>
+    $("#menu-toggle").click(function(e) {
+      e.preventDefault();
+      $("#wrapper").toggleClass("toggled");
+    });
+  </script>
+    <!-- <div class="container-fluid">
+        <div class="row" id="fullPageContents">
+            <div class="side-nav fixed">
+                <ul class="custom-scrollbar">
+                    <li><a href="/catalogue/artwork">Artworks</a></li>
+                    <li><a href="/catalogue/series">Series</a></li>
+                    <li><a href="/catalogue/exhibition">Exhibitions</a></li>
+                    <li><a href="/catalogue/location">Locations</a></li>
+                </ul>
+            </div> -->
+    <!-- Page content -->
+    <!-- <div class="main col-sm-10">
+                <h2><a href="">THis hsould be orange</a></h2>
+                <h2>Exhibit - the artwork library</h2>
+                {% block page_name %}{% endblock %}
+                <div class="content-wrapper">
+                    <div class="main-content">
+                        {% block content %} {% endblock %}
+                    </div>
+                    <div class="related-items">
+                        {% block related %} {% endblock %}
+                    </div>
+                </div>
+            </div> -->
+    <!-- </div> -->
+    <!-- </div> -->
 </body>
 
 </html>

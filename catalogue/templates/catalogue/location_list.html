@@ -1,20 +1,14 @@
-{% extends "list.html" %}
-
-{% block page_name %}
+{% extends "list.html" %} {% block page_name %}
 <h3>Locations List</h3>
-{% endblock page_name %}
-
-{% block create_url %}'/catalogue/location/new/'{% endblock %}
-
-{% block list_content %}
+{% endblock page_name %} {% block create_url %}'/catalogue/location/new/'{% endblock %} {% block list_content %}
 <table>
     <th>Name</th>
-        <th>City</th>
-        <th>Country</th>
+    <th>City</th>
+    <th>Country</th>
     </tr>
     {% for location in object_list %}
     <tr>
-        <td><a href="/catalogue/location/{{ location.pk }}">{{ location.name }}</a></td>
+        <td><a href="/location/{{ location.pk }}">{{ location.name }}</a></td>
         <td>{{ location.city }}</td>
         <td>{{ location.country }}</td>
     </tr>
