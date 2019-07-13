@@ -1,7 +1,12 @@
-{% extends "list.html" %} {% block page_name %}
+{% extends "list.html" %} 
+
+{% block page_name %}
 <h3>Locations List</h3>
-{% endblock page_name %} {% block create_url %}'/catalogue/location/new/'{% endblock %} {% block list_content %}
-<table>
+{% endblock page_name %} 
+
+{% block create_url %}'/catalogue/location/new/'{% endblock %} 
+
+{% block list_content %}
     <th>Name</th>
     <th>City</th>
     <th>Country</th>
@@ -13,5 +18,4 @@
         <td>{{ location.country }}</td>
     </tr>
     {% endfor %}
-</table>
 {% endblock %}

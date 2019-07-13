@@ -1,7 +1,12 @@
-{% extends "list.html" %} {% block page_name %}
+{% extends "list.html" %} 
+
+{% block page_name %}
 <h3>Artwork List</h3>
-{% endblock page_name %} {% block create_url %}'/catalogue/artwork/new/'{% endblock %} {% block list_content %}
-<table>
+{% endblock page_name %} 
+
+{% block create_url %}'/catalogue/artwork/new/'{% endblock %} 
+
+{% block list_content %}
     <tr>
         <th>Title</th>
         <th>Size</th>
@@ -16,5 +21,4 @@
         <td><a href="/series/{{ artwork.series.pk }}">{{ artwork.series }}</a></td>
     </tr>
     {% endfor %}
-</table>
 {% endblock %}

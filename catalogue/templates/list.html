@@ -1,7 +1,11 @@
 {% extends "generic.html" %}
 
 {% block content %}
-    <button onclick="window.location={% block create_url %}{% endblock %}">Create New</button>
-{% block list_content %}
-{% endblock list_content %}
+<button onclick="window.location={% block create_url %}{% endblock %}">Create New</button>
+<div class="table-responsive">
+    <table class=table>
+        {% block list_content %}
+        {% endblock list_content %}
+    </table>
+</div>
 {% endblock content %}
