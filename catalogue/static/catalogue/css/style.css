@@ -26,7 +26,7 @@ input:focus, select:focus, .form-control:focus {
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
 }
 
-a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea {
+a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, option {
     font-family: brandon-reg;
 }
 
@@ -65,5 +65,5 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea {
 
 @font-face {
     font-family: "brandon-reg";
-    src: url('../static/fonts/hvd_fonts_-_brandongrotesque-regular.otf') format("truetype");
+    src: url('../fonts/hvd_fonts_-_brandongrotesque-regular.otf') format("truetype");
 }
