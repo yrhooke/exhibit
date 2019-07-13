@@ -7,6 +7,9 @@ body {
 .sidenav {
     height: 100%;
 }
+.img-fluid {
+    width: 100%;
+}
 /* .sidenav {
     height: 100%;
     width: 160px;

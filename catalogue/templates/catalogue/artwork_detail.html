@@ -1,23 +1,126 @@
 {% extends "detail.html" %}
 {% load widget_tweaks %}
+{% load static %}
 
 {% block page_name %}
 <h3>{{ form.title.value }}</h3>
 {% endblock page_name %}
 
+{% block content %}
+<form action="" method='post'>
+    {% csrf_token %}
+    <div class="row artwork-headers">
+        {{form.series}}{{form.title}}({{form.year}}){{form.status}}
+        <input type="submit" class="btn btn-primary" value="{{ action_name }}">
+    </div>
+    <div class="row artwork-details-wrapper">
+        <div class="col-sm-6 artwork-image">
+            <img class="img-fluid" src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
+        </div>
+        <div class="col-sm-6 artwork-details">
+            <div class="row size-fields">
+                <div class="col-sm-6" id="size-fields-measures">
+                    <div class="row" id="size-fields-cm">
+
+                        <label for="id_size_cm">Size cm (h|w|d):</label>
+                        <div id="id_size_cm">
+                            <div class="col-xs-6">
+                                {% render_field form.height_cm class="form-control" %}
+                            </div>
+                            <div class="col-xs-6">
+                                {% render_field form.width_cm class="form-control" %}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row" id="size-fields-in">
+                        <label for="id_size_in">Size in (h|w|d):</label>
+                        <div id="id_size_in">
+                            <div class="col-xs-6">
+                                {% render_field form.height_in class="form-control" %}
+                            </div>
+                            <div class="col-xs-6">
+                                {% render_field form.width_in class="form-control" %}
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-6" id="size-fields-addtl">
+                    <div class="row" id="size-fields-size">
+                        <div class="form-group">
+                            {{ form.size.label_tag }}
+                            {% render_field form.size class="form-control" %}
+                            {% if form.size.help_text %}
+                            <small class="form-text text-muted">{{ form.size.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                    <div class="row" id="size-fields-rolled">
+                        <div class="form-group">
+                            {{ form.rolled.label_tag }}
+                            {% render_field form.rolled class="form-control" %}
+                            {% if form.rolled.help_text %}
+                            <small class="form-text text-muted">{{ form.rolled.help_text }}</small>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group" id="location-field">
+                {{ form.location.label_tag }}
+                {% render_field form.location class="form-control" %}
+                {% if form.location.help_text %}
+                <small class="form-text text-muted">{{ form.location.help_text }}</small>
+                {% endif %}
+            </div>
+            <div class="form-group" id="medium-field">
+                {{ form.medium.label_tag }}
+                {% render_field form.medium class="form-control" %}
+                {% if form.medium.help_text %}
+                <small class="form-text text-muted">{{ form.medium.help_text }}</small>
+                {% endif %}
+            </div>
+            <div class="form-group" id="addtl-field">
+                {{ form.additional.label_tag }}
+                {% render_field form.additional class="form-control" %}
+                {% if form.additional.help_text %}
+                <small class="form-text text-muted">{{ form.additional.help_text }}</small>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+</form>
+{% endblock content %}
+
 {% block related %}
-<h3>All Exhibitions</h3>
-<table>
-    <th>Name</th>
-    <th>Start date</th>
-    <th>End date</th>
-    </tr>
-    {% for exhibition in members %}
-    <tr>
-        <td><a href="/exhibition/{{ exhibition.pk }}">{{ exhibition.name }}</a></td>
-        <td>{{ exhibition.start_date }}</td>
-        <td>{{ exhibition.end_date }}</td>
-    </tr>
-    {% endfor %}
-</table>
+<div class="row related-content">
+    <div class="col-sm-6">
+        <div class="row" id="sales-info">
+            <h2>Sales info</h2>
+            <p>{{ form.owner.value }}</p>
+        </div>
+        <div class="row" id="locations-history-container">
+            <h2>Locations</h2>
+            <p>{{ form.location.value }}</p>
+        </div>
+    </div>
+    <div class="col-sm-6">
+
+        <h3>All Exhibitions</h3>
+        <table>
+            <th>Name</th>
+            <th>Start date</th>
+            <th>End date</th>
+            </tr>
+            {% for exhibition in members %}
+            <tr>
+                <td><a href="/exhibition/{{ exhibition.pk }}">{{ exhibition.name }}</a></td>
+                <td>{{ exhibition.start_date }}</td>
+                <td>{{ exhibition.end_date }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+</div>
 {% endblock %}
