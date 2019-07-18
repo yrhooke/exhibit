@@ -1,11 +1,78 @@
 {% extends "generic.html" %}
 
+{% block custom_headers %}
+<script>
+    // $(document).ready(function () {
+    //     $("#txtSearch").autocomplete({
+    //         source: "/ajax_calls/search/",
+    //         minLength: 2,
+    //         open: function () {
+    //             setTimeout(function () {
+    //                 $('.ui-autocomplete').css('z-index', 99);
+    //             }, 0);
+    //         }
+    //     });
+    // });
+    $(document).ready(function () {
+        $("#actionbutton").click(function () {
+            console.log('sucess!');
+            $("#buttonresult").append("<p>something</p>");
+        }
+        );
+    });
+    $(document).ready(function () {
+        $("#actionbutton").on("click", function () {
+            $.post("/ajax_calls/easy", {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'param1': 'red',
+                'param2': 15
+            },
+                function () {
+                    alert('returned!');
+                });
+        });
+    });
+    $(document).ready(function () {
+        $("#search_bar").on("click", ".search_selector", function () {
+            $.post("/ajax_calls/easy", {
+                'csrfmiddlewaretoken': '{{ csrf_token }}'
+            },
+                function (data) {
+                    let dataOptions = "<option>" + String(data) + "</option>";
+                    let select_string = "<select class=\"form-control search_selector\"><option>Nada</option>";
+                    console.log(dataOptions);
+                    console.log(select_string);
+                    $("#search_bar").append(
+                        select_string + dataOptions + "</select>"
+                        // "<select class=\"form-control search_selector\"><option value=\"1\">1</option><option value=\"2\">2</option></select>"
+                    );
+                });
+        });
+    });
+        // $.ajax({//create an ajax request to load_page.php
+        //     type: "POST",
+        //     url: "/ajax_calls/search",
+        //     data: { "data": "check" },
+        //     success: function (data) {
+        //         if (data) {
+
+        //             alert(data);
+        //         }
+        //         else {
+        //             alert('Successfully not posted.');
+        //         }
+        //     }
+        // });
+</script>
+
+{% endblock %}
+
 {% block page_name %}
 <h3>Search</h3>
 {% endblock page_name %}
 
 {% block content %}
-<table>
+<!-- <table>
     <form action="" method='post'>
         {% csrf_token %}
         <th><label for="id_search_type">What are you looking for?</label></th>
@@ -18,8 +85,30 @@
         <td><input type="text" name="search_body" id="id_search_body"></td>
         <td><input type="submit" value="Go"></td>
         </tr>
-    </form>
+    </form> -->
 </table>
+<form id="search" method="POST" action="">
+    {% csrf_token %}
+    <div id="search_bar" name="Search Bar">
 
+        <div class="form-group">
+            <select name="resultType" class="form-control search_selector" required="" id="resultTypeSelector">
+                {% for resultType in resultTypes %}
+                <option class="form-control" value="{{ resultType }}">{{ resultType }}</option>
+                {% endfor %}
+            </select>
 
+            <input type="text" class="form-control" id="txtSearch" name="txtSearch">
+        </div>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-default btn-submit">Submit</button>
+    </div>
+</form>
+<button class="btn" id="actionbutton">Press me!</button>
+<div id="buttonresult">intial value</div>
+<h3>Get Params</h3>
+{{ getParams }}
+<h3>Post Params</h3>
+{{ postParams }}
 {% endblock %}

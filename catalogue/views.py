@@ -10,7 +10,35 @@ from django.http import HttpResponse
 
 
 def search(request):
-    return render(request, 'search.html')
+
+    context = {
+        'resultTypes': ['Artwork', 'Series', 'Exhibition', 'Location'],
+        'postParams': request.POST,
+        'getParams': request.GET,
+    }
+    return render(request, 'search.html', context=context)
+
+
+def autocompleteView(request):
+    if request.is_ajax():
+        q = request.GET.get('term', '').capitalize()
+        search_qs = Artwork.objects.all()  # filter(title__startswith=q)
+        results = []
+        print(q)
+        for r in search_qs:
+            results.append(r.FIELD)
+        data = json.dumps(results)
+    else:
+        data = 'fail'
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+
+
+def ajaxEasyView(request):
+    if request.is_ajax():
+        data = "\"success\""
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
 
 
 create_action_button_text = 'Create'

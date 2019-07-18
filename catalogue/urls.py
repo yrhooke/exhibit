@@ -19,4 +19,6 @@ urlpatterns = [
     path('location/new/', views.LocationCreate.as_view(), name='location_add'),
     path('location/<int:pk>/', views.LocationUpdate.as_view(), name='location_detail'),
     path('location/<int:pk>/delete/', views.LocationDelete.as_view(), name='location-delete'),
+    path(r'^ajax_calls/search/', views.autocompleteView),
+    path('ajax_calls/easy', views.ajaxEasyView),
 ]
