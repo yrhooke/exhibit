@@ -1,7 +1,25 @@
 {% extends "generic.html" %}
 
 {% block custom_headers %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
+    function newSearchParam(selectValues) {
+        let filters = $('.search_filter')
+        let selectID;
+        if (filters.length > 0) {
+            selectID = Math.max(...filters.map(function(){this.id.slice(12)})) + 1;
+        } else {
+            selectID = 1;
+        }
+        htmlBuilder = "<div class=\"form-group\">"
+        let selectHeader = `<select name="resultFilter${selectID}" class="form-control search_selector search_filter" required="" id="resultFilter${selectID}">`
+        htmlBuilder += selectHeader;
+        selectValues.forEach(value => {
+            htmlBuilder += `<option value="${value}">${value}</option>`
+        });
+        htmlBuilder += "</select></div>";
+        return htmlBuilder;
+    }
     // $(document).ready(function () {
     //     $("#txtSearch").autocomplete({
     //         source: "/ajax_calls/search/",
@@ -38,31 +56,31 @@
                 'csrfmiddlewaretoken': '{{ csrf_token }}'
             },
                 function (data) {
-                    let dataOptions = "<option>" + String(data) + "</option>";
-                    let select_string = "<select class=\"form-control search_selector\"><option>Nada</option>";
-                    console.log(dataOptions);
-                    console.log(select_string);
+                    let newSelect = newSearchParam(["banana", "Potato"]);
                     $("#search_bar").append(
-                        select_string + dataOptions + "</select>"
-                        // "<select class=\"form-control search_selector\"><option value=\"1\">1</option><option value=\"2\">2</option></select>"
+                        newSelect
                     );
                 });
         });
     });
-        // $.ajax({//create an ajax request to load_page.php
-        //     type: "POST",
-        //     url: "/ajax_calls/search",
-        //     data: { "data": "check" },
-        //     success: function (data) {
-        //         if (data) {
+    // $(document).ready(function () {
+    //     $("#search_bar").on("click", ".search_selector", function () {
+    //         $.post("/ajax_calls/easy", {
+    //             'csrfmiddlewaretoken': '{{ csrf_token }}'
+    //         },
+    //             function (data) {
+    //                 let dataOptions = "<option>" + String(data) + "</option>";
+    //                 let select_string = "<select class=\"form-control search_selector\"><option>Nada</option>";
+    //                 console.log(dataOptions);
+    //                 console.log(select_string);
+    //                 $("#search_bar").append(
+    //                     select_string + dataOptions + "</select>"
+    //                     // "<select class=\"form-control search_selector\"><option value=\"1\">1</option><option value=\"2\">2</option></select>"
+    //                 );
+    //             });
+    //     });
+    // });
 
-        //             alert(data);
-        //         }
-        //         else {
-        //             alert('Successfully not posted.');
-        //         }
-        //     }
-        // });
 </script>
 
 {% endblock %}
