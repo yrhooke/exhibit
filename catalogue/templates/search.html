@@ -4,20 +4,22 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
     function newSearchParam(selectValues) {
-        let filters = $('.search_filter')
+        let filters = $('.search-filter')
         let selectID;
         if (filters.length > 0) {
-            selectID = Math.max(...filters.map(function () { this.id.slice(12) })) + 1;
+            selectID = Math.max(...filters.map(function () { return this.id.slice(14) })) + 1;
         } else {
             selectID = 1;
         }
-        htmlBuilder = "<div class=\"form-group\">"
-        let selectHeader = `<select name="resultFilter${selectID}" class="form-control search_selector search_filter" required="" id="resultFilter${selectID}">`
+        console.log("selectID: " + selectID);
+        htmlBuilder = `<div class="form-group search-filter search-filter-${selectID}" id="search-filter-${selectID}">`
+        let selectHeader = `<select name="resultFilter_${selectID}" class="form-control search-selector search-filter-select search-filter-${selectID}" required="" id="resultFilter_${selectID}">`
         htmlBuilder += selectHeader;
-        console.log(typeof selectedValues);
+        // console.log(typeof selectedValues);
         selectValues.forEach(value => {
             htmlBuilder += `<option value="${value}">${value}</option>`
         });
+        htmlBuilder += `<input type="text" class="form-control search-filter-text search-filter-${selectID}" id="resultfiltervalue_${selectID}" name="resultFilterValue_${selectID}">`
         htmlBuilder += "</select></div>";
         return htmlBuilder;
     }
@@ -61,19 +63,28 @@
                 'resultType': resultTypeSelected
             },
                 function (data) {
-                    console.log(data);
+                    // console.log(data);
                     let newSelect = newSearchParam(data.fields);
-                    $("#search_bar").append(
+                    $("#search-bar").append(
                         newSelect
                     );
                 });
         });
     });
     // $(document).ready(function () {
-    //     $("#search_bar").on("click", ".search_selector", function () {
+    //     $("#search-bar").on("change", ".search-filter", function(event) {
+
+    //         let highestChangedIndex = event.target.className.match(/search-filter-[0-9]+/)[0].slice(14);
+    //         let activeFilters = $(".search-filter")
+    //         // console.log('called');
+    //         console.log(event.target);
+    //     });
+    // });
+    // $(document).ready(function () {
+    //     $("#search-bar").on("click", ".search-selector", function () {
     //         let resultTypeSelector = $("#resultTypeSelector")[0];
     //         let resultTypeSelected = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
-    //         $.post("/ajax_calls/search_selector", {
+    //         $.post("/ajax_calls/search-selector", {
     //             'csrfmiddlewaretoken': '{{ csrf_token }}',
     //             'resultType': "Artwork",
     //             'resultType': resultTypeSelected
@@ -81,39 +92,39 @@
     //             function (data) {
     //                 console.log(data);
     //                 let newSelect = newSearchParam(data.fields);
-    //                 $("#search_bar").append(
+    //                 $("#search-bar").append(
     //                     newSelect
     //                 );
     //             });
     //     });
     // });
     // $(document).ready(function () {
-    //     $("#search_bar").on("click", ".search_selector", function () {
+    //     $("#search-bar").on("click", ".search-selector", function () {
     //         $.post("/ajax_calls/easy", {
     //             'csrfmiddlewaretoken': '{{ csrf_token }}',
     //             'model': $("#resultType").options[e.target.selectedIndex].text;
     //         },
     //             function (data) {
     //                 let newSelect = newSearchParam(["banana", "Potato"]);
-    //                 $("#search_bar").append(
+    //                 $("#search-bar").append(
     //                     newSelect
     //                 );
     //             });
     //     });
     // });
     // $(document).ready(function () {
-    //     $("#search_bar").on("click", ".search_selector", function () {
+    //     $("#search-bar").on("click", ".search-selector", function () {
     //         $.post("/ajax_calls/easy", {
     //             'csrfmiddlewaretoken': '{{ csrf_token }}'
     //         },
     //             function (data) {
     //                 let dataOptions = "<option>" + String(data) + "</option>";
-    //                 let select_string = "<select class=\"form-control search_selector\"><option>Nada</option>";
+    //                 let select_string = "<select class=\"form-control search-selector\"><option>Nada</option>";
     //                 console.log(dataOptions);
     //                 console.log(select_string);
-    //                 $("#search_bar").append(
+    //                 $("#search-bar").append(
     //                     select_string + dataOptions + "</select>"
-    //                     // "<select class=\"form-control search_selector\"><option value=\"1\">1</option><option value=\"2\">2</option></select>"
+    //                     // "<select class=\"form-control search-selector\"><option value=\"1\">1</option><option value=\"2\">2</option></select>"
     //                 );
     //             });
     //     });
@@ -145,10 +156,10 @@
 </table>
 <form id="search" method="POST" action="">
     {% csrf_token %}
-    <div id="search_bar" name="Search Bar">
+    <div id="search-bar" name="Search Bar">
 
         <div class="form-group">
-            <select name="resultType" class="form-control search_selector" required="" id="resultTypeSelector">
+            <select name="resultType" class="form-control search-selector" required="" id="resultTypeSelector">
                 {% for resultType in resultTypes %}
                 <option class="form-control" value="{{ resultType }}">{{ resultType }}</option>
                 {% endfor %}

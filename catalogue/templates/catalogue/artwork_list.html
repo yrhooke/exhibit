@@ -5,7 +5,7 @@
 <h3>Artwork List</h3>
 {% endblock page_name %}
 
-{% block create_url %}'/catalogue/artwork/new/'{% endblock %}
+{% block create_url %}'{% url 'artwork_add' %}'{% endblock %}
 
 {% block list_content %}
 <tr>
@@ -18,13 +18,13 @@
 {% for artwork in object_list %}
 <tr>
     <td>
-        <a href="/artwork/{{ artwork.pk }}">
+        <a href="{% url 'artwork_detail' artwork.pk %}">
             <img class="img-fluid" style="width: 80px; object-fit: contain;"  src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
         </a>
     </td>
-    <td><a href="/series/{{ artwork.series.pk }}">{{ artwork.series }}</a></td>
-    <td><a href="/artwork/{{ artwork.pk }}">{{ artwork.title }}</a></td>
-    <td><a href="/location/{{ artwork.location.pk }}">{{ artwork.location }}</a></td>
+    <td><a href="{% url 'series_detail' artwork.series.pk %}">{{ artwork.series }}</a></td>
+    <td><a href="{% url 'artwork_detail' artwork.pk %}">{{ artwork.title }}</a></td>
+    <td><a href="{% url 'location_detail' artwork.location.pk %}">{{ artwork.location }}</a></td>
     <td>{{ artwork.size }}</td>
 </tr>
 {% endfor %}

@@ -4,14 +4,14 @@
 <h3>Series List</h3>
 {% endblock page_name %} 
 
-{% block create_url %}'/catalogue/series/new/'{% endblock %} 
+{% block create_url %}'{% url 'series_add' %}'{% endblock %} 
 
 {% block list_content %}
     <th>Name</th>
     </tr>
     {% for series in object_list %}
     <tr>
-        <td><a href="/series/{{ series.pk }}">{{ series.name }}</a></td>
+        <td><a href="{% url 'series_detail' series.pk %}">{{ series.name }}</a></td>
     </tr>
     {% endfor %}
 {% endblock %}
