@@ -1,7 +1,7 @@
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic import ListView
 from django.urls import reverse_lazy
-
+import json
 from catalogue.models import Artwork, Series, Exhibition, Location
 
 # unused but let's keep the import as memo
@@ -17,6 +17,24 @@ def search(request):
         'getParams': request.GET,
     }
     return render(request, 'search.html', context=context)
+
+
+def searchSelector(request):
+    model = request.POST.get('resultType')
+    model_map = {
+        "Artwork": Artwork,
+        "Series": Series,
+        "Exhibition": Exhibition,
+        "Location": Location
+    }
+    if model:
+        data = json.dumps({
+            "fields": [field.verbose_name for field in model_map[model]._meta.fields]
+        })
+    else:
+        data = json.dumps(["Invalid model"])
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
 
 
 def autocompleteView(request):

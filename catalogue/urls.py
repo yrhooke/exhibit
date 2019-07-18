@@ -21,4 +21,5 @@ urlpatterns = [
     path('location/<int:pk>/delete/', views.LocationDelete.as_view(), name='location-delete'),
     path(r'^ajax_calls/search/', views.autocompleteView),
     path('ajax_calls/easy', views.ajaxEasyView),
+    path('ajax_calls/search_selector', views.searchSelector),
 ]

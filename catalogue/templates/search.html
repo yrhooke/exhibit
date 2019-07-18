@@ -7,13 +7,14 @@
         let filters = $('.search_filter')
         let selectID;
         if (filters.length > 0) {
-            selectID = Math.max(...filters.map(function(){this.id.slice(12)})) + 1;
+            selectID = Math.max(...filters.map(function () { this.id.slice(12) })) + 1;
         } else {
             selectID = 1;
         }
         htmlBuilder = "<div class=\"form-group\">"
         let selectHeader = `<select name="resultFilter${selectID}" class="form-control search_selector search_filter" required="" id="resultFilter${selectID}">`
         htmlBuilder += selectHeader;
+        console.log(typeof selectedValues);
         selectValues.forEach(value => {
             htmlBuilder += `<option value="${value}">${value}</option>`
         });
@@ -51,18 +52,55 @@
         });
     });
     $(document).ready(function () {
-        $("#search_bar").on("click", ".search_selector", function () {
-            $.post("/ajax_calls/easy", {
-                'csrfmiddlewaretoken': '{{ csrf_token }}'
+        $("#resultTypeSelector").on("change", function () {
+            let resultTypeSelector = $("#resultTypeSelector")[0];
+            let resultTypeSelected = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
+            $.post("/ajax_calls/search_selector", {
+                'csrfmiddlewaretoken': '{{ csrf_token }}',
+                'resultType': "Artwork",
+                'resultType': resultTypeSelected
             },
                 function (data) {
-                    let newSelect = newSearchParam(["banana", "Potato"]);
+                    console.log(data);
+                    let newSelect = newSearchParam(data.fields);
                     $("#search_bar").append(
                         newSelect
                     );
                 });
         });
     });
+    // $(document).ready(function () {
+    //     $("#search_bar").on("click", ".search_selector", function () {
+    //         let resultTypeSelector = $("#resultTypeSelector")[0];
+    //         let resultTypeSelected = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
+    //         $.post("/ajax_calls/search_selector", {
+    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
+    //             'resultType': "Artwork",
+    //             'resultType': resultTypeSelected
+    //         },
+    //             function (data) {
+    //                 console.log(data);
+    //                 let newSelect = newSearchParam(data.fields);
+    //                 $("#search_bar").append(
+    //                     newSelect
+    //                 );
+    //             });
+    //     });
+    // });
+    // $(document).ready(function () {
+    //     $("#search_bar").on("click", ".search_selector", function () {
+    //         $.post("/ajax_calls/easy", {
+    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
+    //             'model': $("#resultType").options[e.target.selectedIndex].text;
+    //         },
+    //             function (data) {
+    //                 let newSelect = newSearchParam(["banana", "Potato"]);
+    //                 $("#search_bar").append(
+    //                     newSelect
+    //                 );
+    //             });
+    //     });
+    // });
     // $(document).ready(function () {
     //     $("#search_bar").on("click", ".search_selector", function () {
     //         $.post("/ajax_calls/easy", {
