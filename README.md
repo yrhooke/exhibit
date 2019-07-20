@@ -4,16 +4,15 @@ Artwork management tool
 
 ## TODO
 
-- [ ] use bootstrap with list and other detail views
+- [X] use bootstrap with list and other detail views
 - [ ] add search navigation
-- [ ] add image in update + create views (use whitenoise)
-- [ ] add some css
+- [ ] add image upload in update + create views (use whitenoise)
+- [ ] add some more css
 - [ ] let user add artwork to an exhibition
-- [ ] add image in list views
+- [ ] require user login
 
 ### Further down goals
 
-- [ ] require user login
 - [ ] dockerize or otherwise consider deployment
 
 
