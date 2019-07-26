@@ -8,14 +8,60 @@ from catalogue.models import Artwork, Series, Exhibition, Location
 from django.shortcuts import render
 from django.http import HttpResponse
 
+from itertools import chain
+
+
+class SearchView(ListView):
+    template_name = "search2.html"
+    # template_name = "search.html"
+    paginate_by = 20
+    count = 0
+
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        context['count'] = self.count or 0
+        context['query'] = self.request.GET.get('q')
+        return context
+
+    
+    model_map = {
+        "Artwork": Artwork,
+        "Series": Series,
+        "Exhibition": Exhibition,
+        "Location": Location
+    }
+
+    def get_queryset(self):
+        request = self.request
+        result_model = self.model_map.get(request.GET.get('resultType'))
+        if result_model:
+            lookup_params = {}
+            for field_name, value in request.GET.items():
+                # print(f"fn: {field_name}, value: {value}")
+                if field_name.startswith('searchFilter'):
+                    filter_id = field_name[len('searchFilter'):]
+                    # print(f'id: {id}')
+                    filterContents = request.GET.get(f"filterContents{filter_id}")
+                    lookup_params[f'{value}__icontains'] = filterContents # only works for text fields
+            print(f"lookup: {lookup_params}")
+            results = result_model.objects.filter(**lookup_params) 
+            print(results)
+            return results
+            
+        else:
+            return Artwork.objects.all()
+
 
 def search(request):
-
+    # so value from select and input are of form: request.POST.[id of param]
+    print(type(request.POST))
     context = {
         'resultTypes': ['Artwork', 'Series', 'Exhibition', 'Location'],
         'postParams': request.POST,
         'getParams': request.GET,
     }
+    
+
     return render(request, 'search.html', context=context)
 
 
@@ -73,21 +119,6 @@ class genericCreateView(CreateView):
         context['action_name'] = create_action_button_text
         return context
 
-
-# class genericUpdateView(UpdateView):
-#     template_name = 'detail.html'
-
-#     def get_context_data(self, **kwargs):
-#         # Call the base implementation first to get a context
-#         context = super().get_context_data(**kwargs)
-#         # Add in a QuerySet of all the books
-#         context['action_name'] = edit_action_button_text
-#         context['pk'] = self.object.pk
-#         context['model_name'] = self.model.__name__
-#         context['not_artwork'] = not (self.model == Artwork)
-#         if self.model != Artwork:
-#             context['members'] = self.object.artwork_set.all()
-#         return context
 
 
 artwork_fields = [
