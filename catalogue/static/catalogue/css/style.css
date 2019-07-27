@@ -67,3 +67,17 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
     font-family: "brandon-reg";
     src: url('../fonts/hvd_fonts_-_brandongrotesque-regular.otf') format("truetype");
 }
+
+/* #search-bar-body {
+    -moz-appearance: textfield;
+    -webkit-appearance: textfield;
+    background-color: white;
+    background-color: -moz-field;
+    border: 1px solid darkgray;
+    box-shadow: 1px 1px 1px 0 lightgray inset;  
+    font: -moz-field;
+    font: -webkit-small-control;
+    margin-top: 5px;
+    padding: 2px 3px;
+    width: 398px;    
+} */
