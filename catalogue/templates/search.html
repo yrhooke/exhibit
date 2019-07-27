@@ -3,7 +3,7 @@
 {% block custom_headers %}
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
-    function newSearchParam(selectValues) {
+    function makeSearchFilter(selectValues) {
         let filters = $('.search-filter')
         let selectID;
         if (filters.length > 0) {
@@ -16,13 +16,60 @@
         let selectHeader = `<select name="resultFilter_${selectID}" class="form-control search-selector search-filter-select search-filter-${selectID}" required="" id="resultFilter_${selectID}">`
         htmlBuilder += selectHeader;
         // console.log(typeof selectedValues);
-        selectValues.forEach(value => {
-            htmlBuilder += `<option value="${value}">${value}</option>`
-        });
+        let fields = Object.entries(selectValues);
+        for (let i = 0; i < fields.length ; i++) {
+            htmlBuilder += `<option value="${fields[i][0]}">${fields[i][1]}</option>`
+        }
         htmlBuilder += `<input type="text" class="form-control search-filter-text search-filter-${selectID}" id="resultfiltervalue_${selectID}" name="resultFilterValue_${selectID}">`
         htmlBuilder += "</select></div>";
+        htmlBuilder += `<div class="form-group"><button type="button" class="btn btn-default search-filter-append">AND</button></div>`;
         return htmlBuilder;
     }
+    function addSearchFilter(actionSuccess) {
+        let resultTypeSelector = $("#resultTypeSelector")[0];
+        let resultType = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
+        $.post("/ajax_calls/search_selector", {
+            'csrfmiddlewaretoken': '{{ csrf_token }}',
+            'resultType': resultType
+        }, function (data) {
+            $("#search-bar-body").append(makeSearchFilter(data.fields));
+        });
+    }
+
+    function resetSearchFilters() {
+        $("#search-bar-body").empty();
+        addSearchFilter();
+    }
+    function logPressed() {
+        console.log("pressed");
+    }
+    $(document).ready(function () {
+        addSearchFilter();
+    });
+    $(document).ready(function () {
+        $("#resultTypeSelector").on("change", resetSearchFilters);
+    });
+    $(document).ready(function () {
+        $("#search-bar-body").on("click", ".search-filter-append", addSearchFilter);
+    });
+
+    // $(document).ready(function () {
+    //     $("#resultTypeSelector").on("change", function () {
+    //         let resultTypeSelector = $("#resultTypeSelector")[0];
+    //         let resultType = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
+    //         $.post("/ajax_calls/search_selector", {
+    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
+    //             'resultType': resultType
+    //         },
+    //             function (data) {
+    //                 // console.log(data);
+    //                 let newSelect = newSearchParam(data.fields);
+    //                 $("#search-bar").append(
+    //                     newSelect
+    //                 );
+    //             });
+    //     });
+    // });
     // $(document).ready(function () {
     //     $("#txtSearch").autocomplete({
     //         source: "/ajax_calls/search/",
@@ -34,43 +81,25 @@
     //         }
     //     });
     // });
-    $(document).ready(function () {
-        $("#actionbutton").click(function () {
-            console.log('sucess!');
-            $("#buttonresult").append("<p>something</p>");
-        }
-        );
-    });
-    $(document).ready(function () {
-        $("#actionbutton").on("click", function () {
-            $.post("/ajax_calls/easy", {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'param1': 'red',
-                'param2': 15
-            },
-                function () {
-                    alert('returned!');
-                });
-        });
-    });
-    $(document).ready(function () {
-        $("#resultTypeSelector").on("change", function () {
-            let resultTypeSelector = $("#resultTypeSelector")[0];
-            let resultTypeSelected = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
-            $.post("/ajax_calls/search_selector", {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'resultType': "Artwork",
-                'resultType': resultTypeSelected
-            },
-                function (data) {
-                    // console.log(data);
-                    let newSelect = newSearchParam(data.fields);
-                    $("#search-bar").append(
-                        newSelect
-                    );
-                });
-        });
-    });
+    // $(document).ready(function () {
+    //     $("#actionbutton").click(function () {
+    //         console.log('sucess!');
+    //         $("#buttonresult").append("<p>something</p>");
+    //     }
+    //     );
+    // });
+    // $(document).ready(function () {
+    //     $("#actionbutton").on("click", function () {
+    //         $.post("/ajax_calls/easy", {
+    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
+    //             'param1': 'red',
+    //             'param2': 15
+    //         },
+    //             function () {
+    //                 alert('returned!');
+    //             });
+    //     });
+    // });
     // $(document).ready(function () {
     //     $("#search-bar").on("change", ".search-filter", function(event) {
 
@@ -139,24 +168,9 @@
 {% endblock page_name %}
 
 {% block content %}
-<!-- <table>
-    <form action="" method='post'>
-        {% csrf_token %}
-        <th><label for="id_search_type">What are you looking for?</label></th>
-        <td><select name="search_type" required id="id_search_type">
-                <option value="Artwork" selected>Artwork</option>
-                <option value="Series">Series</option>
-                <option value="Exhibition">Exhibition</option>
-                <option value="Location">Location</option>
-            </select></td>
-        <td><input type="text" name="search_body" id="id_search_body"></td>
-        <td><input type="submit" value="Go"></td>
-        </tr>
-    </form> -->
-</table>
-<form id="search" method="POST" action="">
+<form id="search" method="GET" action="">
     {% csrf_token %}
-    <div id="search-bar" name="Search Bar">
+    <div id="search-bar" name="Search Bar" class='row'>
 
         <div class="form-group">
             <select name="resultType" class="form-control search-selector" required="" id="resultTypeSelector">
@@ -164,16 +178,25 @@
                 <option class="form-control" value="{{ resultType }}">{{ resultType }}</option>
                 {% endfor %}
             </select>
+            <div name="search-bar-body" id="search-bar-body">
 
-            <input type="text" class="form-control" id="txtSearch" name="txtSearch">
+            </div>
         </div>
     </div>
     <div class="form-group">
         <button type="submit" class="btn btn-default btn-submit">Submit</button>
     </div>
 </form>
-<button class="btn" id="actionbutton">Press me!</button>
-<div id="buttonresult">intial value</div>
+<!-- <button class="btn" id="actionbutton">Press me!</button> -->
+<!-- <div id="buttonresult">intial value</div> -->
+{% for object in object_list %}
+<div class='row'>
+    <div class='col-12'>
+        result: <a href='{{ object.get_absolute_url }}'>{{ object.title }}</a>
+    </div>
+</div>
+{% endfor %}
+<p>fields: {{ fields }}</p>
 <h3>Get Params</h3>
 {{ getParams }}
 <h3>Post Params</h3>

@@ -12,18 +12,20 @@ from itertools import chain
 
 
 class SearchView(ListView):
-    template_name = "search2.html"
-    # template_name = "search.html"
+    # template_name = "search2.html"
+    template_name = "search.html"
     paginate_by = 20
     count = 0
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['count'] = self.count or 0
-        context['query'] = self.request.GET.get('q')
+        # context['count'] = self.count or 0
+        # context['query'] = self.request.GET.get('q')
+        context['resultTypes'] = list(self.model_map.keys())
+        context['postParams'] = self.request.POST
+        context['getParams'] = self.request.GET
         return context
 
-    
     model_map = {
         "Artwork": Artwork,
         "Series": Series,
@@ -38,16 +40,18 @@ class SearchView(ListView):
             lookup_params = {}
             for field_name, value in request.GET.items():
                 # print(f"fn: {field_name}, value: {value}")
-                if field_name.startswith('searchFilter'):
-                    filter_id = field_name[len('searchFilter'):]
+                if field_name.startswith('resultFilter_'):
+                    filter_id = field_name[len('resultFilter_'):]
                     # print(f'id: {id}')
-                    filterContents = request.GET.get(f"filterContents{filter_id}")
-                    lookup_params[f'{value}__icontains'] = filterContents # only works for text fields
+                    filterContents = request.GET.get(
+                        f"resultFilterValue_{filter_id}")
+                    # only works for text fields
+                    lookup_params[f'{value}__icontains'] = filterContents
             print(f"lookup: {lookup_params}")
-            results = result_model.objects.filter(**lookup_params) 
+            results = result_model.objects.filter(**lookup_params)
             print(results)
             return results
-            
+
         else:
             return Artwork.objects.all()
 
@@ -60,7 +64,6 @@ def search(request):
         'postParams': request.POST,
         'getParams': request.GET,
     }
-    
 
     return render(request, 'search.html', context=context)
 
@@ -74,9 +77,20 @@ def searchSelector(request):
         "Location": Location
     }
     if model:
-        data = json.dumps({
-            "fields": [field.verbose_name for field in model_map[model]._meta.fields]
-        })
+        data = json.dumps(
+            {
+                "fields": {field.name: field.verbose_name
+                           for field in model_map[model]._meta.fields
+                           if field.name != "id"}
+            }
+
+        )
+        # fields_list = [field.verbose_name for field in
+        #                model_map[model]._meta.fields
+        #                if field.verbose_name != 'ID']
+        # data = json.dumps({
+        #     "fields": fields_list
+        # })
     else:
         data = json.dumps(["Invalid model"])
     mimetype = 'application/json'
@@ -118,7 +132,6 @@ class genericCreateView(CreateView):
         # Add in a QuerySet of all the books
         context['action_name'] = create_action_button_text
         return context
-
 
 
 artwork_fields = [
