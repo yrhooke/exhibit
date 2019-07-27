@@ -114,7 +114,9 @@ class SearchBarView(TemplateView):
 
     def getResultOptions(self):
         """return list of results for model"""
-        model = self.model_map[self.request.GET.get('resultType', 'Artwork')]
+        resultType = self.request.GET.get('resultType')
+        model = self.model_map.get(resultType, Artwork)
+        print(model)
         options = {field.name: field.verbose_name for field
                    in model._meta.fields if field.name != "id"}
         return options
