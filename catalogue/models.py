@@ -4,13 +4,6 @@ from django.urls import reverse
 from django.db.models import Q
 
 
-class ArtworkManager(models.Manager):
-    def search(self, query=None):
-        qs = self.get_queryset()
-        if query:
-            or_lookup = (Q(title__icontains=query)| Q(additional__icontains=query))
-            qs = qs.filter(or_lookup).distinct()
-        return qs
 
 class Artwork(models.Model):
     """A model representing an individual work of art"""
@@ -94,14 +87,13 @@ class Artwork(models.Model):
 
     additional = models.TextField("Additional info", blank=True)
     
-    objects = ArtworkManager()
-
     def __str__(self):
         """string representation of model"""
         return self.title
 
     def get_absolute_url(self):
         return reverse('artwork_detail', kwargs={'pk': self.pk})
+
 
 
 class Series(models.Model):

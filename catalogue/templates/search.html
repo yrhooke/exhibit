@@ -25,6 +25,7 @@
         htmlBuilder += `<div class="form-group"><button type="button" class="btn btn-default search-filter-append">AND</button></div>`;
         return htmlBuilder;
     }
+
     function addSearchFilter(actionSuccess) {
         let resultTypeSelector = $("#resultTypeSelector")[0];
         let resultType = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
@@ -40,9 +41,11 @@
         $("#search-bar-body").empty();
         addSearchFilter();
     }
+
     function logPressed() {
         console.log("pressed");
     }
+
     $(document).ready(function () {
         addSearchFilter();
     });
@@ -52,113 +55,6 @@
     $(document).ready(function () {
         $("#search-bar-body").on("click", ".search-filter-append", addSearchFilter);
     });
-
-    // $(document).ready(function () {
-    //     $("#resultTypeSelector").on("change", function () {
-    //         let resultTypeSelector = $("#resultTypeSelector")[0];
-    //         let resultType = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
-    //         $.post("/ajax_calls/search_selector", {
-    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
-    //             'resultType': resultType
-    //         },
-    //             function (data) {
-    //                 // console.log(data);
-    //                 let newSelect = newSearchParam(data.fields);
-    //                 $("#search-bar").append(
-    //                     newSelect
-    //                 );
-    //             });
-    //     });
-    // });
-    // $(document).ready(function () {
-    //     $("#txtSearch").autocomplete({
-    //         source: "/ajax_calls/search/",
-    //         minLength: 2,
-    //         open: function () {
-    //             setTimeout(function () {
-    //                 $('.ui-autocomplete').css('z-index', 99);
-    //             }, 0);
-    //         }
-    //     });
-    // });
-    // $(document).ready(function () {
-    //     $("#actionbutton").click(function () {
-    //         console.log('sucess!');
-    //         $("#buttonresult").append("<p>something</p>");
-    //     }
-    //     );
-    // });
-    // $(document).ready(function () {
-    //     $("#actionbutton").on("click", function () {
-    //         $.post("/ajax_calls/easy", {
-    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
-    //             'param1': 'red',
-    //             'param2': 15
-    //         },
-    //             function () {
-    //                 alert('returned!');
-    //             });
-    //     });
-    // });
-    // $(document).ready(function () {
-    //     $("#search-bar").on("change", ".search-filter", function(event) {
-
-    //         let highestChangedIndex = event.target.className.match(/search-filter-[0-9]+/)[0].slice(14);
-    //         let activeFilters = $(".search-filter")
-    //         // console.log('called');
-    //         console.log(event.target);
-    //     });
-    // });
-    // $(document).ready(function () {
-    //     $("#search-bar").on("click", ".search-selector", function () {
-    //         let resultTypeSelector = $("#resultTypeSelector")[0];
-    //         let resultTypeSelected = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
-    //         $.post("/ajax_calls/search-selector", {
-    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
-    //             'resultType': "Artwork",
-    //             'resultType': resultTypeSelected
-    //         },
-    //             function (data) {
-    //                 console.log(data);
-    //                 let newSelect = newSearchParam(data.fields);
-    //                 $("#search-bar").append(
-    //                     newSelect
-    //                 );
-    //             });
-    //     });
-    // });
-    // $(document).ready(function () {
-    //     $("#search-bar").on("click", ".search-selector", function () {
-    //         $.post("/ajax_calls/easy", {
-    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
-    //             'model': $("#resultType").options[e.target.selectedIndex].text;
-    //         },
-    //             function (data) {
-    //                 let newSelect = newSearchParam(["banana", "Potato"]);
-    //                 $("#search-bar").append(
-    //                     newSelect
-    //                 );
-    //             });
-    //     });
-    // });
-    // $(document).ready(function () {
-    //     $("#search-bar").on("click", ".search-selector", function () {
-    //         $.post("/ajax_calls/easy", {
-    //             'csrfmiddlewaretoken': '{{ csrf_token }}'
-    //         },
-    //             function (data) {
-    //                 let dataOptions = "<option>" + String(data) + "</option>";
-    //                 let select_string = "<select class=\"form-control search-selector\"><option>Nada</option>";
-    //                 console.log(dataOptions);
-    //                 console.log(select_string);
-    //                 $("#search-bar").append(
-    //                     select_string + dataOptions + "</select>"
-    //                     // "<select class=\"form-control search-selector\"><option value=\"1\">1</option><option value=\"2\">2</option></select>"
-    //                 );
-    //             });
-    //     });
-    // });
-
 </script>
 
 {% endblock %}
@@ -169,9 +65,7 @@
 
 {% block content %}
 <form id="search" method="GET" action="">
-    {% csrf_token %}
     <div id="search-bar" name="Search Bar" class='row'>
-
         <div class="form-group">
             <select name="resultType" class="form-control search-selector" required="" id="resultTypeSelector">
                 {% for resultType in resultTypes %}
@@ -192,7 +86,7 @@
 {% for object in object_list %}
 <div class='row'>
     <div class='col-12'>
-        result: <a href='{{ object.get_absolute_url }}'>{{ object.title }}</a>
+        result: <a href='{{ object.get_absolute_url }}'>{{ object }}</a>
     </div>
 </div>
 {% endfor %}

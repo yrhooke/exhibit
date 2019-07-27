@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 import json
 from catalogue.models import Artwork, Series, Exhibition, Location
 
+from django.db import models
 # unused but let's keep the import as memo
 from django.shortcuts import render
 from django.http import HttpResponse
@@ -33,20 +34,35 @@ class SearchView(ListView):
         "Location": Location
     }
 
+    def _get_search_query(self, model):
+        received_query = {}
+        for field_name, field_content in self.request.GET.items():
+            if field_name.startswith('resultFilter_'):
+                
+                model_fields = [f for f in model._meta.fields
+                                if f.name == field_content]
+                if len(model_fields) != 1:
+                    continue
+                model_field = model_fields[0]
+
+                filter_id = field_name[len('resultFilter_'):]
+                filterContents = self.request.GET.get(
+                    f"resultFilterValue_{filter_id}")
+
+                if isinstance(model_field, models.CharField):
+                    received_query[f'{field_content}__icontains'] = filterContents
+                elif isinstance(model_field, models.ForeignKey):
+                    received_query[f'{field_content}__name__icontains'] = filterContents
+                else:
+                    received_query[f'{field_content}'] = filterContents
+
+        return received_query
+
     def get_queryset(self):
         request = self.request
         result_model = self.model_map.get(request.GET.get('resultType'))
         if result_model:
-            lookup_params = {}
-            for field_name, value in request.GET.items():
-                # print(f"fn: {field_name}, value: {value}")
-                if field_name.startswith('resultFilter_'):
-                    filter_id = field_name[len('resultFilter_'):]
-                    # print(f'id: {id}')
-                    filterContents = request.GET.get(
-                        f"resultFilterValue_{filter_id}")
-                    # only works for text fields
-                    lookup_params[f'{value}__icontains'] = filterContents
+            lookup_params = self._get_search_query(result_model)
             print(f"lookup: {lookup_params}")
             results = result_model.objects.filter(**lookup_params)
             print(results)
@@ -85,12 +101,6 @@ def searchSelector(request):
             }
 
         )
-        # fields_list = [field.verbose_name for field in
-        #                model_map[model]._meta.fields
-        #                if field.verbose_name != 'ID']
-        # data = json.dumps({
-        #     "fields": fields_list
-        # })
     else:
         data = json.dumps(["Invalid model"])
     mimetype = 'application/json'
