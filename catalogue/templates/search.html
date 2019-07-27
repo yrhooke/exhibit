@@ -88,62 +88,62 @@
     <div class="table-responsive">
         <table class=table>
             {% if model == "Series" %}
-                <tr>
-                    <th>Name</th>
-                </tr>
-                {% for series in object_list %}
-                <tr>
-                    <td><a href="{% url 'series_detail' series.pk %}">{{ series.name }}</a></td>
-                </tr>
-                {% endfor %}
+            <tr>
+                <th>Name</th>
+            </tr>
+            {% for series in object_list %}
+            <tr>
+                <td><a href="{% url 'series_detail' series.pk %}">{{ series.name }}</a></td>
+            </tr>
+            {% endfor %}
             {% elif model == "Exhibition" %}
-                <tr>
-                    <th>Name</th>
-                    <th>Start date</th>
-                    <th>End date</th>
-                </tr>
-                {% for exhibition in object_list %}
-                <tr>
-                    <td><a href="{% url 'exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
-                    <td>{{ exhibition.start_date }}</td>
-                    <td>{{ exhibition.end_date }}</td>
-                </tr>
-                {% endfor %}
+            <tr>
+                <th>Name</th>
+                <th>Start date</th>
+                <th>End date</th>
+            </tr>
+            {% for exhibition in object_list %}
+            <tr>
+                <td><a href="{% url 'exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
+                <td>{{ exhibition.start_date }}</td>
+                <td>{{ exhibition.end_date }}</td>
+            </tr>
+            {% endfor %}
             {% elif model == "Location" %}
-                <tr>
-                    <th>Name</th>
-                    <th>City</th>
-                    <th>Country</th>
-                </tr>
-                {% for location in object_list %}
-                    <tr>
-                        <td><a href="{% url 'location_detail' location.pk %}">{{ location.name }}</a></td>
-                        <td>{{ location.city }}</td>
-                        <td>{{ location.country }}</td>
-                    </tr>
-                {% endfor %}
+            <tr>
+                <th>Name</th>
+                <th>City</th>
+                <th>Country</th>
+            </tr>
+            {% for location in object_list %}
+            <tr>
+                <td><a href="{% url 'location_detail' location.pk %}">{{ location.name }}</a></td>
+                <td>{{ location.city }}</td>
+                <td>{{ location.country }}</td>
+            </tr>
+            {% endfor %}
             {% else %}
-                <tr>
-                    <th></th>
-                    <th>Series</th>
-                    <th>Title</th>
-                    <th>Location</th>
-                    <th>Size</th>
-                </tr>
-                {% for artwork in object_list %}
-                <tr>
-                    <td>
-                        <a href="{% url 'artwork_detail' artwork.pk %}">
-                            <img class="img-fluid" style="width: 80px; object-fit: contain;"
-                                src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
-                        </a>
-                    </td>
-                    <td><a href="{% url 'series_detail' artwork.series.pk %}">{{ artwork.series }}</a></td>
-                    <td><a href="{% url 'artwork_detail' artwork.pk %}">{{ artwork.title }}</a></td>
-                    <td><a href="{% url 'location_detail' artwork.location.pk %}">{{ artwork.location }}</a></td>
-                    <td>{{ artwork.size }}</td>
-                </tr>
-                {% endfor %}
+            <tr>
+                <th></th>
+                <th>Series</th>
+                <th>Title</th>
+                <th>Location</th>
+                <th>Size</th>
+            </tr>
+            {% for artwork in object_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'artwork_detail' artwork.pk %}">
+                        <img class="img-fluid" style="width: 80px; object-fit: contain;"
+                            src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
+                    </a>
+                </td>
+                <td><a href="{% url 'series_detail' artwork.series.pk %}">{{ artwork.series }}</a></td>
+                <td><a href="{% url 'artwork_detail' artwork.pk %}">{{ artwork.title }}</a></td>
+                <td><a href="{% url 'location_detail' artwork.location.pk %}">{{ artwork.location }}</a></td>
+                <td>{{ artwork.size }}</td>
+            </tr>
+            {% endfor %}
             {% endif %}
         </table>
     </div>
