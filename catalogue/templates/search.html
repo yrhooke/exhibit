@@ -31,11 +31,10 @@
     function addSearchFilter(actionSuccess) {
         let resultTypeSelector = $("#resultTypeSelector")[0];
         let resultType = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
-        $.post("/ajax_calls/search_selector", {
-            'csrfmiddlewaretoken': '{{ csrf_token }}',
+        $.get("searchbar", {
             'resultType': resultType
         }, function (data) {
-            $("#search-bar-body").append(makeSearchFilter(data.fields));
+            $("#search-bar-body").append(data);
         });
     }
 

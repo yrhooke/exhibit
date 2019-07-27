@@ -9,8 +9,6 @@ from django.db import models
 from django.shortcuts import render
 from django.http import HttpResponse
 
-from itertools import chain
-
 
 class SearchView(ListView):
     # template_name = "search2.html"
@@ -88,17 +86,6 @@ class SearchView(ListView):
         return context
 
 
-def search(request):
-    # so value from select and input are of form: request.POST.[id of param]
-    print(type(request.POST))
-    context = {
-        'resultTypes': ['Artwork', 'Series', 'Exhibition', 'Location'],
-        'postParams': request.POST,
-        'getParams': request.GET,
-    }
-
-    return render(request, 'search.html', context=context)
-
 
 class SearchBarView(TemplateView):
     template_name = "search_bar.html"
@@ -139,29 +126,6 @@ class SearchBarView(TemplateView):
             "params": self.getSearchBarParams(),
         }
         return context
-
-
-def searchSelector(request):
-    model = request.POST.get('resultType')
-    model_map = {
-        "Artwork": Artwork,
-        "Series": Series,
-        "Exhibition": Exhibition,
-        "Location": Location
-    }
-    if model:
-        data = json.dumps(
-            {
-                "fields": {field.name: field.verbose_name
-                           for field in model_map[model]._meta.fields
-                           if field.name != "id"}
-            }
-
-        )
-    else:
-        data = json.dumps(["Invalid model"])
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
 
 
 def autocompleteView(request):
