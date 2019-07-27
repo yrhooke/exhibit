@@ -1,5 +1,5 @@
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.views.generic import ListView
+from django.views.generic import ListView, TemplateView
 from django.urls import reverse_lazy
 import json
 from catalogue.models import Artwork, Series, Exhibition, Location
@@ -18,16 +18,6 @@ class SearchView(ListView):
     paginate_by = 20
     count = 0
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
-        # context['count'] = self.count or 0
-        # context['query'] = self.request.GET.get('q')
-        context['resultTypes'] = list(self.model_map.keys())
-        context['postParams'] = self.request.POST
-        context['getParams'] = self.request.GET
-        context['model'] = self.request.GET.get("resultType", "Artwork")
-        return context
-
     model_map = {
         "Artwork": Artwork,
         "Series": Series,
@@ -39,7 +29,7 @@ class SearchView(ListView):
         received_query = {}
         for field_name, field_content in self.request.GET.items():
             if field_name.startswith('resultFilter_'):
-                
+
                 model_fields = [f for f in model._meta.fields
                                 if f.name == field_content]
                 if len(model_fields) != 1:
@@ -59,6 +49,20 @@ class SearchView(ListView):
 
         return received_query
 
+    def getSearchBarParams(request):
+        searchFilterParams = {}
+        for paramName, paramValue in request.GET.items():
+            if paramName.startswith('resultFilter_'):
+                filterID = paramName[:len('resultFilter_'):]
+                filterContents = request.GET.get(
+                    f"resultFilterValue_{filter_id}")
+                searchFilterParams[filterID] = (paramValue, filterContents)
+        return searchFilterParams
+
+    def formatSearchBarParams(params, model):
+        fields = [field.name for field in model_map[model]._meta.fields
+                  if field.name != "id"]
+
     def get_queryset(self):
         request = self.request
         result_model = self.model_map.get(request.GET.get('resultType'))
@@ -72,6 +76,17 @@ class SearchView(ListView):
         else:
             return Artwork.objects.all()
 
+    def get_context_data(self, *args, **kwargs):
+        context = super().get_context_data(*args, **kwargs)
+        # context['count'] = self.count or 0
+        # context['query'] = self.request.GET.get('q')
+        context['resultTypes'] = list(self.model_map.keys())
+        context['postParams'] = self.request.POST
+        context['getParams'] = self.request.GET
+        # context['searchFilters'] = self.getSearchBarParams(self.request)
+        context['model'] = self.request.GET.get("resultType", "Artwork")
+        return context
+
 
 def search(request):
     # so value from select and input are of form: request.POST.[id of param]
@@ -83,6 +98,47 @@ def search(request):
     }
 
     return render(request, 'search.html', context=context)
+
+
+class SearchBarView(TemplateView):
+    template_name = "search_bar.html"
+
+    model_map = {
+        "Artwork": Artwork,
+        "Series": Series,
+        "Exhibition": Exhibition,
+        "Location": Location
+    }
+
+    def getResultType(self):
+        return self.request.GET.get('ResultType', 'Artwork')
+
+    def getSearchBarParams(self):
+        get_request = self.request.GET
+        searchFilterParams = []
+        for paramName, paramValue in get_request.items():
+            if paramName.startswith('resultFilter_'):
+                filter_id = paramName[len('resultFilter_'):]
+                filterContents = get_request.get(
+                    f"resultFilterValue_{filter_id}")
+                searchFilterParams.append(
+                    {'id': filter_id, 'select': paramValue, 'input': filterContents})
+        return searchFilterParams
+
+    def getResultOptions(self):
+        """return list of results for model"""
+        model = self.model_map[self.request.GET.get('resultType', 'Artwork')]
+        options = {field.name: field.verbose_name for field
+                   in model._meta.fields if field.name != "id"}
+        return options
+
+    def get_context_data(self):
+        context = {
+            "resultType": self.getResultType(),
+            "fields": self.getResultOptions(),
+            "params": self.getSearchBarParams(),
+        }
+        return context
 
 
 def searchSelector(request):

@@ -1,0 +1,14 @@
+{% for param in params %}
+<div class="form-group search-filter search-filter-{{ param.id }}" id="search-filter-{{ param.id }}">
+    <select name="resultFilter_{{ param.id }}"
+        class="form-control search-selector search-filter-select search-filter-{{ param.id }}" required=""
+        id="resultFilter_{{ param.id }}">
+        {% for name, verbose_name in fields.items %}
+        <option value="{{ name }}" {% if name == param.select %}selected{% endif %}>{{ verbose_name }}</option>
+        {% endfor %}
+        <input type="text" class="form-control search-filter-text search-filter-{{ param.id }}"
+            id="resultfiltervalue_{{ param.id }}" name="resultFilterValue_{{ param.id }}" value="{{ param.input }}">
+    </select>
+</div>
+<div class="form-group"><button type="button" class="btn btn-default search-filter-append">AND</button></div>
+{% endfor %}
