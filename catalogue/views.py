@@ -126,6 +126,7 @@ class SearchBarView(TemplateView):
             "resultType": self.getResultType(),
             "fields": self.getResultOptions(),
             "params": self.getSearchBarParams(),
+            "count": self.request.GET.get('count', 1),
         }
         return context
 

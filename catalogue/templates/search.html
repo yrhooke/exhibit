@@ -28,11 +28,25 @@
         return htmlBuilder;
     }
 
-    function addSearchFilter(actionSuccess) {
+    function getFilterCount() {
+        let filters = $('.search-filter')
+        let filterCount;
+        if (filters.length > 0) {
+            filterCount = Math.max(...filters.map(function () { return this.id.slice(14) })) + 1;
+        } else {
+            filterCount = 1;
+        }
+        return filterCount;
+    }
+
+    function addSearchFilter() {
+        let filterCount = getFilterCount();
         let resultTypeSelector = $("#resultTypeSelector")[0];
         let resultType = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
         $.get("searchbar", {
-            'resultType': resultType
+            // 'resultType': resultType
+            'resultType': resultType,
+            'count' : filterCount
         }, function (data) {
             $("#search-bar-body").append(data);
         });
@@ -91,7 +105,7 @@
         <div class="form-group">
             <select name="resultType" class="form-control search-selector" required="" id="resultTypeSelector">
                 {% for resultType in resultTypes %}
-                <option class="form-control" value="{{ resultType }}">{{ resultType }}</option>
+                <option class="form-control" value="{{ resultType }}" {% if resultType == model %}selected{% endif %}>{{ resultType }}</option>
                 {% endfor %}
             </select>
             <div name="search-bar-body" id="search-bar-body">
