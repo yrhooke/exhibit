@@ -46,7 +46,7 @@
         $.get("searchbar", {
             // 'resultType': resultType
             'resultType': resultType,
-            'count' : filterCount
+            'count': filterCount
         }, function (data) {
             $("#search-bar-body").append(data);
         });
@@ -100,17 +100,17 @@
 {% endblock page_name %}
 
 {% block content %}
-<form id="search" method="GET" action="">
-    <div id="search-bar" name="Search Bar" class='row'>
-        <div class="form-group">
+<form id="search" method="GET" action="" class="form-inline">
+    <div id="search-bar" name="Search Bar" class='input-group'>
+            <div class="col-xs-2 form-group">
             <select name="resultType" class="form-control search-selector" required="" id="resultTypeSelector">
                 {% for resultType in resultTypes %}
-                <option class="form-control" value="{{ resultType }}" {% if resultType == model %}selected{% endif %}>{{ resultType }}</option>
+                <option class="form-control" value="{{ resultType }}" {% if resultType == model %}selected{% endif %}>
+                    {{ resultType }}</option>
                 {% endfor %}
             </select>
-            <div name="search-bar-body" id="search-bar-body">
-
-            </div>
+        </div>
+        <div name="search-bar-body" id="search-bar-body" class="col-xs-10 form-group form-control flex-container">
         </div>
     </div>
     <div class="form-group">

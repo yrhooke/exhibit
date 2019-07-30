@@ -1,5 +1,5 @@
 {% for param in params %}
-<div class="form-group search-filter search-filter-{{ param.id }}" id="search-filter-{{ param.id }}">
+<div class="form-group flex-item search-filter search-filter-{{ param.id }}" id="search-filter-{{ param.id }}">
     <select name="resultFilter_{{ param.id }}"
         class="form-control search-selector search-filter-select search-filter-{{ param.id }}" required=""
         id="resultFilter_{{ param.id }}">
@@ -10,7 +10,7 @@
             id="resultfiltervalue_{{ param.id }}" name="resultFilterValue_{{ param.id }}" value="{{ param.input }}">
     </select>
 </div>
-<div class="form-group"><button type="button" class="btn btn-default search-filter-append">AND</button></div>
+<div class="form-group"><button type="button" class="btn btn-default flex-item search-filter-append">AND</button></div>
 {% empty %}
 <div class="form-group search-filter search-filter-{{ count }}" id="search-filter-{{ count }}">
     <select name="resultFilter_{{ count }}" class="form-control search-selector search-filter-select search-filter-{{ count }}" required=""
@@ -25,7 +25,33 @@
 <div class="form-group"><button type="button" class="btn btn-default search-filter-append">AND</button></div>
 
 {% endfor %}
+<!-- {% for param in params %}
+<div class="form-inline search-filter search-filter-{{ param.id }}" id="search-filter-{{ param.id }}">
+    <select name="resultFilter_{{ param.id }}"
+        class="search-filter-select search-filter-{{ param.id }}" required=""
+        id="resultFilter_{{ param.id }}">
+        {% for name, verbose_name in fields.items %}
+        <option value="{{ name }}" {% if name == param.select %}selected{% endif %}>{{ verbose_name }}</option>
+        {% endfor %}
+        <input type="text" class="search-filter-text search-filter-{{ param.id }}"
+            id="resultfiltervalue_{{ param.id }}" name="resultFilterValue_{{ param.id }}" value="{{ param.input }}">
+    </select>
+</div>
+<div class=""><button type="button" class="search-filter-append">AND</button></div>
+{% empty %}
+<div class="form-inline search-filter search-filter-{{ count }}" id="search-filter-{{ count }}">
+    <select name="resultFilter_{{ count }}" class="search-selector search-filter-select search-filter-{{ count }}" required=""
+        id="resultFilter_{{ count }}">
+        {% for name, verbose_name in fields.items %}
+        <option value="{{ name }}">{{ verbose_name }}</option>
+        {% endfor %}
+        <input type="text" class="search-filter-text search-filter-{{ count }}" id="resultfiltervalue_{{ count }}"
+            name="resultFilterValue_{{ count }}" value="">
+    </select>
+</div>
+<div class=""><button type="button" class="search-filter-append">AND</button></div>
 
+{% endfor %} -->
 <!-- {% for param in params %}
 <div class="col search-filter search-filter-{{ param.id }}" id="search-filter-{{ param.id }}">
     <select name="resultFilter_{{ param.id }}" class="" id="resultFilter_{{ param.id }}">

@@ -81,3 +81,22 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
     padding: 2px 3px;
     width: 398px;    
 } */
+
+/* .search-filter-select
+.search-filter-input
+.search-filter-append {
+    padding: none;
+    border-left : none;
+    border-right: none;
+    position: relative;
+    display: inline;
+} */
+
+.flex-container {
+    display: flex;
+    flex-direction: row;
+}
+
+.flex-item {
+    /* order: 1; */
+}
