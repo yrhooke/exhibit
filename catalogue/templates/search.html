@@ -1,9 +1,11 @@
 {% extends "generic.html" %}
+{% load static %}
+
 
 {% block custom_headers %}
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
-    function newSearchParam(selectValues) {
+    function makeSearchFilter(selectValues) {
         let filters = $('.search-filter')
         let selectID;
         if (filters.length > 0) {
@@ -16,120 +18,79 @@
         let selectHeader = `<select name="resultFilter_${selectID}" class="form-control search-selector search-filter-select search-filter-${selectID}" required="" id="resultFilter_${selectID}">`
         htmlBuilder += selectHeader;
         // console.log(typeof selectedValues);
-        selectValues.forEach(value => {
-            htmlBuilder += `<option value="${value}">${value}</option>`
-        });
+        let fields = Object.entries(selectValues);
+        for (let i = 0; i < fields.length; i++) {
+            htmlBuilder += `<option value="${fields[i][0]}">${fields[i][1]}</option>`
+        }
         htmlBuilder += `<input type="text" class="form-control search-filter-text search-filter-${selectID}" id="resultfiltervalue_${selectID}" name="resultFilterValue_${selectID}">`
         htmlBuilder += "</select></div>";
+        htmlBuilder += `<div class="form-group"><button type="button" class="btn btn-default search-filter-append">AND</button></div>`;
         return htmlBuilder;
     }
-    // $(document).ready(function () {
-    //     $("#txtSearch").autocomplete({
-    //         source: "/ajax_calls/search/",
-    //         minLength: 2,
-    //         open: function () {
-    //             setTimeout(function () {
-    //                 $('.ui-autocomplete').css('z-index', 99);
-    //             }, 0);
-    //         }
-    //     });
-    // });
-    $(document).ready(function () {
-        $("#actionbutton").click(function () {
-            console.log('sucess!');
-            $("#buttonresult").append("<p>something</p>");
+
+    function getFilterCount() {
+        let filters = $('.search-filter')
+        let filterCount;
+        if (filters.length > 0) {
+            filterCount = Math.max(...filters.map(function () { return this.id.slice(14) })) + 1;
+        } else {
+            filterCount = 1;
         }
-        );
+        return filterCount;
+    }
+
+    function addSearchFilter() {
+        let filterCount = getFilterCount();
+        let resultTypeSelector = $("#resultTypeSelector")[0];
+        let resultType = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
+        $.get("searchbar", {
+            // 'resultType': resultType
+            'resultType': resultType,
+            'count': filterCount
+        }, function (data) {
+            $("#search-bar-body").append(data);
+        });
+    }
+
+    function fillSearchFilters(params) {
+        $.get("searchbar",
+            $.param(params),
+            function (data) {
+                $("#search-bar-body").append(data);
+            });
+    }
+
+    function resetSearchFilters() {
+        $("#search-bar-body").empty();
+        addSearchFilter();
+    }
+
+    function logPressed() {
+        console.log("pressed");
+    }
+
+    function getQueryParams() {
+        let search = window.location.search.substring(1);
+        let params;
+        if (search) {
+            params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) { return key === "" ? value : decodeURIComponent(value) });
+        } else {
+            params = null;
+        }
+        return params;
+    }
+
+    $(document).ready(function () {
+        console.log(getQueryParams());
+        fillSearchFilters(getQueryParams());
+        // addSearchFilter();
     });
     $(document).ready(function () {
-        $("#actionbutton").on("click", function () {
-            $.post("/ajax_calls/easy", {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'param1': 'red',
-                'param2': 15
-            },
-                function () {
-                    alert('returned!');
-                });
-        });
+        $("#resultTypeSelector").on("change", resetSearchFilters);
     });
     $(document).ready(function () {
-        $("#resultTypeSelector").on("change", function () {
-            let resultTypeSelector = $("#resultTypeSelector")[0];
-            let resultTypeSelected = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
-            $.post("/ajax_calls/search_selector", {
-                'csrfmiddlewaretoken': '{{ csrf_token }}',
-                'resultType': "Artwork",
-                'resultType': resultTypeSelected
-            },
-                function (data) {
-                    // console.log(data);
-                    let newSelect = newSearchParam(data.fields);
-                    $("#search-bar").append(
-                        newSelect
-                    );
-                });
-        });
+        $("#search-bar-body").on("click", ".search-filter-append", addSearchFilter);
     });
-    // $(document).ready(function () {
-    //     $("#search-bar").on("change", ".search-filter", function(event) {
-
-    //         let highestChangedIndex = event.target.className.match(/search-filter-[0-9]+/)[0].slice(14);
-    //         let activeFilters = $(".search-filter")
-    //         // console.log('called');
-    //         console.log(event.target);
-    //     });
-    // });
-    // $(document).ready(function () {
-    //     $("#search-bar").on("click", ".search-selector", function () {
-    //         let resultTypeSelector = $("#resultTypeSelector")[0];
-    //         let resultTypeSelected = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
-    //         $.post("/ajax_calls/search-selector", {
-    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
-    //             'resultType': "Artwork",
-    //             'resultType': resultTypeSelected
-    //         },
-    //             function (data) {
-    //                 console.log(data);
-    //                 let newSelect = newSearchParam(data.fields);
-    //                 $("#search-bar").append(
-    //                     newSelect
-    //                 );
-    //             });
-    //     });
-    // });
-    // $(document).ready(function () {
-    //     $("#search-bar").on("click", ".search-selector", function () {
-    //         $.post("/ajax_calls/easy", {
-    //             'csrfmiddlewaretoken': '{{ csrf_token }}',
-    //             'model': $("#resultType").options[e.target.selectedIndex].text;
-    //         },
-    //             function (data) {
-    //                 let newSelect = newSearchParam(["banana", "Potato"]);
-    //                 $("#search-bar").append(
-    //                     newSelect
-    //                 );
-    //             });
-    //     });
-    // });
-    // $(document).ready(function () {
-    //     $("#search-bar").on("click", ".search-selector", function () {
-    //         $.post("/ajax_calls/easy", {
-    //             'csrfmiddlewaretoken': '{{ csrf_token }}'
-    //         },
-    //             function (data) {
-    //                 let dataOptions = "<option>" + String(data) + "</option>";
-    //                 let select_string = "<select class=\"form-control search-selector\"><option>Nada</option>";
-    //                 console.log(dataOptions);
-    //                 console.log(select_string);
-    //                 $("#search-bar").append(
-    //                     select_string + dataOptions + "</select>"
-    //                     // "<select class=\"form-control search-selector\"><option value=\"1\">1</option><option value=\"2\">2</option></select>"
-    //                 );
-    //             });
-    //     });
-    // });
-
 </script>
 
 {% endblock %}
@@ -139,41 +100,89 @@
 {% endblock page_name %}
 
 {% block content %}
-<!-- <table>
-    <form action="" method='post'>
-        {% csrf_token %}
-        <th><label for="id_search_type">What are you looking for?</label></th>
-        <td><select name="search_type" required id="id_search_type">
-                <option value="Artwork" selected>Artwork</option>
-                <option value="Series">Series</option>
-                <option value="Exhibition">Exhibition</option>
-                <option value="Location">Location</option>
-            </select></td>
-        <td><input type="text" name="search_body" id="id_search_body"></td>
-        <td><input type="submit" value="Go"></td>
-        </tr>
-    </form> -->
-</table>
-<form id="search" method="POST" action="">
-    {% csrf_token %}
-    <div id="search-bar" name="Search Bar">
-
-        <div class="form-group">
+<form id="search" method="GET" action="" class="form-inline">
+    <div id="search-bar" name="Search Bar" class='input-group'>
+            <div class="col-xs-2 form-group">
             <select name="resultType" class="form-control search-selector" required="" id="resultTypeSelector">
                 {% for resultType in resultTypes %}
-                <option class="form-control" value="{{ resultType }}">{{ resultType }}</option>
+                <option class="form-control" value="{{ resultType }}" {% if resultType == model %}selected{% endif %}>
+                    {{ resultType }}</option>
                 {% endfor %}
             </select>
-
-            <input type="text" class="form-control" id="txtSearch" name="txtSearch">
+        </div>
+        <div name="search-bar-body" id="search-bar-body" class="col-xs-10 form-group form-control flex-container">
         </div>
     </div>
     <div class="form-group">
         <button type="submit" class="btn btn-default btn-submit">Submit</button>
     </div>
 </form>
-<button class="btn" id="actionbutton">Press me!</button>
-<div id="buttonresult">intial value</div>
+
+<div class="row">
+    <div class="table-responsive">
+        <table class=table>
+            {% if model == "Series" %}
+            <tr>
+                <th>Name</th>
+            </tr>
+            {% for series in object_list %}
+            <tr>
+                <td><a href="{% url 'series_detail' series.pk %}">{{ series.name }}</a></td>
+            </tr>
+            {% endfor %}
+            {% elif model == "Exhibition" %}
+            <tr>
+                <th>Name</th>
+                <th>Start date</th>
+                <th>End date</th>
+            </tr>
+            {% for exhibition in object_list %}
+            <tr>
+                <td><a href="{% url 'exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
+                <td>{{ exhibition.start_date }}</td>
+                <td>{{ exhibition.end_date }}</td>
+            </tr>
+            {% endfor %}
+            {% elif model == "Location" %}
+            <tr>
+                <th>Name</th>
+                <th>City</th>
+                <th>Country</th>
+            </tr>
+            {% for location in object_list %}
+            <tr>
+                <td><a href="{% url 'location_detail' location.pk %}">{{ location.name }}</a></td>
+                <td>{{ location.city }}</td>
+                <td>{{ location.country }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <th></th>
+                <th>Series</th>
+                <th>Title</th>
+                <th>Location</th>
+                <th>Size</th>
+            </tr>
+            {% for artwork in object_list %}
+            <tr>
+                <td>
+                    <a href="{% url 'artwork_detail' artwork.pk %}">
+                        <img class="img-fluid" style="width: 80px; object-fit: contain;"
+                            src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
+                    </a>
+                </td>
+                <td><a href="{% url 'series_detail' artwork.series.pk %}">{{ artwork.series }}</a></td>
+                <td><a href="{% url 'artwork_detail' artwork.pk %}">{{ artwork.title }}</a></td>
+                <td><a href="{% url 'location_detail' artwork.location.pk %}">{{ artwork.location }}</a></td>
+                <td>{{ artwork.size }}</td>
+            </tr>
+            {% endfor %}
+            {% endif %}
+        </table>
+    </div>
+</div>
+<p>model: {{ model }}</p>
 <h3>Get Params</h3>
 {{ getParams }}
 <h3>Post Params</h3>
