@@ -4,25 +4,33 @@ Artwork management tool
 
 ## TODO
 
-- [ ] add user login
-- [ ] add image upload/serving in backend
-- [ ] integrate with cookiecutter
-- [ ] deploy (on heroku?)
-
+### Accomplished
 
 - [X] use bootstrap with list and other detail views
 - [X] add search navigation
-- [ ] add image upload in update + create views (use whitenoise)
-- [ ] make all list views into search views
-- [ ] add some more css
-- [ ] let user add artwork to an exhibition
-- [ ] require user login
+- [X] add image upload in update + create views (use whitenoise)
+- [X] add image upload/serving in backend
+- [X] add image upload/serving in create/update views
+
+### in current branch
+
+- [X] integrate with cookiecutter
+- [ ] figure out static file/template locations for cookiecutter
+- [ ] add user login
+- [ ] update main site to match project
+- [ ] deploy (on heroku?)
+
+### Additional features
+
+- [ ] connect exhibitions/artworks to each other
+- [ ] make search view useful
 - [ ] allow search by foreignkey
+- [ ] make all list views into search views
+- [ ] add autocomplete + pagination + remove filter to search
 
 ### Further down goals
 
-- [ ] dockerize or otherwise consider deployment
-- [ ] add autocomplete + pagination + remove filter to search
+- [ ] code cleanup
+- [ ] make site pretty/coherent
 - [ ] add test suite
-
-re: hosting - I did my research. We're going to set up for Heroku now, and maybe switch over to DigitalOcean or other provider using docker down the line. Heroku is probably faster
+- [ ] add sale data
