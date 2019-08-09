@@ -1,21 +1,22 @@
-{% extends "list.html" %} 
+{% extends "list.html" %}
 
 {% block page_name %}
 <h3>Locations List</h3>
-{% endblock page_name %} 
+{% endblock page_name %}
 
-{% block create_url %}'{% url 'location_add' %}'{% endblock %} 
+{% block create_url %}'{% url 'location_add' %}'{% endblock %}
 
 {% block list_content %}
+<tr>
     <th>Name</th>
     <th>City</th>
     <th>Country</th>
-    </tr>
-    {% for location in object_list %}
-    <tr>
-        <td><a href="{% url 'location_detail' location.pk %}">{{ location.name }}</a></td>
-        <td>{{ location.city }}</td>
-        <td>{{ location.country }}</td>
-    </tr>
-    {% endfor %}
+</tr>
+{% for location in object_list %}
+<tr>
+    <td><a href="{% url 'location_detail' location.pk %}">{{ location.name }}</a></td>
+    <td>{{ location.city }}</td>
+    <td>{{ location.country }}</td>
+</tr>
+{% endfor %}
 {% endblock %}

@@ -1,21 +1,22 @@
-{% extends "list.html" %} 
+{% extends "list.html" %}
 
 {% block page_name %}
 <h3>Exhibition List</h3>
-{% endblock page_name %} 
+{% endblock page_name %}
 
-{% block create_url %}'{% url 'exhibition_add' %}'{% endblock %} 
+{% block create_url %}'{% url 'exhibition_add' %}'{% endblock %}
 
 {% block list_content %}
+<tr>
     <th>Name</th>
     <th>Start date</th>
     <th>End date</th>
-    </tr>
-    {% for exhibition in object_list %}
-    <tr>
-        <td><a href="{% url 'exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
-        <td>{{ exhibition.start_date }}</td>
-        <td>{{ exhibition.end_date }}</td>
-    </tr>
-    {% endfor %}
+</tr>
+{% for exhibition in object_list %}
+<tr>
+    <td><a href="{% url 'exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
+    <td>{{ exhibition.start_date }}</td>
+    <td>{{ exhibition.end_date }}</td>
+</tr>
+{% endfor %}
 {% endblock %}
