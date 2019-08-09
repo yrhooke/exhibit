@@ -127,7 +127,7 @@
             </tr>
             {% for series in object_list %}
             <tr>
-                <td><a href="{% url 'series_detail' series.pk %}">{{ series.name }}</a></td>
+                <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.name }}</a></td>
             </tr>
             {% endfor %}
             {% elif model == "Exhibition" %}
@@ -138,7 +138,7 @@
             </tr>
             {% for exhibition in object_list %}
             <tr>
-                <td><a href="{% url 'exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
+                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
                 <td>{{ exhibition.start_date }}</td>
                 <td>{{ exhibition.end_date }}</td>
             </tr>
@@ -151,7 +151,7 @@
             </tr>
             {% for location in object_list %}
             <tr>
-                <td><a href="{% url 'location_detail' location.pk %}">{{ location.name }}</a></td>
+                <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.name }}</a></td>
                 <td>{{ location.city }}</td>
                 <td>{{ location.country }}</td>
             </tr>
@@ -167,7 +167,7 @@
             {% for artwork in object_list %}
             <tr>
                 <td>
-                    <a href="{% url 'artwork_detail' artwork.pk %}">
+                    <a href="{% url 'catalogue:artwork_detail' artwork.pk %}">
                             {% if artwork.image %}
                             <img class="img-fluid" style="width: 80px; object-fit: contain;" src="{{ artwork.image.url }}"
                                 alt="Artwork image">
@@ -177,9 +177,9 @@
                             {% endif %}
                     </a>
                 </td>
-                <td><a href="{% url 'series_detail' artwork.series.pk %}">{{ artwork.series }}</a></td>
-                <td><a href="{% url 'artwork_detail' artwork.pk %}">{{ artwork.title }}</a></td>
-                <td><a href="{% url 'location_detail' artwork.location.pk %}">{{ artwork.location }}</a></td>
+                <td><a href="{% url 'catalogue:series_detail' artwork.series.pk %}">{{ artwork.series }}</a></td>
+                <td><a href="{% url 'catalogue:artwork_detail' artwork.pk %}">{{ artwork.title }}</a></td>
+                <td><a href="{% url 'catalogue:location_detail' artwork.location.pk %}">{{ artwork.location }}</a></td>
                 <td>{{ artwork.size }}</td>
             </tr>
             {% endfor %}

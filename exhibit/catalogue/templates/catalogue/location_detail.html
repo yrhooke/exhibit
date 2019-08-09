@@ -15,9 +15,9 @@
     </tr>
     {% for artwork in members %}
     <tr>
-        <td><a href="{% url 'artwork_detail' artwork.pk %}">{{ artwork.title }}</a></td>
+        <td><a href="{% url 'catalogue:artwork_detail' artwork.pk %}">{{ artwork.title }}</a></td>
         <td>{{ artwork.size }}</td>
-        <td><a href="{% url 'location_detail' artwork.location.pk %}">{{ artwork.location }}</a></td>
+        <td><a href="{% url 'catalogue:location_detail' artwork.location.pk %}">{{ artwork.location }}</a></td>
     </tr>
     {% endfor %}
 </table>

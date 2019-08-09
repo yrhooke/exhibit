@@ -120,7 +120,7 @@
             </tr>
             {% for exhibition in members %}
             <tr>
-                <td><a href="{% url 'exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
+                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
                 <td>{{ exhibition.start_date }}</td>
                 <td>{{ exhibition.end_date }}</td>
             </tr>

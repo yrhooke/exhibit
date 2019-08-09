@@ -40,16 +40,16 @@
       <!-- Side navigation -->
       <div class="col-sm-2 sidenav">
         <div class="sidebar-header">
-          <a href="{% url 'artwork_index' %}">
+          <a href="{% url 'catalogue:artwork_index' %}">
             <img id="sidebar-logo" style="width: 184px; height: 60px; object-fit: contain;"
               src="{% static 'catalogue/images/logo.webp' %}">
           </a>
         </div>
         <ul class="list-unstyled components">
-          <li><a href="{% url 'artwork_index' %}">Artworks</a></li>
-          <li><a href="{% url 'series_index' %}">Series</a></li>
-          <li><a href="{% url 'exhibition_index' %}">Exhibitions</a></li>
-          <li><a href="{% url 'location_index' %}">Locations</a></li>
+          <li><a href="{% url 'catalogue:artwork_index' %}">Artworks</a></li>
+          <li><a href="{% url 'catalogue:series_index' %}">Series</a></li>
+          <li><a href="{% url 'catalogue:exhibition_index' %}">Exhibitions</a></li>
+          <li><a href="{% url 'catalogue:location_index' %}">Locations</a></li>
         </ul>
       </div>
       <!-- Page content -->

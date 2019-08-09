@@ -16,7 +16,7 @@ urlpatterns = [
     path("users/", include("exhibit.users.urls", namespace="users")),
     path("accounts/", include("allauth.urls")),
     # Your stuff: custom urls includes go here
-    path("c/", include("exhibit.catalogue.urls", namespace="main")),
+    path("c/", include("exhibit.catalogue.urls", namespace="catalogue")),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 if settings.DEBUG:
