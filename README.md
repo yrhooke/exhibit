@@ -4,6 +4,12 @@ Artwork management tool
 
 ## TODO
 
+- [ ] add user login
+- [ ] add image upload/serving in backend
+- [ ] integrate with cookiecutter
+- [ ] deploy (on heroku?)
+
+
 - [X] use bootstrap with list and other detail views
 - [ ] add search navigation
 - [ ] add image upload in update + create views (use whitenoise)
