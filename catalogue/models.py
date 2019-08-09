@@ -1,8 +1,7 @@
 from django.db import models
 from django.utils.translation import ugettext as _
 from django.urls import reverse
-from django.db.models import Q
-
+# from django.db.models import Q
 
 
 class Artwork(models.Model):
@@ -87,14 +86,13 @@ class Artwork(models.Model):
     # @TODO convert owner to foreignkey
 
     additional = models.TextField("Additional info", blank=True)
-    
+
     def __str__(self):
         """string representation of model"""
         return self.title
 
     def get_absolute_url(self):
         return reverse('artwork_detail', kwargs={'pk': self.pk})
-
 
 
 class Series(models.Model):

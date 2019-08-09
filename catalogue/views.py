@@ -6,7 +6,7 @@ from catalogue.models import Artwork, Series, Exhibition, Location
 
 from django.db import models
 # unused but let's keep the import as memo
-from django.shortcuts import render
+# from django.shortcuts import render
 from django.http import HttpResponse
 
 
@@ -39,9 +39,11 @@ class SearchView(ListView):
                     f"resultFilterValue_{filter_id}")
 
                 if isinstance(model_field, models.CharField):
-                    received_query[f'{field_content}__icontains'] = filterContents
+                    received_query[
+                        f'{field_content}__icontains'] = filterContents
                 elif isinstance(model_field, models.ForeignKey):
-                    received_query[f'{field_content}__name__icontains'] = filterContents
+                    received_query[
+                        f'{field_content}__name__icontains'] = filterContents
                 else:
                     received_query[f'{field_content}'] = filterContents
 
@@ -53,13 +55,13 @@ class SearchView(ListView):
             if paramName.startswith('resultFilter_'):
                 filterID = paramName[:len('resultFilter_'):]
                 filterContents = request.GET.get(
-                    f"resultFilterValue_{filter_id}")
+                    f"resultFilterValue_{filterID}")
                 searchFilterParams[filterID] = (paramValue, filterContents)
         return searchFilterParams
 
-    def formatSearchBarParams(params, model):
-        fields = [field.name for field in model_map[model]._meta.fields
-                  if field.name != "id"]
+    # def formatSearchBarParams(params, model):
+    #     fields = [field.name for field in model_map[model]._meta.fields
+    #               if field.name != "id"]
 
     def get_queryset(self):
         request = self.request
@@ -86,7 +88,6 @@ class SearchView(ListView):
         return context
 
 
-
 class SearchBarView(TemplateView):
     template_name = "search_bar.html"
 
@@ -108,8 +109,10 @@ class SearchBarView(TemplateView):
                 filter_id = paramName[len('resultFilter_'):]
                 filterContents = get_request.get(
                     f"resultFilterValue_{filter_id}")
-                searchFilterParams.append(
-                    {'id': filter_id, 'select': paramValue, 'input': filterContents})
+                searchFilterParams.append({
+                    'id': filter_id,
+                    'select': paramValue,
+                    'input': filterContents})
         return searchFilterParams
 
     def getResultOptions(self):
@@ -196,13 +199,19 @@ class ArtworkList(ListView):
 class ArtworkCreate(genericCreateView):
     model = Artwork
     fields = artwork_fields
+    template_name = 'catalogue/artwork_detail.html'
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['owner'].required = False
+        return form
 
 
 class ArtworkUpdate(UpdateView):
     model = Artwork
     fields = artwork_fields
+    # form_class = ArtworkForm
     template_name = 'catalogue/artwork_detail.html'
-    # template_name = 'detail.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -213,6 +222,12 @@ class ArtworkUpdate(UpdateView):
             s.exhibition for s in self.object.workinexhibition_set.all()]
         context['members'] = exhibitions
         return context
+
+    def get_form(self, form_class=None):
+        form = super().get_form(form_class)
+        form.fields['image'].required = False
+        form.fields['owner'].required = False
+        return form
 
 
 class ArtworkDelete(DeleteView):
