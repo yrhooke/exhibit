@@ -19,7 +19,13 @@
 <tr>
     <td>
         <a href="{% url 'artwork_detail' artwork.pk %}">
-            <img class="img-fluid" style="width: 80px; object-fit: contain;"  src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
+            {% if artwork.image %}
+            <img class="img-fluid" style="width: 80px; object-fit: contain;" src="{{ artwork.image.url }}"
+                alt="Artwork image">
+            {% else %}
+            <img class="img-fluid" style="width: 80px; object-fit: contain;"
+                src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
+            {% endif %}
         </a>
     </td>
     <td><a href="{% url 'series_detail' artwork.series.pk %}">{{ artwork.series }}</a></td>
