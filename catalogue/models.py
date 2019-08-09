@@ -11,6 +11,7 @@ class Artwork(models.Model):
     # optional_field = {'blank' : True, 'null' : true}
 
     # Mandatory Fields ##
+    image = models.ImageField(upload_to='images/', null=True)
     title = models.CharField('Title', max_length=200)
     series = models.ForeignKey('Series', on_delete=models.SET_NULL, null=True)
     year = models.IntegerField('Year', help_text="Year of creation")

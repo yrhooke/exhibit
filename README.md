@@ -24,3 +24,5 @@ Artwork management tool
 - [ ] dockerize or otherwise consider deployment
 - [ ] add autocomplete + pagination + remove filter to search
 - [ ] add test suite
+
+re: hosting - I did my research. We're going to set up for Heroku now, and maybe switch over to DigitalOcean or other provider using docker down the line. Heroku is probably faster

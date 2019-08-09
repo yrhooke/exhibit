@@ -169,6 +169,7 @@ class genericCreateView(CreateView):
 
 
 artwork_fields = [
+    'image',
     'title',
     'year',
     'series',
