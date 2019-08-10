@@ -17,11 +17,12 @@ Artwork management tool
 - [X] integrate with cookiecutter
 - [ ] figure out static file/template locations for cookiecutter
 - [ ] add user login
-- [ ] update main site to match project
 - [ ] deploy (on heroku?)
 
 ### Additional features
 
+- [ ] update main site to match project
+- [ ] reogranize template inheritence scheme?
 - [ ] connect exhibitions/artworks to each other
 - [ ] make search view useful
 - [ ] allow search by foreignkey
@@ -32,5 +33,6 @@ Artwork management tool
 
 - [ ] code cleanup
 - [ ] make site pretty/coherent
+- [ ] add "create new" button for series/location from within artwork edit view
 - [ ] add test suite
 - [ ] add sale data
