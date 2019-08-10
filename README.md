@@ -23,7 +23,7 @@ Artwork management tool
 ### Additional features
 
 - [X] update main site to match project
-- [ ] reogranize template inheritence scheme?
+- [X] reogranize template inheritence scheme?
 - [ ] connect exhibitions/artworks to each other
 - [ ] interface with S3
 - [ ] compartmentalize deploy/switch to digitalocean
