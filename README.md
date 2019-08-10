@@ -25,6 +25,8 @@ Artwork management tool
 - [ ] update main site to match project
 - [ ] reogranize template inheritence scheme?
 - [ ] connect exhibitions/artworks to each other
+- [ ] interface with S3
+- [ ] compartmentalize deploy/switch to digitalocean
 - [ ] make search view useful
 - [ ] allow search by foreignkey
 - [ ] make all list views into search views
