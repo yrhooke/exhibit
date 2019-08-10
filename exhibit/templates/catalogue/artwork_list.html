@@ -1,9 +1,7 @@
 {% extends "list.html" %}
 {% load static %}
 
-{% block page_name %}
-<h3>Artwork List</h3>
-{% endblock page_name %}
+{% block page_title %}Artwork List{% endblock %}
 
 {% block create_url %}'{% url 'catalogue:artwork_add' %}'{% endblock %}
 

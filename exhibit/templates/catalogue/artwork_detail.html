@@ -2,9 +2,10 @@
 {% load widget_tweaks %}
 {% load static %}
 
-{% block page_name %}
-<h3>{{ form.title.value }}</h3>
-{% endblock page_name %}
+{% block page_title %}
+{% if form.title.value %}{{ form.title.value }}
+{% else %}Artwork{% endif %}
+{% endblock %}
 
 {% block content %}
 <form action="." method="POST" enctype="multipart/form-data">

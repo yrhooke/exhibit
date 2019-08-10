@@ -22,7 +22,7 @@ Artwork management tool
 
 ### Additional features
 
-- [ ] update main site to match project
+- [X] update main site to match project
 - [ ] reogranize template inheritence scheme?
 - [ ] connect exhibitions/artworks to each other
 - [ ] interface with S3
