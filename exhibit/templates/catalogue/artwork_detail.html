@@ -17,7 +17,6 @@
         <div class="col-sm-7 artwork-image">
             {% if form.instance.image %}
             <img class="img-fluid" src="{{ form.instance.image.url }}" alt="Artwork image">
-            <p>{{ form.instance.image.url }}</p>
             {% else %}
             <img class="img-fluid" src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
             {% endif %}

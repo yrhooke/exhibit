@@ -92,7 +92,7 @@ class Artwork(models.Model):
         return self.title
 
     def get_absolute_url(self):
-        return reverse('artwork_detail', kwargs={'pk': self.pk})
+        return reverse('catalogue:artwork_detail', kwargs={'pk': self.pk})
 
 
 class Series(models.Model):
@@ -105,7 +105,7 @@ class Series(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('series_detail', kwargs={'pk': self.pk})
+        return reverse('catalogue:series_detail', kwargs={'pk': self.pk})
 
 
 class Exhibition(models.Model):
@@ -123,7 +123,7 @@ class Exhibition(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('exhibition_detail', kwargs={'pk': self.pk})
+        return reverse('catalogue:exhibition_detail', kwargs={'pk': self.pk})
 
 
 class Location(models.Model):
@@ -136,10 +136,10 @@ class Location(models.Model):
     address_2 = models.CharField(_("address cont'd"), max_length=128,
                                  blank=True)
 
-    city = models.CharField(_("city"), max_length=64, default="Tel Aviv")
+    city = models.CharField(_("city"), max_length=64)
     state = models.CharField(_("state"), blank=True, max_length=2,
                              help_text='US state, optional field')
-    zip_code = models.CharField(_("zip code"), max_length=5, default="43701")
+    zip_code = models.CharField(_("zip code"), max_length=5, blank=True)
     country = models.CharField(max_length=100)  # change later
 
     def __str__(self):
@@ -147,7 +147,7 @@ class Location(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('location_detail', kwargs={'pk': self.pk})
+        return reverse('catalogue:location_detail', kwargs={'pk': self.pk})
 
 
 class WorkInExhibition(models.Model):

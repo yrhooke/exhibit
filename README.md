@@ -15,8 +15,9 @@ Artwork management tool
 ### in current branch
 
 - [X] integrate with cookiecutter
-- [ ] figure out static file/template locations for cookiecutter
-- [ ] add user login
+- [X] figure out static file/template locations for cookiecutter - (hopefully done)
+- [X] make sure everything is ok
+- [X] add user login
 - [ ] deploy (on heroku?)
 
 ### Additional features

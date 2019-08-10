@@ -1,5 +1,6 @@
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic import ListView, TemplateView
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 import json
 from catalogue.models import Artwork, Series, Exhibition, Location
@@ -10,7 +11,7 @@ from django.db import models
 from django.http import HttpResponse
 
 
-class SearchView(ListView):
+class SearchView(LoginRequiredMixin, ListView):
     # template_name = "search2.html"
     template_name = "search.html"
     paginate_by = 20
@@ -192,11 +193,11 @@ artwork_fields = [
 ]
 
 
-class ArtworkList(ListView):
+class ArtworkList(LoginRequiredMixin, ListView):
     model = Artwork
 
 
-class ArtworkCreate(genericCreateView):
+class ArtworkCreate(LoginRequiredMixin, genericCreateView):
     model = Artwork
     fields = artwork_fields
     template_name = 'catalogue/artwork_detail.html'
@@ -207,7 +208,7 @@ class ArtworkCreate(genericCreateView):
         return form
 
 
-class ArtworkUpdate(UpdateView):
+class ArtworkUpdate(LoginRequiredMixin, UpdateView):
     model = Artwork
     fields = artwork_fields
     # form_class = ArtworkForm
@@ -230,21 +231,21 @@ class ArtworkUpdate(UpdateView):
         return form
 
 
-class ArtworkDelete(DeleteView):
+class ArtworkDelete(LoginRequiredMixin, DeleteView):
     model = Artwork
     success_url = reverse_lazy('index')
 
 
-class SeriesList(ListView):
+class SeriesList(LoginRequiredMixin, ListView):
     model = Series
 
 
-class SeriesCreate(genericCreateView):
+class SeriesCreate(LoginRequiredMixin, genericCreateView):
     model = Series
     fields = ['name']
 
 
-class SeriesUpdate(UpdateView):
+class SeriesUpdate(LoginRequiredMixin, UpdateView):
     model = Series
     fields = ['name']
     template_name = 'catalogue/series_detail.html'
@@ -258,7 +259,7 @@ class SeriesUpdate(UpdateView):
         return context
 
 
-class SeriesDelete(DeleteView):
+class SeriesDelete(LoginRequiredMixin, DeleteView):
     model = Series
     success_url = reverse_lazy('index')
 
@@ -272,16 +273,16 @@ exhibition_fields = [
 ]
 
 
-class ExhibitionList(ListView):
+class ExhibitionList(LoginRequiredMixin, ListView):
     model = Exhibition
 
 
-class ExhibitionCreate(genericCreateView):
+class ExhibitionCreate(LoginRequiredMixin, genericCreateView):
     model = Exhibition
     fields = exhibition_fields
 
 
-class ExhibitionUpdate(UpdateView):
+class ExhibitionUpdate(LoginRequiredMixin, UpdateView):
     model = Exhibition
     fields = exhibition_fields
     template_name = 'catalogue/exhibition_detail.html'
@@ -296,7 +297,7 @@ class ExhibitionUpdate(UpdateView):
         return context
 
 
-class ExhibitionDelete(DeleteView):
+class ExhibitionDelete(LoginRequiredMixin, DeleteView):
     model = Exhibition
     success_url = reverse_lazy('index')
 
@@ -313,16 +314,16 @@ location_fields = [
 ]
 
 
-class LocationList(ListView):
+class LocationList(LoginRequiredMixin, ListView):
     model = Location
 
 
-class LocationCreate(genericCreateView):
+class LocationCreate(LoginRequiredMixin, genericCreateView):
     model = Location
     fields = location_fields
 
 
-class LocationUpdate(UpdateView):
+class LocationUpdate(LoginRequiredMixin, UpdateView):
     model = Location
     fields = location_fields
     template_name = 'catalogue/location_detail.html'
@@ -336,6 +337,6 @@ class LocationUpdate(UpdateView):
         return context
 
 
-class LocationDelete(DeleteView):
+class LocationDelete(LoginRequiredMixin, DeleteView):
     model = Location
     success_url = reverse_lazy('index')
