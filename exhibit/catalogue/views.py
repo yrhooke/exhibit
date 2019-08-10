@@ -12,7 +12,7 @@ from django.http import HttpResponse
 
 
 class SearchView(LoginRequiredMixin, ListView):
-    template_name = "search.html"
+    template_name = 'catalogue/search.html'
     paginate_by = 20
     count = 0
 
@@ -74,7 +74,7 @@ class SearchView(LoginRequiredMixin, ListView):
 
 
 class SearchBarView(TemplateView):
-    template_name = "search_bar.html"
+    template_name = "catalogue/search_bar.html"
 
     model_map = {
         "Artwork": Artwork,
@@ -140,7 +140,7 @@ edit_action_button_text = 'Save Changes'
 
 
 class genericCreateView(CreateView):
-    template_name = 'detail.html'
+    template_name = 'catalogue/detail.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context

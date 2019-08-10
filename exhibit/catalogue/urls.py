@@ -3,7 +3,6 @@ from . import views
 
 app_name='catalogue'
 urlpatterns = [
-    path('', views.SearchView.as_view(), name='search'),
     path('searchbar', views.SearchBarView.as_view()),
     path('artwork', views.ArtworkList.as_view(), name="artwork_index"),
     path('artwork/new/', views.ArtworkCreate.as_view(), name='artwork_add'),
