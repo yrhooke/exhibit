@@ -7,7 +7,7 @@
 {% else %}Artwork{% endif %}
 {% endblock %}
 
-{% block content %}
+{% block object_details %}
 <form action="." method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div class="row artwork-headers">
@@ -96,9 +96,9 @@
         </div>
     </div>
 </form>
-{% endblock content %}
+{% endblock object_details %}
 
-{% block related %}
+{% block related_items %}
 <div class="row related-content">
     <div class="col-sm-6">
         <div class="row" id="sales-info">
