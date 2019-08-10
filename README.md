@@ -18,7 +18,7 @@ Artwork management tool
 - [X] figure out static file/template locations for cookiecutter - (hopefully done)
 - [X] make sure everything is ok
 - [X] add user login
-- [ ] deploy (on heroku?)
+- [X] deploy (on heroku?)
 
 ### Additional features
 
@@ -39,4 +39,4 @@ Artwork management tool
 - [ ] add test suite
 - [ ] add sale data
 
-heroku url: │https://hidden-coast-28492.herokuapp.com/
+heroku url: <https://hidden-coast-28492.herokuapp.com/>
