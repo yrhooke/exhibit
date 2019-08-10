@@ -12,7 +12,6 @@ from django.http import HttpResponse
 
 
 class SearchView(LoginRequiredMixin, ListView):
-    # template_name = "search2.html"
     template_name = "search.html"
     paginate_by = 20
     count = 0
@@ -50,20 +49,6 @@ class SearchView(LoginRequiredMixin, ListView):
 
         return received_query
 
-    def getSearchBarParams(request):
-        searchFilterParams = {}
-        for paramName, paramValue in request.GET.items():
-            if paramName.startswith('resultFilter_'):
-                filterID = paramName[:len('resultFilter_'):]
-                filterContents = request.GET.get(
-                    f"resultFilterValue_{filterID}")
-                searchFilterParams[filterID] = (paramValue, filterContents)
-        return searchFilterParams
-
-    # def formatSearchBarParams(params, model):
-    #     fields = [field.name for field in model_map[model]._meta.fields
-    #               if field.name != "id"]
-
     def get_queryset(self):
         request = self.request
         result_model = self.model_map.get(request.GET.get('resultType'))
@@ -84,7 +69,6 @@ class SearchView(LoginRequiredMixin, ListView):
         context['resultTypes'] = list(self.model_map.keys())
         context['postParams'] = self.request.POST
         context['getParams'] = self.request.GET
-        # context['searchFilters'] = self.getSearchBarParams(self.request)
         context['model'] = self.request.GET.get("resultType", "Artwork")
         return context
 
@@ -149,12 +133,6 @@ def autocompleteView(request):
     mimetype = 'application/json'
     return HttpResponse(data, mimetype)
 
-
-def ajaxEasyView(request):
-    if request.is_ajax():
-        data = "\"success\""
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
 
 
 create_action_button_text = 'Create'
