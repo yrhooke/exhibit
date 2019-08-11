@@ -4,6 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy
 import json
 from catalogue.models import Artwork, Series, Exhibition, Location
+from catalogue.forms import WorkInExhibitionForm
 
 from django.db import models
 # unused but let's keep the import as memo
@@ -134,7 +135,6 @@ def autocompleteView(request):
     return HttpResponse(data, mimetype)
 
 
-
 create_action_button_text = 'Create'
 edit_action_button_text = 'Save Changes'
 
@@ -199,7 +199,10 @@ class ArtworkUpdate(LoginRequiredMixin, UpdateView):
         context['action_name'] = edit_action_button_text
         exhibitions = [
             s.exhibition for s in self.object.workinexhibition_set.all()]
-        context['members'] = exhibitions
+        context['exhibitionList'] = exhibitions
+        context['exhibitionForm'] = WorkInExhibitionForm(
+            initial={'artwork': self.get_object()}
+        )
         return context
 
     def get_form(self, form_class=None):
@@ -207,6 +210,26 @@ class ArtworkUpdate(LoginRequiredMixin, UpdateView):
         form.fields['image'].required = False
         form.fields['owner'].required = False
         return form
+
+
+def add_work_in_exhibition(request):
+    # if this is a POST request we need to process the form data
+    try:
+        if request.method == 'POST':
+            # create a form instance and populate it with data from the request:
+            form = WorkInExhibitionForm(request.POST)
+            # check whether it's valid:
+            if form.is_valid():
+                # process the data in form.cleaned_data as required
+                # ...
+                # redirect to a new URL:
+                form.save()
+                return HttpResponse('/thanks/')
+        else:
+            return HttpResponse("didn't POST")
+    except Exception as e:
+        print(e)
+        return HttpResponse('Failure')
 
 
 class ArtworkDelete(LoginRequiredMixin, DeleteView):

@@ -18,10 +18,11 @@ Artwork management tool
 - [X] deploy (on heroku?)
 - [X] update main site to match project
 - [X] reogranize template inheritence scheme?
+- [X] connect exhibitions/artworks to each other
 
 ### in current branch
 
-- [ ] connect exhibitions/artworks to each other
+- [ ] think more seriously about design (layout + details)
 
 ### Additional features
 
