@@ -113,12 +113,18 @@
     <div class="col-sm-6">
 
         <h3>All Exhibitions</h3>
+        <form action="{% url 'catalogue:add_workinexhibition' %}" method="POST">
+            {% csrf_token %}
+            {% render_field exhibitionForm.artwork style="visibility:hidden;" %}
+            {% render_field exhibitionForm.exhibition %}
+            <input type="submit" class="btn btn-primary" value="Add new">
+        </form>
         <table>
             <th>Name</th>
             <th>Start date</th>
             <th>End date</th>
             </tr>
-            {% for exhibition in members %}
+            {% for exhibition in exhibitionList %}
             <tr>
                 <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
                 <td>{{ exhibition.start_date }}</td>
