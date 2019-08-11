@@ -28,8 +28,10 @@ Artwork management tool
 - [ ] interface with S3
 - [ ] add "create new" button for series/location from within artwork edit view
 - [ ] compartmentalize deploy/switch to digitalocean
-- [ ] make search view useful
-- [ ] allow search by foreignkey
+- [ ] make search view useful:
+  - [ ] set columns by model property or setting 
+  - [ ] allow search by foreignkey
+  - [ ] improve searchbar ux
 - [ ] make all list views into search views
 - [ ] add autocomplete + pagination + remove filter to search
 
