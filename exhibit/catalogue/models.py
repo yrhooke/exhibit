@@ -94,6 +94,20 @@ class Artwork(models.Model):
     def get_absolute_url(self):
         return reverse('catalogue:artwork_detail', kwargs={'pk': self.pk})
 
+    def searchable_fields(self):
+        searchable_field_list = [
+            self.series,
+            self.title,
+            self.location,
+            self.status,
+            self.year,
+            self.size,
+            self.medium,
+            self.rolled,
+            self.owner,
+        ]
+        return searchable_field_list
+ 
 
 class Series(models.Model):
     """A model representing a series of artworks"""
@@ -107,6 +121,12 @@ class Series(models.Model):
     def get_absolute_url(self):
         return reverse('catalogue:series_detail', kwargs={'pk': self.pk})
 
+    def searchable_fields(self):
+        searchable_field_list = [
+            self.name,
+        ]
+        return searchable_field_list
+ 
 
 class Exhibition(models.Model):
     """A model representing an exhibition"""
@@ -124,6 +144,17 @@ class Exhibition(models.Model):
 
     def get_absolute_url(self):
         return reverse('catalogue:exhibition_detail', kwargs={'pk': self.pk})
+
+    def searchable_fields(self):
+        searchable_field_list = [
+            self.name,
+            self.description,
+            self.location,
+            self.start_date,
+            self.end_date,
+        ]
+        return searchable_field_list
+        
 
 
 class Location(models.Model):
@@ -148,6 +179,18 @@ class Location(models.Model):
 
     def get_absolute_url(self):
         return reverse('catalogue:location_detail', kwargs={'pk': self.pk})
+
+    def searchable_fields(self):
+        searchable_field_list = [
+            self.name,
+            self.description,
+            self.address_1,
+            self.city,
+            self.state,
+            self.country,
+            self.zip_code,
+        ]
+        return searchable_field_list
 
 
 class WorkInExhibition(models.Model):

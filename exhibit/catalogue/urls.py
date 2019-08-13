@@ -22,4 +22,5 @@ urlpatterns = [
     path('location/<int:pk>/delete/', views.LocationDelete.as_view(), name='location-delete'),
     path('ajax_calls/search/', views.autocompleteView),
     path('api/addworkinexhibition', views.add_work_in_exhibition, name='add_workinexhibition'),
+    path('api/getsearchablefields', views.get_searchable_fields, name='searcheable_fields'),
 ]

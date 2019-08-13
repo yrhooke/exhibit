@@ -11,6 +11,12 @@ from django.db import models
 # from django.shortcuts import render
 from django.http import HttpResponse
 
+model_map = {
+    "Artwork": Artwork,
+    "Series": Series,
+    "Exhibition": Exhibition,
+    "Location": Location
+}
 
 
 class SearchView(LoginRequiredMixin, ListView):
@@ -24,7 +30,6 @@ class SearchView(LoginRequiredMixin, ListView):
         "Exhibition": Exhibition,
         "Location": Location
     }
-
 
     def _no_filter_queryset(self, resultType):
         """returns a queryset object with no filters of selected resultType string"""
@@ -42,14 +47,14 @@ class SearchView(LoginRequiredMixin, ListView):
         if not fieldName or fieldValue is None:
             # need to deal with it
             return None
-        
+
         queryString = str(fieldName)
         if foreignKeyField:
             queryString += f"__{foreignKeyField}"
         if isinstance(fieldName, str):
             fieldValue = fieldValue.strip()
             queryString += "__icontains"
-        
+
         return (queryString, fieldValue)
 
     def get_queryset(self):
@@ -64,7 +69,7 @@ class SearchView(LoginRequiredMixin, ListView):
                 filters = request.POST.get('data')['filters']
 
                 queries = [self._create_query_filter(f) for f in filters]
-                valid_queries = [query for query in queries if query] # remove None queries
+                valid_queries = [query for query in queries if query]  # remove None queries
                 resultModel = self.model_map.get(resultType)
                 return resultModel.filter(*valid_queries).order_by('-pk')[:50]
 
@@ -86,6 +91,25 @@ class SearchView(LoginRequiredMixin, ListView):
         context['selectedModel'] = self.request.GET.get("resultType", "Artwork")
         context['modelsToSearch'] = self.model_map.keys()
         return context
+
+
+def get_searchable_fields(request):
+
+    # if request.user.is_authenticated: - later
+    searcheable_fields_dict = {}
+    for modelName, model in model_map.items():
+        searcheable_fields_dict[modelName] = [
+            {
+                'name': field.verbose_name,
+                'value': field.name,
+            }
+            for field in model.searchable_fields()
+        ]
+    data = json.dumps(searcheable_fields_dict)
+    mimetype = 'application/json'
+    return HttpResponse(data, mimetype)
+    # else:
+    # return HttpResponse('Error')  # want to return error here
 
 
 class SearchBarView(TemplateView):

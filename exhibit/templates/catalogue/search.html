@@ -89,6 +89,7 @@
         $("#resultTypeSelector").on("change", resetSearchFilters);
     });
     $(document).ready(function () {
+        addSearchFilter("#search-filters-container");
         $("#search-bar-body").on("click", ".search-filter-append", () => { addSearchFilter("#search-bar-body") });
         $("#add-search-filter-button").on("click", () => { addSearchFilter("#search-filters-container") });
         $("#search-result-type-selector").on("change", () => {
@@ -101,8 +102,8 @@
 
     1. make search bar a box, with select type on left (inline select) - V
     2. give submit button on right of search bar - V
-    3. get list of all filter fields for all types to start (have visible and invisible values for each)
-    4. add a + button in search bar
+    3. add a + button in search bar - V
+    4. get list of all filter fields for all types to start (have visible and invisible values for each)
     5. if + button pressed, create html box in search bar, with select for appropriate field types, text input, and little x button
     6. if x button pressed, remove text box
     7. if resultType changed, remove all boxes
