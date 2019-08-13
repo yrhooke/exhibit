@@ -71,10 +71,10 @@
             {# URL provided by django-allauth/account/urls.py #}
             <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">My Profile</a>
           </li>
-          <li><a href="{% url 'catalogue:artwork_index' %}">Artworks</a></li>
-          <li><a href="{% url 'catalogue:series_index' %}">Series</a></li>
-          <li><a href="{% url 'catalogue:exhibition_index' %}">Exhibitions</a></li>
-          <li><a href="{% url 'catalogue:location_index' %}">Locations</a></li>
+          <li><a href="{% url 'home' %}?resultType=Artwork">Artworks</a></li>
+          <li><a href="{% url 'home' %}?resultType=Series">Series</a></li>
+          <li><a href="{% url 'home' %}?resultType=Exhibition">Exhibitions</a></li>
+          <li><a href="{% url 'home' %}?resultType=Location">Locations</a></li>
           <li class="nav-item">
             {# URL provided by django-allauth/account/urls.py #}
             <a class="nav-link" href="{% url 'account_logout' %}">Sign Out</a>
