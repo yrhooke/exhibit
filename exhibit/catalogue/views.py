@@ -12,6 +12,7 @@ from django.db import models
 from django.http import HttpResponse
 
 
+
 class SearchView(LoginRequiredMixin, ListView):
     template_name = 'catalogue/search.html'
     paginate_by = 20
@@ -24,44 +25,56 @@ class SearchView(LoginRequiredMixin, ListView):
         "Location": Location
     }
 
-    def _get_search_query(self, model):
-        received_query = {}
-        for field_name, field_content in self.request.GET.items():
-            if field_name.startswith('resultFilter_'):
 
-                model_fields = [f for f in model._meta.fields
-                                if f.name == field_content]
-                if len(model_fields) != 1:
-                    continue
-                model_field = model_fields[0]
+    def _no_filter_queryset(self, resultType):
+        """returns a queryset object with no filters of selected resultType string"""
 
-                filter_id = field_name[len('resultFilter_'):]
-                filterContents = self.request.GET.get(
-                    f"resultFilterValue_{filter_id}")
+        resultModel = self.model_map.get(resultType, Artwork)
+        return resultModel.objects.all().order_by('-pk')[:50]
 
-                if isinstance(model_field, models.CharField):
-                    received_query[
-                        f'{field_content}__icontains'] = filterContents
-                elif isinstance(model_field, models.ForeignKey):
-                    received_query[
-                        f'{field_content}__name__icontains'] = filterContents
-                else:
-                    received_query[f'{field_content}'] = filterContents
+    def _create_query_filter(filterDict):
+        """creates a tuple of filter param and value from filter object created in the search bar"""
 
-        return received_query
+        fieldName = filterDict.get('fieldName')
+        foreignKeyField = filterDict.get('foreignKeyField')
+        fieldValue = filterDict.get('fieldValue')
+
+        if not fieldName or fieldValue is None:
+            # need to deal with it
+            return None
+        
+        queryString = str(fieldName)
+        if foreignKeyField:
+            queryString += f"__{foreignKeyField}"
+        if isinstance(fieldName, str):
+            fieldValue = fieldValue.strip()
+            queryString += "__icontains"
+        
+        return (queryString, fieldValue)
 
     def get_queryset(self):
+        """returns the queryset object to be rendered as object_list by template"""
+
         request = self.request
-        result_model = self.model_map.get(request.GET.get('resultType'))
-        if result_model:
-            lookup_params = self._get_search_query(result_model)
-            print(f"lookup: {lookup_params}")
-            results = result_model.objects.filter(**lookup_params)
-            print(results)
-            return results
+        if request.method == "GET":
+            return self._no_filter_queryset(request.GET.get('resultType'))
+        elif result.method == "POST":
+            try:
+                resultType = request.POST.get('data')['resultType']
+                filters = request.POST.get('data')['filters']
+
+                queries = [self._create_query_filter(f) for f in filters]
+                valid_queries = [query for query in queries if query] # remove None queries
+                resultModel = self.model_map.get(resultType)
+                return resultModel.filter(*valid_queries).order_by('-pk')[:50]
+
+            except KeyError or FieldError:
+                # KeyError - requestType or filters fields not found in POST
+                # FieldError - some filter Q doesn't match resultModel fields
+                return self._no_filter_queryset(resultType)
 
         else:
-            return Artwork.objects.all()
+            return None
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
