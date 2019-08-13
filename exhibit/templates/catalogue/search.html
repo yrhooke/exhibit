@@ -39,21 +39,21 @@
         return filterCount;
     }
 
-    function addSearchFilter() {
+    function addSearchFilter(element) {
         let filterCount = getFilterCount();
         let resultTypeSelector = $("#resultTypeSelector")[0];
         let resultType = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
-        $.get("searchbar", {
+        $.get("c/searchbar", {
             // 'resultType': resultType
             'resultType': resultType,
             'count': filterCount
         }, function (data) {
-            $("#search-bar-body").append(data);
+            $(element).append(data);
         });
     }
 
     function fillSearchFilters(params) {
-        $.get("searchbar",
+        $.get("c/searchbar",
             $.param(params),
             function (data) {
                 $("#search-bar-body").append(data);
@@ -62,7 +62,7 @@
 
     function resetSearchFilters() {
         $("#search-bar-body").empty();
-        addSearchFilter();
+        addSearchFilter("#search-bar-body");
     }
 
     function logPressed() {
@@ -89,13 +89,18 @@
         $("#resultTypeSelector").on("change", resetSearchFilters);
     });
     $(document).ready(function () {
-        $("#search-bar-body").on("click", ".search-filter-append", addSearchFilter);
+        $("#search-bar-body").on("click", ".search-filter-append", () => { addSearchFilter("#search-bar-body") });
+        $("#add-search-filter-button").on("click", () => { addSearchFilter("#search-filters-container") });
+        $("#search-result-type-selector").on("change", () => {
+            $("#search-filters-container").empty();
+            addSearchFilter("#search-filters-container");
+        })
     });
     /*
     redesign is happening here
 
-    1. make search bar a box, with select type on left (inline select)
-    2. give submit button on right of search bar
+    1. make search bar a box, with select type on left (inline select) - V
+    2. give submit button on right of search bar - V
     3. get list of all filter fields for all types to start (have visible and invisible values for each)
     4. add a + button in search bar
     5. if + button pressed, create html box in search bar, with select for appropriate field types, text input, and little x button
@@ -107,7 +112,6 @@
     11. delete with backspace - stretch goal
     */
 
-    
 </script>
 
 {% endblock %}
@@ -135,29 +139,33 @@
 </form>
 <p> something else
 
-    <form method="POST" action="" class="form flex-container" name="search-bar">
-        <span class="form-group">
-            <select class="form-control" name="resultTypeSelector">
-                {% for model in modelsToSearch %}
-                <option class="form-control" value="{{ model }}"
-                    {% if resultType == selectedModel %}selected{% endif %}>
-                    {{ model }}</option>
-                {% endfor %}
-            </select>
-        </span>
-        <span class="form-group"> 
-            <!-- want to make this wider. How? -->
-            <div class="form-control flex-container" name="search-filters-container">
+    <div class="row">
+        <form method="POST" action="" class="form flex-container col-xs-10" name="search-bar-container"
+            id="search-bar-container">
+            <div class="form-group">
+                <select class="form-control" name="resultTypeSelector" id="search-result-type-selector">
+                    {% for model in modelsToSearch %}
+                    <option class="form-control" value="{{ model }}"
+                        {% if resultType == selectedModel %}selected{% endif %}>
+                        {{ model }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group flex-container" name="search-bar-main-body">
+                <!-- I want this wider, and I shouldn't have to nest flex containers inside each other -->
+                <div class="form-control flex-container" name="search-filters-container" id="search-filters-container">
+
+                </div>
+                <button type="button" class="btn" id="add-search-filter-button">+</button>
+            </div>
+            <div class="form-group">
+                <button type="submit" class="btn btn-default btn-submit" id="search-bar-submit">Search</button>
+
 
             </div>
-        </span>
-        <span class="form-group">
-            <button type="submit" class="btn btn-default btn-submit">Search</button>
-
-
-        </span>
-        {% csrf_token %}
-    </form>
+            {% csrf_token %}
+        </form>
+    </div>
 
     <div class="row">
         <div class="table-responsive">
