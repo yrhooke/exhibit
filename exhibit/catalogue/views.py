@@ -83,7 +83,8 @@ class SearchView(LoginRequiredMixin, ListView):
         context['resultTypes'] = list(self.model_map.keys())
         context['postParams'] = self.request.POST
         context['getParams'] = self.request.GET
-        context['model'] = self.request.GET.get("resultType", "Artwork")
+        context['selectedModel'] = self.request.GET.get("resultType", "Artwork")
+        context['modelsToSearch'] = self.model_map.keys()
         return context
 
 

@@ -91,6 +91,23 @@
     $(document).ready(function () {
         $("#search-bar-body").on("click", ".search-filter-append", addSearchFilter);
     });
+    /*
+    redesign is happening here
+
+    1. make search bar a box, with select type on left (inline select)
+    2. give submit button on right of search bar
+    3. get list of all filter fields for all types to start (have visible and invisible values for each)
+    4. add a + button in search bar
+    5. if + button pressed, create html box in search bar, with select for appropriate field types, text input, and little x button
+    6. if x button pressed, remove text box
+    7. if resultType changed, remove all boxes
+    8. define onsubmit action (put together appropriate data structure for SearchView)
+    9. if foreignkey, pop up extra box
+    10. keep track of field types, and only show field types not active in new boxes
+    11. delete with backspace - stretch goal
+    */
+
+    
 </script>
 
 {% endblock %}
@@ -100,10 +117,11 @@
 {% block content %}
 <form id="search" method="GET" action="" class="form-inline">
     <div id="search-bar" name="Search Bar" class='input-group'>
-            <div class="col-xs-2 form-group">
+        <div class="col-xs-2 form-group">
             <select name="resultType" class="form-control search-selector" required="" id="resultTypeSelector">
                 {% for resultType in resultTypes %}
-                <option class="form-control" value="{{ resultType }}" {% if resultType == model %}selected{% endif %}>
+                <option class="form-control" value="{{ resultType }}"
+                    {% if resultType == selectedModel %}selected{% endif %}>
                     {{ resultType }}</option>
                 {% endfor %}
             </select>
@@ -115,79 +133,105 @@
         <button type="submit" class="btn btn-default btn-submit">Submit</button>
     </div>
 </form>
+<p> something else
 
-<div class="row">
-    <div class="table-responsive">
-        <table class=table>
-            {% if model == "Series" %}
-            <tr>
-                <th>Name</th>
-            </tr>
-            {% for series in object_list %}
-            <tr>
-                <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.name }}</a></td>
-            </tr>
-            {% endfor %}
-            {% elif model == "Exhibition" %}
-            <tr>
-                <th>Name</th>
-                <th>Start date</th>
-                <th>End date</th>
-            </tr>
-            {% for exhibition in object_list %}
-            <tr>
-                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
-                <td>{{ exhibition.start_date }}</td>
-                <td>{{ exhibition.end_date }}</td>
-            </tr>
-            {% endfor %}
-            {% elif model == "Location" %}
-            <tr>
-                <th>Name</th>
-                <th>City</th>
-                <th>Country</th>
-            </tr>
-            {% for location in object_list %}
-            <tr>
-                <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.name }}</a></td>
-                <td>{{ location.city }}</td>
-                <td>{{ location.country }}</td>
-            </tr>
-            {% endfor %}
-            {% else %}
-            <tr>
-                <th></th>
-                <th>Series</th>
-                <th>Title</th>
-                <th>Location</th>
-                <th>Size</th>
-            </tr>
-            {% for artwork in object_list %}
-            <tr>
-                <td>
-                    <a href="{% url 'catalogue:artwork_detail' artwork.pk %}">
+    <form method="POST" action="" class="form flex-container" name="search-bar">
+        <span class="form-group">
+            <select class="form-control" name="resultTypeSelector">
+                {% for model in modelsToSearch %}
+                <option class="form-control" value="{{ model }}"
+                    {% if resultType == selectedModel %}selected{% endif %}>
+                    {{ model }}</option>
+                {% endfor %}
+            </select>
+        </span>
+        <span class="form-group"> 
+            <!-- want to make this wider. How? -->
+            <div class="form-control flex-container" name="search-filters-container">
+
+            </div>
+        </span>
+        <span class="form-group">
+            <button type="submit" class="btn btn-default btn-submit">Search</button>
+
+
+        </span>
+        {% csrf_token %}
+    </form>
+
+    <div class="row">
+        <div class="table-responsive">
+            <table class=table>
+                {% if selectedModel == "Series" %}
+                <tr>
+                    <th>Name</th>
+                </tr>
+                {% for series in object_list %}
+                <tr>
+                    <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.name }}</a></td>
+                </tr>
+                {% endfor %}
+                {% elif selectedModel == "Exhibition" %}
+                <tr>
+                    <th>Name</th>
+                    <th>Start date</th>
+                    <th>End date</th>
+                </tr>
+                {% for exhibition in object_list %}
+                <tr>
+                    <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
+                    <td>{{ exhibition.start_date }}</td>
+                    <td>{{ exhibition.end_date }}</td>
+                </tr>
+                {% endfor %}
+                {% elif selectedModel == "Location" %}
+                <tr>
+                    <th>Name</th>
+                    <th>City</th>
+                    <th>Country</th>
+                </tr>
+                {% for location in object_list %}
+                <tr>
+                    <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.name }}</a></td>
+                    <td>{{ location.city }}</td>
+                    <td>{{ location.country }}</td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                    <th></th>
+                    <th>Series</th>
+                    <th>Title</th>
+                    <th>Location</th>
+                    <th>Size</th>
+                </tr>
+                {% for artwork in object_list %}
+                <tr>
+                    <td>
+                        <a href="{% url 'catalogue:artwork_detail' artwork.pk %}">
                             {% if artwork.image %}
-                            <img class="img-fluid" style="width: 80px; object-fit: contain;" src="{{ artwork.image.url }}"
-                                alt="Artwork image">
+                            <img class="img-fluid" style="width: 80px; object-fit: contain;"
+                                src="{{ artwork.image.url }}" alt="Artwork image">
                             {% else %}
                             <img class="img-fluid" style="width: 80px; object-fit: contain;"
                                 src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
                             {% endif %}
-                    </a>
-                </td>
-                <td><a href="{% url 'catalogue:series_detail' artwork.series.pk %}">{{ artwork.series }}</a></td>
-                <td><a href="{% url 'catalogue:artwork_detail' artwork.pk %}">{{ artwork.title }}</a></td>
-                <td><a href="{% url 'catalogue:location_detail' artwork.location.pk %}">{{ artwork.location }}</a></td>
-                <td>{{ artwork.size }}</td>
-            </tr>
-            {% endfor %}
-            {% endif %}
-        </table>
+                        </a>
+                    </td>
+                    <td><a href="{% url 'catalogue:series_detail' artwork.series.pk %}">{{ artwork.series }}</a></td>
+                    <td><a href="{% url 'catalogue:artwork_detail' artwork.pk %}">{{ artwork.title }}</a></td>
+                    <td><a href="{% url 'catalogue:location_detail' artwork.location.pk %}">{{ artwork.location }}</a>
+                    </td>
+                    <td>{{ artwork.size }}</td>
+                </tr>
+                {% endfor %}
+                {% endif %}
+            </table>
+        </div>
     </div>
-</div>
-<p>model: {{ model }}</p>
-<h3>Get Params</h3>
-{{ getParams }}
-<h3>Post Params</h3>
-{{ postParams }}
-{% endblock %}
+    <p>selectedModel: {{ selectedModel }}</p>
+    <h3>Get Params</h3>
+    {{ getParams }}
+    <h3>Post Params</h3>
+    {{ postParams }}
+    {% endblock %}
