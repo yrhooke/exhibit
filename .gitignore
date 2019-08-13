@@ -300,3 +300,8 @@ db.*
 
 ### Media
 media/*
+
+### Design
+*.doc
+*.docx
+*.pages

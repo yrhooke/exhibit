@@ -22,10 +22,11 @@ Artwork management tool
 
 ### in current branch
 
-- [ ] think more seriously about design (layout + details)
+- [ ] search using POST request
 
 ### Additional features
 
+- [ ] think more seriously about design (layout + details)
 - [ ] interface with S3
 - [ ] add "create new" button for series/location from within artwork edit view
 - [ ] compartmentalize deploy/switch to digitalocean
