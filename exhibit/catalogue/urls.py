@@ -3,7 +3,6 @@ from . import views
 
 app_name='catalogue'
 urlpatterns = [
-    path('searchbar', views.SearchBarView.as_view()),
     path('artwork', views.ArtworkList.as_view(), name="artwork_index"),
     path('artwork/new/', views.ArtworkCreate.as_view(), name='artwork_add'),
     path('artwork/<int:pk>/', views.ArtworkUpdate.as_view(), name='artwork_detail'),
@@ -21,6 +20,7 @@ urlpatterns = [
     path('location/<int:pk>/', views.LocationUpdate.as_view(), name='location_detail'),
     path('location/<int:pk>/delete/', views.LocationDelete.as_view(), name='location-delete'),
     path('ajax_calls/search/', views.autocompleteView),
+    path('searchbar', views.SearchBarView.as_view(), name='make_search_filter'),
     path('api/addworkinexhibition', views.add_work_in_exhibition, name='add_workinexhibition'),
     path('api/getsearchablefields', views.get_searchable_fields, name='searcheable_fields'),
 ]

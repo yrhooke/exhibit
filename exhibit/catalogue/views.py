@@ -24,17 +24,11 @@ class SearchView(LoginRequiredMixin, ListView):
     paginate_by = 20
     count = 0
 
-    model_map = {
-        "Artwork": Artwork,
-        "Series": Series,
-        "Exhibition": Exhibition,
-        "Location": Location
-    }
 
     def _no_filter_queryset(self, resultType):
         """returns a queryset object with no filters of selected resultType string"""
 
-        resultModel = self.model_map.get(resultType, Artwork)
+        resultModel = model_map.get(resultType, Artwork)
         return resultModel.objects.all().order_by('-pk')[:50]
 
     def _create_query_filter(filterDict):
@@ -70,7 +64,7 @@ class SearchView(LoginRequiredMixin, ListView):
 
                 queries = [self._create_query_filter(f) for f in filters]
                 valid_queries = [query for query in queries if query]  # remove None queries
-                resultModel = self.model_map.get(resultType)
+                resultModel = model_map.get(resultType)
                 return resultModel.filter(*valid_queries).order_by('-pk')[:50]
 
             except KeyError or FieldError:
@@ -85,11 +79,12 @@ class SearchView(LoginRequiredMixin, ListView):
         context = super().get_context_data(*args, **kwargs)
         # context['count'] = self.count or 0
         # context['query'] = self.request.GET.get('q')
-        context['resultTypes'] = list(self.model_map.keys())
+        context['resultTypes'] = list(model_map.keys())
         context['postParams'] = self.request.POST
         context['getParams'] = self.request.GET
         context['selectedModel'] = self.request.GET.get("resultType", "Artwork")
-        context['modelsToSearch'] = self.model_map.keys()
+        context['modelsToSearch'] = model_map.keys()
+        context['filters'] = self.request.POST.get('data', {'filters': []})['filters']
         return context
 
 
@@ -103,7 +98,7 @@ def get_searchable_fields(request):
                 'name': field.verbose_name,
                 'value': field.name,
             }
-            for field in model.searchable_fields()
+            for field in model.searchable_fields
         ]
     data = json.dumps(searcheable_fields_dict)
     mimetype = 'application/json'
@@ -114,13 +109,6 @@ def get_searchable_fields(request):
 
 class SearchBarView(TemplateView):
     template_name = "catalogue/search_bar.html"
-
-    model_map = {
-        "Artwork": Artwork,
-        "Series": Series,
-        "Exhibition": Exhibition,
-        "Location": Location
-    }
 
     def getResultType(self):
         return self.request.GET.get('ResultType', 'Artwork')
@@ -142,7 +130,7 @@ class SearchBarView(TemplateView):
     def getResultOptions(self):
         """return list of results for model"""
         resultType = self.request.GET.get('resultType')
-        model = self.model_map.get(resultType, Artwork)
+        model = model_map.get(resultType, Artwork)
         print(model)
         options = {field.name: field.verbose_name for field
                    in model._meta.fields if field.name != "id"}

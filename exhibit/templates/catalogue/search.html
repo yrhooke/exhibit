@@ -5,80 +5,72 @@
 {% block custom_headers %}
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
-    function makeSearchFilter(selectValues) {
-        let filters = $('.search-filter')
-        let selectID;
-        if (filters.length > 0) {
-            selectID = Math.max(...filters.map(function () { return this.id.slice(14) })) + 1;
-        } else {
-            selectID = 1;
-        }
-        console.log("selectID: " + selectID);
-        htmlBuilder = `<div class="form-group search-filter search-filter-${selectID}" id="search-filter-${selectID}">`
-        let selectHeader = `<select name="resultFilter_${selectID}" class="form-control search-selector search-filter-select search-filter-${selectID}" required="" id="resultFilter_${selectID}">`
-        htmlBuilder += selectHeader;
-        // console.log(typeof selectedValues);
-        let fields = Object.entries(selectValues);
-        for (let i = 0; i < fields.length; i++) {
-            htmlBuilder += `<option value="${fields[i][0]}">${fields[i][1]}</option>`
-        }
-        htmlBuilder += `<input type="text" class="form-control search-filter-text search-filter-${selectID}" id="resultfiltervalue_${selectID}" name="resultFilterValue_${selectID}">`
-        htmlBuilder += "</select></div>";
-        htmlBuilder += `<div class="form-group"><button type="button" class="btn btn-default search-filter-append">AND</button></div>`;
-        return htmlBuilder;
+
+    function getSelectedValueFromSelect(selectID) {
+        // return value from select by jquery query string - returns from first result
+        let select = $(selectID)[0];
+        return select.options[select.options.selectedIndex].value;
     }
 
-    function getFilterCount() {
-        let filters = $('.search-filter')
-        let filterCount;
-        if (filters.length > 0) {
-            filterCount = Math.max(...filters.map(function () { return this.id.slice(14) })) + 1;
-        } else {
-            filterCount = 1;
-        }
-        return filterCount;
+    function getResultType() {
+        return getSelectedValueFromSelect("#search-result-type-selector");
     }
 
     function addSearchFilter(element) {
-        let filterCount = getFilterCount();
-        let resultTypeSelector = $("#resultTypeSelector")[0];
-        let resultType = resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
-        $.get("c/searchbar", {
-            // 'resultType': resultType
+        let resultType = getResultType();
+        $.get("{% url 'catalogue:make_search_filter' %}", {
             'resultType': resultType,
-            'count': filterCount
         }, function (data) {
             $(element).append(data);
         });
     }
 
-    function fillSearchFilters(params) {
-        $.get("c/searchbar",
-            $.param(params),
-            function (data) {
-                $("#search-bar-body").append(data);
-            });
-    }
+    // function fillSearchFilters(params) {
+    //     $.get("c/searchbar",
+    //         $.param(params),
+    //         function (data) {
+    //             $("#search-bar-body").append(data);
+    //         });
+    // }
 
     function resetSearchFilters() {
-        $("#search-bar-body").empty();
-        addSearchFilter("#search-bar-body");
+        $("#search-filters-container").empty();
+        addSearchFilter("#search-filters-container");
     }
 
-    function logPressed() {
-        console.log("pressed");
-    }
+    // function getQueryParams() {
+    //     let search = window.location.search.substring(1);
+    //     let params;
+    //     if (search) {
+    //         params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) { return key === "" ? value : decodeURIComponent(value) });
+    //     } else {
+    //         params = null;
+    //     }
+    //     return params;
+    // }
 
-    function getQueryParams() {
-        let search = window.location.search.substring(1);
-        let params;
-        if (search) {
-            params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) { return key === "" ? value : decodeURIComponent(value) });
-        } else {
-            params = null;
+    function makeSearchQuery() {
+        let resultType = getResultType();
+        let filters = [];
+
+        let filtersList = $(".search-filter");
+        for (let i = 0; i < filtersList.length; i++) {
+            let searchFilter = filtersList.eq(i);
+            let mainSelect = searchFilter.find(".search-filter-main-select")[0]
+            let filterText = searchFilter.find(".search-filter-text")[0]
+
+            filters.push({
+                "fieldName": mainSelect.options[mainSelect.options.selectedIndex].value,
+                "fieldValue": filterText.value
+            })
         }
-        return params;
+        return { "resultType": resultType, "filters": filters }
     }
+
+    // fieldName = filterDict.get('fieldName')
+    // foreignKeyField = filterDict.get('foreignKeyField')
+    // fieldValue = filterDict.get('fieldValue')
+
 
     $(document).ready(function () {
         console.log(getQueryParams());
@@ -86,23 +78,24 @@
         // addSearchFilter();
     });
     $(document).ready(function () {
-        $("#resultTypeSelector").on("change", resetSearchFilters);
-    });
-    $(document).ready(function () {
         addSearchFilter("#search-filters-container");
         $("#search-bar-body").on("click", ".search-filter-append", () => { addSearchFilter("#search-bar-body") });
         $("#add-search-filter-button").on("click", () => { addSearchFilter("#search-filters-container") });
-        $("#search-result-type-selector").on("change", () => {
-            $("#search-filters-container").empty();
-            addSearchFilter("#search-filters-container");
-        })
+        $("#search-result-type-selector").on("change", resetSearchFilters);
     });
+
+
     /*
     redesign is happening here
 
     1. make search bar a box, with select type on left (inline select) - V
     2. give submit button on right of search bar - V
     3. add a + button in search bar - V
+    4. makeSelect function in js
+    5. make+add select after button press
+    6. add cancel button to select
+    7. remove select after button pressed
+
     4. get list of all filter fields for all types to start (have visible and invisible values for each)
     5. if + button pressed, create html box in search bar, with select for appropriate field types, text input, and little x button
     6. if x button pressed, remove text box
@@ -110,7 +103,8 @@
     8. define onsubmit action (put together appropriate data structure for SearchView)
     9. if foreignkey, pop up extra box
     10. keep track of field types, and only show field types not active in new boxes
-    11. delete with backspace - stretch goal
+    11. change history to allow back arrow + reload
+    12. delete with backspace - stretch goal
     */
 
 </script>
