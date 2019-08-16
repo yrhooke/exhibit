@@ -146,6 +146,10 @@ class SearchFilterFKView(SearchFilterMakerView):
     """View for gathering data to generate search filter foreignKey select"""
 
     template_name = "catalogue/foreignkeyselect.html"
+<<<<<<< HEAD
+=======
+
+>>>>>>> 76ccbee0a18be3870639dada048eea2b1bbf7ecb
 
 
 def autocompleteView(request):
