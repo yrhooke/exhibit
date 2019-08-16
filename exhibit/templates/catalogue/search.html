@@ -78,10 +78,24 @@
         // addSearchFilter();
     });
     $(document).ready(function () {
+        // initialize state
         addSearchFilter("#search-filters-container");
+
+        // add filters on click
         $("#search-bar-body").on("click", ".search-filter-append", () => { addSearchFilter("#search-bar-body") });
         $("#add-search-filter-button").on("click", () => { addSearchFilter("#search-filters-container") });
+
+        // reset filters on resultType change
         $("#search-result-type-selector").on("change", resetSearchFilters);
+
+        // delete specific filter when it's remove button is pressed
+        $("#search-bar-container").on("click", ".search-filter-remove", (event) => {
+            console.log('clicked');
+            console.log(event);
+            event.target.parentNode.remove();
+        });
+
+        // send filter data on submit in JSON serialized string
         $("#search-form").submit(() => {
             let query = makeSearchQuery();
             $('<input />').attr('type', 'hidden')
@@ -99,18 +113,18 @@
     1. make search bar a box, with select type on left (inline select) - V
     2. give submit button on right of search bar - V
     3. add a + button in search bar - V
-    4. makeSelect function in js
-    5. make+add select after button press
-    6. add cancel button to select
-    7. remove select after button pressed
+    4. make+add select after button press - v
+    6. add cancel button to select - v
+    7. remove select after button pressed - v
+    8. pop up extra box for foreignkey
 
-    4. get list of all filter fields for all types to start (have visible and invisible values for each)
-    5. if + button pressed, create html box in search bar, with select for appropriate field types, text input, and little x button
-    6. if x button pressed, remove text box
-    7. if resultType changed, remove all boxes
-    8. define onsubmit action (put together appropriate data structure for SearchView)
+    4. get list of all filter fields for all types to start (have visible and invisible values for each) - v
+    5. if + button pressed, create html box in search bar, with select for appropriate field types, text input, and little x button - v
+    6. if x button pressed, remove text box - v
+    7. if resultType changed, remove all boxes - v
+    8. define onsubmit action (put together appropriate data structure for SearchView) - v
     9. if foreignkey, pop up extra box
-    10. keep track of field types, and only show field types not active in new boxes
+    10. keep track of field types, and only show field types not active in new boxes - not gonna do that now
     11. change history to allow back arrow + reload
     12. delete with backspace - stretch goal
     */
