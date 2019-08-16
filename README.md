@@ -19,30 +19,48 @@ Artwork management tool
 - [X] update main site to match project
 - [X] reogranize template inheritence scheme?
 - [X] connect exhibitions/artworks to each other
+- [X] search using POST request
+- [X] think more seriously about design (layout + details)
+- [ ] make search view useful:
+  - [ ] set columns by model property or setting (see below)
+  - [x] allow search by foreignkey
+  - [x] improve searchbar ux
+- [x] make all list views into search views
 
 ### in current branch
 
-- [ ] search using POST request
+- [ ] fix navbar - handles different widths
+- [ ] read more about flexbox/bootstrap/css
 
-### Additional features
+### Crucial for preview
 
-- [ ] think more seriously about design (layout + details)
-- [ ] interface with S3
+- [ ] get columns dynamically per model in searchView
+- [ ] search results layout
+- [ ] add sale data
+- [ ] artwork detail view layout
+- [ ] search bar layout
+- [ ] other detail view layouts
+- [ ] store images on S3
+- [ ] add autocomplete + pagination in search
+
+### Want for launch
+
+- [ ] save on change in edit view
+- [ ] remove all proprietary data from source control
+- [ ] use https everywhere
+- [ ] figure out database + s3 backups
+- [ ] improve design finish
+- [ ] Thumbnails for series
+
+### Post Launch
+
+- [ ] modify history to give default behavior for back arrow
 - [ ] add "create new" button for series/location from within artwork edit view
 - [ ] compartmentalize deploy/switch to digitalocean
-- [ ] make search view useful:
-  - [ ] set columns by model property or setting 
-  - [ ] allow search by foreignkey
-  - [ ] improve searchbar ux
-- [ ] make all list views into search views
-- [ ] add autocomplete + pagination + remove filter to search
-
-### Further down goals
-
 - [ ] code cleanup
-- [ ] make site pretty/coherent
-- [ ] use https everywhere
 - [ ] add test suite
-- [ ] add sale data
+- [ ] harden security + work on backups
+- [ ] build or remove deleteViews
+
 
 heroku url: <https://hidden-coast-28492.herokuapp.com/>
