@@ -30,13 +30,16 @@ class SearchView(LoginRequiredMixin, ListView):
 
         return self.get(request, *args, **kwargs)
 
+    def _parse_request_data(self):
+        return json.loads(self.request.POST.get('data', '{}'))
+
     def _no_filter_queryset(self, resultType):
         """returns a queryset object with no filters of selected resultType string"""
 
         resultModel = model_map.get(resultType, Artwork)
         return resultModel.objects.all().order_by('-pk')[:50]
 
-    def _create_query_filter(filterDict):
+    def _create_query_filter(self, filterDict):
         """creates a tuple of filter param and value from filter object created in the search bar"""
 
         fieldName = filterDict.get('fieldName')
@@ -63,8 +66,7 @@ class SearchView(LoginRequiredMixin, ListView):
         if request.method == "GET":
             return self._no_filter_queryset(request.GET.get('resultType'))
         elif request.method == "POST":
-            print('here')
-            request_data = request.POST.get('data', {})
+            request_data = self._parse_request_data()
             try:
                 resultType = request_data['resultType']
                 filters = request_data['filters']
@@ -87,14 +89,16 @@ class SearchView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        # context['count'] = self.count or 0
-        # context['query'] = self.request.GET.get('q')
         context['resultTypes'] = list(model_map.keys())
         context['postParams'] = self.request.POST
         context['getParams'] = self.request.GET
-        context['selectedModel'] = self.request.GET.get("resultType", "Artwork")
         context['modelsToSearch'] = model_map.keys()
-        context['filters'] = self.request.POST.get('data', {'filters': []})['filters']
+        if self.request.method == 'GET':
+            context['selectedModel'] = self.request.GET.get("resultType", "Artwork")
+        elif self.request.method == 'POST':
+            request_data = self._parse_request_data()
+            context['selectedModel'] = request_data.get('resultType', 'Artwork')
+            context['filters'] = request_data.get('filters', [])
         return context
 
 
