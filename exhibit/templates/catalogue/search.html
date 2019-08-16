@@ -59,9 +59,19 @@
             let mainSelect = searchFilter.find(".search-filter-main-select")[0]
             let filterText = searchFilter.find(".search-filter-text")[0]
 
+            let fieldName = mainSelect.options[mainSelect.options.selectedIndex].value;
+            let foreignKeyField;
+
+            if (fieldName === "series") {
+                foreignKeyField = "name"
+            } else if (fieldName == "location") {
+                foreignKeyField = "name"
+            }
+
             filters.push({
-                "fieldName": mainSelect.options[mainSelect.options.selectedIndex].value,
-                "fieldValue": filterText.value
+                "fieldName": fieldName,
+                "fieldValue": filterText.value,
+                "foreignKeyField": foreignKeyField
             })
         }
         return { "resultType": resultType, "filters": filters }
