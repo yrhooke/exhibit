@@ -6,6 +6,7 @@ import json
 from catalogue.models import Artwork, Series, Exhibition, Location
 from catalogue.forms import WorkInExhibitionForm
 
+from django.core.exceptions import FieldError
 from django.db import models
 # unused but let's keep the import as memo
 # from django.shortcuts import render
@@ -146,7 +147,7 @@ class SearchBarView(TemplateView):
         resultType = self.request.GET.get('resultType')
         model = model_map.get(resultType, Artwork)
         options = {field.name: field.verbose_name for field
-                   in model._meta.fields if field.name != "id"}
+                   in model.searchable_fields}
         return options
 
     def get_context_data(self):
