@@ -1,21 +1,9 @@
-{% for param in params %}
 <div class="form-group search-filter">
     <select class="form-control flex-item search-filter-main-select">
         {% for name, verbose_name in fields.items %}
-        <option value="{{ name }}" {% if name == param.select %}selected{% endif %}>{{ verbose_name }}</option>
+        <option value="{{ name }}">{{ verbose_name }}</option>
         {% endfor %}
     </select>
-    <input type="text" class="form-control flex-item search-filter-text" value="{{ param.input }}">
+    <input type="text" class="form-control flex-item search-filter-text">
     <button type="reset" class="btn flex-item search-filter-remove">x</button>
 </div>
-{% empty %}
-<div class="form-group search-filter">
-    <select class="form-control flex-item search-filter-main-select">
-        {% for name, verbose_name in fields.items %}
-        <option value="{{ name }}" {% if name == param.select %}selected{% endif %}>{{ verbose_name }}</option>
-        {% endfor %}
-    </select>
-    <input type="text" class="form-control flex-item search-filter-text" value="{{ param.input }}">
-    <button type="reset" class="btn flex-item search-filter-remove">x</button>
-</div>
-{% endfor %}

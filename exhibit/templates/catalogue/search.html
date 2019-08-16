@@ -6,14 +6,9 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
 
-    function getSelectedValueFromSelect(selectID) {
-        // return value from select by jquery query string - returns from first result
-        let select = $(selectID)[0];
-        return select.options[select.options.selectedIndex].value;
-    }
-
     function getResultType() {
-        return getSelectedValueFromSelect("#search-result-type-selector");
+        let resultTypeSelector = $("#search-result-type-selector")[0];
+        return resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
     }
 
     const foreignKeyNames = ['series', 'location'];
@@ -27,29 +22,10 @@
         });
     }
 
-    // function fillSearchFilters(params) {
-    //     $.get("c/searchbar",
-    //         $.param(params),
-    //         function (data) {
-    //             $("#search-bar-body").append(data);
-    //         });
-    // }
-
     function resetSearchFilters() {
         $("#search-filters-container").empty();
         addSearchFilter("#search-filters-container");
     }
-
-    // function getQueryParams() {
-    //     let search = window.location.search.substring(1);
-    //     let params;
-    //     if (search) {
-    //         params = JSON.parse('{"' + search.replace(/&/g, '","').replace(/=/g, '":"') + '"}', function (key, value) { return key === "" ? value : decodeURIComponent(value) });
-    //     } else {
-    //         params = null;
-    //     }
-    //     return params;
-    // }
 
     function makeSearchQuery() {
         let resultType = getResultType();
@@ -67,15 +43,9 @@
 
             if (foreignSelect) {
                 foreignKeyField = foreignSelect.value;
-            } else if (fieldName === "series") {
+            } else if (fieldName === "series") { // this is so if series is first option opened still have foreignKeyField value - should be cleaned up
                 foreignKeyField = "name"
             }
-
-            // if (fieldName === "series") {
-            //     foreignKeyField = "name"
-            // } else if (fieldName == "location") {
-            //     foreignKeyField = "name"
-            // }
 
             filters.push({
                 "fieldName": fieldName,
@@ -86,19 +56,8 @@
         return { "resultType": resultType, "filters": filters }
     }
 
-    // fieldName = filterDict.get('fieldName')
-    // foreignKeyField = filterDict.get('foreignKeyField')
-    // fieldValue = filterDict.get('fieldValue')
-
 
     $(document).ready(function () {
-        console.log(getQueryParams());
-        // fillSearchFilters(getQueryParams());
-    });
-    $(document).ready(function () {
-        // initialize state
-        // addSearchFilter("#search-filters-container");
-
         // add filters on click
         $("#search-bar-body").on("click", ".search-filter-append", () => { addSearchFilter("#search-bar-body") });
         $("#add-search-filter-button").on("click", () => { addSearchFilter("#search-filters-container") });
@@ -111,11 +70,9 @@
                 $.get("{% url 'catalogue:make_search_filter_foreignkey' %}", {
                     'resultType': newFilterResultType,
                 }, function (data) {
-                    console.log(data);
                     event.target.insertAdjacentHTML('afterend', data);
                 });
             } else {
-                console.log($(event.target).parent());
                 $(event.target).parent().children('.search-filter-foreignkey-select').remove();
             }
         })
@@ -125,8 +82,6 @@
 
         // delete specific filter when it's remove button is pressed
         $("#search-bar-container").on("click", ".search-filter-remove", (event) => {
-            console.log('clicked');
-            console.log(event);
             event.target.parentNode.remove();
         });
 
@@ -152,7 +107,7 @@
     6. add cancel button to select - v
     7. remove select after button pressed - v
     8. pop up extra box for foreignkey - v
-    9. reload filter data after submit
+    9. reload filter data after submit - v
 
     4. get list of all filter fields for all types to start (have visible and invisible values for each) - v
     5. if + button pressed, create html box in search bar, with select for appropriate field types, text input, and little x button - v
@@ -172,25 +127,6 @@
 {% block page_title %}Search{% endblock %}
 
 {% block content %}
-<form id="search" method="GET" action="" class="form-inline">
-    <div id="search-bar" name="Search Bar" class='input-group'>
-        <div class="col-xs-2 form-group">
-            <select name="resultType" class="form-control search-selector" required="" id="resultTypeSelector">
-                {% for resultType in resultTypes %}
-                <option class="form-control" value="{{ resultType }}"
-                    {% if resultType == selectedModel %}selected{% endif %}>
-                    {{ resultType }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div name="search-bar-body" id="search-bar-body" class="col-xs-10 form-group form-control flex-container">
-        </div>
-    </div>
-    <div class="form-group">
-        <button type="submit" class="btn btn-default btn-submit">Submit</button>
-    </div>
-</form>
-
 <div class="row">
     <div class="form flex-container col-xs-10" name="search-bar-container" id="search-bar-container">
         <div class="form-group">
@@ -323,11 +259,4 @@
         </table>
     </div>
 </div>
-<p>selectedModel: {{ selectedModel }}</p>
-<h3>Get Params</h3>
-{{ getParams }}
-<h3>Post Params</h3>
-{{ postParams }}
-<h3>Resulting filters</h3>
-{{ filters }}
 {% endblock %}

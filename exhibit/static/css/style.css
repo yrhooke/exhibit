@@ -97,6 +97,15 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
     flex-direction: row;
 }
 
+#search-bar-container {
+    float: center;
+    /* width: 90%; */
+    /* display: inline-block; */
+}
+
+#search-bar-submit {
+    float: right;
+}
 /* .flex-item {
     order: 1;
 } */

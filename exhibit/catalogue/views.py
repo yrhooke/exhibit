@@ -89,7 +89,6 @@ class SearchView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['resultTypes'] = list(model_map.keys())
         context['postParams'] = self.request.POST
         context['getParams'] = self.request.GET
         context['modelsToSearch'] = model_map.keys()
@@ -109,45 +108,12 @@ class SearchView(LoginRequiredMixin, ListView):
         return context
 
 
-def get_searchable_fields(request):
-
-    # if request.user.is_authenticated: - later
-    searcheable_fields_dict = {}
-    for modelName, model in model_map.items():
-        searcheable_fields_dict[modelName] = [
-            {
-                'name': field.verbose_name,
-                'value': field.name,
-            }
-            for field in model.searchable_fields
-        ]
-    data = json.dumps(searcheable_fields_dict)
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
-    # else:
-    # return HttpResponse('Error')  # want to return error here
-
-
 class SearchFilterMake(TemplateView):
     template_name = "catalogue/search_bar.html"
 
     def getResultType(self):
         return self.request.GET.get('ResultType', 'Artwork')
 
-    def getSearchBarParams(self):
-
-        get_request = self.request.GET
-        searchFilterParams = []
-        for paramName, paramValue in get_request.items():
-            if paramName.startswith('resultFilter_'):
-                filter_id = paramName[len('resultFilter_'):]
-                filterContents = get_request.get(
-                    f"resultFilterValue_{filter_id}")
-                searchFilterParams.append({
-                    'id': filter_id,
-                    'select': paramValue,
-                    'input': filterContents})
-        return searchFilterParams
 
     def getResultOptions(self):
         """return list of results for model"""
@@ -161,8 +127,6 @@ class SearchFilterMake(TemplateView):
         context = {
             "resultType": self.getResultType(),
             "fields": self.getResultOptions(),
-            "params": self.getSearchBarParams(),
-            "count": self.request.GET.get('count', 1),
         }
         return context
 
