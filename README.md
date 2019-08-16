@@ -36,6 +36,7 @@ Artwork management tool
 
 - [ ] get columns dynamically per model in searchView
 - [ ] search results layout
+- [ ] add create button to Get type search views
 - [ ] add sale data
 - [ ] artwork detail view layout
 - [ ] search bar layout

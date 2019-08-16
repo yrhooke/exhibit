@@ -20,7 +20,7 @@ urlpatterns = [
     path('location/<int:pk>/', views.LocationUpdate.as_view(), name='location_detail'),
     path('location/<int:pk>/delete/', views.LocationDelete.as_view(), name='location-delete'),
     path('ajax_calls/search/', views.autocompleteView),
-    path('searchbar', views.SearchFilterMake.as_view(), name='make_search_filter'),
-    path('searchbarforeignkey', views.SearchFilterForeignKeySelectMake.as_view(), name="make_search_filter_foreignkey"),
+    path('searchbar', views.SearchFilterMakerView.as_view(), name='make_search_filter'),
+    path('searchbarforeignkey', views.SearchFilterFKView.as_view(), name="make_search_filter_foreignkey"),
     path('api/addworkinexhibition', views.add_work_in_exhibition, name='add_workinexhibition'),
 ]
