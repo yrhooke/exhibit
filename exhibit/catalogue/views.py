@@ -31,6 +31,8 @@ class SearchView(LoginRequiredMixin, ListView):
         return self.get(request, *args, **kwargs)
 
     def _parse_request_data(self):
+        """Deserialize request POST data field from JSON"""
+
         return json.loads(self.request.POST.get('data', '{}'))
 
     def _no_filter_queryset(self, resultType):
@@ -89,26 +91,31 @@ class SearchView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-        context['postParams'] = self.request.POST
-        context['getParams'] = self.request.GET
+
+        if self.request.method == 'GET':
+            request_data = request.GET
+        elif self.request.method == "POST":
+            request_data = self._parse_request_data()
+        
         context['modelsToSearch'] = model_map.keys()
         context['foreignKeyFields'] = {
             modelName.lower(): {field.name: field.verbose_name for field
                         in model.searchable_fields}
             for modelName, model in model_map.items()
         }
-        if self.request.method == 'GET':
-            context['selectedModel'] = self.request.GET.get("resultType", "Artwork")
-            context['filters'] = []
-        elif self.request.method == 'POST':
-            request_data = self._parse_request_data()
-            context['selectedModel'] = request_data.get('resultType', 'Artwork')
-            context['filters'] = request_data.get('filters', [])
+        context['selectedModel'] = request_data.get('resultType', 'Artwork')
         context['fields'] = context['foreignKeyFields'][context['selectedModel'].lower()]
+        context['filters'] = request_data.get('filters', [])
+
+        # For debug:
+        context['getParams'] = self.request.GET
+        context['postParams'] = self.request.POST
+
         return context
 
 
-class SearchFilterMake(TemplateView):
+class SearchFilterMakerView(TemplateView):
+    """View for gathering data to generate a search filter"""
     template_name = "catalogue/search_bar.html"
 
     def getResultType(self):
@@ -131,27 +138,11 @@ class SearchFilterMake(TemplateView):
         return context
 
 
-class SearchFilterForeignKeySelectMake(TemplateView):
+class SearchFilterFKView(SearchFilterMakerView):
+    """View for gathering data to generate search filter foreignKey select"""
+
     template_name = "catalogue/foreignkeyselect.html"
 
-    def getResultType(self):
-        return self.request.GET.get('resultType', 'Artwork')
-
-    def getResultOptions(self):
-        """return list of results for model"""
-        resultType = self.request.GET.get('resultType')
-        model = model_map.get(resultType, Artwork)
-        options = {field.name: field.verbose_name for field
-                   in model.searchable_fields}
-        return options
-
-    def get_context_data(self):
-        print(self.getResultType())
-        context = {
-            "resultType": self.getResultType(),
-            "fields": self.getResultOptions(),
-        }
-        return context
 
 
 def autocompleteView(request):

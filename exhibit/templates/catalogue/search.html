@@ -140,42 +140,8 @@
         <div class="form-group flex-container" name="search-bar-main-body">
             <!-- I want this wider, and I shouldn't have to nest flex containers inside each other -->
             <div class="form-control flex-container" name="search-filters-container" id="search-filters-container">
-                    {% for filter in filters %}
-                    <div class="form-group search-filter">
-                        <select class="form-control flex-item search-filter-main-select">
-                            {% for name, verbose_name in fields.items %}
-                            <option value="{{ name }}" {% if name == filter.fieldName %}selected{% endif %}>{{ verbose_name }}</option>
-                            {% endfor %}
-                        </select>
-                        {% if filter.foreignKeyField %}
-                        <!-- <p>{{ filter.foreignKeyField }}</p> -->
-                        {%  for model, foreignFields in foreignKeyFields.items %}
-                        {% if model == filter.fieldName %}
-                        <select class="form-control flex-item search-filter-foreignkey-select"
-                        {% if model == "series" %}style="visibility:hidden;width:0px;height:0px;"{% endif %}>
-                            {% for name, verbose_name in foreignFields.items %}
-                            <option value="{{ name }}" {% if name == filter.foreignKeyField %}selected{% endif %}>{{ verbose_name }}</option>
-                            {% endfor %}
-                        </select>
-                        {% endif %}
-                        {% endfor %}
-                        {% endif %}
-                        <input type="text" class="form-control flex-item search-filter-text" value="{{ filter.fieldValue }}">
-                        <button type="reset" class="btn flex-item search-filter-remove">x</button>
-                    </div>
-                    {% empty %}
-                    <p>empty</p>
-                    <div class="form-group search-filter">
-                        <select class="form-control flex-item search-filter-main-select">
-                            {% for name, verbose_name in fields.items %}
-                            <option value="{{ name }}">{{ verbose_name }}</option>
-                            {% endfor %}
-                        </select>
-                        <input type="text" class="form-control flex-item search-filter-text" value="">
-                        <button type="reset" class="btn flex-item search-filter-remove">x</button>
-                    </div>
-                    {% endfor %}
-            </div>
+                {% include "./search_bar.html" with filters=filters foreignKeyFields=foreignKeyFields fields=fields%}
+           </div>
             <button type="button" class="btn" id="add-search-filter-button">+</button>
         </div>
         <form method="POST" action="" id="search-form" name="search-form">

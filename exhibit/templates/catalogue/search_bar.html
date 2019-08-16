@@ -1,9 +1,29 @@
+{% for filter in filters %}
+<div class="form-group search-filter">
+    <select class="form-control flex-item search-filter-main-select">
+        {% for name, verbose_name in fields.items %}
+        <option value="{{ name }}" {% if name == filter.fieldName %}selected{% endif %}>{{ verbose_name }}</option>
+        {% endfor %}
+    </select>
+    {% if filter.foreignKeyField %}
+    <!-- <p>{{ filter.foreignKeyField }}</p> -->
+    {%  for model, foreignFields in foreignKeyFields.items %}
+    {% if model == filter.fieldName %}
+    {% include "./foreignkeyselect.html" with fields=foreignFields resultType=model selected=filter.foreignKeyField %}
+    {% endif %}
+    {% endfor %}
+    {% endif %}
+    <input type="text" class="form-control flex-item search-filter-text" value="{{ filter.fieldValue }}">
+    <button type="reset" class="btn flex-item search-filter-remove">x</button>
+</div>
+{% empty %}
 <div class="form-group search-filter">
     <select class="form-control flex-item search-filter-main-select">
         {% for name, verbose_name in fields.items %}
         <option value="{{ name }}">{{ verbose_name }}</option>
         {% endfor %}
     </select>
-    <input type="text" class="form-control flex-item search-filter-text">
+    <input type="text" class="form-control flex-item search-filter-text" value="">
     <button type="reset" class="btn flex-item search-filter-remove">x</button>
 </div>
+{% endfor %}
