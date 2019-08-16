@@ -122,7 +122,7 @@ def get_searchable_fields(request):
     # return HttpResponse('Error')  # want to return error here
 
 
-class SearchBarView(TemplateView):
+class SearchFilterMake(TemplateView):
     template_name = "catalogue/search_bar.html"
 
     def getResultType(self):
@@ -158,6 +158,30 @@ class SearchBarView(TemplateView):
             "count": self.request.GET.get('count', 1),
         }
         return context
+
+class SearchFilterForeignKeySelectMake(TemplateView):
+    template_name = "catalogue/foreignkeyselect.html"
+    
+    def getResultType(self):
+        return self.request.GET.get('resultType', 'Artwork')
+
+    def getResultOptions(self):
+        """return list of results for model"""
+        resultType = self.request.GET.get('resultType')
+        model = model_map.get(resultType, Artwork)
+        options = {field.name: field.verbose_name for field
+                   in model.searchable_fields}
+        return options
+
+    def get_context_data(self):
+        print(self.getResultType())
+        context = {
+            "resultType": self.getResultType(),
+            "fields": self.getResultOptions(),
+        }
+        return context        
+
+
 
 
 def autocompleteView(request):

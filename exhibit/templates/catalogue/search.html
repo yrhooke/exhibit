@@ -16,6 +16,8 @@
         return getSelectedValueFromSelect("#search-result-type-selector");
     }
 
+    const foreignKeyNames = ['series', 'location'];
+
     function addSearchFilter(element) {
         let resultType = getResultType();
         $.get("{% url 'catalogue:make_search_filter' %}", {
@@ -56,17 +58,24 @@
         let filtersList = $(".search-filter");
         for (let i = 0; i < filtersList.length; i++) {
             let searchFilter = filtersList.eq(i);
-            let mainSelect = searchFilter.find(".search-filter-main-select")[0]
-            let filterText = searchFilter.find(".search-filter-text")[0]
+            let mainSelect = searchFilter.find(".search-filter-main-select")[0];
+            let foreignSelect = searchFilter.find(".search-filter-foreignkey-select")[0];
+            let filterText = searchFilter.find(".search-filter-text")[0];
 
             let fieldName = mainSelect.options[mainSelect.options.selectedIndex].value;
             let foreignKeyField;
 
-            if (fieldName === "series") {
-                foreignKeyField = "name"
-            } else if (fieldName == "location") {
+            if (foreignSelect) {
+                foreignKeyField = foreignSelect.value;
+            } else if (fieldName === "series") {
                 foreignKeyField = "name"
             }
+
+            // if (fieldName === "series") {
+            //     foreignKeyField = "name"
+            // } else if (fieldName == "location") {
+            //     foreignKeyField = "name"
+            // }
 
             filters.push({
                 "fieldName": fieldName,
@@ -94,6 +103,23 @@
         // add filters on click
         $("#search-bar-body").on("click", ".search-filter-append", () => { addSearchFilter("#search-bar-body") });
         $("#add-search-filter-button").on("click", () => { addSearchFilter("#search-filters-container") });
+
+        // add/remove foreignkey filter on change in main select
+        $("#search-filters-container").on("change", ".search-filter-main-select", (event) => {
+            let newFilterValue = event.target.options[event.target.options.selectedIndex].value;
+            if (foreignKeyNames.includes(newFilterValue)) {
+                let newFilterResultType = newFilterValue.charAt(0).toUpperCase() + newFilterValue.slice(1);
+                $.get("{% url 'catalogue:make_search_filter_foreignkey' %}", {
+                    'resultType': newFilterResultType,
+                }, function (data) {
+                    console.log(data);
+                    event.target.insertAdjacentHTML('afterend', data);
+                });
+            } else {
+                console.log($(event.target).parent());
+                $(event.target).parent().children('.search-filter-foreignkey-select').remove();
+            }
+        })
 
         // reset filters on resultType change
         $("#search-result-type-selector").on("change", resetSearchFilters);
@@ -126,14 +152,15 @@
     4. make+add select after button press - v
     6. add cancel button to select - v
     7. remove select after button pressed - v
-    8. pop up extra box for foreignkey
+    8. pop up extra box for foreignkey - v
+    9. reload filter data after submit
 
     4. get list of all filter fields for all types to start (have visible and invisible values for each) - v
     5. if + button pressed, create html box in search bar, with select for appropriate field types, text input, and little x button - v
     6. if x button pressed, remove text box - v
     7. if resultType changed, remove all boxes - v
     8. define onsubmit action (put together appropriate data structure for SearchView) - v
-    9. if foreignkey, pop up extra box
+    9. if foreignkey, pop up extra box - v
     10. keep track of field types, and only show field types not active in new boxes - not gonna do that now
     11. change history to allow back arrow + reload
     12. delete with backspace - stretch goal
