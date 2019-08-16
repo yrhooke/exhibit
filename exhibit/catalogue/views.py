@@ -25,6 +25,11 @@ class SearchView(LoginRequiredMixin, ListView):
     count = 0
 
 
+    def post(self, request, *args, **kwargs):
+        """Define a handler for post requests"""
+
+        return self.get(request, *args, **kwargs)
+
     def _no_filter_queryset(self, resultType):
         """returns a queryset object with no filters of selected resultType string"""
 
@@ -57,23 +62,28 @@ class SearchView(LoginRequiredMixin, ListView):
         request = self.request
         if request.method == "GET":
             return self._no_filter_queryset(request.GET.get('resultType'))
-        elif result.method == "POST":
+        elif request.method == "POST":
+            print('here')
+            request_data = request.POST.get('data', {})
             try:
-                resultType = request.POST.get('data')['resultType']
-                filters = request.POST.get('data')['filters']
-
-                queries = [self._create_query_filter(f) for f in filters]
-                valid_queries = [query for query in queries if query]  # remove None queries
-                resultModel = model_map.get(resultType)
-                return resultModel.filter(*valid_queries).order_by('-pk')[:50]
-
-            except KeyError or FieldError:
+                resultType = request_data['resultType']
+                filters = request_data['filters']
+            except KeyError:
                 # KeyError - requestType or filters fields not found in POST
+                resultType = "Artwork"
+                filters = []
+
+            queries = [self._create_query_filter(f) for f in filters]
+            valid_queries = [query for query in queries if query]  # remove None queries
+            resultModel = model_map.get(resultType)
+            try:
+                return resultModel.objects.filter(*valid_queries).order_by('-pk')[:50]
+            except FieldError:
                 # FieldError - some filter Q doesn't match resultModel fields
                 return self._no_filter_queryset(resultType)
 
         else:
-            return None
+            return []
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
@@ -131,7 +141,6 @@ class SearchBarView(TemplateView):
         """return list of results for model"""
         resultType = self.request.GET.get('resultType')
         model = model_map.get(resultType, Artwork)
-        print(model)
         options = {field.name: field.verbose_name for field
                    in model._meta.fields if field.name != "id"}
         return options
