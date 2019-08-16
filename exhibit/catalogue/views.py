@@ -25,7 +25,6 @@ class SearchView(LoginRequiredMixin, ListView):
     paginate_by = 20
     count = 0
 
-
     def post(self, request, *args, **kwargs):
         """Define a handler for post requests"""
 
@@ -94,12 +93,19 @@ class SearchView(LoginRequiredMixin, ListView):
         context['postParams'] = self.request.POST
         context['getParams'] = self.request.GET
         context['modelsToSearch'] = model_map.keys()
+        context['foreignKeyFields'] = {
+            modelName.lower(): {field.name: field.verbose_name for field
+                        in model.searchable_fields}
+            for modelName, model in model_map.items()
+        }
         if self.request.method == 'GET':
             context['selectedModel'] = self.request.GET.get("resultType", "Artwork")
+            context['filters'] = []
         elif self.request.method == 'POST':
             request_data = self._parse_request_data()
             context['selectedModel'] = request_data.get('resultType', 'Artwork')
             context['filters'] = request_data.get('filters', [])
+        context['fields'] = context['foreignKeyFields'][context['selectedModel'].lower()]
         return context
 
 
@@ -129,6 +135,7 @@ class SearchFilterMake(TemplateView):
         return self.request.GET.get('ResultType', 'Artwork')
 
     def getSearchBarParams(self):
+
         get_request = self.request.GET
         searchFilterParams = []
         for paramName, paramValue in get_request.items():
@@ -159,9 +166,10 @@ class SearchFilterMake(TemplateView):
         }
         return context
 
+
 class SearchFilterForeignKeySelectMake(TemplateView):
     template_name = "catalogue/foreignkeyselect.html"
-    
+
     def getResultType(self):
         return self.request.GET.get('resultType', 'Artwork')
 
@@ -179,9 +187,7 @@ class SearchFilterForeignKeySelectMake(TemplateView):
             "resultType": self.getResultType(),
             "fields": self.getResultOptions(),
         }
-        return context        
-
-
+        return context
 
 
 def autocompleteView(request):
