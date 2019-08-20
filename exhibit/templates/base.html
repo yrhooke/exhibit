@@ -55,6 +55,7 @@
             <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
         <![endif]-->
 <div id="wrapper">
+  <!-- Side navigation -->
   <div class="sidebar" id="sidebar">
     <a class="sidebar-header" href="{% url 'home' %}">
       <picture>
@@ -80,53 +81,13 @@
     {# URL provided by django-allauth/account/urls.py #}
     <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">Sign In</a>
     {% endif %}
-    <!-- <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
-      data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
-      aria-label="Toggle navigation">
-      <span class="navbar-toggler-icon"></span>
-    </button> -->
   </div>
+  <!-- Main page body -->
   <div class="container-fluid main-page" id="main">
-    <!-- Side navigation -->
-    <!-- <div class="col-sm-2 sidenav">
-        <div class="sidebar-header">
-          <a href="{% url 'home' %}">
-            <img id="sidebar-logo" style="width: 184px; height: 60px; object-fit: contain;"
-              src="{% static 'images/logo.webp' %}">
-          </a>
-        </div>
-        <ul class="list-unstyled components">
-          {% if request.user.is_authenticated %}
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a class="nav-link" href="{% url 'users:detail' request.user.username  %}">My Profile</a>
-          </li>
-          <li><a href="{% url 'home' %}?resultType=Artwork">Artworks</a></li>
-          <li><a href="{% url 'home' %}?resultType=Series">Series</a></li>
-          <li><a href="{% url 'home' %}?resultType=Exhibition">Exhibitions</a></li>
-          <li><a href="{% url 'home' %}?resultType=Location">Locations</a></li>
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a class="nav-link" href="{% url 'account_logout' %}">Sign Out</a>
-          </li>
-          {% else %}
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
-          </li>
-          <li class="nav-item">
-            {# URL provided by django-allauth/account/urls.py #}
-            <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">Sign In</a>
-          </li>
-          {% endif %}
-        </ul>
-      </div> -->
-    <!-- Page content -->
-    <!-- <div class="col-sm-10 text-left"> -->
+
     <div class="row">
       <h2>{% block page_title %}Exhibit - the artwork library{% endblock %}</h2>
     </div>
-
     {% if messages %}
     {% for message in messages %}
     <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}<button type="button"

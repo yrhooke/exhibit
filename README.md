@@ -23,9 +23,9 @@ Artwork management tool
 - [X] think more seriously about design (layout + details)
 - [X] make search view useful:
   - [X] set columns by model property or setting (see below)
-  - [x] allow search by foreignkey
-  - [x] improve searchbar ux
-- [x] make all list views into search views
+  - [X] allow search by foreignkey
+  - [X] improve searchbar ux
+- [X] make all list views into search views
 
 ### in current branch
 
