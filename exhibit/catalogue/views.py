@@ -34,6 +34,17 @@ class SearchView(LoginRequiredMixin, ListView):
         """Deserialize request POST data field from JSON"""
 
         return json.loads(self.request.POST.get('data', '{}'))
+    
+    def _clean_resultType(self, resultType):
+        """check that resultType received is in model_map, otherwise set to default"""
+
+        if model_map.get(resultType):
+            return resultType
+        else:
+            return 'Artwork'
+        
+
+
 
     def _no_filter_queryset(self, resultType):
         """returns a queryset object with no filters of selected resultType string"""
@@ -103,7 +114,7 @@ class SearchView(LoginRequiredMixin, ListView):
                                 in model.searchable_fields}
             for modelName, model in model_map.items()
         }
-        context['selectedModel'] = request_data.get('resultType', 'Artwork')
+        context['selectedModel'] = self._clean_resultType(request_data.get('resultType'))
         context['fields'] = context['foreignKeyFields'][context['selectedModel'].lower()]
         context['filters'] = request_data.get('filters', [])
 
