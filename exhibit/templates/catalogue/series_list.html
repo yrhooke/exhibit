@@ -1,16 +1,18 @@
-{% extends "catalogue/list.html" %}
 
-{% block page_title %}Series List{% endblock %}
-
-{% block create_url %}'{% url 'catalogue:series_add' %}'{% endblock %}
-
-{% block list_content %}
-<tr>
-    <th>Name</th>
-</tr>
-{% for series in object_list %}
-<tr>
-    <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.name }}</a></td>
-</tr>
-{% endfor %}
-{% endblock %}
+<thead>
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">Years</th>
+        <th scopee="col"># Works</th>
+    </tr>
+</thead>
+<tbody>
+    {% for series in object_list %}
+    <tr>
+        <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.name }}</a></td>
+        <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.time_range.first }} -
+                {{ series.time_range.last }}</a></td>
+        <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.count }}</a></td>
+    </tr>
+    {% endfor %}
+</tbody>

@@ -86,10 +86,9 @@
       <span class="navbar-toggler-icon"></span>
     </button> -->
   </div>
-  <div class="container-fluid">
-    <div class="row content">
-      <!-- Side navigation -->
-      <!-- <div class="col-sm-2 sidenav">
+  <div class="container-fluid main-page">
+    <!-- Side navigation -->
+    <!-- <div class="col-sm-2 sidenav">
         <div class="sidebar-header">
           <a href="{% url 'home' %}">
             <img id="sidebar-logo" style="width: 184px; height: 60px; object-fit: contain;"
@@ -122,28 +121,28 @@
           {% endif %}
         </ul>
       </div> -->
-      <!-- Page content -->
-      <!-- <div class="col-sm-10 text-left"> -->
+    <!-- Page content -->
+    <!-- <div class="col-sm-10 text-left"> -->
+    <div class="row">
       <h2>{% block page_title %}Exhibit - the artwork library{% endblock %}</h2>
+    </div>
 
-      {% if messages %}
-      {% for message in messages %}
-      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}<button type="button"
-          class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}<button type="button"
+        class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <div class="page-contents">
+      <div class="main-content">
+        {% block content %} {% endblock %}
       </div>
-      {% endfor %}
-      {% endif %}
-
-      <div class="page-contents">
-        <div class="main-content">
-          {% block content %} {% endblock %}
-        </div>
-        <div class="related-items">
-          {% block related %} {% endblock %}
-        </div>
+      <div class="related-items">
+        {% block related %} {% endblock %}
       </div>
     </div>
-  </div>
   </div> <!-- /container -->
 
   {% block modal %}{% endblock modal %}

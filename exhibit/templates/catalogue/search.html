@@ -128,7 +128,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="form flex-container col-xs-10" name="search-bar-container" id="search-bar-container">
+    <div class="form flex-container" name="search-bar-container" id="search-bar-container">
         <div class="form-group">
             <select class="form-control" name="resultType" id="search-result-type-selector">
                 {% for model in modelsToSearch %}
@@ -156,8 +156,19 @@
 </div>
 
 <div class="row">
-    <div class="table-responsive">
-        <table class=table>
+    <table class="table">
+        {% if selectedModel == "Series" %}
+        {% include "./series_list.html" with object_list=object_list %}
+        {% elif selectedModel == "Location" %}
+        {% include "./location_list.html" with object_list=object_list %}
+        {% elif selected_model == "Exhibition" %}
+        {% include "./exhibition_list.html" with object_list=object_list %}
+        {% else %}
+        {% include "./artwork_list.html" with object_list=object_list %}
+        {% endif %}
+    </table>
+    <!-- <div class="table-responsive"> -->
+        <!-- <table class="table">
             {% if selectedModel == "Series" %}
             <tr>
                 <th>Name</th>
@@ -222,7 +233,7 @@
             </tr>
             {% endfor %}
             {% endif %}
-        </table>
-    </div>
+        </table> -->
+    <!-- </div> -->
 </div>
 {% endblock %}

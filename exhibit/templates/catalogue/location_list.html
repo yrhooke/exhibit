@@ -1,20 +1,24 @@
-{% extends "catalogue/list.html" %}
-
-{% block page_title %}Location List{% endblock %}
-
-{% block create_url %}'{% url 'catalogue:location_add' %}'{% endblock %}
-
-{% block list_content %}
-<tr>
-    <th>Name</th>
-    <th>City</th>
-    <th>Country</th>
-</tr>
-{% for location in object_list %}
-<tr>
-    <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.name }}</a></td>
-    <td>{{ location.city }}</td>
-    <td>{{ location.country }}</td>
-</tr>
-{% endfor %}
-{% endblock %}
+<thead>
+    <tr>
+        <th scope="col">Name</th>
+        <th scope="col">City</th>
+        <th scope="col">State</th>
+        <th scope="col">Country</th>
+        <th scope="col">Address</th>
+        <th scope="col">Zip</th>
+    </tr>
+</thead>
+<tbody>
+    {% for location in object_list %}
+    <tr>
+        <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.name }}</a></td>
+        <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.city }}</a></td>
+        <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.state }}</a></td>
+        <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.country }}</a></td>
+        <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.address_1 }}</a></td>
+        <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.zip_code }}</a></td>
+        <td>{{ location.city }}</td>
+        <td>{{ location.country }}</td>
+    </tr>
+    {% endfor %}
+</tbody>

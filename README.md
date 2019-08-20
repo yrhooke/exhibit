@@ -29,8 +29,9 @@ Artwork management tool
 
 ### in current branch
 
-- [ ] fix navbar - handles different widths
-- [ ] read more about flexbox/bootstrap/css
+- [X] fix navbar - handles different widths
+- [X] read more about flexbox/bootstrap/css
+- [ ] collapsible navbar for narrow screens
 
 ### Crucial for preview
 

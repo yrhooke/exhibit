@@ -107,6 +107,7 @@ class Artwork(models.Model):
     ]
 
 
+
 class Series(models.Model):
     """A model representing a series of artworks"""
 
@@ -122,6 +123,15 @@ class Series(models.Model):
     searchable_fields = [
         name,
     ]
+
+    def count(self):
+        return Artwork.objects.filter(series__pk=self.pk).count()
+
+    @property
+    def time_range(self):
+        artworks_in_series = Artwork.objects.filter(series__pk=self.pk).order_by('year')
+        return {'first': artworks_in_series.first().year, 'last' : artworks_in_series.last().year}
+
 
 
 class Exhibition(models.Model):
@@ -148,6 +158,9 @@ class Exhibition(models.Model):
         start_date,
         end_date,
     ]
+    
+    def count(self):
+        return WorkInExhibition.objects.filter(exhibition__pk=self.pk).count()
 
 
 class Location(models.Model):
