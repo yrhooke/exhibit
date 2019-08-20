@@ -13,18 +13,29 @@ rgb(222,222,212)
 rgb(70,71,76)
 rgb(96, 124, 160) */
 
+/* General layout for all pages */
+
+#wrapper {
+    padding-left: 170px;
+    transition: all 0.3s ease 0s;
+}
+
 .sidebar {
+    /* flex for sidebar items */
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: stretch;
-    margin: 0;
-    padding: 0;
+    /* layout to fit with main content */
+    margin-left: -170px;
+    left: 170px;
+    transition: all 0.3s ease 0s;
     width: 170px;
-    background-color: rgb(222, 222, 212);
     position: fixed;
     height: 100%;
     overflow: auto;
+    /* other */
+    background-color: rgb(222, 222, 212);
 }
 
 /* Sidebar header */
@@ -53,7 +64,7 @@ rgb(96, 124, 160) */
 
 /* Links on mouse-over */
 
-.sidebar a:hover:not(.active) {
+.sidebar .nav-link:hover:not(.active) {
     background-color: #555;
     color: white;
 }
@@ -61,14 +72,18 @@ rgb(96, 124, 160) */
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
 
 div.main-page {
-    margin-left: 170px;
     padding: 1px 16px;
     height: 1000px;
+    overflow-y: hidden;
+    width: 100%;
 }
 
 /* On screens that are less than 900px wide, make the sidebar into a topbar */
 
 @media screen and (max-width: 900px) {
+    #wrapper {
+        padding-left: 0px;
+    }
     .sidebar {
         flex-direction: row;
         justify-content: space-around;
@@ -91,6 +106,34 @@ div.main-page {
         text-align: center;
         float: none;
     }
+}
+
+/* -------------------------------------- */
+
+/* searchResults table elements */
+
+#searchResults th {
+    text-align: center;
+}
+
+#searchResults td {
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+/* #searchResults tbody tr:nth-of-type(2n+1) {
+    background-color: rgb(0, 0, 0, 0.03);
+} */
+
+#searchResults img {
+    min-width: 100px;
+    width: 250px;
+}
+
+/* Hide caption for search results table */
+
+#searchResults caption {
+    visibility: collapse;
 }
 
 /* -------------------------------------- */

@@ -156,7 +156,9 @@
 </div>
 
 <div class="row">
-    <table class="table">
+    <div class="table-responsive">
+
+    <table class="table table-striped table-hover" id="searchResults">
         {% if selectedModel == "Series" %}
         {% include "./series_list.html" with object_list=object_list %}
         {% elif selectedModel == "Location" %}
@@ -236,4 +238,6 @@
         </table> -->
     <!-- </div> -->
 </div>
+</div>
+
 {% endblock %}

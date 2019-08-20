@@ -21,8 +21,8 @@ Artwork management tool
 - [X] connect exhibitions/artworks to each other
 - [X] search using POST request
 - [X] think more seriously about design (layout + details)
-- [ ] make search view useful:
-  - [ ] set columns by model property or setting (see below)
+- [X] make search view useful:
+  - [X] set columns by model property or setting (see below)
   - [x] allow search by foreignkey
   - [x] improve searchbar ux
 - [x] make all list views into search views
@@ -31,12 +31,12 @@ Artwork management tool
 
 - [X] fix navbar - handles different widths
 - [X] read more about flexbox/bootstrap/css
-- [ ] collapsible navbar for narrow screens
+- [X] get columns dynamically per model in searchView
+- [X] search results layout
 
 ### Crucial for preview
 
-- [ ] get columns dynamically per model in searchView
-- [ ] search results layout
+- [ ] collapsible navbar for narrow screens
 - [ ] add create button to Get type search views
 - [ ] add sale data
 - [ ] artwork detail view layout
