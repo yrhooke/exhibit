@@ -26,22 +26,21 @@ Artwork management tool
   - [X] allow search by foreignkey
   - [X] improve searchbar ux
 - [X] make all list views into search views
-
-### in current branch
-
 - [X] fix navbar - handles different widths
 - [X] read more about flexbox/bootstrap/css
 - [X] get columns dynamically per model in searchView
 - [X] search results layout
 
-### Crucial for preview
+### in current branch
 
-- [ ] collapsible navbar for narrow screens
-- [ ] add create button to Get type search views
+- [X] add create button to Get type search views
 - [ ] add sale data
 - [ ] artwork detail view layout
-- [ ] search bar layout
 - [ ] other detail view layouts
+
+### Crucial for preview
+
+- [ ] search bar layout
 - [ ] store images on S3
 - [ ] add autocomplete + pagination in search
 
@@ -50,6 +49,7 @@ Artwork management tool
 - [ ] save on change in edit view
 - [ ] remove all proprietary data from source control
 - [ ] use https everywhere
+- [ ] collapsible navbar for narrow screens
 - [ ] figure out database + s3 backups
 - [ ] improve design finish
 - [ ] Thumbnails for series
@@ -58,6 +58,7 @@ Artwork management tool
 
 - [ ] modify history to give default behavior for back arrow
 - [ ] add "create new" button for series/location from within artwork edit view
+- [ ] make list view into more dynamic table (using flexbox?)
 - [ ] compartmentalize deploy/switch to digitalocean
 - [ ] code cleanup
 - [ ] add test suite

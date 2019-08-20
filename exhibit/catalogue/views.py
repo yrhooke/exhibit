@@ -1,7 +1,7 @@
 from django.views.generic.edit import CreateView, DeleteView, UpdateView
 from django.views.generic import ListView, TemplateView
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy
+from django.urls import reverse_lazy, reverse
 import json
 from catalogue.models import Artwork, Series, Exhibition, Location
 from catalogue.forms import WorkInExhibitionForm
@@ -114,9 +114,12 @@ class SearchView(LoginRequiredMixin, ListView):
                                 in model.searchable_fields}
             for modelName, model in model_map.items()
         }
-        context['selectedModel'] = self._clean_resultType(request_data.get('resultType'))
-        context['fields'] = context['foreignKeyFields'][context['selectedModel'].lower()]
+        selectedModel = self._clean_resultType(request_data.get('resultType'))
+        context['selectedModel'] = selectedModel
+        context['fields'] = context['foreignKeyFields'][selectedModel.lower()]
         context['filters'] = request_data.get('filters', [])
+
+        context['createLink'] = reverse(f'catalogue:{selectedModel.lower()}_add')
 
         # For debug:
         context['getParams'] = self.request.GET

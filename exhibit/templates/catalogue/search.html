@@ -141,7 +141,7 @@
             <!-- I want this wider, and I shouldn't have to nest flex containers inside each other -->
             <div class="form-control flex-container" name="search-filters-container" id="search-filters-container">
                 {% include "./search_bar.html" with filters=filters foreignKeyFields=foreignKeyFields fields=fields%}
-           </div>
+            </div>
             <button type="button" class="btn" id="add-search-filter-button">+</button>
         </div>
         <form method="POST" action="" id="search-form" name="search-form">
@@ -154,22 +154,23 @@
         </form>
     </div>
 </div>
-
+<div class="row">
+    <a href="{{ createLink }}" class="btn btn-primary">Create new</a>
+</div>
 <div class="row">
     <div class="table-responsive">
-
-    <table class="table table-striped table-hover" id="searchResults">
-        {% if selectedModel == "Series" %}
-        {% include "./series_list.html" with object_list=object_list %}
-        {% elif selectedModel == "Location" %}
-        {% include "./location_list.html" with object_list=object_list %}
-        {% elif selectedModel == "Exhibition" %}
-        {% include "./exhibition_list.html" with object_list=object_list %}
-        {% else %}
-        {% include "./artwork_list.html" with object_list=object_list %}
-        {% endif %}
-    </table>
-</div>
+        <table class="table table-striped table-hover" id="searchResults">
+            {% if selectedModel == "Series" %}
+            {% include "./series_list.html" with object_list=object_list %}
+            {% elif selectedModel == "Location" %}
+            {% include "./location_list.html" with object_list=object_list %}
+            {% elif selectedModel == "Exhibition" %}
+            {% include "./exhibition_list.html" with object_list=object_list %}
+            {% else %}
+            {% include "./artwork_list.html" with object_list=object_list %}
+            {% endif %}
+        </table>
+    </div>
 </div>
 
 {% endblock %}
