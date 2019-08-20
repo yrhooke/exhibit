@@ -34,7 +34,7 @@ Artwork management tool
 ### in current branch
 
 - [X] add create button to Get type search views
-- [ ] add sale data
+- [X] add sale data
 - [ ] artwork detail view layout
 - [ ] other detail view layouts
 
@@ -46,6 +46,7 @@ Artwork management tool
 
 ### Want for launch
 
+- [ ] better form validation (correct widgets, visibly fail on errors, etc)
 - [ ] save on change in edit view
 - [ ] remove all proprietary data from source control
 - [ ] use https everywhere
@@ -53,6 +54,7 @@ Artwork management tool
 - [ ] figure out database + s3 backups
 - [ ] improve design finish
 - [ ] Thumbnails for series
+- [ ] manage sale currency better
 
 ### Post Launch
 
@@ -64,6 +66,7 @@ Artwork management tool
 - [ ] add test suite
 - [ ] harden security + work on backups
 - [ ] build or remove deleteViews
+- [ ] separate objects for sales/owners
 
 
 heroku url: <https://hidden-coast-28492.herokuapp.com/>
