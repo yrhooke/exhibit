@@ -14,22 +14,34 @@ rgb(70,71,76)
 rgb(96, 124, 160) */
 
 .sidebar {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: stretch;
     margin: 0;
     padding: 0;
     width: 170px;
-    background-color: rgb(222,222,212);
+    background-color: rgb(222, 222, 212);
     position: fixed;
     height: 100%;
     overflow: auto;
 }
 
+/* Sidebar header */
+
+.sidebar-header img {
+    display: block;
+    height: 40px;
+}
+
 /* Sidebar links */
 
 .sidebar a {
-    display: block;
+    /* display: block; */
     color: black;
     padding: 16px;
     text-decoration: none;
+    font-size: 18px;
 }
 
 /* Active/current link */
@@ -54,30 +66,34 @@ div.content {
     height: 1000px;
 }
 
-/* On screens that are less than 700px wide, make the sidebar into a topbar */
+/* On screens that are less than 900px wide, make the sidebar into a topbar */
 
-@media screen and (max-width: 700px) {
+@media screen and (max-width: 900px) {
     .sidebar {
+        flex-direction: row;
+        justify-content: space-around;
         width: 100%;
         height: auto;
         position: relative;
-    }
-    .sidebar a {
-        float: left;
     }
     div.content {
         margin-left: 0;
     }
 }
 
-/* On screens that are less than 400px, display the bar vertically, instead of horizontally */
+/* On screens that are less than 560px, display the bar vertically, instead of horizontally */
 
 @media screen and (max-width: 560px) {
+    .sidebar {
+        flex-direction: column;
+    }
     .sidebar a {
         text-align: center;
         float: none;
     }
 }
+
+/* -------------------------------------- */
 
 .sidenav {
     height: 100%;
