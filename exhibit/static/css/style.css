@@ -157,7 +157,6 @@ div.main-page {
     order: 1;
 } */
 
-
 /* -------------------------------------- */
 
 /* *** Table specs for searchResults *** */
@@ -194,6 +193,7 @@ div.main-page {
 .card {
     background-color: transparent;
 }
+
 /* Artwork Detail header */
 
 .artwork-header-field {
@@ -216,7 +216,7 @@ div.main-page {
     flex-wrap: nowrap;
 }
 
-.size-form-group > label {
+.size-form-group>label {
     padding: 0.5rem;
 }
 
@@ -248,16 +248,37 @@ div.main-page {
     box-shadow: none;
     /* border-bottom: 1px solid rgb(113, 114, 110); */
     border-radius: 0
-    
 }
-
 
 .form-inline label {
     padding: 0.5rem;
 }
+
 #size-fields-addtl {
     justify-content: end;
 }
+
+/* Sale form into */
+
+.sale-form th {
+    font-weight: normal;
+}
+
+.sale-form td {
+    align-content: center;
+}
+
+#sale-price-td {
+    display: flex;
+    /* align-content: center; */
+}
+
+#sale-currency {
+    max-width: 3rem;
+    padding: 0.1rem;
+    text-align: center;
+}
+
 /* #size-fields-addtl .form-group{
     justify-content: space-between;
 } */
@@ -277,10 +298,11 @@ div.main-page {
 /* #artwork-details-wrapper > div {
     width: 50%;
 } */
-  
+
 /* #artwork-image {
     width: 400px;
 } */
+
 /* #artwork-image img { 
     object-fit: contain;
     width: 300px;
@@ -309,16 +331,19 @@ div.main-page {
   .img-fluid {  
       width: 100%;
   } */
+
 /* -------------------------------------- */
 
 /* *** Other Detail layout *** */
 
 textarea.detail-field {
-    height: 5rem; 
+    height: 5rem;
 }
+
 .form-group {
     margin-bottom: 0.6rem;
 }
+
 /* -------------------------------------- */
 
 /* *** Font Definitions *** */
@@ -332,6 +357,7 @@ textarea.detail-field {
     font-family: "brandon-med";
     src: url('../fonts/hvd_fonts_-_brandongrotesque-medium.otf') format("truetype");
 }
+
 h1, h2, h3, h4, h5, h6, label, th {
     font-family: brandon-med;
 }
@@ -339,8 +365,6 @@ h1, h2, h3, h4, h5, h6, label, th {
 /* -------------------------------------- */
 
 /* *** OTHER *** */
-
-
 
 /* input, select, .form-control {
     background: transparent;
@@ -358,7 +382,7 @@ input:focus, select:focus, .form-control:focus {
 
 a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, option {
     font-family: brandon-reg;
-} - NOTE END OF TESTING SECTION */ 
+} - NOTE END OF TESTING SECTION */
 
 /* .sidenav {
     height: 100%;
@@ -390,11 +414,15 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
 } */
 
 /* .main { */
-    /* margin-left: 160px; */
-    /* Same as the width of the sidenav */
-    /* font-size: 28px; */
-    /* Increased text to enable scrolling */
-    /* padding: 0px 10px; */
+
+/* margin-left: 160px; */
+
+/* Same as the width of the sidenav */
+
+/* font-size: 28px; */
+
+/* Increased text to enable scrolling */
+
+/* padding: 0px 10px; */
+
 /* }  */
-
-

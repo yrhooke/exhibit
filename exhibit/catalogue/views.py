@@ -208,10 +208,15 @@ artwork_fields = [
     'depth_in',
     'rolled',
     'medium',
+    'additional',
+    'owner',
+    'sold_by',
     'price_nis',
     'price_usd',
-    'owner',
-    'additional',
+    'sale_currency',
+    'sale_price',
+    'discount',
+    'sale_date',
 ]
 
 
@@ -241,6 +246,7 @@ class ArtworkUpdate(LoginRequiredMixin, UpdateView):
         context = super().get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['action_name'] = edit_action_button_text
+        context['editMode'] = True
         exhibitions = [
             s.exhibition for s in self.object.workinexhibition_set.all()]
         context['exhibitionList'] = exhibitions

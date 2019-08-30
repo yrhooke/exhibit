@@ -83,7 +83,7 @@ class Artwork(models.Model):
 
     # Sale fields
     owner = models.CharField('Owner', max_length=200, default='Rotem Reshef')
-    sold_by = models.CharField('Sold By', max_length=200, default='Rotem Reshef', blank=True)
+    sold_by = models.CharField('Sold By', max_length=200, blank=True)
     price_nis = models.DecimalField("Price in NIS",
                                     max_digits=10,
                                     decimal_places=2,
@@ -109,7 +109,7 @@ class Artwork(models.Model):
                                    null=True,
                                    blank=True
                                    )
-    sale_date = models.DateField("Sale Date", default=date.today)
+    sale_date = models.DateField("Sale Date", blank=True)
 
     # @TODO convert owner to foreignkey
 
