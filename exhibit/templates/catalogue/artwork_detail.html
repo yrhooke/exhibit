@@ -2,17 +2,38 @@
 {% load widget_tweaks %}
 {% load static %}
 
+{% block custom_headers %}
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script>
+
+$(document).ready(function () {
+    $(".size-field").each((index, elem) => {
+        elem.style.width = ((elem.value.length + 1) * 9) + 'px';
+    })
+    $('.size-field').on('keyup', (event) => {
+        // console.log('keydown');
+        // console.log(event.target);
+        event.target.style.width = ((event.target.value.length + 1) * 9) + 'px';
+    });
+});
+
+</script>
+{% endblock custom_headers %}
+
 {% block page_title %}
-{% if form.title.value %}{{ form.title.value }}
-{% else %}Artwork{% endif %}
+<!-- {% if form.title.value %}{{ form.title.value }}
+{% else %}Artwork{% endif %} -->
 {% endblock %}
 
 {% block content %}
 <!-- <form action="." method="POST" enctype="multipart/form-data"> -->
 {% csrf_token %}
-<div class="artwork-headers row">
-    {{ form.series }}{{ form.title }}({{ form.year }}){{ form.status }}
-    <input type="submit" class="btn btn-primary" value="{{ action_name }}">
+<div class="row" id="artwork-headers">
+    {%  render_field form.series class="artwork-header-field" %}
+    {%  render_field form.title class="artwork-header-field" %}
+    ({%  render_field form.year class="artwork-header-field" %})
+    {%  render_field form.status class="artwork-header-field" %}
+    <input type="submit" class="btn btn-primary artwork-header-field" value="{{ action_name }}">
 </div>
 <div class="row" id="artwork-details-wrapper">
     <div class="col-sm-6" id="left-col">
@@ -22,7 +43,7 @@
             {% else %}
             <img class="img-fluid" src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
             {% endif %}
-            {% render_field form.image class="form-control"%}
+            {% render_field form.image class="custom-file"%}
         </div>
         <div id="sales-info">
             <h2>Sales info</h2>
@@ -35,24 +56,18 @@
                 <div id="size-fields-measures">
                     <div id="size-fields-cm">
                         <label for="id_size_cm">Size cm (h | w | d):</label>
-                        <div id="id_size_cm">
-                            <div>
-                                {% render_field form.height_cm class="form-control" %}
-                            </div>
-                            <div>
-                                {% render_field form.width_cm class="form-control" %}
-                            </div>
+                        <div id="id_size_cm" class="form-control size-field-container">
+                                {% render_field form.height_cm class="size-field" %}
+                                <span class="size-field-separator">|</span>
+                                {% render_field form.width_cm class="size-field" %}
                         </div>
                     </div>
                     <div id="size-fields-in">
                         <label for="id_size_in">Size in (h | w | d):</label>
-                        <div id="id_size_in">
-                            <div>
-                                {% render_field form.height_in class="form-control" %}
-                            </div>
-                            <div>
-                                {% render_field form.width_in class="form-control" %}
-                            </div>
+                        <div id="id_size_in" class="form-control size-field-container">
+                                {% render_field form.height_in class="size-field" %}
+                                <span class="size-field-separator">|</span>
+                                {% render_field form.width_in class="size-field" %}
                         </div>
                     </div>
                 </div>

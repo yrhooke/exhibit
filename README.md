@@ -35,8 +35,8 @@ Artwork management tool
 
 - [X] add create button to Get type search views
 - [X] add sale data
+- [X] other detail view layouts
 - [ ] artwork detail view layout
-- [ ] other detail view layouts
 
 ### Crucial for preview
 
