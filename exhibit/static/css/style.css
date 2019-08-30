@@ -196,6 +196,9 @@ div.main-page {
 
 /* *** Other Detail layout *** */
 
+textarea.detail-field {
+    height: 5rem; 
+}
 /* -------------------------------------- */
 
 /* *** Font Definitions *** */
@@ -209,10 +212,17 @@ div.main-page {
     font-family: "brandon-med";
     src: url('../fonts/hvd_fonts_-_brandongrotesque-medium.otf') format("truetype");
 }
+h1, h2, h3, h4, h5, h6, label, th {
+    font-family: brandon-med;
+}
+
 /* -------------------------------------- */
 
 /* *** OTHER *** */
 
+.form-group {
+    margin-bottom: 0.6rem;
+}
 
 /* .img-fluid {   - Not sure if should be commented out or not
     width: 100%;
@@ -226,6 +236,7 @@ div.main-page {
     border-radius: 0;
 } */
 
+/* - NOTE THESE ARE THE THINGS I'M TESTING RIGHT NOW 
 input:focus, select:focus, .form-control:focus {
     background-color: #ffffff;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
@@ -233,7 +244,7 @@ input:focus, select:focus, .form-control:focus {
 
 a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, option {
     font-family: brandon-reg;
-}
+} - NOTE END OF TESTING SECTION */ 
 
 /* .sidenav {
     height: 100%;
