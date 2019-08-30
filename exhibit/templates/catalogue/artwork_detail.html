@@ -1,4 +1,4 @@
-{% extends "catalogue/detail.html" %}
+{% extends "base.html" %}
 {% load widget_tweaks %}
 {% load static %}
 
@@ -7,15 +7,16 @@
 {% else %}Artwork{% endif %}
 {% endblock %}
 
-{% block object_details %}
-<form action="." method="POST" enctype="multipart/form-data">
-    {% csrf_token %}
-    <div class="row artwork-headers">
-        {{ form.series }}{{ form.title }}({{ form.year }}){{ form.status }}
-        <input type="submit" class="btn btn-primary" value="{{ action_name }}">
-    </div>
-    <div class="row artwork-details-wrapper">
-        <div class="col-sm-7 artwork-image">
+{% block content %}
+<!-- <form action="." method="POST" enctype="multipart/form-data"> -->
+{% csrf_token %}
+<div class="artwork-headers row">
+    {{ form.series }}{{ form.title }}({{ form.year }}){{ form.status }}
+    <input type="submit" class="btn btn-primary" value="{{ action_name }}">
+</div>
+<div class="row" id="artwork-details-wrapper">
+    <div class="col-sm-6" id="left-col">
+        <div id="artwork-image">
             {% if form.instance.image %}
             <img class="img-fluid" src="{{ form.instance.image.url }}" alt="Artwork image">
             {% else %}
@@ -23,36 +24,40 @@
             {% endif %}
             {% render_field form.image class="form-control"%}
         </div>
-        <div class="col-sm-5 artwork-details">
-            <div class="row size-fields">
-                <div class="col-sm-6" id="size-fields-measures">
-                    <div class="row" id="size-fields-cm">
-
+        <div id="sales-info">
+            <h2>Sales info</h2>
+            <p>{{ form.owner.value }}</p>
+        </div>
+    </div>
+    <div class="col-sm-6" id="right-col">
+        <div id="artwork-details">
+            <div class="size-fields">
+                <div id="size-fields-measures">
+                    <div id="size-fields-cm">
                         <label for="id_size_cm">Size cm (h | w | d):</label>
                         <div id="id_size_cm">
-                            <div class="col-xs-6">
+                            <div>
                                 {% render_field form.height_cm class="form-control" %}
                             </div>
-                            <div class="col-xs-6">
+                            <div>
                                 {% render_field form.width_cm class="form-control" %}
                             </div>
                         </div>
                     </div>
-                    <div class="row" id="size-fields-in">
+                    <div id="size-fields-in">
                         <label for="id_size_in">Size in (h | w | d):</label>
                         <div id="id_size_in">
-                            <div class="col-xs-6">
+                            <div>
                                 {% render_field form.height_in class="form-control" %}
                             </div>
-                            <div class="col-xs-6">
+                            <div>
                                 {% render_field form.width_in class="form-control" %}
                             </div>
                         </div>
-
                     </div>
                 </div>
-                <div class="col-sm-6" id="size-fields-addtl">
-                    <div class="row" id="size-fields-size">
+                <div id="size-fields-addtl">
+                    <div id="size-fields-size">
                         <div class="form-group">
                             {{ form.size.label_tag }}
                             {% render_field form.size class="form-control" %}
@@ -61,7 +66,7 @@
                             {% endif %}
                         </div>
                     </div>
-                    <div class="row" id="size-fields-rolled">
+                    <div id="size-fields-rolled">
                         <div class="form-group">
                             {{ form.rolled.label_tag }}
                             {% render_field form.rolled class="form-control" %}
@@ -94,44 +99,44 @@
                 {% endif %}
             </div>
         </div>
+        <div id="exhibitions">
+
+            <h3>All Exhibitions</h3>
+            <form action="{% url 'catalogue:add_workinexhibition' %}" method="POST">
+                {% csrf_token %}
+                {% render_field exhibitionForm.artwork style="visibility:hidden;" %}
+                {% render_field exhibitionForm.exhibition %}
+                <input type="submit" class="btn btn-primary" value="Add new">
+            </form>
+            <table>
+                <th>Name</th>
+                <th>Start date</th>
+                <th>End date</th>
+                </tr>
+                {% for exhibition in exhibitionList %}
+                <tr>
+                    <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a>
+                    </td>
+                    <td>{{ exhibition.start_date }}</td>
+                    <td>{{ exhibition.end_date }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
     </div>
-</form>
-{% endblock object_details %}
+</div>
+<!-- </form> -->
+{% endblock content %}
 
 {% block related_items %}
-<div class="row related-content">
+<!-- <div class="row related-content">
     <div class="col-sm-6">
-        <div class="row" id="sales-info">
-            <h2>Sales info</h2>
-            <p>{{ form.owner.value }}</p>
-        </div>
+
         <div class="row" id="locations-history-container">
             <h2>Locations</h2>
             <p>{{ form.location.value }}</p>
         </div>
     </div>
-    <div class="col-sm-6">
-
-        <h3>All Exhibitions</h3>
-        <form action="{% url 'catalogue:add_workinexhibition' %}" method="POST">
-            {% csrf_token %}
-            {% render_field exhibitionForm.artwork style="visibility:hidden;" %}
-            {% render_field exhibitionForm.exhibition %}
-            <input type="submit" class="btn btn-primary" value="Add new">
-        </form>
-        <table>
-            <th>Name</th>
-            <th>Start date</th>
-            <th>End date</th>
-            </tr>
-            {% for exhibition in exhibitionList %}
-            <tr>
-                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
-                <td>{{ exhibition.start_date }}</td>
-                <td>{{ exhibition.end_date }}</td>
-            </tr>
-            {% endfor %}
-        </table>
-    </div>
-</div>
+   
+</div> -->
 {% endblock %}

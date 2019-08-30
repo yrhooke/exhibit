@@ -190,14 +190,62 @@ div.main-page {
 /* -------------------------------------- */
 
 /* *** Artwork Detail layout *** */
+/* #artwork-details-wrapper {
+    display: flex;
+    flex-direction : column;
+    flex-wrap: wrap;
+    max-height: 1000px;
+    width: 100%;
+    
+}
+#artwork-details-wrapper .form-control {
+    width: 100px;
+} */
 
-
+/* #artwork-details-wrapper > div {
+    width: 50%;
+} */
+  
+#artwork-image {
+    width: 400px;
+}
+/* #artwork-image img { 
+    object-fit: contain;
+    width: 300px;
+}
+  #image {
+    background: blue;
+    height: 150px;
+  }
+  #sales {
+    background: red;
+    height: 50px;
+  }
+  #general {
+    height: 120px;
+    background: orange;
+  }
+  #exhibitions {
+    background: yellow;
+    overflow: scroll;
+  }
+  #exhibition-body {
+      height: 300px;
+  
+  }
+  
+  .img-fluid {  
+      width: 100%;
+  } */
 /* -------------------------------------- */
 
 /* *** Other Detail layout *** */
 
 textarea.detail-field {
     height: 5rem; 
+}
+.form-group {
+    margin-bottom: 0.6rem;
 }
 /* -------------------------------------- */
 
@@ -220,13 +268,7 @@ h1, h2, h3, h4, h5, h6, label, th {
 
 /* *** OTHER *** */
 
-.form-group {
-    margin-bottom: 0.6rem;
-}
 
-/* .img-fluid {   - Not sure if should be commented out or not
-    width: 100%;
-} */
 
 /* input, select, .form-control {
     background: transparent;
