@@ -13,7 +13,9 @@ rgb(222,222,212)
 rgb(70,71,76)
 rgb(96, 124, 160) */
 
-/* General layout for all pages */
+/* -------------------------------------- */
+
+/* **** Layout For All Pages **** */
 
 #wrapper {
     padding-left: 170px;
@@ -73,7 +75,7 @@ rgb(96, 124, 160) */
 
 div.main-page {
     padding: 1px 16px;
-    height: 1000px;
+    /* height: 1000px; */
     overflow-y: hidden;
     width: 100%;
 }
@@ -110,96 +112,7 @@ div.main-page {
 
 /* -------------------------------------- */
 
-/* searchResults table elements */
-
-#searchResults th {
-    text-align: center;
-}
-
-#searchResults td {
-    font-size: 14px;
-    vertical-align: middle;
-}
-
-/* #searchResults tbody tr:nth-of-type(2n+1) {
-    background-color: rgb(0, 0, 0, 0.03);
-} */
-
-#searchResults img {
-    min-width: 100px;
-    width: 250px;
-}
-
-/* Hide caption for search results table */
-
-#searchResults caption {
-    visibility: collapse;
-}
-
-/* -------------------------------------- */
-
-.sidenav {
-    height: 100%;
-}
-
-.img-fluid {
-    width: 100%;
-}
-
-input, select, .form-control {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    border-bottom: 1px solid rgb(113, 114, 110);
-    border-radius: 0;
-}
-
-input:focus, select:focus, .form-control:focus {
-    background-color: #ffffff;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-}
-
-a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, option {
-    font-family: brandon-reg;
-}
-
-/* .sidenav {
-    height: 100%;
-    width: 160px;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    color: rgb(227,117,70);
-    background-color: rgb(113,114,110);
-    overflow-x: hidden;
-    padding-top: 20px;
-}
-
-.sidenav a {
-    padding: 6px 8px 6px 16px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
-}
-
-.sidenav a:hover {
-    color: #f1f1f1;
-} */
-
-.main {
-    margin-left: 160px;
-    /* Same as the width of the sidenav */
-    font-size: 28px;
-    /* Increased text to enable scrolling */
-    padding: 0px 10px;
-}
-
-@font-face {
-    font-family: "brandon-reg";
-    src: url('../fonts/hvd_fonts_-_brandongrotesque-regular.otf') format("truetype");
-}
+/* *** Search Bar CSS *** */
 
 /* #search-bar-body {
     -moz-appearance: textfield;
@@ -243,3 +156,120 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
 /* .flex-item {
     order: 1;
 } */
+
+
+/* -------------------------------------- */
+
+/* *** Table specs for searchResults *** */
+
+#searchResults th {
+    text-align: center;
+}
+
+#searchResults td {
+    font-size: 14px;
+    vertical-align: middle;
+    text-align: center;
+}
+
+/* #searchResults tbody tr:nth-of-type(2n+1) {
+    background-color: rgb(0, 0, 0, 0.03);
+} */
+
+#searchResults img {
+    min-width: 100px;
+    width: 250px;
+}
+
+/* Hide caption for search results table */
+
+#searchResults caption {
+    visibility: collapse;
+}
+
+/* -------------------------------------- */
+
+/* *** Artwork Detail layout *** */
+
+
+/* -------------------------------------- */
+
+/* *** Other Detail layout *** */
+
+/* -------------------------------------- */
+
+/* *** Font Definitions *** */
+
+@font-face {
+    font-family: "brandon-reg";
+    src: url('../fonts/hvd_fonts_-_brandongrotesque-regular.otf') format("truetype");
+}
+
+@font-face {
+    font-family: "brandon-med";
+    src: url('../fonts/hvd_fonts_-_brandongrotesque-medium.otf') format("truetype");
+}
+/* -------------------------------------- */
+
+/* *** OTHER *** */
+
+
+/* .img-fluid {   - Not sure if should be commented out or not
+    width: 100%;
+} */
+
+/* input, select, .form-control {
+    background: transparent;
+    border: none;
+    box-shadow: none;
+    border-bottom: 1px solid rgb(113, 114, 110);
+    border-radius: 0;
+} */
+
+input:focus, select:focus, .form-control:focus {
+    background-color: #ffffff;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+}
+
+a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, option {
+    font-family: brandon-reg;
+}
+
+/* .sidenav {
+    height: 100%;
+} */
+
+/* .sidenav {
+    height: 100%;
+    width: 160px;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    color: rgb(227,117,70);
+    background-color: rgb(113,114,110);
+    overflow-x: hidden;
+    padding-top: 20px;
+}
+
+.sidenav a {
+    padding: 6px 8px 6px 16px;
+    text-decoration: none;
+    font-size: 25px;
+    color: #818181;
+    display: block;
+}
+
+.sidenav a:hover {
+    color: #f1f1f1;
+} */
+
+/* .main { */
+    /* margin-left: 160px; */
+    /* Same as the width of the sidenav */
+    /* font-size: 28px; */
+    /* Increased text to enable scrolling */
+    /* padding: 0px 10px; */
+/* }  */
+
+

@@ -2,22 +2,24 @@
 {% load widget_tweaks %}
 
 {% block content %}
-<div class="object-details">
-    {% block object_details %}
-    <form action="" method='post'>
-        {% csrf_token %}
-        {% for field in form.visible_fields %}
-        <div class="form-group">
-            {{ field.label_tag }}
-            {% render_field field class="form-control" %}
-            {% if field.help_text %}
-            <small class="form-text text-muted">{{ field.help_text }}</small>
-            {% endif %}
-        </div>
-        {% endfor %}
-        <input type="submit" class="btn btn-primary" value="{{ action_name }}">
-    </form>
-    {% endblock object_details %}
+<div class="row justify-content-md-center" id="object-details-wrapper">
+    <div class="object-details col-md-6 col-md-offset-3">
+        {% block object_details %}
+        <form action="" method='post'>
+            {% csrf_token %}
+            {% for field in form.visible_fields %}
+            <div class="form-group">
+                {{ field.label_tag }}
+                {% render_field field class="form-control" %}
+                {% if field.help_text %}
+                <small class="form-text text-muted">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+            {% endfor %}
+            <input type="submit" class="btn btn-primary" value="{{ action_name }}">
+        </form>
+        {% endblock object_details %}
+    </div>
 </div>
 <div class="related-items">
     {% block related_items %}
