@@ -65,6 +65,8 @@
                                 {% render_field form.height_cm class="size-field" %}
                                 <span class="size-field-separator">|</span>
                                 {% render_field form.width_cm class="size-field" %}
+                                <span class="size-field-separator">|</span>
+                                {% render_field form.depth_cm class="size-field" %}
                             </div>
                             <label for="id_size_cm">cm</label>
                         </div>
@@ -73,13 +75,15 @@
                                 {% render_field form.height_in class="size-field" %}
                                 <span class="size-field-separator">|</span>
                                 {% render_field form.width_in class="size-field" %}
+                                <span class="size-field-separator">|</span>
+                                {% render_field form.depth_in class="size-field" %}
                             </div>
                             <label for="id_size_in">in</label>
                         </div>
                     </div>
-                    <div id="size-fields-addtl" class="form-inline col-7">
+                    <div id="size-fields-addtl" class="form col-7">
                         <div id="size-fields-type">
-                            <h6></h6>
+                            <!-- <h6></h6> -->
                             <div class="form-group">
                                 {{ form.size.label_tag }}
                                 {% render_field form.size class="form-control" %}
@@ -115,7 +119,7 @@
                 </div>
                 <div class="form-group" id="addtl-field">
                     {{ form.additional.label_tag }}
-                    {% render_field form.additional class="form-control" %}
+                    {% render_field form.additional class="detail-field form-control" %}
                     {% if form.additional.help_text %}
                     <small class="form-text text-muted">{{ form.additional.help_text }}</small>
                     {% endif %}

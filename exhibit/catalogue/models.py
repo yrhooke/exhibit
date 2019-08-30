@@ -26,6 +26,10 @@ class Artwork(models.Model):
                                   help_text='height in centimeters',
                                   blank=True
                                   )
+    depth_cm = models.FloatField(default=0.0,
+                                 help_text='depth in centimeters',
+                                 blank=True
+                                 )
     width_in = models.FloatField(default=0.0,
                                  help_text='width in inches',
                                  blank=True
@@ -34,6 +38,10 @@ class Artwork(models.Model):
                                   help_text='height in inches',
                                   blank=True
                                   )
+    depth_in = models.FloatField(default=0.0,
+                                 help_text='depth in inches',
+                                 blank=True
+                                 )
 
     SIZE_OPTIONS = (
         ('S', 'Small'),
@@ -49,7 +57,6 @@ class Artwork(models.Model):
 
     # Mutable Fields - are expected to change over time ##
 
-
     location = models.ForeignKey('Location',
                                  on_delete=models.SET_NULL,
                                  null=True
@@ -58,12 +65,12 @@ class Artwork(models.Model):
     ROLL_STATUS_CHOICES = (
         ('R', 'Rolled'),
         ('S', 'Stretched'),
+        ('F', 'Framed'),
     )
 
-
-    rolled = models.CharField('Rolled/Streched', max_length=1, choices=ROLL_STATUS_CHOICES,
+    rolled = models.CharField('Rolled/Streched/Framed', max_length=1, choices=ROLL_STATUS_CHOICES,
                               blank=True)
-    
+
     OVERALL_STATUS_CHOICES = (
         ('D', 'Draft'),
         ('A', 'Avaliable'),
@@ -76,6 +83,7 @@ class Artwork(models.Model):
 
     # Sale fields
     owner = models.CharField('Owner', max_length=200, default='Rotem Reshef')
+    sold_by = models.CharField('Sold By', max_length=200, default='Rotem Reshef', blank=True)
     price_nis = models.DecimalField("Price in NIS",
                                     max_digits=10,
                                     decimal_places=2,
@@ -89,22 +97,21 @@ class Artwork(models.Model):
                                     blank=True
                                     )
     sale_price = models.DecimalField("Sale Price",
-                                    max_digits=10,
-                                    decimal_places=2,
-                                    null=True,
-                                    blank=True
-                                    )
+                                     max_digits=10,
+                                     decimal_places=2,
+                                     null=True,
+                                     blank=True
+                                     )
     sale_currency = models.CharField("Sale currency", max_length=10, blank=True)
     discount = models.DecimalField("Discount",
-                                    max_digits=10,
-                                    decimal_places=2,
-                                    null=True,
-                                    blank=True
-                                    )
+                                   max_digits=10,
+                                   decimal_places=2,
+                                   null=True,
+                                   blank=True
+                                   )
     sale_date = models.DateField("Sale Date", default=date.today)
 
     # @TODO convert owner to foreignkey
-
 
     def __str__(self):
         """string representation of model"""
@@ -124,7 +131,6 @@ class Artwork(models.Model):
         rolled,
         owner,
     ]
-
 
 
 class Series(models.Model):
@@ -149,8 +155,7 @@ class Series(models.Model):
     @property
     def time_range(self):
         artworks_in_series = Artwork.objects.filter(series__pk=self.pk).order_by('year')
-        return {'first': artworks_in_series.first().year, 'last' : artworks_in_series.last().year}
-
+        return {'first': artworks_in_series.first().year, 'last': artworks_in_series.last().year}
 
 
 class Exhibition(models.Model):
@@ -177,7 +182,7 @@ class Exhibition(models.Model):
         start_date,
         end_date,
     ]
-    
+
     def count(self):
         return WorkInExhibition.objects.filter(exhibition__pk=self.pk).count()
 
