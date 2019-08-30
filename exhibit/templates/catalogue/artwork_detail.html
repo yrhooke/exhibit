@@ -6,16 +6,16 @@
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script>
 
-$(document).ready(function () {
-    $(".size-field").each((index, elem) => {
-        elem.style.width = ((elem.value.length + 1) * 9) + 'px';
-    })
-    $('.size-field').on('keyup', (event) => {
-        // console.log('keydown');
-        // console.log(event.target);
-        event.target.style.width = ((event.target.value.length + 1) * 9) + 'px';
+    $(document).ready(function () {
+        $(".size-field").each((index, elem) => {
+            elem.style.width = ((elem.value.length + 1) * 9) + 'px';
+        })
+        $('.size-field').on('keyup', (event) => {
+            // console.log('keydown');
+            // console.log(event.target);
+            event.target.style.width = ((event.target.value.length + 1) * 9) + 'px';
+        });
     });
-});
 
 </script>
 {% endblock custom_headers %}
@@ -37,84 +37,92 @@ $(document).ready(function () {
 </div>
 <div class="row" id="artwork-details-wrapper">
     <div class="col-sm-6" id="left-col">
-        <div id="artwork-image">
+        <div id="artwork-image" class="card">
             {% if form.instance.image %}
-            <img class="img-fluid" src="{{ form.instance.image.url }}" alt="Artwork image">
+            <img class="img-fluid card-img-top" src="{{ form.instance.image.url }}" alt="Artwork image">
             {% else %}
-            <img class="img-fluid" src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
+            <img class="img-fluid card-img-top" src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
             {% endif %}
-            {% render_field form.image class="custom-file"%}
+            <div class="card-body">
+                {% render_field form.image class="custom-file"%}
+            </div>
         </div>
-        <div id="sales-info">
+        <div id="sales-info" class="card">
             <h2>Sales info</h2>
-            <p>{{ form.owner.value }}</p>
+            <div class="card-body">
+                <p>{{ form.owner.value }}</p>
+            </div>    
         </div>
     </div>
     <div class="col-sm-6" id="right-col">
-        <div id="artwork-details">
-            <div class="size-fields">
-                <div id="size-fields-measures">
-                    <div id="size-fields-cm">
-                        <label for="id_size_cm">Size cm (h | w | d):</label>
-                        <div id="id_size_cm" class="form-control size-field-container">
+        <div id="artwork-details" class="card">
+            <div class="card-body">
+                <div class="size-fields row">
+                    <div id="size-fields-measures" class="col-5">
+                        <h5>Size (h | w | d):</h5>
+                        <div id="size-fields-cm" class="form-inline size-form-group">
+                            <div id="id_size_cm" class="size-field-container form-control" >
                                 {% render_field form.height_cm class="size-field" %}
                                 <span class="size-field-separator">|</span>
                                 {% render_field form.width_cm class="size-field" %}
+                            </div>
+                            <label for="id_size_cm">cm</label>
                         </div>
-                    </div>
-                    <div id="size-fields-in">
-                        <label for="id_size_in">Size in (h | w | d):</label>
-                        <div id="id_size_in" class="form-control size-field-container">
+                        <div id="size-fields-in" class="form-inline size-form-group">
+                            <div id="id_size_in" class="size-field-container form-control">
                                 {% render_field form.height_in class="size-field" %}
                                 <span class="size-field-separator">|</span>
                                 {% render_field form.width_in class="size-field" %}
+                            </div>
+                            <label for="id_size_in">in</label>
+                        </div>
+                    </div>
+                    <div id="size-fields-addtl" class="form-inline col-7">
+                        <div id="size-fields-type">
+                            <h6></h6>
+                            <div class="form-group">
+                                {{ form.size.label_tag }}
+                                {% render_field form.size class="form-control" %}
+                                {% if form.size.help_text %}
+                                <small class="form-text text-muted">{{ form.size.help_text }}</small>
+                                {% endif %}
+                            </div>
+                        </div>
+                        <div id="size-fields-rolled">
+                            <div class="form-group">
+                                {{ form.rolled.label_tag }}
+                                {% render_field form.rolled class="form-control" %}
+                                {% if form.rolled.help_text %}
+                                <small class="form-text text-muted">{{ form.rolled.help_text }}</small>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
-                <div id="size-fields-addtl">
-                    <div id="size-fields-size">
-                        <div class="form-group">
-                            {{ form.size.label_tag }}
-                            {% render_field form.size class="form-control" %}
-                            {% if form.size.help_text %}
-                            <small class="form-text text-muted">{{ form.size.help_text }}</small>
-                            {% endif %}
-                        </div>
-                    </div>
-                    <div id="size-fields-rolled">
-                        <div class="form-group">
-                            {{ form.rolled.label_tag }}
-                            {% render_field form.rolled class="form-control" %}
-                            {% if form.rolled.help_text %}
-                            <small class="form-text text-muted">{{ form.rolled.help_text }}</small>
-                            {% endif %}
-                        </div>
-                    </div>
+                <div class="form-group" id="location-field">
+                    {{ form.location.label_tag }}
+                    {% render_field form.location class="form-control" %}
+                    {% if form.location.help_text %}
+                    <small class="form-text text-muted">{{ form.location.help_text }}</small>
+                    {% endif %}
                 </div>
-            </div>
-            <div class="form-group" id="location-field">
-                {{ form.location.label_tag }}
-                {% render_field form.location class="form-control" %}
-                {% if form.location.help_text %}
-                <small class="form-text text-muted">{{ form.location.help_text }}</small>
-                {% endif %}
-            </div>
-            <div class="form-group" id="medium-field">
-                {{ form.medium.label_tag }}
-                {% render_field form.medium class="form-control" %}
-                {% if form.medium.help_text %}
-                <small class="form-text text-muted">{{ form.medium.help_text }}</small>
-                {% endif %}
-            </div>
-            <div class="form-group" id="addtl-field">
-                {{ form.additional.label_tag }}
-                {% render_field form.additional class="form-control" %}
-                {% if form.additional.help_text %}
-                <small class="form-text text-muted">{{ form.additional.help_text }}</small>
-                {% endif %}
+                <div class="form-group" id="medium-field">
+                    {{ form.medium.label_tag }}
+                    {% render_field form.medium class="form-control" %}
+                    {% if form.medium.help_text %}
+                    <small class="form-text text-muted">{{ form.medium.help_text }}</small>
+                    {% endif %}
+                </div>
+                <div class="form-group" id="addtl-field">
+                    {{ form.additional.label_tag }}
+                    {% render_field form.additional class="form-control" %}
+                    {% if form.additional.help_text %}
+                    <small class="form-text text-muted">{{ form.additional.help_text }}</small>
+                    {% endif %}
+                </div>
             </div>
         </div>
-        <div id="exhibitions">
+        <div id="exhibitions" class="card">
 
             <h3>All Exhibitions</h3>
             <form action="{% url 'catalogue:add_workinexhibition' %}" method="POST">

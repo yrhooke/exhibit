@@ -191,6 +191,9 @@ div.main-page {
 
 /* *** Artwork Detail layout *** */
 
+.card {
+    background-color: transparent;
+}
 /* Artwork Detail header */
 
 .artwork-header-field {
@@ -205,6 +208,8 @@ div.main-page {
     background-color: #ffffff;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
 }
+
+/* Artwork Detail size fields */
 
 .size-field {
     /* max-width: 5rem; */
@@ -227,11 +232,33 @@ div.main-page {
 
 .size-field-container {
     color: gray;
-    display: flex;
+    display: inline-flex;
+    /* flex-wrap: nowrap; */
     justify-content: space-between;
+    align-items: center;
     width: min-content;
+    overflow-x: auto;
+    white-space: nowrap;
 }
 
+.size-form-group {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.size-form-group > label {
+    padding: 0.5rem;
+}
+
+.form-inline label {
+    padding: 0.5rem;
+}
+#size-fields-addtl {
+    justify-content: end;
+}
+/* #size-fields-addtl .form-group{
+    justify-content: space-between;
+} */
 
 /* #artwork-details-wrapper {
     display: flex;
