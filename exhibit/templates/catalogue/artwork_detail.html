@@ -8,12 +8,16 @@
 
     $(document).ready(function () {
         $(".size-field").each((index, elem) => {
-            elem.style.width = ((elem.value.length + 1) * 9) + 'px';
+            let value = elem.value;
+            if (String(Number(value)) === value) {
+                elem.style.width = ((value.length) * 9 + 5) + 'px';
+            } else {
+                elem.style.width = ((value.length - 2) * 9 + 5) + 'px';
+            }
+
         })
         $('.size-field').on('keyup', (event) => {
-            // console.log('keydown');
-            // console.log(event.target);
-            event.target.style.width = ((event.target.value.length + 1) * 9) + 'px';
+            event.target.style.width = ((event.target.value.length) * 9 + 5) + 'px';
         });
     });
 

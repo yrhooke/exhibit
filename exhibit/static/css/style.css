@@ -211,6 +211,27 @@ div.main-page {
 
 /* Artwork Detail size fields */
 
+.size-form-group {
+    display: flex;
+    flex-wrap: nowrap;
+}
+
+.size-form-group > label {
+    padding: 0.5rem;
+}
+
+.size-field-container {
+    color: gray;
+    display: inline-flex;
+    /* flex-wrap: nowrap; */
+    /* justify-content: space-around; */
+    align-items: center;
+    width: min-content;
+    overflow-x: auto;
+    white-space: nowrap;
+    padding: 0.25rem;
+}
+
 .size-field {
     /* max-width: 5rem; */
     /* width: fit-content; */
@@ -230,25 +251,6 @@ div.main-page {
     
 }
 
-.size-field-container {
-    color: gray;
-    display: inline-flex;
-    /* flex-wrap: nowrap; */
-    justify-content: space-between;
-    align-items: center;
-    width: min-content;
-    overflow-x: auto;
-    white-space: nowrap;
-}
-
-.size-form-group {
-    display: flex;
-    flex-wrap: nowrap;
-}
-
-.size-form-group > label {
-    padding: 0.5rem;
-}
 
 .form-inline label {
     padding: 0.5rem;
@@ -276,9 +278,9 @@ div.main-page {
     width: 50%;
 } */
   
-#artwork-image {
+/* #artwork-image {
     width: 400px;
-}
+} */
 /* #artwork-image img { 
     object-fit: contain;
     width: 300px;
