@@ -182,7 +182,7 @@ div.main-page {
 
 /* Hide caption for search results table */
 
-#searchResults caption {
+caption {
     visibility: collapse;
 }
 
@@ -279,6 +279,17 @@ div.main-page {
     text-align: center;
 }
 
+/* Exhibitions list */
+
+#add-work-to-exhibition {
+    display: flex;
+}
+#new-exhibition-select{
+    flex: 7 1 auto;
+}
+#new-exhibition-submit{
+    flex: 1 1 auto;
+}
 /* #size-fields-addtl .form-group{
     justify-content: space-between;
 } */

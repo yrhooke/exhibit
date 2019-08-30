@@ -30,14 +30,14 @@
 {% endblock %}
 
 {% block content %}
-<!-- <form action="." method="POST" enctype="multipart/form-data"> -->
+<form action="." method="POST" enctype="multipart/form-data">
 {% csrf_token %}
 <div class="row" id="artwork-headers">
     {%  render_field form.series class="artwork-header-field" %}
     {%  render_field form.title class="artwork-header-field" %}
     ({%  render_field form.year class="artwork-header-field" %})
     {%  render_field form.status class="artwork-header-field" %}
-    <input type="submit" class="btn btn-primary artwork-header-field" value="{{ action_name }}">
+    <input type="submit" class="btn btn-primary" value="{{ action_name }}">
 </div>
 <div class="row" id="artwork-details-wrapper">
     <div class="col-sm-6" id="left-col">
@@ -203,30 +203,20 @@
         <div id="exhibitions" class="card">
 
             <h3>All Exhibitions</h3>
-            <form action="{% url 'catalogue:add_workinexhibition' %}" method="POST">
-                {% csrf_token %}
-                {% render_field exhibitionForm.artwork style="visibility:hidden;" %}
-                {% render_field exhibitionForm.exhibition %}
-                <input type="submit" class="btn btn-primary" value="Add new">
-            </form>
-            <table>
-                <th>Name</th>
-                <th>Start date</th>
-                <th>End date</th>
-                </tr>
-                {% for exhibition in exhibitionList %}
-                <tr>
-                    <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a>
-                    </td>
-                    <td>{{ exhibition.start_date }}</td>
-                    <td>{{ exhibition.end_date }}</td>
-                </tr>
-                {% endfor %}
+            <!-- <form action="{% url 'catalogue:add_workinexhibition' %}" method="POST"> -->
+                <div class="form-inline" id="add-work-to-exhibition">
+                    {% render_field exhibitionForm.artwork class="collapse" style="visibility:hidden;" %}
+                    {% render_field exhibitionForm.exhibition class="form-control" required="" id="new-exhibition-select" %}
+                    <input type="submit" class="btn btn-primary" value="Add new" id="new-exhibition-submit">
+                </div>
+            <!-- </form> -->
+            <table class="table table-striped table-hover">
+                    {% include "./exhibition_list.html" with object_list=exhibitionList %}
             </table>
         </div>
     </div>
 </div>
-<!-- </form> -->
+</form>
 {% endblock content %}
 
 {% block related_items %}

@@ -37,6 +37,12 @@ Artwork management tool
 - [X] add sale data
 - [X] other detail view layouts
 - [ ] artwork detail view layout
+    - [ ] image fields
+    - [X] general fields
+    - [X] sale fields
+    - [X] exhibition fields
+    - [ ] header
+    - [ ] make sure form works
 
 ### Crucial for preview
 
