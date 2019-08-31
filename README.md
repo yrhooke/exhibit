@@ -36,13 +36,13 @@ Artwork management tool
 - [X] add create button to Get type search views
 - [X] add sale data
 - [X] other detail view layouts
-- [ ] artwork detail view layout
-    - [ ] image fields
-    - [X] general fields
-    - [X] sale fields
-    - [X] exhibition fields
-    - [ ] header
-    - [ ] make sure form works
+- [X] artwork detail view layout
+  - [ ] image fields - will fix after demo, need official modelform for artwork
+  - [X] general fields
+  - [X] sale fields
+  - [X] exhibition fields
+  - [X] header
+  - [X] make sure form works
 
 ### Crucial for preview
 

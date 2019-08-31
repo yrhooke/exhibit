@@ -88,7 +88,7 @@
         <span id='artwork-series-container'>
             {%  render_field form.series class="artwork-header-field mx-4" id="artwork-series" %}
         </span>
-        <span style="">:</span>
+        <span>:</span>
         <span>
             {%  render_field form.title class="artwork-header-field mx-4 data-resize-me" id="artwork-title" placeholder="Title" %}
         </span>
@@ -271,7 +271,7 @@
                     <!-- <form action="{% url 'catalogue:add_workinexhibition' %}" method="POST"> -->
                     <div class="form-inline" id="add-work-to-exhibition">
                         {% render_field exhibitionForm.artwork class="collapse" style="visibility:hidden;" %}
-                        {% render_field exhibitionForm.exhibition class="form-control" required="" id="new-exhibition-select" %}
+                        {% render_field exhibitionForm.exhibition class="form-control" id="new-exhibition-select" %}
                         <input type="submit" class="btn btn-primary btn-sm" value="Add new" id="new-exhibition-submit">
                     </div>
                     <!-- </form> -->

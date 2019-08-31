@@ -109,7 +109,7 @@ class Artwork(models.Model):
                                    null=True,
                                    blank=True
                                    )
-    sale_date = models.DateField("Sale Date", blank=True)
+    sale_date = models.DateField("Sale Date", blank=True, null=True)
 
     # @TODO convert owner to foreignkey
 
