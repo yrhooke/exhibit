@@ -1,10 +1,12 @@
 {% for filter in filters %}
 <div class="form-group search-filter">
-    <select class="form-control flex-item search-filter-main-select">
-        {% for name, verbose_name in fields.items %}
-        <option value="{{ name }}" {% if name == filter.fieldName %}selected{% endif %}>{{ verbose_name }}</option>
-        {% endfor %}
-    </select>
+    <span class="search-filter-main-select-wrapper">
+        <select class="form-control flex-item search-filter-main-select">
+            {% for name, verbose_name in fields.items %}
+            <option value="{{ name }}" {% if name == filter.fieldName %}selected{% endif %}>{{ verbose_name }}</option>
+            {% endfor %}
+        </select>
+    </span>
     {% if filter.foreignKeyField %}
     <!-- <p>{{ filter.foreignKeyField }}</p> -->
     {%  for model, foreignFields in foreignKeyFields.items %}
@@ -13,17 +15,27 @@
     {% endif %}
     {% endfor %}
     {% endif %}
-    <input type="text" class="form-control flex-item search-filter-text" value="{{ filter.fieldValue }}">
-    <button type="reset" class="btn flex-item search-filter-remove">x</button>
+    <span>
+        <input type="text" class="form-control flex-item search-filter-text" value="{{ filter.fieldValue }}">
+    </span>
+    <span>
+        <button type="reset" class="btn flex-item search-filter-remove">x</button>
+    </span>
 </div>
 {% empty %}
 <div class="form-group search-filter">
-    <select class="form-control flex-item search-filter-main-select">
-        {% for name, verbose_name in fields.items %}
-        <option value="{{ name }}">{{ verbose_name }}</option>
-        {% endfor %}
-    </select>
-    <input type="text" class="form-control flex-item search-filter-text" value="">
-    <button type="reset" class="btn flex-item search-filter-remove">x</button>
+    <span>
+        <select class="form-control flex-item search-filter-main-select">
+            {% for name, verbose_name in fields.items %}
+            <option value="{{ name }}">{{ verbose_name }}</option>
+            {% endfor %}
+        </select>
+    </span>
+    <span>
+        <input type="text" class="form-control flex-item search-filter-text" value="">
+    </span>
+    <span>
+        <button type="reset" class="btn flex-item search-filter-remove">x</button>
+    </span>
 </div>
 {% endfor %}

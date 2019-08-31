@@ -71,18 +71,17 @@
 
         // add/remove foreignkey filter on change in main select
         $("#search-filters-container").on("change", ".search-filter-main-select", (event) => {
+            $(event.target).parent().parent().children('.search-filter-foreignkey-select-wrapper').remove();
             let newFilterValue = event.target.options[event.target.options.selectedIndex].value;
             if (foreignKeyNames.includes(newFilterValue)) {
                 let newFilterResultType = newFilterValue.charAt(0).toUpperCase() + newFilterValue.slice(1);
                 $.get("{% url 'catalogue:make_search_filter_foreignkey' %}", {
                     'resultType': newFilterResultType,
                 }, function (data) {
-                    event.target.insertAdjacentHTML('afterend', data);
+                    $(data).insertAfter($(event.target).parent());
                     $('.search-filter-main-select').select2();
                     $('.search-filter-foreignkey-select').select2();
                 });
-            } else {
-                $(event.target).parent().children('.search-filter-foreignkey-select').remove();
             }
         })
 

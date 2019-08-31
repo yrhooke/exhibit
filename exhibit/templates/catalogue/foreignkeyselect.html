@@ -1,7 +1,9 @@
-<select class="form-control flex-item search-filter-foreignkey-select"
-    {% if resultType == "series" %}style="visibility:hidden;width:0px;height:0px;" {% endif %}>
-    {% for name, verbose_name in fields.items %}
-    <option value="{{ name }}" {% if name == selected %}selected{% endif %}>{{ verbose_name }}
-    </option>
-    {% endfor %}
-</select>
+<span class="search-filter-foreignkey-select-wrapper">
+    <select class="form-control flex-item search-filter-foreignkey-select"
+        {% if resultType == "series" %}style="visibility:hidden;width:0px;height:0px;" {% endif %}>
+        {% for name, verbose_name in fields.items %}
+        <option value="{{ name }}" {% if name == selected %}selected{% endif %}>{{ verbose_name }}
+        </option>
+        {% endfor %}
+    </select>
+</span>
