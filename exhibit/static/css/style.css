@@ -144,23 +144,40 @@ div.main-page {
 }
 
 #search-bar-container {
-    float: center;
-    /* width: 90%; */
-    /* display: inline-block; */
+    display: flex;
+    width: 100%;
+    align-items: center;
 }
 
 #search-bar-submit {
-    float: right;
+    margin-left: auto;
+    border-color: black;
+    /* float: right; */
 }
 
-#search-filters-container {
+#search-bar-main-body, #search-filters-container {
     display: flex;
-    /* overflow-y: scroll; */
+    flex: 1 1 auto;
 }
 
 .search-filter {
     display: inline-flex;
 }
+
+.select2-container--default, .search-filter .select2-selection--single {
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    color: rgb(96, 124, 160);
+}
+
+.search-filter input, .search-filter input:focus {
+    border: none;
+    box-shadow: none;
+    border-radius: 0;
+    border-bottom: 1px solid rgb(113, 114, 110);
+}
+
 /* .flex-item {
     order: 1;
 } */
@@ -224,7 +241,7 @@ caption {
     background:  rgb(235, 235, 228); 
 } */
 
-#artwork-headers .select2-container--default .select2-selection--single{
+#artwork-headers .select2-container--default .select2-selection--single {
     background-color: rgb(235, 235, 228);
     min-width: 8rem;
 }
@@ -233,27 +250,26 @@ caption {
     min-width: 12rem;
     width: 12rem;
 }
+
 /* class="select2-selection__placeholder" */
 
-  
 /* .select2-search--dropdown{
     background-color: #000;
 } */
+
 /* .select2-search__field{
     background-color: #000;
 } */
+
 /* .select2-results { 
     background-color: #000;
 } */
 
-
-
 #artwork-title {
     min-width: 12rem;
     width: 12rem;
-    
-    
 }
+
 #artwork-year {
     -webkit-appearance: textfield;
     width: 4.5rem;
@@ -334,12 +350,15 @@ caption {
 #add-work-to-exhibition {
     display: flex;
 }
-#new-exhibition-select{
+
+#new-exhibition-select {
     flex: 7 1 auto;
 }
-#new-exhibition-submit{
+
+#new-exhibition-submit {
     flex: 1 1 auto;
 }
+
 /* #size-fields-addtl .form-group{
     justify-content: space-between;
 } */

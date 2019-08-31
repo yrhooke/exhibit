@@ -145,7 +145,7 @@
                 {% endfor %}
             </select>
         </div>
-        <div class="form-group flex-container" name="search-bar-main-body">
+        <div class="form-group flex-container" id="search-bar-main-body">
             <!-- I want this wider, and I shouldn't have to nest flex containers inside each other -->
             <div class="form-control flex-container" name="search-filters-container" id="search-filters-container">
                 {% include "./search_bar.html" with filters=filters foreignKeyFields=foreignKeyFields fields=fields%}

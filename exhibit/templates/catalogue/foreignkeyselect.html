@@ -1,4 +1,4 @@
-<span class="search-filter-foreignkey-select-wrapper{% if resultType == 'series' %}collapse{% endif %}">
+<span class="search-filter-foreignkey-select-wrapper {% if resultType == 'Series' %}collapse{% endif %}">
     <select class="form-control flex-item search-filter-foreignkey-select">
         <!-- {% if resultType == "series" %}style="visibility:hidden;width:0px;height:0px;" {% endif %}> -->
         {% for name, verbose_name in fields.items %}
