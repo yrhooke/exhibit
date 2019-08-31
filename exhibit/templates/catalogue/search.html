@@ -19,6 +19,8 @@
             'resultType': resultType,
         }, function (data) {
             $(element).append(data);
+            $('.search-filter-main-select').select2();
+            $('.search-filter-foreignkey-select').select2();
         });
     }
 
@@ -58,8 +60,13 @@
 
 
     $(document).ready(function () {
+
+        // initialize select2
+        $('#search-result-type-selector').select2();
+        $('.search-filter-main-select').select2();
+        $('.search-filter-foreignkey-select').select2();
+
         // add filters on click
-        $("#search-bar-body").on("click", ".search-filter-append", () => { addSearchFilter("#search-bar-body") });
         $("#add-search-filter-button").on("click", () => { addSearchFilter("#search-filters-container") });
 
         // add/remove foreignkey filter on change in main select
@@ -71,6 +78,8 @@
                     'resultType': newFilterResultType,
                 }, function (data) {
                     event.target.insertAdjacentHTML('afterend', data);
+                    $('.search-filter-main-select').select2();
+                    $('.search-filter-foreignkey-select').select2();
                 });
             } else {
                 $(event.target).parent().children('.search-filter-foreignkey-select').remove();

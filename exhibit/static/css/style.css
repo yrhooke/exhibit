@@ -153,6 +153,14 @@ div.main-page {
     float: right;
 }
 
+#search-filters-container {
+    display: flex;
+    /* overflow-y: scroll; */
+}
+
+.search-filter {
+    display: inline-flex;
+}
 /* .flex-item {
     order: 1;
 } */

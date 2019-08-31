@@ -30,9 +30,6 @@ Artwork management tool
 - [X] read more about flexbox/bootstrap/css
 - [X] get columns dynamically per model in searchView
 - [X] search results layout
-
-### in current branch
-
 - [X] add create button to Get type search views
 - [X] add sale data
 - [X] other detail view layouts
@@ -44,21 +41,23 @@ Artwork management tool
   - [X] header
   - [X] make sure form works
 
-### Crucial for preview
+### in current branch
 
 - [ ] search bar layout
-- [ ] store images on S3
-- [ ] add autocomplete + pagination in search
 
 ### Want for launch
 
+- [ ] store images on S3
 - [ ] better form validation (correct widgets, visibly fail on errors, etc)
+- [ ] add autocomplete in search
+- [ ] add pagination to search
 - [ ] save on change in edit view
 - [ ] remove all proprietary data from source control
 - [ ] use https everywhere
 - [ ] collapsible navbar for narrow screens
 - [ ] figure out database + s3 backups
 - [ ] improve design finish
+  - [ ] artwork detail: card elements shouldn't move around too much
 - [ ] Thumbnails for series
 - [ ] manage sale currency better
 
