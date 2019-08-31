@@ -133,7 +133,7 @@ class SearchFilterMakerView(TemplateView):
     template_name = "catalogue/search_bar.html"
 
     def getResultType(self):
-        return self.request.GET.get('ResultType', 'Artwork')
+        return self.request.GET.get('resultType', 'Artwork')
 
     def getResultOptions(self):
         """return list of results for model"""

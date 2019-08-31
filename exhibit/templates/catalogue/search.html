@@ -90,7 +90,7 @@
 
         // delete specific filter when its remove button is pressed
         $("#search-bar-container").on("click", ".search-filter-remove", (event) => {
-            event.target.parentNode.remove();
+            $(event.target).parent().parent().remove();
         });
 
         // send filter data on submit in JSON serialized string
