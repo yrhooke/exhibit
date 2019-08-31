@@ -23,93 +23,64 @@
   <link rel="icon" href="{% static 'images/favicons/icon.png' %}">
 
 
-  <!-- bootstrap javascript + css -->
-  <!-- <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script> -->
-  <!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script> -->
-
+  <!-- bootstrap  css -->
   <link rel="stylesheet" href="http://code.jquery.com/ui/1.8.18/themes/base/jquery-ui.css" type="text/css"
     media="all" />
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
   <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap-theme.min.css">
 
-  <!-- An alternate way to import bootstrap (commented out) -->
-  <!-- Latest compiled and minified Bootstrap CSS -->
-  <!-- <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" rel="stylesheet"
-    integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous"> -->
-
-  {% block custom_headers %}{% endblock %}
-
-  <!-- <link href="//fonts.googleapis.com/css?family=Lobster&subset=latin,latin-ext" rel="stylesheet" type="text/css"> -->
-
+  <!-- select2 stylesheet - for custom selects -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
 
   <!-- Project specific CSS -->
-
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
-  <!-- <link href="{% static 'css/project.css' %}" rel="stylesheet"> -->
 
 
-</head>
 
-<body>
-  <!--[if lt IE 7]>
-            <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
-        <![endif]-->
-<div id="wrapper">
-  <!-- Side navigation -->
-  <div class="sidebar" id="sidebar">
-    <a class="sidebar-header" href="{% url 'home' %}">
-      <picture>
-        <source media="(min-width: 900px)" srcset="{% static 'images/logo_short.png' %}">
-        <source media="(max-width: 899px)" srcset="{% static 'images/logo.png' %}">
-        <img src="{% static 'images/logo_short.png' %}" alt="Exhibit">
-      </picture>
-      <!-- <img id="sidebar-logo" style="width: 184px; height: 60px; object-fit: contain;"
-          src="{% static 'images/logo_short.png' %}"> -->
-    </a>
-    {% if request.user.is_authenticated %}
-    <a class="nav-link" href="{% url 'home' %}?resultType=Artwork">Artworks</a>
-    <a class="nav-link" href="{% url 'home' %}?resultType=Series">Series</a>
-    <a class="nav-link" href="{% url 'home' %}?resultType=Exhibition">Exhibitions</a>
-    <a class="nav-link" href="{% url 'home' %}?resultType=Location">Locations</a>
-    {# URL provided by django-allauth/account/urls.py #}
-    <a class="nav-link" class="nav-link" href="{% url 'users:detail' request.user.username  %}">My Profile</a>
-    {# URL provided by django-allauth/account/urls.py #}
-    <a class="nav-link" href="{% url 'account_logout' %}">Sign Out</a>
-    {% else %}
-    {# URL provided by django-allauth/account/urls.py #}
-    <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
-    {# URL provided by django-allauth/account/urls.py #}
-    <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">Sign In</a>
-    {% endif %}
-  </div>
-  <!-- Main page body -->
-  <div class="container-fluid main-page" id="main">
+  <!-- script to load script sources sequentially -->
+  <script>
+    (function () {
 
-    <div class="row">
-      <h2>{% block page_title %}Exhibit - the artwork library{% endblock %}</h2>
-    </div>
-    {% if messages %}
-    {% for message in messages %}
-    <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}<button type="button"
-        class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-    </div>
-    {% endfor %}
-    {% endif %}
+      //three JS files that need to be loaded one after the other
+      var libs = [
+        // jquery minified
+        "https://code.jquery.com/jquery-3.4.1.min.js",
+        // jquery ui tools
+        "https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js",
+        // popper - don't know what this does
+        "https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js",
+        // select2 script - for custom selects
+        "https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.full.js"
+      ];
 
-    <div class="page-contents">
-      <div class="main-content">
-        {% block content %} {% endblock %}
-      </div>
-      <div class="related-items">
-        {% block related %} {% endblock %}
-      </div>
-    </div>
-  </div> <!-- /container -->
-</div>
-  {% block modal %}{% endblock modal %}
+      var injectLibFromStack = function () {
+        if (libs.length > 0) {
 
-  <!-- Placed at the end of the document so the pages load faster -->
-  {% block javascript %}
+          //grab the next item on the stack
+          var nextLib = libs.shift();
+          var headTag = document.getElementsByTagName('head')[0];
+
+          //create a script tag with this library
+          var scriptTag = document.createElement('script');
+          scriptTag.src = nextLib;
+
+          //when successful, inject the next script
+          scriptTag.onload = function (e) {
+            console.log("---> loaded: " + e.target.src);
+            injectLibFromStack();
+          };
+
+          //append the script tag to the <head></head>
+          headTag.appendChild(scriptTag);
+          console.log("injecting: " + nextLib);
+        }
+        else return;
+      }
+
+      //start script injection
+      injectLibFromStack();
+    })();
+  </script>
   <!-- Bootstrap core JavaScript -->
   <!-- jquery first, then jqueryui, then popper.js, then bootstrap js -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -121,10 +92,96 @@
     integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
     crossorigin="anonymous"></script>
 
+  <!-- for custom selects -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.full.js"></script>
 
   <!-- place project specific Javascript in this file -->
 
-  <script src="{% static 'js/project.js' %}"></script
+  <script src="{% static 'js/project.js' %}"></script>
+
+  <!-- Page specific headers -->
+  {% block custom_headers %}{% endblock %}
+
+
+</head>
+
+<body>
+  <!--[if lt IE 7]>
+    <p class="browsehappy">You are using an <strong>outdated</strong> browser. Please <a href="#">upgrade your browser</a> to improve your experience.</p>
+    <![endif]-->
+  <div id="wrapper">
+    <!-- Side navigation -->
+    <div class="sidebar" id="sidebar">
+      <a class="sidebar-header" href="{% url 'home' %}">
+        <picture>
+          <source media="(min-width: 900px)" srcset="{% static 'images/logo_short.png' %}">
+          <source media="(max-width: 899px)" srcset="{% static 'images/logo.png' %}">
+          <img src="{% static 'images/logo_short.png' %}" alt="Exhibit">
+        </picture>
+        <!-- <img id="sidebar-logo" style="width: 184px; height: 60px; object-fit: contain;"
+          src="{% static 'images/logo_short.png' %}"> -->
+      </a>
+      {% if request.user.is_authenticated %}
+      <a class="nav-link" href="{% url 'home' %}?resultType=Artwork">Artworks</a>
+      <a class="nav-link" href="{% url 'home' %}?resultType=Series">Series</a>
+      <a class="nav-link" href="{% url 'home' %}?resultType=Exhibition">Exhibitions</a>
+      <a class="nav-link" href="{% url 'home' %}?resultType=Location">Locations</a>
+      {# URL provided by django-allauth/account/urls.py #}
+      <a class="nav-link" class="nav-link" href="{% url 'users:detail' request.user.username  %}">My Profile</a>
+      {# URL provided by django-allauth/account/urls.py #}
+      <a class="nav-link" href="{% url 'account_logout' %}">Sign Out</a>
+      {% else %}
+      {# URL provided by django-allauth/account/urls.py #}
+      <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
+      {# URL provided by django-allauth/account/urls.py #}
+      <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">Sign In</a>
+      {% endif %}
+    </div>
+    <!-- Main page body -->
+    <div class="container-fluid main-page" id="main">
+
+      <div class="row">
+        <h2>{% block page_title %}Exhibit - the artwork library{% endblock %}</h2>
+      </div>
+      {% if messages %}
+      {% for message in messages %}
+      <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}<button type="button"
+          class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+      </div>
+      {% endfor %}
+      {% endif %}
+
+      <div class="page-contents">
+        <div class="main-content">
+          {% block content %} {% endblock %}
+        </div>
+        <div class="related-items">
+          {% block related %} {% endblock %}
+        </div>
+      </div>
+    </div> <!-- /container -->
+  </div>
+  {% block modal %}{% endblock modal %}
+
+  <!-- Placed at the end of the document so the pages load faster -->
+  {% block javascript %}
+  <!-- Bootstrap core JavaScript -->
+  <!-- jquery first, then jqueryui, then popper.js, then bootstrap js -->
+  <!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+    crossorigin="anonymous"></script> -->
+
+  <!-- for custom selects -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script> -->
+
+  <!-- place project specific Javascript in this file -->
+
+  <!-- <script src="{% static 'js/project.js' %}"></script> -->
 
 
 
