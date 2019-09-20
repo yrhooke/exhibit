@@ -40,19 +40,24 @@ Artwork management tool
   - [X] exhibition fields
   - [X] header
   - [X] make sure form works
+- [X] search bar layout
 
 ### in current branch
 
-- [ ] search bar layout
+- [ ] store images on S3
+
+### next phase
+
+- [ ] remove all proprietary data from source control
+- [ ] talk to Mom - use filters, not searchbar paradigm for search?
+- [ ] artwork list view like rotemreshef.com
 
 ### Want for launch
 
-- [ ] store images on S3
 - [ ] better form validation (correct widgets, visibly fail on errors, etc)
 - [ ] add autocomplete in search
 - [ ] add pagination to search
 - [ ] save on change in edit view
-- [ ] remove all proprietary data from source control
 - [ ] use https everywhere
 - [ ] collapsible navbar for narrow screens
 - [ ] figure out database + s3 backups
@@ -72,6 +77,5 @@ Artwork management tool
 - [ ] harden security + work on backups
 - [ ] build or remove deleteViews
 - [ ] separate objects for sales/owners
-
 
 heroku url: <https://hidden-coast-28492.herokuapp.com/>

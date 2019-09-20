@@ -305,3 +305,4 @@ media/*
 *.doc
 *.docx
 *.pages
+meta/*
