@@ -213,6 +213,40 @@ caption {
 
 /* -------------------------------------- */
 
+/* *** Artwork List layout *** */
+
+.gallery-item-wrapper {
+    height: 293px;
+    width: 293px;
+    margin: 20px;
+    /* z-index: 10; */
+}
+#searchResults .gallery-item-image,
+.gallery-item-image {
+    height: 293px;
+    width: 293px;
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+}
+
+.gallery-item-text {
+    visibility: hidden;
+    z-index: 20;
+    margin-top: -293px;
+    background: rgb(256, 256, 256);
+    background: rgba(256, 256, 256, 0.65);
+    position: absolute;
+    width: inherit;
+    height: inherit;
+}
+
+.gallery-item-wrapper:hover .gallery-item-text {
+    visibility: visible;
+}
+
+/* -------------------------------------- */
+
 /* *** Artwork Detail layout *** */
 
 .card {
