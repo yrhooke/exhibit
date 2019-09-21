@@ -1,22 +1,26 @@
-
-<caption>List of Exhibitions</caption>
-<thead>
-    <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Location</th>
-        <th scope="col">Start date</th>
-        <th scope="col">End date</th>
-        <th scope="col"># Works</th>
-    </tr>
-</thead>
-<tbody>
-    {% for exhibition in object_list %}
-    <tr>
-        <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
-        <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.location.name }}</a></td>
-        <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.start_date }}</a></td>
-        <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.end_date }}</a></td>
-        <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.count }}</a></td>
-    </tr>
-    {% endfor %}
-</tbody>
+<div class="table-responsive">
+    <table class="table table-striped table-hover" id="searchResults">
+        <caption>List of Exhibitions</caption>
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Location</th>
+                <th scope="col">Start date</th>
+                <th scope="col">End date</th>
+                <th scope="col"># Works</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for exhibition in object_list %}
+            <tr>
+                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
+                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.location.name }}</a>
+                </td>
+                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.start_date }}</a></td>
+                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.end_date }}</a></td>
+                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.count }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

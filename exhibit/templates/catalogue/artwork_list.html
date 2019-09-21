@@ -1,35 +1,22 @@
 {% load static %}
 <caption>List of Artworks</caption>
-<thead>
-    <tr>
-        <th scope="col">Image</th>
-        <th scope="col">Series</th>
-        <th scope="col">Title</th>
-        <th scope="col">Status</th>
-        <th scope="col">Location</th>
-        <th scope="col">Size</th>
-    </tr>
-</thead>
-<tbody>
-    {% for artwork in object_list %}
-    <tr>
-        <td>
-            <a href="{% url 'catalogue:artwork_detail' artwork.pk %}">
-                {% if artwork.image %}
-                <img class="img-fluid" style="object-fit: contain;" src="{{ artwork.image.url }}"
-                    alt="Artwork image">
-                {% else %}
-                <img class="img-fluid" style="object-fit: contain;"
-                    src="{% static 'catalogue/images/unicorn.png' %}" alt="Artwork image">
-                {% endif %}
-            </a>
-        </td>
-        <td><a href="{% url 'catalogue:series_detail' artwork.series.pk %}">{{ artwork.series }}</a></td>
-        <td><a href="{% url 'catalogue:artwork_detail' artwork.pk %}">{{ artwork.title }}</a></td>
-        <td><a href="{% url 'catalogue:artwork_detail' artwork.pk %}">{{ artwork.status }}</a></td>
-        <td><a href="{% url 'catalogue:location_detail' artwork.location.pk %}">{{ artwork.location }}</a></td>
-        <td><a href="{% url 'catalogue:artwork_detail' artwork.pk %}">{{ artwork.width_cm}}x{{artwork.height_cm}} cm,
-                {{ artwork.width_in }}x{{ artwork.height_in }} in </a></td>
-    </tr>
-    {% endfor %}
-</tbody>
+<div id="search-results-wrapper" class="mx-auto">
+    <div id="searchResults" style="display:flex;justify-content:flex-start;flex-wrap:wrap;width:999px;">
+
+        {% for artwork in object_list %}
+        <a class="gallery-item-wrapper" href="{% url 'catalogue:artwork_detail' artwork.pk %}">
+            <img class="gallery-item-image" src="{{ artwork.image.url }}" alt="{{ artwork.title }}">
+            <div class="gallery-item-text">
+                <h3>{{artwork.title}}</h3>
+                <ul style="display:flex;flex-direction:column;">
+                    <li>{{artwork.series}}</li>
+                    <li>{{artwork.year}} | {{ artwork.location }}</li>
+                    <li>{{ artwork.width_cm}}x{{artwork.height_cm}}cm |
+                        {{ artwork.width_in }}x{{ artwork.height_in }}in
+                    </li>
+                </ul>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
+</div>

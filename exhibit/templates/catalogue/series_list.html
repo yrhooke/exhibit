@@ -1,19 +1,22 @@
-
-<caption>List of Series</caption>
-<thead>
-    <tr>
-        <th scope="col">Name</th>
-        <th scope="col">Years</th>
-        <th scopee="col"># Works</th>
-    </tr>
-</thead>
-<tbody>
-    {% for series in object_list %}
-    <tr>
-        <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.name }}</a></td>
-        <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.time_range.first }} -
-                {{ series.time_range.last }}</a></td>
-        <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.count }}</a></td>
-    </tr>
-    {% endfor %}
-</tbody>
+<div class="table-responsive">
+    <table class="table table-striped table-hover" id="searchResults">
+        <caption>List of Series</caption>
+        <thead>
+            <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Years</th>
+                <th scopee="col"># Works</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for series in object_list %}
+            <tr>
+                <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.name }}</a></td>
+                <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.time_range.first }} -
+                        {{ series.time_range.last }}</a></td>
+                <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.count }}</a></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
