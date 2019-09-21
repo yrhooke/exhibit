@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 import json
 from catalogue.models import Artwork, Series, Exhibition, Location
-from catalogue.forms import WorkInExhibitionForm
+from catalogue.forms import WorkInExhibitionForm, ArtworkSearchForm, LocationSearchForm, ExhibitionSearchForm
 
 from django.core.exceptions import FieldError
 from django.db import models
@@ -24,111 +24,65 @@ class HomeView(LoginRequiredMixin, ListView):
     template_name = 'home.html'
     model = Series
 
+
 class SearchView(LoginRequiredMixin, ListView):
+    """View for searching for Artworks"""
+
     template_name = 'catalogue/search.html'
-    paginate_by = 20
-    count = 0
 
     def post(self, request, *args, **kwargs):
         """Define a handler for post requests"""
-
         return self.get(request, *args, **kwargs)
 
     def _parse_request_data(self):
         """Deserialize request POST data field from JSON"""
 
-        return json.loads(self.request.POST.get('data', '{}'))
-    
-    def _clean_resultType(self, resultType):
-        """check that resultType received is in model_map, otherwise set to default"""
+        return json.loads(self.request.POST.get('search_form_data', '{}'))
 
-        if model_map.get(resultType):
-            return resultType
-        else:
-            return 'Artwork'
-        
-
-
-
-    def _no_filter_queryset(self, resultType):
-        """returns a queryset object with no filters of selected resultType string"""
-
-        resultModel = model_map.get(resultType, Artwork)
-        return resultModel.objects.all().order_by('-pk')[:50]
-
-    def _create_query_filter(self, filterDict):
+    def _create_query_filter(self, field_name, field_value, prefix=None):
         """creates a tuple of filter param and value from filter object created in the search bar"""
-
-        fieldName = filterDict.get('fieldName')
-        foreignKeyField = filterDict.get('foreignKeyField')
-        fieldValue = filterDict.get('fieldValue')
-
-        if not fieldName or fieldValue is None:
-            # need to deal with it
+        if field_value == None:
             return None
+        query_param = field_name
+        if prefix:
+            query_param = f'{prefix}__{query_param}'
+        if isinstance(field_value, str):
+            query_param += "__icontains"
+        return (query_param, field_value)
 
-        queryString = str(fieldName)
-        if foreignKeyField:
-            queryString += f"__{foreignKeyField}"
-        if isinstance(fieldName, str):
-            fieldValue = fieldValue.strip()
-            queryString += "__icontains"
-
-        return (queryString, fieldValue)
+    def _make_form_queries(self, form, prefix=None):
+        """make a list of queries for each field in a form"""
+        queries = []
+        for field_name, field_value in form.cleaned_data.items():
+            queries.append(self._create_query_filter(field_name, field_value, prefix))
+        return queries
 
     def get_queryset(self):
         """returns the queryset object to be rendered as object_list by template"""
+        request_data = self._parse_request_data()
+        artwork_form = ArtworkSearchForm(request_data.get('artwork'))
+        location_form = LocationSearchForm(request_data.get('location'))
+        exhibition_form = ExhibitionSearchForm(request_data.get('exhibition'))
 
-        request = self.request
-        if request.method == "GET":
-            return self._no_filter_queryset(request.GET.get('resultType'))
-        elif request.method == "POST":
-            request_data = self._parse_request_data()
-            try:
-                resultType = request_data['resultType']
-                filters = request_data['filters']
-            except KeyError:
-                # KeyError - requestType or filters fields not found in POST
-                resultType = "Artwork"
-                filters = []
+        if all((artwork_form.is_valid(), location_form.is_valid(), exhibition_form.is_valid())):
 
-            queries = [self._create_query_filter(f) for f in filters]
+            queries = (self._make_form_queries(artwork_form) +
+                       self._make_form_queries(location_form, 'location') +
+                       self._make_form_queries(exhibition_form, 'exhibition'))
+            # queries = self._make_form_queries(artwork_form)
+
             valid_queries = [query for query in queries if query]  # remove None queries
-            resultModel = model_map.get(resultType)
-            try:
-                return resultModel.objects.filter(*valid_queries).order_by('-pk')[:50]
-            except FieldError:
-                # FieldError - some filter Q doesn't match resultModel fields
-                return self._no_filter_queryset(resultType)
-
+            queryset = Artwork.objects.filter(*valid_queries)
         else:
-            return []
+            queryset = Artwork.objects.all()
+        return queryset.order_by('-pk')[:50]
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
-        if self.request.method == 'GET':
-            request_data = self.request.GET
-        elif self.request.method == "POST":
-            request_data = self._parse_request_data()
-
-        context['modelsToSearch'] = model_map.keys()
-        context['foreignKeyFields'] = {
-            modelName.lower(): {field.name: field.verbose_name for field
-                                in model.searchable_fields}
-            for modelName, model in model_map.items()
-        }
-        selectedModel = self._clean_resultType(request_data.get('resultType'))
-        context['selectedModel'] = selectedModel
-        context['fields'] = context['foreignKeyFields'][selectedModel.lower()]
-        context['filters'] = request_data.get('filters', [])
-
-        context['createLink'] = reverse(f'catalogue:{selectedModel.lower()}_add')
-
-        # For debug:
-        context['getParams'] = self.request.GET
-        context['postParams'] = self.request.POST
-
+        context['artwork_search_form'] = ArtworkSearchForm()
+        context['location_search_form'] = LocationSearchForm()
+        context['exhibition_search_form'] = ExhibitionSearchForm()
         return context
 
 

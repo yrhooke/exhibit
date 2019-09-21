@@ -29,34 +29,51 @@
         addSearchFilter("#search-filters-container");
     }
 
+    // function makeSearchQuery() {
+    //     let resultType = getResultType();
+    //     let filters = [];
+
+    //     let filtersList = $(".search-filter");
+    //     for (let i = 0; i < filtersList.length; i++) {
+    //         let searchFilter = filtersList.eq(i);
+    //         let mainSelect = searchFilter.find(".search-filter-main-select")[0];
+    //         let foreignSelect = searchFilter.find(".search-filter-foreignkey-select")[0];
+    //         let filterText = searchFilter.find(".search-filter-text")[0];
+
+    //         let fieldName = mainSelect.options[mainSelect.options.selectedIndex].value;
+    //         let foreignKeyField;
+
+    //         if (foreignSelect) {
+    //             foreignKeyField = foreignSelect.value;
+    //         } else if (fieldName === "series") { // this is so if series is first option opened still have foreignKeyField value - should be cleaned up
+    //             foreignKeyField = "name"
+    //         }
+
+    //         filters.push({
+    //             "fieldName": fieldName,
+    //             "fieldValue": filterText.value,
+    //             "foreignKeyField": foreignKeyField
+    //         })
+    //     }
+    //     return { "resultType": resultType, "filters": filters }
+    // }
     function makeSearchQuery() {
-        let resultType = getResultType();
-        let filters = [];
-
-        let filtersList = $(".search-filter");
-        for (let i = 0; i < filtersList.length; i++) {
-            let searchFilter = filtersList.eq(i);
-            let mainSelect = searchFilter.find(".search-filter-main-select")[0];
-            let foreignSelect = searchFilter.find(".search-filter-foreignkey-select")[0];
-            let filterText = searchFilter.find(".search-filter-text")[0];
-
-            let fieldName = mainSelect.options[mainSelect.options.selectedIndex].value;
-            let foreignKeyField;
-
-            if (foreignSelect) {
-                foreignKeyField = foreignSelect.value;
-            } else if (fieldName === "series") { // this is so if series is first option opened still have foreignKeyField value - should be cleaned up
-                foreignKeyField = "name"
+        let search_params = {
+            'artwork': {},
+            'location': {},
+            'exhibition': {}
+        };
+        function feed_params_with_inputs (input_selector, param) {
+            for (input of input_selector) {
+                search_params[param][input.name] = input.value;
             }
-
-            filters.push({
-                "fieldName": fieldName,
-                "fieldValue": filterText.value,
-                "foreignKeyField": foreignKeyField
-            })
         }
-        return { "resultType": resultType, "filters": filters }
+        feed_params_with_inputs($('#search-form input, #search-form select'), 'artwork')
+        feed_params_with_inputs($('#search-location-details input, #search-location-details select'), 'location')
+        feed_params_with_inputs($('#search-exhibition-details input, #search-exhibition-details select'), 'exhibition')
+        return search_params;
     }
+
 
 
     $(document).ready(function () {
@@ -97,7 +114,7 @@
         $("#search-form").submit(() => {
             let query = makeSearchQuery();
             $('<input />').attr('type', 'hidden')
-                .attr('name', 'data')
+                .attr('name', 'search_form_data')
                 .attr('value', JSON.stringify(query))
                 .appendTo("#search-form");
             return true;
@@ -106,26 +123,49 @@
 
 
     /*
-    redesign is happening here
+    Modularize search bar:
+    Search - like streeteasy, but not as spaced - some major categories separated, and advanced categories
+    Size categories - come up with a few chunks
+    Sort order for artworks? Large -> small then by year
+    Size category determined by size in cm, automatically show category
+    150 x 180 - large
+    Can search for objects in series from series detail view
+    Search bar in series, location, exhibition detail view (automatically search for artworks in that particular thing)
+    Main categories for search:
+    size category
+    Series (if searching not from within series page)
+    Status
+    Location (if searching not from within location page)
 
-    1. make search bar a box, with select type on left (inline select) - V
-    2. give submit button on right of search bar - V
-    3. add a + button in search bar - V
-    4. make+add select after button press - v
-    6. add cancel button to select - v
-    7. remove select after button pressed - v
-    8. pop up extra box for foreignkey - v
-    9. reload filter data after submit - v
 
-    4. get list of all filter fields for all types to start (have visible and invisible values for each) - v
-    5. if + button pressed, create html box in search bar, with select for appropriate field types, text input, and little x button - v
-    6. if x button pressed, remove text box - v
-    7. if resultType changed, remove all boxes - v
-    8. define onsubmit action (put together appropriate data structure for SearchView) - v
-    9. if foreignkey, pop up extra box - v
-    10. keep track of field types, and only show field types not active in new boxes - not gonna do that now
-    11. change history to allow back arrow + reload
-    12. delete with backspace - stretch goal
+    search fields:
+    artwork:     searchable_fields = [
+        series,
+        title,
+        location,
+        status,
+        year,
+        size,
+        medium,
+        rolled,
+        owner,
+    ]
+    exhibition:     searchable_fields = [
+        name,
+        description,
+        location,
+        start_date,
+        end_date,
+    ]
+    location:     searchable_fields = [
+        name,
+        description,
+        address_1,
+        city,
+        state,
+        country,
+        zip_code,
+    ]
     */
 
 </script>
@@ -135,7 +175,7 @@
 {% block page_title %}Search{% endblock %}
 
 {% block content %}
-<div class="row">
+<!-- <div class="row">
     <div class="form flex-container" name="search-bar-container" id="search-bar-container">
         <div class="form-group">
             <select class="form-control" name="resultType" id="search-result-type-selector">
@@ -146,9 +186,8 @@
             </select>
         </div>
         <div class="form-group flex-container" id="search-bar-main-body">
-            <!-- I want this wider, and I shouldn't have to nest flex containers inside each other -->
             <div class="form-control flex-container" name="search-filters-container" id="search-filters-container">
-                {% include "./search_bar.html" with filters=filters foreignKeyFields=foreignKeyFields fields=fields%}
+                { include "./search_bar.html" with filters=filters foreignKeyFields=foreignKeyFields fields=fields%}
             </div>
             <button type="button" class="btn" id="add-search-filter-button">+</button>
         </div>
@@ -161,21 +200,47 @@
             {% csrf_token %}
         </form>
     </div>
+</div>  -->
+<div class="row" id="">
+    <!-- <div class="form flex-container" name="search-bar-container" id="search-bar-container">
+        <span>Series</span>
+        <span>Title</span>
+        <span>Size Category</span>
+        <span>Location</span>
+        <span>Status</span>
+        <span>More options</span>
+    </div>
+    <div class="more-search-categories">
+        <span>Location options</span>
+        <span>Appeared in Exhibition</span>
+        <span></span>
+    </div> -->
+
+    <form action="" method="POST" id="search-form">
+        {{ artwork_search_form }}
+        {% csrf_token %}
+        <button type="submit">submit</button>
+    </form>
+    <div id='search-location-details'>
+        {{ location_search_form }}
+    </div>
+    <div id='search-exhibition-details'>
+        {{ exhibition_search_form }}
+    </div>
 </div>
 <div class="row">
-    <a href="{{ createLink }}" class="btn btn-primary">Create new</a>
+    <!-- <a href="{ createLink }}" class="btn btn-primary">Create new</a> -->
 </div>
-
 <div class="row" id="search-results-container">
-            {% if selectedModel == "Series" %}
-            {% include "./series_list.html" with object_list=object_list %}
-            {% elif selectedModel == "Location" %}
-            {% include "./location_list.html" with object_list=object_list %}
-            {% elif selectedModel == "Exhibition" %}
-            {% include "./exhibition_list.html" with object_list=object_list %}
-            {% else %}
-            {% include "./artwork_list.html" with object_list=object_list %}
-            {% endif %}
+    {% if selectedModel == "Series" %}
+    {% include "./series_list.html" with object_list=object_list %}
+    {% elif selectedModel == "Location" %}
+    {% include "./location_list.html" with object_list=object_list %}
+    {% elif selectedModel == "Exhibition" %}
+    {% include "./exhibition_list.html" with object_list=object_list %}
+    {% else %}
+    {% include "./artwork_list.html" with object_list=object_list %}
+    {% endif %}
 
 </div>
 
