@@ -1,4 +1,5 @@
 {% load static %}
+
 <caption>List of Artworks</caption>
 <div id="search-results-wrapper" class="mx-auto">
     <div id="searchResults" style="display:flex;justify-content:flex-start;flex-wrap:wrap;width:999px;">
@@ -6,12 +7,27 @@
         {% for artwork in object_list %}
         <a class="gallery-item-wrapper" href="{% url 'catalogue:artwork_detail' artwork.pk %}">
             <img class="gallery-item-image" src="{{ artwork.image.url }}" alt="{{ artwork.title }}">
-            <div class="gallery-item-text">
-                <h3>{{artwork.title}}</h3>
-                <ul style="display:flex;flex-direction:column;">
-                    <li>{{artwork.series}}</li>
-                    <li>{{artwork.year}} | {{ artwork.location }}</li>
-                    <li>{{ artwork.width_cm}}x{{artwork.height_cm}}cm |
+            <div class="gallery-item-hover">
+                <ul class="gallery-item-text">
+                    <li>
+                        <div class="gallery-item-title">
+                            <span>{{ artwork.title }}</span>
+                        </div>
+                    </li>
+                    <li>
+                        <!-- <label for="artwork_series_{{ artwork.pk }}">Series:</label> -->
+                        <span id="artwork_series_{{ artwork.pk }}">{{ artwork.series }}</span>
+                        <span class="separator"> | </span>
+                        <!-- <label for="artwork_year_{{ artwork.pk }}">Year:</label> -->
+                        <span id="artwork_year_{{ artwork.pk }}">{{ artwork.year }}</span>
+                    </li>
+                    <li>
+                        <!-- <label for="artwork_location_{{ artwork.pk }}">Location:</label> -->
+                        <span id="artwork_location_{{ artwork.pk }}">{{ artwork.location }}</span>
+                    </li>
+                    <li>
+                        {{ artwork.width_cm}}x{{artwork.height_cm}}cm
+                        <span class="separator"> | </span>
                         {{ artwork.width_in }}x{{ artwork.height_in }}in
                     </li>
                 </ul>

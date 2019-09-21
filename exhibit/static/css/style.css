@@ -1,5 +1,5 @@
 body {
-    font-size: 17px;
+    font-size: 16px;
     font-family: brandon-reg, Arial, Helvetica, sans-serif;
     background-color: rgb(235, 235, 228);
 }
@@ -221,8 +221,12 @@ caption {
     margin: 20px;
     /* z-index: 10; */
 }
-#searchResults .gallery-item-image,
-.gallery-item-image {
+
+a.gallery-item-wrapper:link, a.gallery-item-wrapper:visited, a.gallery-item-wrapper:link:active, a.gallery-item-wrapper:visited:active {
+    color: rgb(44, 45, 52);
+}
+
+#searchResults .gallery-item-image, .gallery-item-image {
     height: 293px;
     width: 293px;
     overflow: hidden;
@@ -230,7 +234,7 @@ caption {
     z-index: 10;
 }
 
-.gallery-item-text {
+.gallery-item-hover {
     visibility: hidden;
     z-index: 20;
     margin-top: -293px;
@@ -241,8 +245,24 @@ caption {
     height: inherit;
 }
 
-.gallery-item-wrapper:hover .gallery-item-text {
+.gallery-item-wrapper:hover .gallery-item-hover {
     visibility: visible;
+}
+
+.gallery-item-title {
+    font: normal normal normal 29px/36px brandon-reg, sans-serif;
+}
+
+.gallery-item-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+ul.gallery-item-text {
+    list-style-type: none;
+    padding: 0px;
 }
 
 /* -------------------------------------- */
@@ -473,7 +493,8 @@ textarea.detail-field {
 }
 
 h1, h2, h3, h4, h5, h6, label, th {
-    font-family: brandon-med;
+    font-family: brandon-reg;
+    font-weight: 200;
 }
 
 /* -------------------------------------- */
