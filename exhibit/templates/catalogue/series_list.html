@@ -1,22 +1,38 @@
-<div class="table-responsive">
-    <table class="table table-striped table-hover" id="searchResults">
-        <caption>List of Series</caption>
-        <thead>
-            <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Years</th>
-                <th scopee="col"># Works</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for series in object_list %}
-            <tr>
-                <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.name }}</a></td>
-                <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.time_range.first }} -
-                        {{ series.time_range.last }}</a></td>
-                <td><a href="{% url 'catalogue:series_detail' series.pk %}">{{ series.count }}</a></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<caption>List of Artworks</caption>
+<div id="search-results-wrapper" class="mx-auto">
+    <div id="searchResults" style="display:flex;justify-content:flex-start;flex-wrap:wrap;width:999px;">
+
+        {% for series in object_list %}
+        <a class="gallery-item-wrapper" href="{% url 'catalogue:series_detail' series.pk %}">
+            {% if series.count > 0 %}
+            <img class="gallery-item-image" src="{{ series.image.url }}" alt="{{ series.name }}">
+            {% else %}
+            <div class="gallery-item-image" style="background:darkgrey"></div>
+            {% endif %}
+            <div class="gallery-item-hover">
+                <ul class="gallery-item-text">
+                    <li>
+                        <div class="gallery-item-title">
+                            <span>{{ series.name }}</span>
+                        </div>
+                    </li>
+                    {% if series.time_range %}
+                    <li>
+                        <span id="artwork_series_first">{{ series.time_range.first }}</span>
+                        <span class="separator"> - </span>
+                        <span id="artwork_series_last">{{ series.time_range.last }}</span>
+                    </li>
+                    <li>
+                        {{ series.count }} Works in Series
+                    </li>
+                    {% else %}
+                    <li>
+                        No Works in Series
+                    </li>
+                    {% endif %}
+                </ul>
+            </div>
+        </a>
+        {% endfor %}
+    </div>
 </div>

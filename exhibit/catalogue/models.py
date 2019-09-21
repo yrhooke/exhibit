@@ -149,13 +149,29 @@ class Series(models.Model):
         name,
     ]
 
+    @property
     def count(self):
+        """number of artworks in series"""
+
         return Artwork.objects.filter(series__pk=self.pk).count()
 
     @property
     def time_range(self):
+        """range of years for works in Series. returns None if empty"""
+        if self.count == 0:
+            return None
+
         artworks_in_series = Artwork.objects.filter(series__pk=self.pk).order_by('year')
         return {'first': artworks_in_series.first().year, 'last': artworks_in_series.last().year}
+
+    @property
+    def image(self):
+        """image field for newest artwork in Series"""
+        if self.count == 0:
+            return None
+
+        artworks_in_series = Artwork.objects.filter(series__pk=self.pk).order_by('-pk')
+        return artworks_in_series.first().image
 
 
 class Exhibition(models.Model):
