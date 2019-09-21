@@ -41,20 +41,29 @@ Artwork management tool
   - [X] header
   - [X] make sure form works
 - [X] search bar layout
+- [X] artwork list view like rotemreshef.com
 
 ### in current branch
 
-- [ ] store images on S3
+- [ ] artwork search like streeteasy
+  - [X] new search backend logic
+  - [X] new search layout
+  - [ ] search form validation
+  - [ ] search form organizing/css
+- [ ] separate search to modular reusable components
+- [ ] distribute artwork search among templates
 
 ### next phase
 
-- [ ] remove all proprietary data from source control
-- [ ] talk to Mom - use filters, not searchbar paradigm for search?
-- [ ] artwork list view like rotemreshef.com
+- [ ] series/artwork heirarchy
+- [ ] form cleanup in series/location/exhibition detail views
+- [ ] form cleanup in artwork detail view
+- [ ] better form validation (correct widgets, visibly fail on errors, etc)
 
 ### Want for launch
 
-- [ ] better form validation (correct widgets, visibly fail on errors, etc)
+- [ ] store images on S3
+- [ ] remove all proprietary data from source control
 - [ ] add autocomplete in search
 - [ ] add pagination to search
 - [ ] save on change in edit view
@@ -65,6 +74,7 @@ Artwork management tool
   - [ ] artwork detail: card elements shouldn't move around too much
 - [ ] Thumbnails for series
 - [ ] manage sale currency better
+- [ ] filtering non-artworks list views
 
 ### Post Launch
 

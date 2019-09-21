@@ -80,6 +80,7 @@
     $(document).ready(function () {
 
         // initialize select2
+        $('#search-bar-wrapper select').select2();
         $('#search-result-type-selector').select2();
         $('.search-filter-main-select').select2();
         $('.search-filter-foreignkey-select').select2();
@@ -204,8 +205,8 @@
 </div>  -->
 <div class="row">
 
-    <div class="search-bar-wrapper">
-        <div class="search-bar-main form-inline">
+    <div id="search-bar-wrapper">
+        <div class="search-bar-main form-inline" style="display:flex;flex-wrap:nowrap;">
             <div class="form-group">
                 {{ artwork_search_form.series.label_tag }}
                 {% render_field artwork_search_form.series class="form-control" %}
