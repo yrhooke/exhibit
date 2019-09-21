@@ -5,10 +5,10 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
 
-from catalogue.views import SearchView
+from catalogue.views import HomeView
 
 urlpatterns = [
-    path("", SearchView.as_view(), name="home"),
+    path("", HomeView.as_view(), name="home"),
     # Django Admin, use {% url 'admin:index' %}
     path(settings.ADMIN_URL, admin.site.urls),
     # User management

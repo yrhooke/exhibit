@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Home{% endblock %}
+
+{% block content %}
+<h2>Rotem Reshef</h2>
+<p>
+    Hello! Welcome to Exhibit: an artwork management tool. This website is dedicated to managing the works of Rotem
+    Reshef, including their current location, exhibition history, sales, and other data. Feel free to check out each of
+    the series below, or search for details about a particular series, artwork, location, or exhibition using the menu
+    on the left.
+</p>
+{% include 'catalogue/series_list.html' with object_list=object_list %}
+{% endblock content%}

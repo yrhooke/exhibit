@@ -20,6 +20,10 @@ model_map = {
 }
 
 
+class HomeView(LoginRequiredMixin, ListView):
+    template_name = 'home.html'
+    model = Series
+
 class SearchView(LoginRequiredMixin, ListView):
     template_name = 'catalogue/search.html'
     paginate_by = 20
