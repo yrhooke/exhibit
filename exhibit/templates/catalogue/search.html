@@ -1,5 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
+{% load widget_tweaks %}
 
 
 {% block custom_headers %}
@@ -63,7 +64,7 @@
             'location': {},
             'exhibition': {}
         };
-        function feed_params_with_inputs (input_selector, param) {
+        function feed_params_with_inputs(input_selector, param) {
             for (input of input_selector) {
                 search_params[param][input.name] = input.value;
             }
@@ -201,32 +202,61 @@
         </form>
     </div>
 </div>  -->
-<div class="row" id="">
-    <!-- <div class="form flex-container" name="search-bar-container" id="search-bar-container">
-        <span>Series</span>
-        <span>Title</span>
-        <span>Size Category</span>
-        <span>Location</span>
-        <span>Status</span>
-        <span>More options</span>
-    </div>
-    <div class="more-search-categories">
-        <span>Location options</span>
-        <span>Appeared in Exhibition</span>
-        <span></span>
-    </div> -->
+<div class="row">
 
-    <form action="" method="POST" id="search-form">
-        {{ artwork_search_form }}
-        {% csrf_token %}
-        <button type="submit">submit</button>
-    </form>
-    <div id='search-location-details'>
-        {{ location_search_form }}
+    <div class="search-bar-wrapper">
+        <div class="search-bar-main form-inline">
+            <div class="form-group">
+                {{ artwork_search_form.series.label_tag }}
+                {% render_field artwork_search_form.series class="form-control" %}
+            </div>
+            <div class="form-group">
+                {{ artwork_search_form.title.label_tag }}
+                {% render_field artwork_search_form.title class="form-control" %}
+            </div>
+            <div class="form-group">
+                {{ artwork_search_form.size.label_tag }}
+                {% render_field artwork_search_form.size class="form-control" %}
+            </div>
+            <div class="form-group">
+                {{ artwork_search_form.location.label_tag }}
+                {% render_field artwork_search_form.location class="form-control" %}
+            </div>
+            <div class="form-group">
+                {{ artwork_search_form.status.label_tag }}
+                {% render_field artwork_search_form.status class="form-control" %}
+            </div>
+            <div class="form-group">
+                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#search-bar-more"
+                    aria-expanded="false" aria-controls="search-bar-more">Show More</button>
+            </div>
+            <form action="" method="POST" id="search-form">
+                {% csrf_token %}
+                <button type="submit">submit</button>
+            </form>
+        </div>
+        <div id="search-bar-more" class="form-inline collapse">
+            <div class="form-group">
+                {{ artwork_search_form.year.label_tag }}
+                {% render_field artwork_search_form.year class="form-control" %}
+            </div>
+            <div class="form-group">
+                {{ artwork_search_form.owner.label_tag }}
+                {% render_field artwork_search_form.owner class="form-control" %}
+            </div>
+            <div class="form-group">
+                {{ artwork_search_form.medium.label_tag }}
+                {% render_field artwork_search_form.medium class="form-control" %}
+            </div>
+            <div id='search-location-details'>
+                {{ location_search_form }}
+            </div>
+            <div id='search-exhibition-details'>
+                {{ exhibition_search_form }}
+            </div>
+        </div>
     </div>
-    <div id='search-exhibition-details'>
-        {{ exhibition_search_form }}
-    </div>
+
 </div>
 <div class="row">
     <!-- <a href="{ createLink }}" class="btn btn-primary">Create new</a> -->
