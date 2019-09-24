@@ -180,15 +180,15 @@
 <!-- <div class="row">
     <div class="form flex-container" name="search-bar-container" id="search-bar-container">
         <div class="form-group">
-            <select class="form-control" name="resultType" id="search-result-type-selector">
+            <select class="form-control rounded-0" name="resultType" id="search-result-type-selector">
                 {% for model in modelsToSearch %}
-                <option class="form-control" value="{{ model }}" {% if model == selectedModel %}selected{% endif %}>
+                <option class="form-control rounded-0" value="{{ model }}" {% if model == selectedModel %}selected{% endif %}>
                     {{ model }}</option>
                 {% endfor %}
             </select>
         </div>
         <div class="form-group flex-container" id="search-bar-main-body">
-            <div class="form-control flex-container" name="search-filters-container" id="search-filters-container">
+            <div class="form-control rounded-0 flex-container" name="search-filters-container" id="search-filters-container">
                 { include "./search_bar.html" with filters=filters foreignKeyFields=foreignKeyFields fields=fields%}
             </div>
             <button type="button" class="btn" id="add-search-filter-button">+</button>
@@ -209,23 +209,23 @@
         <div class="search-bar-main form-inline" style="display:flex;flex-wrap:nowrap;">
             <div class="form-group">
                 {{ artwork_search_form.series.label_tag }}
-                {% render_field artwork_search_form.series class="form-control search-artwork-details" %}
+                {% render_field artwork_search_form.series class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
                 {{ artwork_search_form.title.label_tag }}
-                {% render_field artwork_search_form.title class="form-control search-artwork-details" %}
+                {% render_field artwork_search_form.title class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
                 {{ artwork_search_form.size.label_tag }}
-                {% render_field artwork_search_form.size class="form-control search-artwork-details" %}
+                {% render_field artwork_search_form.size class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
                 {{ artwork_search_form.location.label_tag }}
-                {% render_field artwork_search_form.location class="form-control search-artwork-details" %}
+                {% render_field artwork_search_form.location class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
                 {{ artwork_search_form.status.label_tag }}
-                {% render_field artwork_search_form.status class="form-control search-artwork-details" %}
+                {% render_field artwork_search_form.status class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#search-bar-more"
@@ -239,21 +239,21 @@
         <div id="search-bar-more" class="form-inline collapse">
             <div class="form-group">
                 {{ artwork_search_form.year.label_tag }}
-                {% render_field artwork_search_form.year class="form-control search-artwork-details" %}
+                {% render_field artwork_search_form.year class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
                 {{ artwork_search_form.owner.label_tag }}
-                {% render_field artwork_search_form.owner class="form-control search-artwork-details" %}
+                {% render_field artwork_search_form.owner class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
                 {{ artwork_search_form.medium.label_tag }}
-                {% render_field artwork_search_form.medium class="form-control search-artwork-details" %}
+                {% render_field artwork_search_form.medium class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div id='search-exhibition-details'>
                 {% for field in exhibition_search_form %}
                 <div class="form-group">
                     {{ field.label_tag }}
-                    {% render_field field class="form-control" %}
+                    {% render_field field class="form-control rounded-0" %}
                 </div>
                 {% endfor %}
             </div>
@@ -262,7 +262,7 @@
                 {% for field in location_search_form %}
                 <div class="form-group">
                     {{ field.label_tag }}
-                    {% render_field field class="form-control" %}
+                    {% render_field field class="form-control rounded-0" %}
                 </div>
                 {% endfor %}
             </div>
