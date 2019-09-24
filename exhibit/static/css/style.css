@@ -305,6 +305,11 @@ ul.gallery-item-text {
     width: 12rem;
 }
 
+/* non rounded select2 elements */
+[class^='select2'] {
+    border-radius: 0px !important;
+  }
+
 /* class="select2-selection__placeholder" */
 
 /* .select2-search--dropdown{
