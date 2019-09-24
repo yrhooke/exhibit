@@ -9,7 +9,7 @@ class WorkInExhibitionForm(forms.ModelForm):
 
 
 class ArtworkSearchForm(forms.ModelForm):
-
+    """Search for Artworks"""
     class Meta():
         model = Artwork
         fields = [
@@ -26,7 +26,7 @@ class ArtworkSearchForm(forms.ModelForm):
     
 
 class LocationSearchForm(forms.ModelForm):
-
+    """Search for locations"""
     class Meta():
         model = Location
         fields = [
@@ -40,17 +40,9 @@ class LocationSearchForm(forms.ModelForm):
         ]
 
 
-class ExhibitionSearchForm(forms.ModelForm):
-
-    class Meta():
-        model = Exhibition
-        fields = [
-            'name',
-            'description',
-            'location',
-            'start_date',
-            'end_date',
-        ]
-
+class ExhibitionSearchForm(forms.Form):
+    """search for exhibitions"""
+    exhibition = forms.ModelChoiceField(queryset=Exhibition.objects.all(), required=False,
+    label="Was in Exhibition")
 
 

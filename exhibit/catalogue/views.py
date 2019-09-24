@@ -67,7 +67,6 @@ class SearchView(LoginRequiredMixin, ListView):
         location_form = LocationSearchForm(request_data.get('location'))
         exhibition_form = ExhibitionSearchForm(request_data.get('exhibition'))
 
-
         validitiy = [
             artwork_form.is_valid(),
             location_form.is_valid(),
@@ -75,8 +74,8 @@ class SearchView(LoginRequiredMixin, ListView):
         ]
 
         queries = (self._make_form_queries(artwork_form) +
-                    self._make_form_queries(location_form, 'location') ) # +
-                    # self._make_form_queries(exhibition_form, 'exhibition'))
+                   self._make_form_queries(location_form, 'location') +
+                   self._make_form_queries(exhibition_form, 'workinexhibition'))
         valid_queries = [query for query in queries if query]  # remove None queries
         queryset = Artwork.objects.filter(*valid_queries)
         return queryset.order_by('-pk')[:50]
@@ -85,8 +84,8 @@ class SearchView(LoginRequiredMixin, ListView):
         context = super().get_context_data(*args, **kwargs)
 
         context['artwork_search_form'] = ArtworkSearchForm(initial={
-            'owner' : '',
-            'medium' : '',
+            'owner': '',
+            'medium': '',
             # 'status' = None
         })
         context['location_search_form'] = LocationSearchForm()
