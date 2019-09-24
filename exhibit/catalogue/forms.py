@@ -15,7 +15,7 @@ class ArtworkSearchForm(forms.ModelForm):
     title = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': "Title"}))
     location = forms.ModelChoiceField(queryset=Location.objects.all(), required=False, empty_label="Location")
     status = forms.TypedChoiceField(choices=Artwork.OVERALL_STATUS_CHOICES, required=False, empty_value="Status")
-    size = forms.TypedChoiceField(choices=Artwork.OVERALL_STATUS_CHOICES, required=False, empty_value="Size Category")
+    size = forms.TypedChoiceField(choices=Artwork.SIZE_OPTIONS, required=False, empty_value="Size Category")
     year = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'Year'}), required=False)
     owner = forms.CharField(required=False)
 
