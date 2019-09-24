@@ -78,7 +78,7 @@ class Artwork(models.Model):
         ('S', 'Sold'),
     )
     status = models.CharField('Status', max_length=1, choices=OVERALL_STATUS_CHOICES,
-                              default='D')
+                              default='D', blank=True)
     additional = models.TextField('Additional info', blank=True)
 
     # Sale fields

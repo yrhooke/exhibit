@@ -86,7 +86,7 @@ class SearchView(LoginRequiredMixin, ListView):
         context['artwork_search_form'] = ArtworkSearchForm(initial={
             'owner': '',
             'medium': '',
-            # 'status' = None
+            'status': None
         })
         context['location_search_form'] = LocationSearchForm()
         context['exhibition_search_form'] = ExhibitionSearchForm()
@@ -197,6 +197,7 @@ class ArtworkCreate(LoginRequiredMixin, genericCreateView):
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         form.fields['owner'].required = False
+        form.fields['status'].required = True
         return form
 
 
@@ -224,6 +225,7 @@ class ArtworkUpdate(LoginRequiredMixin, UpdateView):
         form = super().get_form(form_class)
         form.fields['image'].required = False
         form.fields['owner'].required = False
+        form.fields['status'].required = True
         return form
 
 

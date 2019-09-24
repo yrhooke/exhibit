@@ -16,7 +16,7 @@ class ArtworkSearchForm(forms.ModelForm):
             'series',
             'title',
             'location',
-            # 'status',
+            'status',
             'year',
             'size',
             'medium',

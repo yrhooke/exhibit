@@ -48,7 +48,7 @@ Artwork management tool
 - [ ] artwork search like streeteasy
   - [X] new search backend logic
   - [X] new search layout
-  - [ ] search form validation
+  - [X] search form validation
   - [ ] search form organizing/css
 - [ ] separate search to modular reusable components
 - [ ] distribute artwork search among templates
