@@ -249,11 +249,22 @@
                 {{ artwork_search_form.medium.label_tag }}
                 {% render_field artwork_search_form.medium class="form-control search-artwork-details" %}
             </div>
-            <div id='search-location-details'>
-                {{ location_search_form }}
-            </div>
             <div id='search-exhibition-details'>
-                {{ exhibition_search_form }}
+                {% for field in exhibition_search_form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {% render_field field class="form-control" %}
+                </div>
+                {% endfor %}
+            </div>
+            <div id='search-location-details'>
+                <span>Location Details</span>
+                {% for field in location_search_form %}
+                <div class="form-group">
+                    {{ field.label_tag }}
+                    {% render_field field class="form-control" %}
+                </div>
+                {% endfor %}
             </div>
         </div>
     </div>
