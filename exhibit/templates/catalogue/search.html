@@ -208,33 +208,28 @@
     <div id="search-bar-wrapper">
         <div class="search-bar-main form-inline" style="display:flex;flex-wrap:nowrap;">
             <div class="form-group">
-                {{ artwork_search_form.series.label_tag }}
                 {% render_field artwork_search_form.series class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
-                {{ artwork_search_form.title.label_tag }}
                 {% render_field artwork_search_form.title class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
-                {{ artwork_search_form.size.label_tag }}
                 {% render_field artwork_search_form.size class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
-                {{ artwork_search_form.location.label_tag }}
                 {% render_field artwork_search_form.location class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
-                {{ artwork_search_form.status.label_tag }}
                 {% render_field artwork_search_form.status class="form-control rounded-0 search-artwork-details" %}
-            </div>
-            <div class="form-group">
-                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#search-bar-more"
-                    aria-expanded="false" aria-controls="search-bar-more">Show More</button>
             </div>
             <form action="" method="POST" id="search-form">
                 {% csrf_token %}
                 <button type="submit">submit</button>
             </form>
+        </div>
+        <div class="form-group">
+            <span id="search-show-more" class="collapsed" data-toggle="collapse" data-target="#search-bar-more"
+                aria-expanded="false" aria-controls="search-bar-more"></span>
         </div>
         <div id="search-bar-more" class="form-inline collapse">
             <div class="form-group">

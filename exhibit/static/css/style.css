@@ -160,6 +160,18 @@ div.main-page {
     flex: 1 1 auto;
 }
 
+#search-show-more {
+    color: #0080C6;
+    cursor: pointer;
+    font-family: brandon-med;
+}
+#search-show-more:before{
+    content:'-Show Less';
+}
+#search-show-more.collapsed:before{
+    content:'+Show More';
+}
+
 .search-filter {
     display: inline-flex;
 }
@@ -309,6 +321,7 @@ ul.gallery-item-text {
 [class^='select2'] {
     border-radius: 0px !important;
   }
+
 
 /* class="select2-selection__placeholder" */
 
