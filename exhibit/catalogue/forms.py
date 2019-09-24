@@ -14,10 +14,15 @@ class ArtworkSearchForm(forms.ModelForm):
     series = forms.ModelChoiceField(queryset=Series.objects.all(), required=False, empty_label="Series")
     title = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': "Title"}))
     location = forms.ModelChoiceField(queryset=Location.objects.all(), required=False, empty_label="Location")
-    status = forms.TypedChoiceField(choices=Artwork.OVERALL_STATUS_CHOICES, required=False, empty_value="Status")
-    size = forms.TypedChoiceField(choices=Artwork.SIZE_OPTIONS, required=False, empty_value="Size Category")
     year = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'Year'}), required=False)
     owner = forms.CharField(required=False)
+    
+    status_choices = (('', 'Status'), *Artwork.OVERALL_STATUS_CHOICES)
+    status = forms.TypedChoiceField(choices=status_choices, required=False)
+
+    size_choices = (('', 'Size Category'), *Artwork.SIZE_OPTIONS)
+    size = forms.TypedChoiceField(choices=size_choices, required=False)
+    
 
     class Meta():
         model = Artwork
