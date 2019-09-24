@@ -39,6 +39,35 @@ class SearchView(LoginRequiredMixin, ListView):
 
         return json.loads(self.request.POST.get('search_form_data', '{}'))
 
+    def _prefill_forms(self, artworkargs=None, locationargs=None, exhibitionargs=None):
+        """creates instance of form classes prefilled with request data and custom args"""
+
+        request_data = self._parse_request_data()
+
+        if artworkargs:
+            if request_data.get('artwork'):
+                request_data['artwork'].update(artworkargs)
+            else:
+                request_data['artwork'] = artworkargs
+        if locationargs:
+            if request_data.get('location'):
+                request_data['location'].update(locationargs)
+            else:
+                request_data['location'] = locationargs
+        if exhibitionargs:
+            if request_data.get('exhibition'):
+                request_data['exhibition'].update(exhibitionargs)
+            else:
+                request_data['exhibition'] = exhibitionargs
+
+
+        artwork_form = ArtworkSearchForm(request_data.get('artwork'))
+        location_form = LocationSearchForm(request_data.get('location'))
+        exhibition_form = ExhibitionSearchForm(request_data.get('exhibition'))
+
+        return artwork_form, location_form, exhibition_form
+
+
     def _create_query_filter(self, field_name, field_value, prefix=None):
         """creates a tuple of filter param and value from filter object created in the search bar"""
         if field_value == None:
@@ -82,14 +111,24 @@ class SearchView(LoginRequiredMixin, ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
-
-        context['artwork_search_form'] = ArtworkSearchForm(initial={
+        
+        forms = self._prefill_forms(artworkargs={'initial': {
             'owner': '',
             'medium': '',
             'status': None
-        })
-        context['location_search_form'] = LocationSearchForm()
-        context['exhibition_search_form'] = ExhibitionSearchForm()
+        }})
+
+        context['artwork_search_form'] = forms[0]
+        context['location_search_form'] = forms[1]
+        context['exhibition_search_form'] = forms[2]
+
+        # context['artwork_search_form'] = ArtworkSearchForm(initial={
+        #     'owner': '',
+        #     'medium': '',
+        #     'status': None
+        # })
+        # context['location_search_form'] = LocationSearchForm()
+        # context['exhibition_search_form'] = ExhibitionSearchForm()
         return context
 
 
