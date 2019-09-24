@@ -1,5 +1,5 @@
 from django import forms
-from .models import Artwork, Location, Exhibition, WorkInExhibition
+from .models import Artwork, Series, Location, Exhibition, WorkInExhibition
 
 
 class WorkInExhibitionForm(forms.ModelForm):
@@ -16,14 +16,14 @@ class ArtworkSearchForm(forms.ModelForm):
             'series',
             'title',
             'location',
-            'status',
+            # 'status',
             'year',
             'size',
             'medium',
             'rolled',
             'owner',
         ]
-
+    
 
 class LocationSearchForm(forms.ModelForm):
 
@@ -51,3 +51,6 @@ class ExhibitionSearchForm(forms.ModelForm):
             'start_date',
             'end_date',
         ]
+
+
+

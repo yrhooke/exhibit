@@ -69,7 +69,7 @@
                 search_params[param][input.name] = input.value;
             }
         }
-        feed_params_with_inputs($('#search-form input, #search-form select'), 'artwork')
+        feed_params_with_inputs($('.search-artwork-details'), 'artwork')
         feed_params_with_inputs($('#search-location-details input, #search-location-details select'), 'location')
         feed_params_with_inputs($('#search-exhibition-details input, #search-exhibition-details select'), 'exhibition')
         return search_params;
@@ -209,24 +209,24 @@
         <div class="search-bar-main form-inline" style="display:flex;flex-wrap:nowrap;">
             <div class="form-group">
                 {{ artwork_search_form.series.label_tag }}
-                {% render_field artwork_search_form.series class="form-control" %}
+                {% render_field artwork_search_form.series class="form-control search-artwork-details" %}
             </div>
             <div class="form-group">
                 {{ artwork_search_form.title.label_tag }}
-                {% render_field artwork_search_form.title class="form-control" %}
+                {% render_field artwork_search_form.title class="form-control search-artwork-details" %}
             </div>
             <div class="form-group">
                 {{ artwork_search_form.size.label_tag }}
-                {% render_field artwork_search_form.size class="form-control" %}
+                {% render_field artwork_search_form.size class="form-control search-artwork-details" %}
             </div>
             <div class="form-group">
                 {{ artwork_search_form.location.label_tag }}
-                {% render_field artwork_search_form.location class="form-control" %}
+                {% render_field artwork_search_form.location class="form-control search-artwork-details" %}
             </div>
-            <div class="form-group">
+            <!-- <div class="form-group">
                 {{ artwork_search_form.status.label_tag }}
-                {% render_field artwork_search_form.status class="form-control" %}
-            </div>
+                {% render_field artwork_search_form.status class="form-control search-artwork-details" %}
+            </div> -->
             <div class="form-group">
                 <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#search-bar-more"
                     aria-expanded="false" aria-controls="search-bar-more">Show More</button>
@@ -239,15 +239,15 @@
         <div id="search-bar-more" class="form-inline collapse">
             <div class="form-group">
                 {{ artwork_search_form.year.label_tag }}
-                {% render_field artwork_search_form.year class="form-control" %}
+                {% render_field artwork_search_form.year class="form-control search-artwork-details" %}
             </div>
             <div class="form-group">
                 {{ artwork_search_form.owner.label_tag }}
-                {% render_field artwork_search_form.owner class="form-control" %}
+                {% render_field artwork_search_form.owner class="form-control search-artwork-details" %}
             </div>
             <div class="form-group">
                 {{ artwork_search_form.medium.label_tag }}
-                {% render_field artwork_search_form.medium class="form-control" %}
+                {% render_field artwork_search_form.medium class="form-control search-artwork-details" %}
             </div>
             <div id='search-location-details'>
                 {{ location_search_form }}

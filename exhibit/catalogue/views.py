@@ -53,34 +53,42 @@ class SearchView(LoginRequiredMixin, ListView):
     def _make_form_queries(self, form, prefix=None):
         """make a list of queries for each field in a form"""
         queries = []
-        for field_name, field_value in form.cleaned_data.items():
-            queries.append(self._create_query_filter(field_name, field_value, prefix))
+        if form.is_bound:
+            for field_name, field_value in form.cleaned_data.items():
+                if field_value:
+                    queries.append(self._create_query_filter(field_name, field_value, prefix))
         return queries
 
     def get_queryset(self):
         """returns the queryset object to be rendered as object_list by template"""
+
         request_data = self._parse_request_data()
         artwork_form = ArtworkSearchForm(request_data.get('artwork'))
         location_form = LocationSearchForm(request_data.get('location'))
         exhibition_form = ExhibitionSearchForm(request_data.get('exhibition'))
 
-        if all((artwork_form.is_valid(), location_form.is_valid(), exhibition_form.is_valid())):
 
-            queries = (self._make_form_queries(artwork_form) +
-                       self._make_form_queries(location_form, 'location') +
-                       self._make_form_queries(exhibition_form, 'exhibition'))
-            # queries = self._make_form_queries(artwork_form)
+        validitiy = [
+            artwork_form.is_valid(),
+            location_form.is_valid(),
+            exhibition_form.is_valid(),
+        ]
 
-            valid_queries = [query for query in queries if query]  # remove None queries
-            queryset = Artwork.objects.filter(*valid_queries)
-        else:
-            queryset = Artwork.objects.all()
+        queries = (self._make_form_queries(artwork_form) +
+                    self._make_form_queries(location_form, 'location') ) # +
+                    # self._make_form_queries(exhibition_form, 'exhibition'))
+        valid_queries = [query for query in queries if query]  # remove None queries
+        queryset = Artwork.objects.filter(*valid_queries)
         return queryset.order_by('-pk')[:50]
 
     def get_context_data(self, *args, **kwargs):
         context = super().get_context_data(*args, **kwargs)
 
-        context['artwork_search_form'] = ArtworkSearchForm()
+        context['artwork_search_form'] = ArtworkSearchForm(initial={
+            'owner' : '',
+            'medium' : '',
+            # 'status' = None
+        })
         context['location_search_form'] = LocationSearchForm()
         context['exhibition_search_form'] = ExhibitionSearchForm()
         return context
