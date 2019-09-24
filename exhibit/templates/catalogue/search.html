@@ -222,8 +222,7 @@
             <div class="form-group">
                 {% render_field artwork_search_form.status class="form-control rounded-0 search-artwork-details" %}
             </div>
-            <form action="" method="POST" id="search-form">
-                {% csrf_token %}
+            <form action="" method="GET" id="search-form">
                 <button type="submit">submit</button>
             </form>
         </div>

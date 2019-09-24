@@ -37,7 +37,7 @@ class SearchView(LoginRequiredMixin, ListView):
     def _parse_request_data(self):
         """Deserialize request POST data field from JSON"""
 
-        return json.loads(self.request.POST.get('search_form_data', '{}'))
+        return json.loads(self.request.GET.get('search_form_data', '{}'))
 
     def _prefill_forms(self, artworkargs=None, locationargs=None, exhibitionargs=None):
         """creates instance of form classes prefilled with request data and custom args"""
