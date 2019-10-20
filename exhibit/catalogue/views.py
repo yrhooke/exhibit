@@ -218,6 +218,7 @@ artwork_fields = [
 
 class ArtworkList(LoginRequiredMixin, ListView):
     model = Artwork
+    template_name = 'catalogue/overview/artwork.html'
 
 
 class ArtworkCreate(LoginRequiredMixin, genericCreateView):
@@ -287,7 +288,7 @@ class ArtworkDelete(LoginRequiredMixin, DeleteView):
 
 class SeriesList(LoginRequiredMixin, ListView):
     model = Series
-    # template_name = 'catalogue/list_module/series_list.html'
+    template_name = 'catalogue/overview/series.html'
 
 
 class SeriesCreate(LoginRequiredMixin, genericCreateView):
@@ -325,7 +326,7 @@ exhibition_fields = [
 
 class ExhibitionList(LoginRequiredMixin, ListView):
     model = Exhibition
-    template_name = "catalogue/list_module/exhibition_list.html"
+    template_name = "catalogue/overview/exhibition.html"
 
 
 class ExhibitionCreate(LoginRequiredMixin, genericCreateView):
@@ -367,8 +368,7 @@ location_fields = [
 
 class LocationList(LoginRequiredMixin, ListView):
     model = Location
-
-    template_name = "catalogue/list_module/location_list.html"
+    template_name = "catalogue/overview/location.html"
 
 
 class LocationCreate(LoginRequiredMixin, genericCreateView):
