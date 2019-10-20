@@ -7,57 +7,10 @@
 <!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script> -->
 <script>
 
-    function getResultType() {
-        let resultTypeSelector = $("#search-result-type-selector")[0];
-        return resultTypeSelector.options[resultTypeSelector.options.selectedIndex].value;
-    }
 
     const foreignKeyNames = ['series', 'location'];
 
-    function addSearchFilter(element) {
-        let resultType = getResultType();
-        $.get("{% url 'catalogue:make_search_filter' %}", {
-            'resultType': resultType,
-        }, function (data) {
-            $(element).append(data);
-            $('.search-filter-main-select').select2();
-            $('.search-filter-foreignkey-select').select2();
-        });
-    }
 
-    function resetSearchFilters() {
-        $("#search-filters-container").empty();
-        addSearchFilter("#search-filters-container");
-    }
-
-    // function makeSearchQuery() {
-    //     let resultType = getResultType();
-    //     let filters = [];
-
-    //     let filtersList = $(".search-filter");
-    //     for (let i = 0; i < filtersList.length; i++) {
-    //         let searchFilter = filtersList.eq(i);
-    //         let mainSelect = searchFilter.find(".search-filter-main-select")[0];
-    //         let foreignSelect = searchFilter.find(".search-filter-foreignkey-select")[0];
-    //         let filterText = searchFilter.find(".search-filter-text")[0];
-
-    //         let fieldName = mainSelect.options[mainSelect.options.selectedIndex].value;
-    //         let foreignKeyField;
-
-    //         if (foreignSelect) {
-    //             foreignKeyField = foreignSelect.value;
-    //         } else if (fieldName === "series") { // this is so if series is first option opened still have foreignKeyField value - should be cleaned up
-    //             foreignKeyField = "name"
-    //         }
-
-    //         filters.push({
-    //             "fieldName": fieldName,
-    //             "fieldValue": filterText.value,
-    //             "foreignKeyField": foreignKeyField
-    //         })
-    //     }
-    //     return { "resultType": resultType, "filters": filters }
-    // }
     function makeSearchQuery() {
         let search_params = {
             'artwork': {},
@@ -80,38 +33,8 @@
     $(document).ready(function () {
 
         // initialize select2
-        $('#search-result-type-selector').select2();
-        $('.search-filter-main-select').select2();
-        $('.search-filter-foreignkey-select').select2();
         $('#search-bar-main select').select2();
-        $('#search-bar-more select').select2({width: 'style'});
-
-        // add filters on click
-        $("#add-search-filter-button").on("click", () => { addSearchFilter("#search-filters-container") });
-
-        // add/remove foreignkey filter on change in main select
-        $("#search-filters-container").on("change", ".search-filter-main-select", (event) => {
-            $(event.target).parent().parent().children('.search-filter-foreignkey-select-wrapper').remove();
-            let newFilterValue = event.target.options[event.target.options.selectedIndex].value;
-            if (foreignKeyNames.includes(newFilterValue)) {
-                let newFilterResultType = newFilterValue.charAt(0).toUpperCase() + newFilterValue.slice(1);
-                $.get("{% url 'catalogue:make_search_filter_foreignkey' %}", {
-                    'resultType': newFilterResultType,
-                }, function (data) {
-                    $(data).insertAfter($(event.target).parent());
-                    $('.search-filter-main-select').select2();
-                    $('.search-filter-foreignkey-select').select2();
-                });
-            }
-        })
-
-        // reset filters on resultType change
-        $("#search-result-type-selector").on("change", resetSearchFilters);
-
-        // delete specific filter when its remove button is pressed
-        $("#search-bar-container").on("click", ".search-filter-remove", (event) => {
-            $(event.target).parent().parent().remove();
-        });
+        $('#search-bar-more select').select2({ width: 'style' });
 
         // send filter data on submit in JSON serialized string
         $("#search-form").submit(() => {
@@ -178,32 +101,7 @@
 {% block page_title %}Search{% endblock %}
 
 {% block content %}
-<!-- <div class="row">
-    <div class="form flex-container" name="search-bar-container" id="search-bar-container">
-        <div class="form-group">
-            <select class="form-control rounded-0" name="resultType" id="search-result-type-selector">
-                {% for model in modelsToSearch %}
-                <option class="form-control rounded-0" value="{{ model }}" {% if model == selectedModel %}selected{% endif %}>
-                    {{ model }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="form-group flex-container" id="search-bar-main-body">
-            <div class="form-control rounded-0 flex-container" name="search-filters-container" id="search-filters-container">
-                { include "./search_bar.html" with filters=filters foreignKeyFields=foreignKeyFields fields=fields%}
-            </div>
-            <button type="button" class="btn" id="add-search-filter-button">+</button>
-        </div>
-        <form method="POST" action="" id="search-form" name="search-form">
-            <div class="form-group">
-                <button type="submit" class="btn btn-default btn-submit" id="search-bar-submit">Search</button>
 
-
-            </div>
-            {% csrf_token %}
-        </form>
-    </div>
-</div>  -->
 <div class="row">
 
     <div id="search-bar-wrapper">
@@ -232,7 +130,7 @@
                 aria-expanded="false" aria-controls="search-bar-more"></span>
         </div>
         <div id="search-bar-more" class="form collapse">
-            <div class="form-row search-show-more-row" >
+            <div class="form-row search-show-more-row">
                 <div class="form-group col-6">
                     {{ artwork_search_form.year.label_tag }}
                     {% render_field artwork_search_form.year class="form-control rounded-0 search-artwork-details" %}
@@ -295,16 +193,7 @@
     <!-- <a href="{ createLink }}" class="btn btn-primary">Create new</a> -->
 </div>
 <div class="row" id="search-results-container">
-    {% if selectedModel == "Series" %}
-    {% include "./series_list.html" with object_list=object_list %}
-    {% elif selectedModel == "Location" %}
-    {% include "./location_list.html" with object_list=object_list %}
-    {% elif selectedModel == "Exhibition" %}
-    {% include "./exhibition_list.html" with object_list=object_list %}
-    {% else %}
     {% include "./artwork_list.html" with object_list=object_list %}
-    {% endif %}
-
 </div>
 
 {% endblock %}
