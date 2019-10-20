@@ -123,6 +123,98 @@ class SearchView(LoginRequiredMixin, ListView):
 
         return context
 
+class SearchMixin(object):
+    """method bundle for searching for Artworks"""
+
+    def _parse_request_data(self):
+        """Deserialize request POST data field from JSON"""
+
+        return json.loads(self.request.GET.get('search_form_data', '{}'))
+
+    def _prefill_forms(self, artworkargs=None, locationargs=None, exhibitionargs=None):
+        """creates instance of form classes prefilled with request data and custom args"""
+
+        request_data = self._parse_request_data()
+
+        if artworkargs:
+            if request_data.get('artwork'):
+                request_data['artwork'].update(artworkargs)
+            else:
+                request_data['artwork'] = artworkargs
+        if locationargs:
+            if request_data.get('location'):
+                request_data['location'].update(locationargs)
+            else:
+                request_data['location'] = locationargs
+        if exhibitionargs:
+            if request_data.get('exhibition'):
+                request_data['exhibition'].update(exhibitionargs)
+            else:
+                request_data['exhibition'] = exhibitionargs
+
+        artwork_form = ArtworkSearchForm(request_data.get('artwork'))
+        location_form = LocationSearchForm(request_data.get('location'))
+        exhibition_form = ExhibitionSearchForm(request_data.get('exhibition'))
+
+        return artwork_form, location_form, exhibition_form
+
+    def _create_query_filter(self, field_name, field_value, prefix=None):
+        """creates a tuple of filter param and value from filter object created in the search bar"""
+        if field_value == None:
+            return None
+        query_param = field_name
+        if prefix:
+            query_param = f'{prefix}__{query_param}'
+        if isinstance(field_value, str):
+            query_param += "__icontains"
+        return (query_param, field_value)
+
+    def _make_form_queries(self, form, prefix=None):
+        """make a list of queries for each field in a form"""
+        queries = []
+        if form.is_bound:
+            for field_name, field_value in form.cleaned_data.items():
+                if field_value:
+                    queries.append(self._create_query_filter(field_name, field_value, prefix))
+        return queries
+
+    def execute_search(self):
+        """returns the queryset object to be rendered as object_list by template"""
+
+        artwork_form, location_form, exhibition_form = self._prefill_forms()
+
+        validitiy = [
+            artwork_form.is_valid(),
+            location_form.is_valid(),
+            exhibition_form.is_valid(),
+        ]
+
+        queries = (self._make_form_queries(artwork_form) +
+                   self._make_form_queries(location_form, 'location') +
+                   self._make_form_queries(exhibition_form, 'workinexhibition'))
+        valid_queries = [query for query in queries if query]  # remove None queries
+        queryset = Artwork.objects.filter(*valid_queries)
+
+        if queryset.count() > 0:
+            return queryset.order_by('-pk')[:50]
+        else:
+            return Artwork.objects.all().order_by('-pk')[:50]
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchMixin, self).get_context_data(**kwargs)
+        context['search_results'] = self.execute_search()
+        forms = self._prefill_forms(artworkargs={
+            'initial': {
+                'owner': '',
+                'medium': '',
+                'status': None
+            }})
+        context['artwork_search_form'] = forms[0]
+        context['location_search_form'] = forms[1]
+        context['exhibition_search_form'] = forms[2]
+
+        return context
+
 
 class SearchFilterMakerView(TemplateView):
     """View for gathering data to generate a search filter"""
@@ -376,14 +468,15 @@ class LocationCreate(LoginRequiredMixin, genericCreateView):
     fields = location_fields
 
 
-class LocationUpdate(LoginRequiredMixin, UpdateView):
+class LocationUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
     model = Location
     fields = location_fields
     template_name = 'catalogue/detail/location_detail.html'
 
     def get_context_data(self, **kwargs):
+        
         # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
+        context = super(LocationUpdate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['action_name'] = edit_action_button_text
         context['members'] = self.object.artwork_set.all()

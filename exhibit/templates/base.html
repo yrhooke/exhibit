@@ -100,7 +100,42 @@
   <script src="{% static 'js/project.js' %}"></script>
 
   <!-- Page specific headers -->
-  {% block custom_headers %}{% endblock %}
+  {% block custom_headers %}
+  <script>
+    function makeSearchQuery() {
+      let search_params = {
+        'artwork': {},
+        'location': {},
+        'exhibition': {}
+      };
+      function feed_params_with_inputs(input_selector, param) {
+        for (input of input_selector) {
+          search_params[param][input.name] = input.value;
+        }
+      }
+      feed_params_with_inputs($('.search-artwork-details'), 'artwork')
+      feed_params_with_inputs($('#search-location-details input, #search-location-details select'), 'location')
+      feed_params_with_inputs($('#search-exhibition-details input, #search-exhibition-details select'), 'exhibition')
+      return search_params;
+    }
+
+    $(document).ready(function () {
+      // initialize select2
+      $('#search-bar-main select').select2();
+      $('#search-bar-more select').select2({ width: 'style' });
+
+      // send filter data on submit in JSON serialized string
+      $("#search-form").submit(() => {
+        let query = makeSearchQuery();
+        $('<input />').attr('type', 'hidden')
+          .attr('name', 'search_form_data')
+          .attr('value', JSON.stringify(query))
+          .appendTo("#search-form");
+        return true;
+      });
+    });
+  </script>
+  {% endblock %}
 
 
 </head>
