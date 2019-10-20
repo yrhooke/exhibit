@@ -388,14 +388,14 @@ class SeriesCreate(LoginRequiredMixin, genericCreateView):
     fields = ['name']
 
 
-class SeriesUpdate(LoginRequiredMixin, UpdateView):
+class SeriesUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
     model = Series
     fields = ['name']
     template_name = 'catalogue/detail/series_detail.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
+        context = super(SeriesUpdate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['action_name'] = edit_action_button_text
         context['members'] = self.object.artwork_set.all()
@@ -426,14 +426,14 @@ class ExhibitionCreate(LoginRequiredMixin, genericCreateView):
     fields = exhibition_fields
 
 
-class ExhibitionUpdate(LoginRequiredMixin, UpdateView):
+class ExhibitionUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
     model = Exhibition
     fields = exhibition_fields
     template_name = 'catalogue/detail/exhibition_detail.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super().get_context_data(**kwargs)
+        context = super(ExhibitionUpdate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
         context['action_name'] = edit_action_button_text
         artworks = [s.artwork for s in self.object.workinexhibition_set.all()]
