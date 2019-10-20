@@ -104,7 +104,7 @@ class SearchMixin(object):
     def get_context_data(self, **kwargs):
         context = super(SearchMixin, self).get_context_data(**kwargs)
 
-        artwork_search_args, exhibition_search_tags = dict(), dict()
+        artwork_search_args, exhibition_search_args = dict(), dict()
         if kwargs.get('series'):
             artwork_search_args['series'] = kwargs['series'].pk
         if kwargs.get('location'):
@@ -183,7 +183,7 @@ artwork_fields = [
 ]
 
 
-class ArtworkList(LoginRequiredMixin, ListView):
+class ArtworkList(LoginRequiredMixin, SearchMixin, ListView):
     model = Artwork
     template_name = 'catalogue/overview/artwork.html'
 

@@ -45,7 +45,7 @@ Artwork management tool
 
 ### in current branch
 
-- [ ] artwork search like streeteasy
+- [X] artwork search like streeteasy
   - [X] new search backend logic
   - [X] new search layout
   - [X] search form validation
@@ -54,8 +54,8 @@ Artwork management tool
     - [X] standarize input/select height
     - [X] format search button
     - [X] space search correctly within page
-- [ ] separate search to modular reusable components
-- [ ] distribute artwork search among templates
+- [X] separate search to modular reusable components
+- [X] distribute artwork search among templates
 
 ### next phase
 
