@@ -80,10 +80,12 @@ class SearchMixin(object):
                     queries.append(self._create_query_filter(field_name, field_value, prefix))
         return queries
 
-    def execute_search(self, artworkargs=None):
+    def execute_search(self, artworkargs=None, locationargs=None, exhibitionargs=None):
         """returns the queryset object to be rendered as object_list by template"""
 
-        artwork_form, location_form, exhibition_form = self._prefill_forms(artworkargs=artworkargs)
+        artwork_form, location_form, exhibition_form = self._prefill_forms(artworkargs=artworkargs,
+                                                                           locationargs=locationargs,
+                                                                           exhibitionargs=exhibitionargs)
 
         validitiy = [
             artwork_form.is_valid(),
@@ -105,10 +107,15 @@ class SearchMixin(object):
     def get_context_data(self, **kwargs):
         context = super(SearchMixin, self).get_context_data(**kwargs)
 
-        artwork_search_args = None
+        artwork_search_args, exhibition_search_tags = dict(), dict()
         if kwargs.get('series'):
-            artwork_search_args = {'series': kwargs['series'].pk}
-        context['search_results'] = self.execute_search(artworkargs=artwork_search_args)
+            artwork_search_args['series'] = kwargs['series'].pk
+        if kwargs.get('location'):
+            artwork_search_args['location'] = kwargs['location'].pk
+        if kwargs.get('exhibition'):
+            exhibition_search_args = {'exhibition': kwargs['exhibition'].pk}
+        context['search_results'] = self.execute_search(artworkargs=artwork_search_args,
+                                                        exhibitionargs=exhibition_search_args)
         forms = self._prefill_forms(artworkargs={
             'owner': '',
             'medium': '',
@@ -268,6 +275,7 @@ class SeriesUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
         # Call the base implementation first to get a context
         context = super(SeriesUpdate, self).get_context_data(series=self.get_object(), **kwargs)
         # Add in a QuerySet of all the books
+        context['hasSeries'] = True
         context['action_name'] = edit_action_button_text
         context['members'] = self.object.artwork_set.all()
         return context
@@ -304,9 +312,10 @@ class ExhibitionUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(ExhibitionUpdate, self).get_context_data(**kwargs)
+        context = super(ExhibitionUpdate, self).get_context_data(exhibition=self.object, **kwargs)
         # Add in a QuerySet of all the books
         context['action_name'] = edit_action_button_text
+        context['hasExhibition'] = True
         artworks = [s.artwork for s in self.object.workinexhibition_set.all()]
         context['members'] = artworks
         return context
@@ -347,9 +356,10 @@ class LocationUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
     def get_context_data(self, **kwargs):
 
         # Call the base implementation first to get a context
-        context = super(LocationUpdate, self).get_context_data(**kwargs)
+        context = super(LocationUpdate, self).get_context_data(location=self.object, **kwargs)
         # Add in a QuerySet of all the books
         context['action_name'] = edit_action_button_text
+        context['hasLocation'] = True
         context['members'] = self.object.artwork_set.all()
         return context
 

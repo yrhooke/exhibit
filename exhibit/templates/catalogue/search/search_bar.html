@@ -3,7 +3,7 @@
 <div class="row">
     <div id="search-bar-wrapper">
         <div id="search-bar-main" class="search-bar-main form-inline">
-            <div class="form-group">
+            <div class="form-group {% if hasSeries %}collapse{% endif %}">
                 {% render_field artwork_search_form.series class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
@@ -12,7 +12,7 @@
             <div class="form-group">
                 {% render_field artwork_search_form.size class="form-control rounded-0 search-artwork-details" %}
             </div>
-            <div class="form-group">
+            <div class="form-group {% if hasLocation %}collapse{% endif %}">
                 {% render_field artwork_search_form.location class="form-control rounded-0 search-artwork-details" %}
             </div>
             <div class="form-group">
@@ -32,7 +32,7 @@
                     {{ artwork_search_form.year.label_tag }}
                     {% render_field artwork_search_form.year class="form-control rounded-0 search-artwork-details" %}
                 </div>
-                <div id='search-exhibition-details' class='form-group col-6'>
+                <div id='search-exhibition-details' class='form-group col-6 {% if hasExhibition %}collapse{% endif %}'>
                     {{ exhibition_search_form.exhibition.label_tag }}
                     {% render_field exhibition_search_form.exhibition class="form-control rounded-0" style="width:100%;" %}
                 </div>
@@ -47,7 +47,7 @@
                     {% render_field artwork_search_form.medium class="form-control rounded-0 search-artwork-details" %}
                 </div>
             </div>
-            <div id='search-location-details'>
+            <div id='search-location-details' class="{% if hasLocation %}collapse{% endif %}">
                 <span>Location Details</span>
                 <div class="form-row search-show-more-row">
                     <div class="form-group col-12">
