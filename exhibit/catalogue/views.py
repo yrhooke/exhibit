@@ -178,7 +178,7 @@ edit_action_button_text = 'Save Changes'
 
 
 class genericCreateView(CreateView):
-    template_name = 'catalogue/detail.html'
+    template_name = 'catalogue/detail/detail.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -223,7 +223,7 @@ class ArtworkList(LoginRequiredMixin, ListView):
 class ArtworkCreate(LoginRequiredMixin, genericCreateView):
     model = Artwork
     fields = artwork_fields
-    template_name = 'catalogue/artwork_detail.html'
+    template_name = 'catalogue/detail/artwork_detail.html'
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -236,7 +236,7 @@ class ArtworkUpdate(LoginRequiredMixin, UpdateView):
     model = Artwork
     fields = artwork_fields
     # form_class = ArtworkForm
-    template_name = 'catalogue/artwork_detail.html'
+    template_name = 'catalogue/detail/artwork_detail.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -287,6 +287,7 @@ class ArtworkDelete(LoginRequiredMixin, DeleteView):
 
 class SeriesList(LoginRequiredMixin, ListView):
     model = Series
+    # template_name = 'catalogue/list_module/series_list.html'
 
 
 class SeriesCreate(LoginRequiredMixin, genericCreateView):
@@ -297,7 +298,7 @@ class SeriesCreate(LoginRequiredMixin, genericCreateView):
 class SeriesUpdate(LoginRequiredMixin, UpdateView):
     model = Series
     fields = ['name']
-    template_name = 'catalogue/series_detail.html'
+    template_name = 'catalogue/detail/series_detail.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -324,6 +325,7 @@ exhibition_fields = [
 
 class ExhibitionList(LoginRequiredMixin, ListView):
     model = Exhibition
+    template_name = "catalogue/list_module/exhibition_list.html"
 
 
 class ExhibitionCreate(LoginRequiredMixin, genericCreateView):
@@ -334,7 +336,7 @@ class ExhibitionCreate(LoginRequiredMixin, genericCreateView):
 class ExhibitionUpdate(LoginRequiredMixin, UpdateView):
     model = Exhibition
     fields = exhibition_fields
-    template_name = 'catalogue/exhibition_detail.html'
+    template_name = 'catalogue/detail/exhibition_detail.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
@@ -366,6 +368,8 @@ location_fields = [
 class LocationList(LoginRequiredMixin, ListView):
     model = Location
 
+    template_name = "catalogue/list_module/location_list.html"
+
 
 class LocationCreate(LoginRequiredMixin, genericCreateView):
     model = Location
@@ -375,7 +379,7 @@ class LocationCreate(LoginRequiredMixin, genericCreateView):
 class LocationUpdate(LoginRequiredMixin, UpdateView):
     model = Location
     fields = location_fields
-    template_name = 'catalogue/location_detail.html'
+    template_name = 'catalogue/detail/location_detail.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
