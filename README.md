@@ -42,9 +42,6 @@ Artwork management tool
   - [X] make sure form works
 - [X] search bar layout
 - [X] artwork list view like rotemreshef.com
-
-### in current branch
-
 - [X] artwork search like streeteasy
   - [X] new search backend logic
   - [X] new search layout
@@ -57,10 +54,13 @@ Artwork management tool
 - [X] separate search to modular reusable components
 - [X] distribute artwork search among templates
 
+### in current branch
+
+- [ ] form cleanup in series/location/exhibition detail views
+
 ### next phase
 
 - [ ] series/artwork heirarchy
-- [ ] form cleanup in series/location/exhibition detail views
 - [ ] form cleanup in artwork detail view
 - [ ] better form validation (correct widgets, visibly fail on errors, etc)
 
