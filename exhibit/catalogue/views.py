@@ -99,10 +99,7 @@ class SearchMixin(object):
         valid_queries = [query for query in queries if query]  # remove None queries
         queryset = Artwork.objects.filter(*valid_queries)
 
-        if queryset.count() > 0:
-            return queryset.order_by('-pk')[:50]
-        else:
-            return Artwork.objects.all().order_by('-pk')[:50]
+        return queryset.order_by('-pk')[:50]
 
     def get_context_data(self, **kwargs):
         context = super(SearchMixin, self).get_context_data(**kwargs)
