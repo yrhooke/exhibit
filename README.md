@@ -49,11 +49,11 @@ Artwork management tool
   - [X] new search backend logic
   - [X] new search layout
   - [X] search form validation
-  - [ ] search form organizing/css
+  - [X] search form organizing/css
     - [X] organize inputs in search-more into grid
     - [X] standarize input/select height
     - [X] format search button
-    - [ ] space search correctly within page
+    - [X] space search correctly within page
 - [ ] separate search to modular reusable components
 - [ ] distribute artwork search among templates
 

@@ -160,6 +160,17 @@ div.main-page {
     flex: 1 1 auto;
 }
 
+#search-bar-wrapper {
+    width: 100%;
+    max-width: 923px;
+    margin: 0 auto;
+}
+
+#search-bar-main {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+}
 #search-bar-wrapper label {
     font-size: 14px;
 }
