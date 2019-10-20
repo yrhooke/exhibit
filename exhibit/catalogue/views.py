@@ -80,10 +80,10 @@ class SearchMixin(object):
                     queries.append(self._create_query_filter(field_name, field_value, prefix))
         return queries
 
-    def execute_search(self):
+    def execute_search(self, artworkargs=None):
         """returns the queryset object to be rendered as object_list by template"""
 
-        artwork_form, location_form, exhibition_form = self._prefill_forms()
+        artwork_form, location_form, exhibition_form = self._prefill_forms(artworkargs=artworkargs)
 
         validitiy = [
             artwork_form.is_valid(),
@@ -104,19 +104,21 @@ class SearchMixin(object):
 
     def get_context_data(self, **kwargs):
         context = super(SearchMixin, self).get_context_data(**kwargs)
-        context['search_results'] = self.execute_search()
+
+        artwork_search_args = None
+        if kwargs.get('series'):
+            artwork_search_args = {'series': kwargs['series'].pk}
+        context['search_results'] = self.execute_search(artworkargs=artwork_search_args)
         forms = self._prefill_forms(artworkargs={
-            'initial': {
-                'owner': '',
-                'medium': '',
-                'status': None
-            }})
+            'owner': '',
+            'medium': '',
+            'status': None
+        })
         context['artwork_search_form'] = forms[0]
         context['location_search_form'] = forms[1]
         context['exhibition_search_form'] = forms[2]
 
         return context
-
 
 
 def autocompleteView(request):
@@ -264,7 +266,7 @@ class SeriesUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
-        context = super(SeriesUpdate, self).get_context_data(**kwargs)
+        context = super(SeriesUpdate, self).get_context_data(series=self.get_object(), **kwargs)
         # Add in a QuerySet of all the books
         context['action_name'] = edit_action_button_text
         context['members'] = self.object.artwork_set.all()
@@ -343,7 +345,7 @@ class LocationUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
     template_name = 'catalogue/detail/location_detail.html'
 
     def get_context_data(self, **kwargs):
-        
+
         # Call the base implementation first to get a context
         context = super(LocationUpdate, self).get_context_data(**kwargs)
         # Add in a QuerySet of all the books
