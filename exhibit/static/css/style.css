@@ -160,6 +160,9 @@ div.main-page {
     flex: 1 1 auto;
 }
 
+#search-bar-wrapper label {
+    font-size: 14px;
+}
 #search-show-more {
     color: #0080C6;
     cursor: pointer;
@@ -172,9 +175,14 @@ div.main-page {
     content:'+Show More';
 }
 
+.search-show-more-row {
+    border-bottom: 1px solid #cccccc;
+}
+
 .search-filter {
     display: inline-flex;
 }
+
 
 .select2-container--default, .search-filter .select2-selection--single {
     border: none;
