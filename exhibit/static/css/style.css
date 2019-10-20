@@ -188,10 +188,19 @@ div.main-page {
     height: 40px;
     line-height: 40px;
 }
-#search-bar-wrapper .form-control {
+#search-bar-wrapper .form-control{
     height: 40px;
 }
 
+#search-bar-wrapper .btn {
+    height: 40px;
+    width: 120px;
+}
+
+#search-submit-form {
+   background-color:rgba(44, 45, 52, 1);
+   border: solid rgba(44, 45, 52, 1) 0px; 
+}
 
 .select2-container--default, .search-filter .select2-selection--single {
     border: none;

@@ -51,8 +51,8 @@ Artwork management tool
   - [X] search form validation
   - [ ] search form organizing/css
     - [X] organize inputs in search-more into grid
-    - [ ] standarize input/select height
-    - [ ] format search button
+    - [X] standarize input/select height
+    - [X] format search button
     - [ ] space search correctly within page
 - [ ] separate search to modular reusable components
 - [ ] distribute artwork search among templates
