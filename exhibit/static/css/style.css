@@ -50,9 +50,10 @@ rgb(96, 124, 160) */
 /* Sidebar links */
 
 .sidebar a {
-    /* display: block; */
+    box-sizing: border-box;
+    height: 27px;
     color: black;
-    padding: 16px;
+    margin: 16px;
     text-decoration: none;
     font-size: 18px;
 }
@@ -67,8 +68,11 @@ rgb(96, 124, 160) */
 /* Links on mouse-over */
 
 .sidebar .nav-link:hover:not(.active) {
-    background-color: #555;
+    /* background-color: #555; */
     color: white;
+    font-size: 19px;
+    transition: all 0.2s ease 0s;
+
 }
 
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
