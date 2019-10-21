@@ -1,4 +1,4 @@
-{% extends "base.html" %}
+{% extends "catalogue/detail/detail.html" %}
 {% load widget_tweaks %}
 {% load static %}
 
@@ -23,7 +23,7 @@
                 'box-shadow': 'none',
                 'border-radius': 0
             }
-        });        
+        });
 
         // $("#artwork-series").on('change', setSelectWidth);
         // var mDiv = $("<span />").text("M").appendTo("body"),
@@ -74,17 +74,30 @@
             event.target.style.width = ((event.target.value.length) * 9 + 5) + 'px';
         });
 
-        $('#artwork-location').select2({'placeholder': 'Location'});
-        $('#new-exhibition-select').select2({'placeholder': 'New Exhibition'})
+        $('#artwork-location').select2({ 'placeholder': 'Location' });
+        $('#new-exhibition-select').select2({ 'placeholder': 'New Exhibition' })
     });
 
 </script>
 {% endblock custom_headers %}
 
-{% block content %}
+{% block object_details %}
 <form action="." method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <div class="row pb-2 mt-4 mb-2" id="artwork-headers" style="font-size:30px;font-family:brandon-med;">
+    <div id="object-details-name" class="form-inline">
+        <div class="form-group">
+            {% render_field form.series class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
+            <span class="object-details-header" style="margin-left:1rem;margin-right:1.5rem;">: </span>
+            {% render_field form.title class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
+            {% render_field form.status class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
+            <span class="object-details-header" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
+            <label class="object-details-header"
+                for="{{ form.title.auto_id }}">{% block object_type %}Artwork{% endblock object_type %}</label>
+        </div>
+        <input type="submit" id="detail-submit" class="action-button btn btn-primary rounded-0"
+            value="{{ action_name }}">
+    </div>
+    <!-- <div class="row pb-2 mt-4 mb-2" id="artwork-headers"  style="font-size:30px;font-family:brandon-med;">
         <span id='artwork-series-container'>
             {%  render_field form.series class="artwork-header-field mx-4" id="artwork-series" %}
         </span>
@@ -101,7 +114,7 @@
             {%  render_field form.status class="artwork-header-field mx-4" id="artwork-status" %}
         </span>
         <input type="submit" class="btn btn-primary" value="{{ action_name }}" style="margin-left:auto;">
-    </div>
+    </div> -->
     <div class="row" id="artwork-details-wrapper">
         <div class="col-sm-6" id="left-col">
             <div id="artwork-image" class="card">
@@ -120,74 +133,17 @@
             <div id="sales-info" class="card">
                 <div class="card-body sale-form">
                     <h3 class='card-title'>Sale Info</h3>
-                    <table class='table'>
-                        <tbody>
-                            <tr>
-                                <th scope="row">{{ form.owner.label_tag }}</th>
-                                <td>
-                                    {% render_field form.owner class="form-control rounded-0 form-control-sm" %}
-                                    {% if form.owner.help_text %}
-                                    <small class="form-text text-muted">{{ form.owner.help_text }}</small>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ form.sold_by.label_tag }}</th>
-                                <td>
-                                    {% render_field form.sold_by class="form-control rounded-0 form-control-sm" %}
-                                    {% if form.sold_by.help_text %}
-                                    <small class="form-text text-muted">{{ form.sold_by.help_text }}</small>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ form.price_nis.label_tag }}</th>
-                                <td>
-                                    {% render_field form.price_nis class="form-control rounded-0 form-control-sm" %}
-                                    {% if form.price_nis.help_text %}
-                                    <small class="form-text text-muted">{{ form.price_nis.help_text }}</small>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ form.price_usd.label_tag }}</th>
-                                <td>
-                                    {% render_field form.price_usd class="form-control rounded-0 form-control-sm" %}
-                                    {% if form.price_usd.help_text %}
-                                    <small class="form-text text-muted">{{ form.price_usd.help_text }}</small>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ form.sale_price.label_tag }}</th>
-                                <td id="sale-price-td">
-                                    {% render_field form.sale_currency class="form-control rounded-0 form-control-sm" id="sale-currency" %}
-                                    {% render_field form.sale_price class="form-control rounded-0 form-control-sm"  %}
-                                    {% if form.sale_price.help_text %}
-                                    <small class="form-text text-muted">{{ form.sale_price.help_text }}</small>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ form.discount.label_tag }}</th>
-                                <td>
-                                    {% render_field form.discount class="form-control rounded-0 form-control-sm" %}
-                                    {% if form.discount.help_text %}
-                                    <small class="form-text text-muted">{{ form.discount.help_text }}</small>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <th scope="row">{{ form.sale_date.label_tag }}</th>
-                                <td>
-                                    {% render_field form.sale_date class="form-control rounded-0 form-control-sm" %}
-                                    {% if form.sale_date.help_text %}
-                                    <small class="form-text text-muted">{{ form.sale_date.help_text }}</small>
-                                    {% endif %}
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
+                    <div class="form-inline"
+                    style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
+                    {% include "catalogue/utils/field.html" with field=form.owner %}
+                    {% include "catalogue/utils/field.html" with field=form.sold_by %}
+                    {% include "catalogue/utils/field.html" with field=form.price_nis %}
+                    {% include "catalogue/utils/field.html" with field=form.price_usd %}
+                    {% include "catalogue/utils/field.html" with field=form.sale_currency %}
+                    {% include "catalogue/utils/field.html" with field=form.sale_price %}
+                    {% include "catalogue/utils/field.html" with field=form.discount %}
+                    {% include "catalogue/utils/field.html" with field=form.sale_date %}
+                    </div>
                 </div>
             </div>
             {% endif %}
@@ -195,6 +151,15 @@
         <div class="col-sm-6" id="right-col">
             <div id="artwork-details" class="card">
                 <div class="card-body">
+                        <div id="object-details-body" class="form-inline"
+                        style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
+                        <!-- NOTE: year field used to have artwork-year class -->
+                        {{ form.year.label }}
+                    {% include "catalogue/utils/field.html" with field=form.year %}
+                    {% include "catalogue/utils/field.html" with field=form.size %}
+                    {% include "catalogue/utils/field.html" with field=form.location %}
+                    {% include "catalogue/utils/field.html" with field=form.rolled %}
+                    {% include "catalogue/utils/field.html" with field=form.medium %}
                     <div class="size-fields row">
                         <div id="size-fields-measures" class="col-5">
                             <h5>Size (h | w | d):</h5>
@@ -219,49 +184,8 @@
                                 <label for="id_size_in">in</label>
                             </div>
                         </div>
-                        <div id="size-fields-addtl" class="form col-7">
-                            <div id="size-fields-type">
-                                <!-- <h6></h6> -->
-                                <div class="form-group">
-                                    {{ form.size.label_tag }}
-                                    {% render_field form.size class="form-control rounded-0 form-control-sm" %}
-                                    {% if form.size.help_text %}
-                                    <small class="form-text text-muted">{{ form.size.help_text }}</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                            <div id="size-fields-rolled">
-                                <div class="form-group">
-                                    {{ form.rolled.label_tag }}
-                                    {% render_field form.rolled class="form-control rounded-0 form-control-sm" %}
-                                    {% if form.rolled.help_text %}
-                                    <small class="form-text text-muted">{{ form.rolled.help_text }}</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </div>
                     </div>
-                    <div class="form-group" id="location-field">
-                        {{ form.location.label_tag }}
-                        {% render_field form.location class="form-control rounded-0 form-control-sm" id='artwork-location' %}
-                        {% if form.location.help_text %}
-                        <small class="form-text text-muted">{{ form.location.help_text }}</small>
-                        {% endif %}
-                    </div>
-                    <div class="form-group" id="medium-field">
-                        {{ form.medium.label_tag }}
-                        {% render_field form.medium class="form-control rounded-0 form-control-sm" %}
-                        {% if form.medium.help_text %}
-                        <small class="form-text text-muted">{{ form.medium.help_text }}</small>
-                        {% endif %}
-                    </div>
-                    <div class="form-group" id="addtl-field">
-                        {{ form.additional.label_tag }}
-                        {% render_field form.additional class="detail-field form-control rounded-0 form-control-sm" %}
-                        {% if form.additional.help_text %}
-                        <small class="form-text text-muted">{{ form.additional.help_text }}</small>
-                        {% endif %}
-                    </div>
+                    {% include "catalogue/utils/field.html" with field=form.additional %}
                 </div>
             </div>
             {% if editMode %}
@@ -285,4 +209,4 @@
         </div>
     </div>
 </form>
-{% endblock content %}
+{% endblock object_details %}
