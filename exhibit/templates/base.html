@@ -99,8 +99,7 @@
 
   <script src="{% static 'js/project.js' %}"></script>
 
-  <!-- Page specific headers -->
-  {% block custom_headers %}
+  <!-- functionality for search, textarea resize, enable size2 everywhere - needs refactoring -->
   <script>
     function makeSearchQuery() {
       let search_params = {
@@ -218,6 +217,10 @@
       // TEXT AREA RESIZE DONE
     });
   </script>
+
+
+  <!-- Page specific headers -->
+  {% block custom_headers %}
   {% endblock %}
 
 

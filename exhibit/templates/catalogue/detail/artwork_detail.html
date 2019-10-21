@@ -87,10 +87,10 @@
     <div id="object-details-name" class="form-inline">
         <div class="form-group">
             {% render_field form.series class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
-            <span class="object-details-header" style="margin-left:1rem;margin-right:1.5rem;">: </span>
+            <span class="object-details-header separator" style="margin-left:1rem;margin-right:1.5rem;">: </span>
             {% render_field form.title class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
             {% render_field form.status class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
-            <span class="object-details-header" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
+            <span class="object-details-header separator" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
             <label class="object-details-header"
                 for="{{ form.title.auto_id }}">{% block object_type %}Artwork{% endblock object_type %}</label>
         </div>
@@ -160,11 +160,11 @@
                     {% include "catalogue/utils/field.html" with field=form.location %}
                     {% include "catalogue/utils/field.html" with field=form.rolled %}
                     {% include "catalogue/utils/field.html" with field=form.medium %}
-                    <div class="size-fields row">
-                        <div id="size-fields-measures" class="col-5">
+                    <div class="size-fields">
+                        <div id="size-fields-measures" class="">
                             <h5>Size (h | w | d):</h5>
                             <div id="size-fields-cm" class="form-inline size-form-group">
-                                <div id="id_size_cm" class="size-field-container form-control rounded-0 form-control-sm">
+                                <div id="id_size_cm" class="size-field-container edit-field form-control rounded-0 form-control-sm">
                                     {% render_field form.height_cm class="size-field" %}
                                     <span class="size-field-separator">|</span>
                                     {% render_field form.width_cm class="size-field" %}
@@ -174,7 +174,7 @@
                                 <label for="id_size_cm">cm</label>
                             </div>
                             <div id="size-fields-in" class="form-inline size-form-group">
-                                <div id="id_size_in" class="size-field-container form-control rounded-0 form-control-sm">
+                                <div id="id_size_in" class="size-field-container edit-field form-control rounded-0 form-control-sm">
                                     {% render_field form.height_in class="size-field" %}
                                     <span class="size-field-separator">|</span>
                                     {% render_field form.width_in class="size-field" %}

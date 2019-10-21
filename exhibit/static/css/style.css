@@ -569,7 +569,7 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
     padding-bottom: 0rem;
 }
 
-#object-details-name label, #object-details-name span {
+#object-details-name label, #object-details-name .separator {
     color: darkgray;
 }
 

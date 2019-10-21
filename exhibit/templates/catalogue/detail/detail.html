@@ -9,7 +9,7 @@
         <div id="object-details-name" class="form-inline">
             <div class="form-group">
                 {% render_field form.name class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
-                <span class="object-details-header" style="margin-left:1.5rem;margin-right:1.5rem;">  /  </span>
+                <span class="object-details-header separator" style="margin-left:1.5rem;margin-right:1.5rem;">  /  </span>
                 <label class="object-details-header"
                     for="{{ form.name.auto_id }}">{% block object_type %}{% endblock object_type %}</label>
             </div>
