@@ -616,3 +616,15 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
 /* padding: 0px 10px; */
 
 /* }  */
+
+#object-details .form-control {
+    padding: 0.3rem;
+    height: 1.5rem;
+}
+#object-details textarea.form-control {
+    line-height:1.2rem;
+    height: 2rem;
+}
+#object-details label {
+    padding: 0.3rem;
+}

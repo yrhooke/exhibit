@@ -72,16 +72,17 @@ Artwork management tool
 - [ ] add pagination to search
 - [ ] save on change in edit view
 - [ ] use https everywhere
-- [ ] collapsible navbar for narrow screens
+- [ ] collapsible navbar for narrow screens - or fixed collapsible navbar for all screens
 - [ ] figure out database + s3 backups
 - [ ] improve design finish
   - [ ] artwork detail: card elements shouldn't move around too much
 - [ ] Thumbnails for series
 - [ ] manage sale currency better
-- [ ] filtering non-artworks list views
+- [ ] search forgets previous set status/medium/owner bug
 
 ### Post Launch
 
+- [ ] filtering non-artworks list views
 - [ ] modify history to give default behavior for back arrow
 - [ ] add "create new" button for series/location from within artwork edit view
 - [ ] make list view into more dynamic table (using flexbox?)
