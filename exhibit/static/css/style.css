@@ -547,8 +547,12 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
 
 #object-details-name .object-details-header {
     font-size: 2rem;
-    color: #2C2D34;
+    /* color: #2C2D34; */
     height: min-content;
     padding-top: 0rem;
     padding-bottom: 0rem;
+}
+
+#object-details-name label, #object-details-name span {
+    color: darkgray;
 }
