@@ -628,3 +628,9 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
 #object-details label {
     padding: 0.3rem;
 }
+#object-details .select2-container .select2-selection--single,
+#object-details .select2-container--default .select2-selection--single .select2-selection__rendered,
+#object-details .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 1.5rem;
+    line-height: 1.5rem;
+}

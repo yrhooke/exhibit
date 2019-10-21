@@ -38,7 +38,7 @@
 
 
   <!-- script to load script sources sequentially -->
-  <script>
+  <!-- <script>
     (function () {
 
       //three JS files that need to be loaded one after the other
@@ -66,7 +66,7 @@
 
           //when successful, inject the next script
           scriptTag.onload = function (e) {
-            console.log("---> loaded: " + e.target.src);
+            console.log("--- loaded: " + e.target.src);
             injectLibFromStack();
           };
 
@@ -80,7 +80,7 @@
       //start script injection
       injectLibFromStack();
     })();
-  </script>
+  </script> -->
   <!-- Bootstrap core JavaScript -->
   <!-- jquery first, then jqueryui, then popper.js, then bootstrap js -->
   <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
@@ -121,8 +121,12 @@
 
     $(document).ready(function () {
       // initialize select2
+      console.log($('#search-bar-main select'));
       $('#search-bar-main select').select2();
+      console.log($('#search-bar-main select'));
       $('#search-bar-more select').select2({ width: 'style' });
+      console.log($('#object-details select'));
+      $('#object-details select').select2();
 
       // send filter data on submit in JSON serialized string
       $("#search-form").submit(() => {
