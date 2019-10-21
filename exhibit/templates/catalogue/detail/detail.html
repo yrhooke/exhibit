@@ -3,11 +3,19 @@
 
 {% block content %}
 <!-- <div class="row justify-content-md-center" id="object-details-wrapper"> -->
-    <div id="object-details"class="col-md-6 col-md-offset-3">
+    <div id="object-details">
         {% block object_details %}
-        <form action="" method="post" class="form-inline" style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
+        <form action="" method="post" >
             {% csrf_token %}
+            <div id="object-details-name" class="form-inline">
+                <div class="form-group">
+                    <label class="object-details-header" for="{{ form.name.auto_id }}">{% block object_type %}{% endblock object_type %}</label>
+                    {% render_field form.name class="object-details-header-text object-details-header detail-field form-control rounded-0" %}
+                </div>
+            </div>
+            <div id="object-details-body"class="form-inline" style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
             {% for field in form.visible_fields %}
+            {% ifnotequal field.label form.name.label %}
             <div class="form-group row">
                 {{ field.label_tag }}
                 {% render_field field class="detail-field form-control rounded-0" placeholder=field.name %}
@@ -15,8 +23,10 @@
                 <small class="form-text text-muted">{{ field.help_text }}</small>
                 {% endif %}
             </div>
+            {% endifnotequal %}
             {% endfor %}
             <input type="submit" class="btn btn-primary" value="{{ action_name }}">
+        </div>
         </form>
         {% endblock object_details %}
     </div>
