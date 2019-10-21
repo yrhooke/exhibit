@@ -13,7 +13,7 @@
                 <label class="object-details-header"
                     for="{{ form.name.auto_id }}">{% block object_type %}{% endblock object_type %}</label>
             </div>
-            <input type="submit" class="action-button btn btn-primary rounded-0" value="{{ action_name }}" style="margin-left:auto;">
+            <input type="submit" id="detail-submit" class="action-button btn btn-primary rounded-0" value="{{ action_name }}">
         </div>
         <div id="object-details-body" class="form-inline"
             style="flex-wrap: nowrap;flex-direction: column;align-items: start;">

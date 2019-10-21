@@ -616,3 +616,7 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
   }
   /* TEXTAREA AUTO RESIZE STYLES END */
 
+#detail-submit {
+    margin-left: 8rem;
+    margin-right: 8rem;
+}
