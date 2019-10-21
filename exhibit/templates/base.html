@@ -137,6 +137,85 @@
           .appendTo("#search-form");
         return true;
       });
+
+      // TEXT AREA RESIZE
+      // see https://www.impressivewebs.com/textarea-auto-resize/ for source
+
+      // Targets all textareas with class "txta"
+      let textareas = document.querySelectorAll('#object-details textarea'),
+        hiddenDiv = document.createElement('div'),
+        content = null;
+
+
+
+      // Build the hidden div's attributes
+
+      // The line below is needed if you move the style lines to CSS
+      // hiddenDiv.classList.add('hiddendiv');
+
+      // Add the "txta" styles, which are common to both textarea and hiddendiv
+      // If you want, you can remove those from CSS and add them via JS
+      hiddenDiv.classList.add('txtarea-hidden-div');
+      // hiddenDiv.classList.add('form-control');
+
+      // Add the styles for the hidden div
+      // These can be in the CSS, just remove these three lines and uncomment the CSS
+      hiddenDiv.style.display = 'none';
+      hiddenDiv.style.whiteSpace = 'pre-wrap';
+      hiddenDiv.style.wordWrap = 'break-word';
+
+      // function for adding hidden area and fixing height to match contents
+      function addHiddenArea(textarea) {
+        // Append hiddendiv to parent of textarea, so the size is correct
+        textarea.parentNode.appendChild(hiddenDiv);
+
+        // Remove this if you want the user to be able to resize it in modern browsers
+        textarea.style.resize = 'none';
+
+        // This removes scrollbars
+        textarea.style.overflow = 'hidden';
+
+        // Every input/change, grab the content
+        content = textarea.value;
+
+        // Add the same content to the hidden div
+
+        // This is for old IE
+        content = content.replace(/\n/g, '<br style="line-height:1px;">');
+
+        // The <br ..> part is for old IE
+        // This also fixes the jumpy way the textarea grows if line-height isn't included
+        hiddenDiv.innerHTML = content + '<br style="line-height: 1px;">';
+
+        // Briefly make the hidden div block but invisible
+        // This is in order to read the height
+        hiddenDiv.style.visibility = 'hidden';
+        hiddenDiv.style.display = 'block';
+        console.log('height' + hiddenDiv.offsetHeight);
+        textarea.style.height = hiddenDiv.offsetHeight + 'px';
+
+        // Make the hidden div display:none again
+        hiddenDiv.style.visibility = 'visible';
+        hiddenDiv.style.display = 'none';
+      }
+
+
+      // Loop through all the textareas and add the event listener
+      for (let i of textareas) {
+        (function (i) {
+
+          // add hidden div initially to set height
+          addHiddenArea(i);
+
+          // Note: Use 'keyup' instead of 'input'
+          // if you want older IE support
+          i.addEventListener('input', function () {
+            addHiddenArea(i);
+
+           });
+        })(i);
+      }
+      // TEXT AREA RESIZE DONE
     });
   </script>
   {% endblock %}
@@ -152,7 +231,7 @@
     <!-- Side navigation -->
     <div class="sidebar" id="sidebar">
       <a class="sidebar-header" href="{% url 'home' %}">
-          <img src="{% static 'images/logo_short.png' %}" alt="Exhibit">
+        <img src="{% static 'images/logo_short.png' %}" alt="Exhibit">
       </a>
       {% if request.user.is_authenticated %}
       <a class="nav-link" href="{% url 'catalogue:artwork_index' %}">Artworks</a>
@@ -185,7 +264,7 @@
       {% endif %}
 
       <div id="page-contents" class="row">
-          {% block content %} {% endblock %}
+        {% block content %} {% endblock %}
       </div>
     </div> <!-- /container -->
   </div>

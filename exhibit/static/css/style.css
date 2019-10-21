@@ -531,8 +531,10 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
     height: 1.5rem;
 }
 #object-details textarea.form-control {
-    line-height:1.2rem;
+    line-height: 1.5rem;
     height: 2rem;
+    resize: none;
+    overflow: hidden;
 }
 #object-details label {
     padding: 0.3rem;
@@ -579,4 +581,29 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
 /* #artwork-headers .select2-container--default {
     background:  rgb(235, 235, 228); 
 } */
+
+
+/* TEXTAREA AUTO RESIZE STYLES BEGIN */
+
+/* The .hiddendiv styles are added with JS.
+   You can remove the JS lines and use CSS instead
+.hiddendiv {
+  display: none;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}*/
+
+/* the styles for 'txta' are applied to both the textarea and the hidden clone */
+/* these must be the same for both */
+.txtarea-hidden-div {
+    width: 100%;
+    /* max-width: 500px; */
+    /* min-height: 100px; */
+    /* font-family: Arial, sans-serif; */
+    font-size: 1rem;
+    overflow: hidden;
+    line-height: 1.5rem;
+    padding: 0.3rem;
+  }
+  /* TEXTAREA AUTO RESIZE STYLES END */
 
