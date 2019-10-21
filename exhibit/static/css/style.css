@@ -147,9 +147,15 @@ rgb(96, 124, 160) */
     width: 120px;
 }
 
-#search-submit-form {
-   background-color:rgba(44, 45, 52, 1);
-   border: solid rgba(44, 45, 52, 1) 0px; 
+.action-button {
+    background-color:rgba(44, 45, 52, 1);
+    border: solid rgba(44, 45, 52, 1) 0px; 
+    width: 120px;
+
+}
+.action-button:hover {
+    background-color: slategrey;
+    border-color: slategrey;
 }
 
 .select2-container--default, .search-filter .select2-selection--single {
@@ -551,6 +557,9 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
 /* #object-details .select2-container--default .select2-selection--single {
     min-width: 8rem;
 } */
+#object-details-name {
+    flex-wrap: nowrap;
+}
 
 #object-details-name .object-details-header {
     font-size: 2rem;
