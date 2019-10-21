@@ -56,12 +56,12 @@ Artwork management tool
 
 ### in current branch
 
-- [ ] form cleanup in series/location/exhibition detail views
+- [X] form cleanup in series/location/exhibition detail views
+- [X] series/artwork heirarchy
+- [ ] form cleanup in artwork detail view
 
 ### next phase
 
-- [ ] series/artwork heirarchy
-- [ ] form cleanup in artwork detail view
 - [ ] better form validation (correct widgets, visibly fail on errors, etc)
 
 ### Want for launch
