@@ -171,7 +171,7 @@
       {% endif %}
     </div>
     <!-- Main page body -->
-    <div class="container-fluid main-page" id="main">
+    <div class="container-fluid" id="main-page">
 
       <div class="row">
         <h2>{% block page_title %}{% endblock %}</h2>
@@ -184,13 +184,8 @@
       {% endfor %}
       {% endif %}
 
-      <div class="page-contents">
-        <div class="main-content">
+      <div id="page-contents" class="row">
           {% block content %} {% endblock %}
-        </div>
-        <div class="related-items">
-          {% block related %} {% endblock %}
-        </div>
       </div>
     </div> <!-- /container -->
   </div>
@@ -198,26 +193,6 @@
 
   <!-- Placed at the end of the document so the pages load faster -->
   {% block javascript %}
-  <!-- Bootstrap core JavaScript -->
-  <!-- jquery first, then jqueryui, then popper.js, then bootstrap js -->
-  <!-- <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-  <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/jquery-ui.min.js" type="text/javascript"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
-    integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
-    crossorigin="anonymous"></script>
-  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
-    integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
-    crossorigin="anonymous"></script> -->
-
-  <!-- for custom selects -->
-  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.min.js"></script> -->
-
-  <!-- place project specific Javascript in this file -->
-
-  <!-- <script src="{% static 'js/project.js' %}"></script> -->
-
-
-
   {% endblock javascript %}
 </body>
 

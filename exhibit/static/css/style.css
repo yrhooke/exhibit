@@ -18,8 +18,11 @@ rgb(96, 124, 160) */
 /* **** Layout For All Pages **** */
 
 #wrapper {
-    padding-left: 170px;
-    transition: all 0.3s ease 0s;
+    display: flex;
+    width: 100%;
+    align-items: stretch;
+    /* padding-left: 160px; */
+    /* transition: all 0.3s ease 0s; */
 }
 
 .sidebar {
@@ -28,13 +31,8 @@ rgb(96, 124, 160) */
     flex-direction: column;
     align-items: center;
     justify-content: stretch;
-    /* layout to fit with main content */
-    margin-left: -170px;
-    left: 170px;
-    transition: all 0.3s ease 0s;
-    width: 170px;
-    position: fixed;
-    height: 100%;
+    min-width: 160px;
+    max-width: 160px;
     overflow: auto;
     /* other */
     background-color: rgb(222, 222, 212);
@@ -77,64 +75,31 @@ rgb(96, 124, 160) */
 
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
 
-div.main-page {
-    padding: 1px 16px;
-    /* height: 1000px; */
-    overflow-y: hidden;
-    width: 100%;
+#main-page {
+    padding: 0;
+    /* overflow-y: hidden; */
+    /* width: 100%; */
 }
 
+#page-contents {
+    margin: 0;
+}
 
+#object-details {
+    width: 100%;
+    margin: 15px;
+    flex-direction: column;
+}
+#related-items {
+    width: 100%;
+    margin: 15px;
+    flex-direction: column;
+}
 
 /* -------------------------------------- */
 
 /* *** Search Bar CSS *** */
 
-/* #search-bar-body {
-    -moz-appearance: textfield;
-    -webkit-appearance: textfield;
-    background-color: white;
-    background-color: -moz-field;
-    border: 1px solid darkgray;
-    box-shadow: 1px 1px 1px 0 lightgray inset;  
-    font: -moz-field;
-    font: -webkit-small-control;
-    margin-top: 5px;
-    padding: 2px 3px;
-    width: 398px;    
-} */
-
-/* .search-filter-select
-.search-filter-input
-.search-filter-append {
-    padding: none;
-    border-left : none;
-    border-right: none;
-    position: relative;
-    display: inline;
-} */
-
-.flex-container {
-    display: flex;
-    flex-direction: row;
-}
-
-#search-bar-container {
-    display: flex;
-    width: 100%;
-    align-items: center;
-}
-
-#search-bar-submit {
-    margin-left: auto;
-    border-color: black;
-    /* float: right; */
-}
-
-#search-bar-main-body, #search-filters-container {
-    display: flex;
-    flex: 1 1 auto;
-}
 
 #search-bar-wrapper {
     width: 100%;
@@ -166,9 +131,7 @@ div.main-page {
     border-bottom: 1px solid #cccccc;
 }
 
-.search-filter {
-    display: inline-flex;
-}
+
 .select2-container .select2-selection--single,
 .select2-container--default .select2-selection--single .select2-selection__rendered,
 .select2-container--default .select2-selection--single .select2-selection__arrow {
@@ -195,17 +158,6 @@ div.main-page {
     border-radius: 0;
     color: rgb(96, 124, 160);
 }
-
-.search-filter input, .search-filter input:focus {
-    border: none;
-    box-shadow: none;
-    border-radius: 0;
-    border-bottom: 1px solid rgb(113, 114, 110);
-}
-
-/* .flex-item {
-    order: 1;
-} */
 
 /* -------------------------------------- */
 
@@ -325,30 +277,11 @@ ul.gallery-item-text {
     min-width: 8rem;
 }
 
-#artwork-select {
-    min-width: 12rem;
-    width: 12rem;
-}
-
 /* non rounded select2 elements */
 [class^='select2'] {
     border-radius: 0px !important;
   }
 
-
-/* class="select2-selection__placeholder" */
-
-/* .select2-search--dropdown{
-    background-color: #000;
-} */
-
-/* .select2-search__field{
-    background-color: #000;
-} */
-
-/* .select2-results { 
-    background-color: #000;
-} */
 
 #artwork-title {
     min-width: 12rem;
