@@ -7,8 +7,8 @@
     <form action="" method="post">
         {% csrf_token %}
         <div id="object-details-name" class="form-inline">
-            <div class="form-group">
-                {% render_field form.name class="object-details-header-text object-details-header detail-field form-control rounded-0" %}
+            <div class="form-group" style="width:100%;">
+                {% render_field form.name class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
                 <span class="object-details-header" style="margin-left:1.5rem;margin-right:1.5rem;">  /  </span>
                 <label class="object-details-header"
                     for="{{ form.name.auto_id }}">{% block object_type %}{% endblock object_type %}</label>
@@ -20,7 +20,7 @@
             {% ifnotequal field.label form.name.label %}
             <div class="form-group">
                 {{ field.label_tag }}
-                {% render_field field class="detail-field form-control rounded-0" placeholder=field.name %}
+                {% render_field field class="edit-field form-control rounded-0" placeholder=field.name %}
                 {% if field.help_text %}
                 <small class="form-text text-muted">{{ field.help_text }}</small>
                 {% endif %}
