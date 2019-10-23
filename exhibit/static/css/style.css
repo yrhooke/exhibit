@@ -254,6 +254,11 @@ ul.gallery-item-text {
 
 .card {
     background-color: transparent;
+    max-width:560px;
+    width:calc(50% - 4rem);
+    margin:2rem;
+    box-sizing:border-box;
+    min-width:400px;
 }
 
 /* Artwork Detail header */

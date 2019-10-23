@@ -89,22 +89,23 @@
             <div class="form-group">
                 {% render_field form.series class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
                 <span class="object-details-header separator" style="margin-left:1rem;margin-right:1.5rem;">: </span>
-            </div> 
+            </div>
         </div>
         <div class="form-inline" style="flex-wrap:nowrap">
             <div class="form-group">
-                <span class="object-details-header separator" style="padding-left:2rem;padding-right:2rem;margin-left:1rem;margin-right:1.5rem;"></span>
+                <span class="object-details-header separator"
+                    style="padding-left:2rem;padding-right:2rem;margin-left:1rem;margin-right:1.5rem;"></span>
                 {% render_field form.title class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
                 {% render_field form.status class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
                 <span class="object-details-header separator" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
                 <label class="object-details-header"
-                for="{{ form.title.auto_id }}">{% block object_type %}Artwork{% endblock object_type %}</label>
+                    for="{{ form.title.auto_id }}">{% block object_type %}Artwork{% endblock object_type %}</label>
             </div>
             <div class="form-group">
                 <input type="submit" id="detail-submit" class="action-button btn btn-primary rounded-0"
-                value="{{ action_name }}">
+                    value="{{ action_name }}">
             </div>
-        </div> 
+        </div>
     </div>
     <!-- <div class="row pb-2 mt-4 mb-2" id="artwork-headers"  style="font-size:30px;font-family:brandon-med;">
         <span id='artwork-series-container'>
@@ -124,8 +125,7 @@
         </span>
         <input type="submit" class="btn btn-primary" value="{{ action_name }}" style="margin-left:auto;">
     </div> -->
-    <div class="row" id="artwork-details-wrapper">
-        <div class="col-sm-6" id="left-col">
+    <div class="row" id="artwork-details-wrapper" style="max-width:1200px; justify-content:space-around;">
             <div id="artwork-image" class="card">
                 <!-- {% if form.instance.image %}
                 <img class="img-fluid card-img-top" src="{{ form.instance.image.url }}" alt="Artwork image">
@@ -135,72 +135,71 @@
                 {% endif %} -->
                 <div class="card-body">
                     <div style="height:405px">
-                        <img class="img-fluid mx-auto" src="{{ form.instance.image.url }}" alt="Artwork image" style="height:100%;display:block">
+                        <img class="img-fluid mx-auto" src="{{ form.instance.image.url }}" alt="Artwork image"
+                            style="height:100%;display:block">
                     </div>
                     {{ form.image }}
                     <!-- {% render_field form.image class="custom-file"%} -->
                 </div>
             </div>
+            <div id="artwork-details" class="card">
+                    <div class="card-body">
+                        <h3 class="card-title">Details</h3>
+                        <div id="object-details-body" class="form-inline"
+                            style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
+                            <!-- NOTE: year field used to have artwork-year class -->
+                            {% include "catalogue/utils/field.html" with field=form.year %}
+                            {% include "catalogue/utils/field.html" with field=form.size %}
+                            {% include "catalogue/utils/field.html" with field=form.location %}
+                            {% include "catalogue/utils/field.html" with field=form.rolled %}
+                            {% include "catalogue/utils/field.html" with field=form.medium %}
+                            <div class="size-fields">
+                                <div id="size-fields-measures" class="">
+                                    <h5>Size (h | w | d):</h5>
+                                    <div id="size-fields-cm" class="form-inline size-form-group">
+                                        <div id="id_size_cm"
+                                            class="size-field-container edit-field form-control rounded-0 form-control-sm">
+                                            {% render_field form.height_cm class="size-field" %}
+                                            <span class="size-field-separator">|</span>
+                                            {% render_field form.width_cm class="size-field" %}
+                                            <span class="size-field-separator">|</span>
+                                            {% render_field form.depth_cm class="size-field" %}
+                                        </div>
+                                        <label for="id_size_cm">cm</label>
+                                    </div>
+                                    <div id="size-fields-in" class="form-inline size-form-group">
+                                        <div id="id_size_in"
+                                            class="size-field-container edit-field form-control rounded-0 form-control-sm">
+                                            {% render_field form.height_in class="size-field" %}
+                                            <span class="size-field-separator">|</span>
+                                            {% render_field form.width_in class="size-field" %}
+                                            <span class="size-field-separator">|</span>
+                                            {% render_field form.depth_in class="size-field" %}
+                                        </div>
+                                        <label for="id_size_in">in</label>
+                                    </div>
+                                </div>
+                            </div>
+                            {% include "catalogue/utils/field.html" with field=form.additional %}
+                        </div>
+                    </div>
+                </div>
             {% if editMode %}
             <div id="sales-info" class="card">
                 <div class="card-body sale-form">
                     <h3 class='card-title'>Sale Info</h3>
-                    <div class="form-inline"
-                    style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
-                    {% include "catalogue/utils/field.html" with field=form.owner %}
-                    {% include "catalogue/utils/field.html" with field=form.sold_by %}
-                    {% include "catalogue/utils/field.html" with field=form.price_nis %}
-                    {% include "catalogue/utils/field.html" with field=form.price_usd %}
-                    {% include "catalogue/utils/field.html" with field=form.sale_currency %}
-                    {% include "catalogue/utils/field.html" with field=form.sale_price %}
-                    {% include "catalogue/utils/field.html" with field=form.discount %}
-                    {% include "catalogue/utils/field.html" with field=form.sale_date %}
+                    <div class="form-inline" style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
+                        {% include "catalogue/utils/field.html" with field=form.owner %}
+                        {% include "catalogue/utils/field.html" with field=form.sold_by %}
+                        {% include "catalogue/utils/field.html" with field=form.price_nis %}
+                        {% include "catalogue/utils/field.html" with field=form.price_usd %}
+                        {% include "catalogue/utils/field.html" with field=form.sale_currency %}
+                        {% include "catalogue/utils/field.html" with field=form.sale_price %}
+                        {% include "catalogue/utils/field.html" with field=form.discount %}
+                        {% include "catalogue/utils/field.html" with field=form.sale_date %}
                     </div>
                 </div>
             </div>
-            {% endif %}
-        </div>
-        <div class="col-sm-6" id="right-col">
-            <div id="artwork-details" class="card">
-                <div class="card-body">
-                        <div id="object-details-body" class="form-inline"
-                        style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
-                        <!-- NOTE: year field used to have artwork-year class -->
-                        {{ form.year.label }}
-                    {% include "catalogue/utils/field.html" with field=form.year %}
-                    {% include "catalogue/utils/field.html" with field=form.size %}
-                    {% include "catalogue/utils/field.html" with field=form.location %}
-                    {% include "catalogue/utils/field.html" with field=form.rolled %}
-                    {% include "catalogue/utils/field.html" with field=form.medium %}
-                    <div class="size-fields">
-                        <div id="size-fields-measures" class="">
-                            <h5>Size (h | w | d):</h5>
-                            <div id="size-fields-cm" class="form-inline size-form-group">
-                                <div id="id_size_cm" class="size-field-container edit-field form-control rounded-0 form-control-sm">
-                                    {% render_field form.height_cm class="size-field" %}
-                                    <span class="size-field-separator">|</span>
-                                    {% render_field form.width_cm class="size-field" %}
-                                    <span class="size-field-separator">|</span>
-                                    {% render_field form.depth_cm class="size-field" %}
-                                </div>
-                                <label for="id_size_cm">cm</label>
-                            </div>
-                            <div id="size-fields-in" class="form-inline size-form-group">
-                                <div id="id_size_in" class="size-field-container edit-field form-control rounded-0 form-control-sm">
-                                    {% render_field form.height_in class="size-field" %}
-                                    <span class="size-field-separator">|</span>
-                                    {% render_field form.width_in class="size-field" %}
-                                    <span class="size-field-separator">|</span>
-                                    {% render_field form.depth_in class="size-field" %}
-                                </div>
-                                <label for="id_size_in">in</label>
-                            </div>
-                        </div>
-                    </div>
-                    {% include "catalogue/utils/field.html" with field=form.additional %}
-                </div>
-            </div>
-            {% if editMode %}
             <div id="exhibitions" class="card">
                 <div class="card-body">
                     <h3 class="card-title">All Exhibitions</h3>
@@ -218,7 +217,6 @@
                 </div>
             </div>
             {% endif %}
-        </div>
     </div>
 </form>
 {% endblock object_details %}
