@@ -62,9 +62,12 @@ Artwork management tool
 - [X] series/artwork heirarchy
 - [ ] form cleanup in artwork detail view
   - [X] incorporate detail view features
-  - [ ] series above title + year + status
+  - [X] series above title + year + status
   - [ ] artwork detail: card elements shouldn't move around too much
   - [ ] model: more size category options, framed is checkbox (?)
+  - [ ] fix workinexhibition
+    - [ ] can add
+    - [ ] can only add once 
 
 ### next phase
 

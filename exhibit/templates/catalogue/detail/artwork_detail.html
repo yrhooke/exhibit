@@ -84,18 +84,27 @@
 {% block object_details %}
 <form action="." method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <div id="object-details-name" class="form-inline">
-        <div class="form-group">
-            {% render_field form.series class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
-            <span class="object-details-header separator" style="margin-left:1rem;margin-right:1.5rem;">: </span>
-            {% render_field form.title class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
-            {% render_field form.status class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
-            <span class="object-details-header separator" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
-            <label class="object-details-header"
-                for="{{ form.title.auto_id }}">{% block object_type %}Artwork{% endblock object_type %}</label>
+    <div id="object-details-name" class="">
+        <div class="form-inline">
+            <div class="form-group">
+                {% render_field form.series class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
+                <span class="object-details-header separator" style="margin-left:1rem;margin-right:1.5rem;">: </span>
+            </div> 
         </div>
-        <input type="submit" id="detail-submit" class="action-button btn btn-primary rounded-0"
-            value="{{ action_name }}">
+        <div class="form-inline" style="flex-wrap:nowrap">
+            <div class="form-group">
+                <span class="object-details-header separator" style="padding-left:2rem;padding-right:2rem;margin-left:1rem;margin-right:1.5rem;"></span>
+                {% render_field form.title class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
+                {% render_field form.status class="object-details-header-text object-details-header edit-field form-control rounded-0" %}
+                <span class="object-details-header separator" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
+                <label class="object-details-header"
+                for="{{ form.title.auto_id }}">{% block object_type %}Artwork{% endblock object_type %}</label>
+            </div>
+            <div class="form-group">
+                <input type="submit" id="detail-submit" class="action-button btn btn-primary rounded-0"
+                value="{{ action_name }}">
+            </div>
+        </div> 
     </div>
     <!-- <div class="row pb-2 mt-4 mb-2" id="artwork-headers"  style="font-size:30px;font-family:brandon-med;">
         <span id='artwork-series-container'>

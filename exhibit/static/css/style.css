@@ -554,6 +554,17 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
     border: none;
 }
 
+/* for selects in object details header */
+#object-details-name .select2-container .select2-selection--single,
+#object-details-name .select2-container--default .select2-selection--single .select2-selection__rendered,
+#object-details-name .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 3rem;
+    line-height: 3rem;
+    background-color: rgb(235, 235, 228);
+    border: none;
+    font-size: 2rem;
+}
+
 /* #object-details .select2-container--default .select2-selection--single {
     min-width: 8rem;
 } */
