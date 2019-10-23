@@ -127,13 +127,16 @@
     <div class="row" id="artwork-details-wrapper">
         <div class="col-sm-6" id="left-col">
             <div id="artwork-image" class="card">
-                {% if form.instance.image %}
+                <!-- {% if form.instance.image %}
                 <img class="img-fluid card-img-top" src="{{ form.instance.image.url }}" alt="Artwork image">
                 {% else %}
                 <img class="img-fluid card-img-top" src="{% static 'catalogue/images/unicorn.png' %}"
                     alt="Artwork image">
-                {% endif %}
+                {% endif %} -->
                 <div class="card-body">
+                    <div style="height:405px">
+                        <img class="img-fluid mx-auto" src="{{ form.instance.image.url }}" alt="Artwork image" style="height:100%;display:block">
+                    </div>
                     {{ form.image }}
                     <!-- {% render_field form.image class="custom-file"%} -->
                 </div>
