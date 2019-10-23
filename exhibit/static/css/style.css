@@ -255,10 +255,11 @@ ul.gallery-item-text {
 .card {
     background-color: transparent;
     max-width:560px;
-    width:calc(50% - 4rem);
-    margin:2rem;
+    width:calc(100% - (2 * 1.8rem));
+    margin:1.8rem;
     box-sizing:border-box;
     min-width:400px;
+    height: max-content;
 }
 
 /* Artwork Detail header */
