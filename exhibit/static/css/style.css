@@ -257,6 +257,7 @@ ul.gallery-item-text {
     max-width:560px;
     width:calc(100% - (2 * 1.8rem));
     margin:1.8rem;
+    margin-top: 1rem ;
     box-sizing:border-box;
     min-width:400px;
     height: max-content;
@@ -635,5 +636,4 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
 
 #detail-submit {
     margin-left: 8rem;
-    margin-right: 8rem;
 }

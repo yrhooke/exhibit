@@ -255,9 +255,6 @@
     <!-- Main page body -->
     <div class="container-fluid" id="main-page">
 
-      <div class="row">
-        <h2>{% block page_title %}{% endblock %}</h2>
-      </div>
       {% if messages %}
       {% for message in messages %}
       <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">{{ message }}<button type="button"
