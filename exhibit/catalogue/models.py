@@ -12,64 +12,77 @@ class Artwork(models.Model):
     # optional_field = {'blank' : True, 'null' : true}
 
     # Mandatory Fields ##
-    image = models.ImageField('Image', upload_to='images/', null=True)
-    title = models.CharField('Title', max_length=200)
-    series = models.ForeignKey('Series', on_delete=models.SET_NULL, null=True)
+    image = models.ImageField('Image', upload_to='images/', null=True, help_text="Sample image of the artwork")
+    title = models.CharField('Title', max_length=200, help_text="The works's title")
+    series = models.ForeignKey('Series', on_delete=models.SET_NULL, null=True,
+                               help_text="The series to which the artwork belongs")
     year = models.IntegerField('Year', help_text='Year of creation')
 
     # Optional Fields ##
-    width_cm = models.FloatField(default=0.0,
+    width_cm = models.FloatField("Width cm",
+                                 default=0.0,
                                  help_text='width in centimeters',
                                  blank=True
                                  )
-    height_cm = models.FloatField(default=0.0,
+    height_cm = models.FloatField("Height cm",
+                                  default=0.0,
                                   help_text='height in centimeters',
                                   blank=True
                                   )
-    depth_cm = models.FloatField(default=0.0,
+    depth_cm = models.FloatField("Depth cm",
+                                 default=0.0,
                                  help_text='depth in centimeters',
                                  blank=True
                                  )
-    width_in = models.FloatField(default=0.0,
+    width_in = models.FloatField("Width in",
+                                 default=0.0,
                                  help_text='width in inches',
                                  blank=True
                                  )
-    height_in = models.FloatField(default=0.0,
+    height_in = models.FloatField("Height in",
+                                  default=0.0,
                                   help_text='height in inches',
                                   blank=True
                                   )
-    depth_in = models.FloatField(default=0.0,
+    depth_in = models.FloatField("Depth in",
+                                 default=0.0,
                                  help_text='depth in inches',
                                  blank=True
                                  )
 
     SIZE_OPTIONS = (
         ('S', 'Small'),
+        ('M', 'Medium'),
         ('L', 'Large'),
+        ('H', 'Scroll'),
     )
 
-    size = models.CharField('Size (S/L)',
+    size = models.CharField('Size Category',
                             max_length=1,
                             choices=SIZE_OPTIONS,
-                            blank=True
+                            blank=True,
+                            help_text="How large is this piece?"
                             )
-    medium = models.CharField('Medium', max_length=250, blank=True, default='Diluted acrylic on canvas')
+    medium = models.CharField('Medium', max_length=250, blank=True,
+                              default='Diluted acrylic on canvas', help_text="medium of creation")
 
     # Mutable Fields - are expected to change over time ##
 
     location = models.ForeignKey('Location',
                                  on_delete=models.SET_NULL,
-                                 null=True
+                                 null=True,
+                                 help_text="Artwork's current location"
                                  )
 
     ROLL_STATUS_CHOICES = (
         ('R', 'Rolled'),
         ('S', 'Stretched'),
-        ('F', 'Framed'),
     )
 
-    rolled = models.CharField('Rolled/Streched/Framed', max_length=1, choices=ROLL_STATUS_CHOICES,
-                              blank=True)
+    rolled = models.CharField('Rolled/Streched', max_length=1, choices=ROLL_STATUS_CHOICES,
+                              blank=True, help_text="Is the work rolled or stretched?")
+
+    framed = models.NullBooleanField('Framed', blank=True, help_text="Is the work framed?")
 
     OVERALL_STATUS_CHOICES = (
         ('D', 'Draft'),
@@ -78,36 +91,40 @@ class Artwork(models.Model):
         ('S', 'Sold'),
     )
     status = models.CharField('Status', max_length=1, choices=OVERALL_STATUS_CHOICES,
-                              default='D', blank=True)
-    additional = models.TextField('Additional info', blank=True)
+                              default='D', blank=True, help_text="current status")
+    additional = models.TextField('Additional info', blank=True, help_text="Anything else of interest")
 
     # Sale fields
-    owner = models.CharField('Owner', max_length=200, default='Rotem Reshef')
-    sold_by = models.CharField('Sold By', max_length=200, blank=True)
+    owner = models.CharField('Owner', max_length=200, default='Rotem Reshef', help_text="The artwork's current owner")
+    sold_by = models.CharField('Sold By', max_length=200, blank=True, help_text="The agent who facilitated the sale")
     price_nis = models.DecimalField("Price in NIS",
                                     max_digits=10,
                                     decimal_places=2,
                                     null=True,
-                                    blank=True
+                                    blank=True,
+                                    help_text="Price NIS"
                                     )
     price_usd = models.DecimalField("Price in US Dollars",
                                     max_digits=10,
                                     decimal_places=2,
                                     null=True,
-                                    blank=True
+                                    blank=True,
+                                    help_text="Price USD"
                                     )
     sale_price = models.DecimalField("Sale Price",
                                      max_digits=10,
                                      decimal_places=2,
                                      null=True,
-                                     blank=True
+                                     blank=True,
+                                     help_text="Price of final sale"
                                      )
     sale_currency = models.CharField("Sale currency", max_length=10, blank=True)
     discount = models.DecimalField("Discount",
                                    max_digits=10,
                                    decimal_places=2,
                                    null=True,
-                                   blank=True
+                                   blank=True,
+                                   help_text="Discount if any"
                                    )
     sale_date = models.DateField("Sale Date", blank=True, null=True)
 
@@ -210,15 +227,15 @@ class Location(models.Model):
     description = models.TextField("Description", blank=True)
 
     # What's this naming scheme about? @TODO figure this out
-    address_1 = models.CharField(_("address"), max_length=128)
-    address_2 = models.CharField(_("address cont'd"), max_length=128,
+    address_1 = models.CharField(_("Address"), max_length=128)
+    address_2 = models.CharField(_("Address cont'd"), max_length=128,
                                  blank=True)
 
-    city = models.CharField(_("city"), max_length=64)
-    state = models.CharField(_("state"), blank=True, max_length=2,
+    city = models.CharField(_("City"), max_length=64)
+    state = models.CharField(_("State"), blank=True, max_length=2,
                              help_text='US state, optional field')
-    zip_code = models.CharField(_("zip code"), max_length=5, blank=True)
-    country = models.CharField(max_length=100)  # change later
+    zip_code = models.CharField(_("Zip code"), max_length=5, blank=True)
+    country = models.CharField("Country", max_length=100)  # change later
 
     def __str__(self):
         """string representation of model"""

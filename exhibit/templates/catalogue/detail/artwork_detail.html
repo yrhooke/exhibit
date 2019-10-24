@@ -144,8 +144,8 @@
                         </div>
                         {% endif %}
                     </div>
-                    {{ form.image }}
-                    <!-- {% render_field form.image class="custom-file"%} -->
+                    <label for={{ form.image.auto_id }} class="action-button btn btn-primary rounded-0" >Upload Image</label>
+                    {% render_field form.image style="display:none;" %}
                 </div>
             </div>
             {% if editMode %}

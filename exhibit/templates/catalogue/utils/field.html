@@ -2,8 +2,8 @@
 
 <div class="form-group">
     {{ field.label_tag }}
-    {% render_field field class="edit-field form-control rounded-0" placeholder=field.name %}
+    {% render_field field class="edit-field form-control rounded-0" placeholder=field.help_text %}
     {% if field.help_text %}
-    <small class="form-text text-muted">{{ field.help_text }}</small>
+    <!-- <small class="form-text text-muted">{{ field.help_text }}</small> -->
     {% endif %}
 </div>

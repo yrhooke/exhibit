@@ -4,7 +4,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse_lazy, reverse
 import json
 from catalogue.models import Artwork, Series, Exhibition, Location
-from catalogue.forms import WorkInExhibitionForm, ArtworkSearchForm, LocationSearchForm, ExhibitionSearchForm
+from catalogue.forms import WorkInExhibitionForm, ArtworkSearchForm, LocationSearchForm, ExhibitionSearchForm, ArtworkDetailForm
 
 from django.core.exceptions import FieldError
 from django.db import models
@@ -190,7 +190,8 @@ class ArtworkList(LoginRequiredMixin, SearchMixin, ListView):
 
 class ArtworkCreate(LoginRequiredMixin, genericCreateView):
     model = Artwork
-    fields = artwork_fields
+    # fields = artwork_fields
+    form_class = ArtworkDetailForm
     template_name = 'catalogue/detail/artwork_detail.html'
 
     def get_form(self, form_class=None):
@@ -202,8 +203,8 @@ class ArtworkCreate(LoginRequiredMixin, genericCreateView):
 
 class ArtworkUpdate(LoginRequiredMixin, UpdateView):
     model = Artwork
-    fields = artwork_fields
-    # form_class = ArtworkForm
+    # fields = artwork_fields
+    form_class = ArtworkDetailForm
     template_name = 'catalogue/detail/artwork_detail.html'
 
     def get_context_data(self, **kwargs):

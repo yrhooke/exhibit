@@ -93,6 +93,7 @@ Artwork management tool
 - [ ] bulk artwork data download
 - [ ] use icons for status
 - [ ] don't crop wide images in detail view
+- [ ] decide on all help texts
 - [ ] change font to narrow in most places, leave reg for "bold"
 - [ ] use textarea js to clean up size field + other fields' text resizing
 - [ ] js refactor - distribute what's necessary per template
