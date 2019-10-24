@@ -63,19 +63,24 @@ Artwork management tool
 - [ ] form cleanup in artwork detail view
   - [X] incorporate detail view features
   - [X] series above title + year + status
-  - [ ] artwork detail: card elements shouldn't move around too much
+  - [X] artwork detail: card elements shouldn't move around too much
   - [ ] model: more size category options, framed is checkbox (?)
-  - [ ] fix workinexhibition
-    - [ ] can add
-    - [ ] can only add once 
 
 ### next phase
 
 - [ ] add headers for overview (list view) pages
 - [ ] add create new button to list views
 - [ ] differentiate between create and edit views better
+- [ ] clean up css
+  - [ ] gray object type label called breadcrumb
+  - [ ] standardize html layout
+  - [ ] figure out what classes work for us
+- [ ] reduce spacing between rows of object fields (in object-details)
 - [ ] better form validation (correct widgets, visibly fail on errors, etc)
 - [ ] clean up spacing for search bar when series/location is missing
+  - [ ] fix workinexhibition
+    - [ ] can add
+    - [ ] can only add once 
 - [ ] sort order for artworks size category desc then year desc
 - [ ] store images on S3
 - [ ] remove all proprietary data from source control
@@ -87,7 +92,8 @@ Artwork management tool
 - [ ] artwork data download
 - [ ] bulk artwork data download
 - [ ] use icons for status
-- [ ] change font to narrow in most places, leave reg for highlighting
+- [ ] don't crop wide images in detail view
+- [ ] change font to narrow in most places, leave reg for "bold"
 - [ ] use textarea js to clean up size field + other fields' text resizing
 - [ ] js refactor - distribute what's necessary per template
 - [ ] redo naming - give clearer class/id/name fields in html

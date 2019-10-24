@@ -136,8 +136,13 @@
                 {% endif %} -->
                 <div class="card-body">
                     <div style="height:405px">
+                        {% if form.instance.image %}
                         <img class="img-fluid mx-auto" src="{{ form.instance.image.url }}" alt="Artwork image"
                             style="height:100%;display:block">
+                        {% else %}
+                        <div class="mx-auto" style="height:100%;display:block; width:75%;background-color: darkgrey;">
+                        </div>
+                        {% endif %}
                     </div>
                     {{ form.image }}
                     <!-- {% render_field form.image class="custom-file"%} -->
@@ -162,20 +167,19 @@
             {% endif %}
         </div>
         <div class="col-6" style="padding:0px;display:flex;align-items:center;flex-direction:column">
-        <div id="artwork-details" class="card">
-            <div class="card-body">
-                <h3 class="card-title">Details</h3>
-                <div id="object-details-body" class="form-inline"
-                    style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
-                    <!-- NOTE: year field used to have artwork-year class -->
-                    {% include "catalogue/utils/field.html" with field=form.year %}
-                    {% include "catalogue/utils/field.html" with field=form.size %}
-                    {% include "catalogue/utils/field.html" with field=form.location %}
-                    {% include "catalogue/utils/field.html" with field=form.rolled %}
-                    {% include "catalogue/utils/field.html" with field=form.medium %}
-                    <div class="size-fields">
+            <div id="artwork-details" class="card">
+                <div class="card-body">
+                    <h3 class="card-title">Details</h3>
+                    <div id="object-details-body" class="form-inline"
+                        style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
+                        <!-- NOTE: year field used to have artwork-year class -->
+                        {% include "catalogue/utils/field.html" with field=form.year %}
+                        {% include "catalogue/utils/field.html" with field=form.size %}
+                        {% include "catalogue/utils/field.html" with field=form.location %}
+                        {% include "catalogue/utils/field.html" with field=form.rolled %}
+                        {% include "catalogue/utils/field.html" with field=form.medium %}
                         <div id="size-fields-measures" class="form-group"
-                            style="flex-direction:column;align-items:flex-start;margin-top:0.5rem">
+                            style="flex-direction:column;align-items:flex-start;margin-top:0.5rem;">
                             <h5>Size (h | w | d):</h5>
                             <div id="size-fields-cm" class="form-inline size-form-group">
                                 <div id="id_size_cm"
@@ -200,29 +204,28 @@
                                 <label for="id_size_in">in</label>
                             </div>
                         </div>
+                        {% include "catalogue/utils/field.html" with field=form.additional %}
                     </div>
-                    {% include "catalogue/utils/field.html" with field=form.additional %}
                 </div>
             </div>
-        </div>
-        {% if editMode %}
-        <div id="exhibitions" class="card">
-            <div class="card-body">
-                <h3 class="card-title">All Exhibitions</h3>
-                <!-- <form action="{% url 'catalogue:add_workinexhibition' %}" method="POST"> -->
-                <div class="form-inline" id="add-work-to-exhibition">
-                    {% render_field exhibitionForm.artwork class="collapse" style="visibility:hidden;" %}
-                    {% render_field exhibitionForm.exhibition class="form-control rounded-0" id="new-exhibition-select" %}
-                    <input type="submit" class="btn btn-primary btn-sm" value="Add new" id="new-exhibition-submit">
-                </div>
-                <!-- </form> -->
-                <table class="table table-striped table-hover">
-                    {% include "catalogue/list_module/exhibition_list.html" with object_list=exhibitionList %}
-                </table>
+            {% if editMode %}
+            <div id="exhibitions" class="card">
+                <div class="card-body">
+                    <h3 class="card-title">All Exhibitions</h3>
+                    <!-- <form action="{% url 'catalogue:add_workinexhibition' %}" method="POST"> -->
+                    <div class="form-inline" id="add-work-to-exhibition">
+                        {% render_field exhibitionForm.artwork class="collapse" style="visibility:hidden;" %}
+                        {% render_field exhibitionForm.exhibition class="form-control rounded-0" id="new-exhibition-select" %}
+                        <input type="submit" class="btn btn-primary btn-sm" value="Add new" id="new-exhibition-submit">
+                    </div>
+                    <!-- </form> -->
+                    <table class="table table-striped table-hover">
+                        {% include "catalogue/list_module/exhibition_list.html" with object_list=exhibitionList %}
+                    </table>
 
+                </div>
             </div>
+            {% endif %}
         </div>
-        {% endif %}
-    </div>
 </form>
 {% endblock object_details %}
