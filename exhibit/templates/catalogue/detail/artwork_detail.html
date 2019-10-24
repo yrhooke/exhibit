@@ -177,6 +177,7 @@
                         {% include "catalogue/utils/field.html" with field=form.size %}
                         {% include "catalogue/utils/field.html" with field=form.location %}
                         {% include "catalogue/utils/field.html" with field=form.rolled %}
+                        {% include "catalogue/utils/field.html" with field=form.framed %}
                         {% include "catalogue/utils/field.html" with field=form.medium %}
                         <div id="size-fields-measures" class="form-group"
                             style="flex-direction:column;align-items:flex-start;margin-top:0.5rem;">
@@ -214,9 +215,9 @@
                     <h3 class="card-title">All Exhibitions</h3>
                     <!-- <form action="{% url 'catalogue:add_workinexhibition' %}" method="POST"> -->
                     <div class="form-inline" id="add-work-to-exhibition">
-                        {% render_field exhibitionForm.artwork class="collapse" style="visibility:hidden;" %}
-                        {% render_field exhibitionForm.exhibition class="form-control rounded-0" id="new-exhibition-select" %}
-                        <input type="submit" class="btn btn-primary btn-sm" value="Add new" id="new-exhibition-submit">
+                        <!-- {% render_field exhibitionForm.artwork class="collapse" style="visibility:hidden;" %} -->
+                        <!-- {% render_field exhibitionForm.exhibition class="form-control rounded-0" id="new-exhibition-select" %} -->
+                        <!-- <input type="submit" class="btn btn-primary btn-sm" value="Add new" id="new-exhibition-submit"> -->
                     </div>
                     <!-- </form> -->
                     <table class="table table-striped table-hover">

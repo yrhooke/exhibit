@@ -27,6 +27,7 @@ class ArtworkDetailForm(forms.ModelForm):
             'height_in',
             'depth_in',
             'rolled',
+            'framed',
             'medium',
             'additional',
             'owner',
