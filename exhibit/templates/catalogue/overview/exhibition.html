@@ -1,9 +1,11 @@
 {% extends "catalogue/overview/overview.html" %}
 
-{% block object_type %}Exhibitions{% endblock object_type %}
+{% block page_name %}Exhibitions{% endblock page_name %}
 
 {% block create_url %}{% url 'catalogue:exhibition_new' %}{% endblock create_url %}
 
-{% block items_list %}
-{% include 'catalogue/list_module/exhibition_list.html' with object_list=object_list overview_mode=True %}
-{% endblock items_list %}
+{% block page_body %}
+<div class="section">
+    {% include 'catalogue/list_module/exhibition_list.html' with object_list=object_list overview_mode=True %}
+</div>
+{% endblock page_body %}

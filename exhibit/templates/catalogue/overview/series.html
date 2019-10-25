@@ -1,9 +1,11 @@
 {% extends "catalogue/overview/overview.html" %}
 
-{% block object_type %}Series{% endblock object_type %}
+{% block page_name %}Series{% endblock page_name %}
 
 {% block create_url %}{% url 'catalogue:series_new' %}{% endblock create_url %}
 
-{% block items_list %}
-{% include 'catalogue/list_module/series_list.html' with object_list=object_list %}
-{% endblock items_list %}
+{% block page_body %}
+<div class="section">
+    {% include 'catalogue/list_module/series_list.html' with object_list=object_list %}
+</div>
+{% endblock page_body %}

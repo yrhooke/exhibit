@@ -1,15 +1,24 @@
-{% extends "base.html" %}
+{% extends "catalogue/overview/overview.html" %}
 {% load static %}
 
-{% block title %}Home{% endblock %}
+{% block title %}Rotem Reshef Home - Exhibit{% endblock %}
 
-{% block content %}
-<h2>Rotem Reshef</h2>
-<p>
-    Hello! Welcome to Exhibit: an artwork management tool. This website is dedicated to managing the works of Rotem
-    Reshef, including their current location, exhibition history, sales, and other data. Feel free to check out each of
-    the series below, or search for details about a particular series, artwork, location, or exhibition using the menu
-    on the left.
-</p>
-{% include 'catalogue/list_module/series_list.html' with object_list=object_list %}
-{% endblock content%}
+{% block page_name %}Rotem Reshef{% endblock page_name %}
+
+{% block breadcrumb %}Home{% endblock breadcrumb %}
+
+{% block create_button %}{% endblock %}
+
+{% block page_body %}
+<div class="section">
+        <p>
+                Hello! Welcome to Exhibit: an artwork management tool. This website is dedicated to managing the works of Rotem
+                Reshef, including their current location, exhibition history, sales, and other data. Feel free to check out each of
+                the series below, or find details about a particular series, artwork, location, or exhibition using the menu
+                on the left.
+        </p>
+        </div>
+        <div class="section">
+                {% include 'catalogue/list_module/series_list.html' with object_list=object_list %}
+        </div>
+{% endblock page_body %}
