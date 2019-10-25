@@ -75,7 +75,7 @@ Artwork management tool
 - [X] add proper placeholder to fields
 - [ ] better form validation (correct widgets, visibly fail on errors, etc)
     - [X] calendar types should show calender
-    - [ ] numeric types input limited
+    - [X] numeric types input limited
     - [ ] go object by object, try to create wrong, try to update wrong
       - [X] series
       - [X] location
@@ -83,8 +83,7 @@ Artwork management tool
         - [X] dates need to pop up calender
       - [ ] artwork
         - [ ] upload image on create or edit doesn't work
-        - [ ] handle missing value in size field
-        - [ ] size fields should do percision validation like price_nis does
+        - [X] handle missing value in size field
         - [X] date field for sale not well handled
 
 - [ ] reduce spacing between rows of object fields (in object-details)

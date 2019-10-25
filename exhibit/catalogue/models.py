@@ -22,37 +22,43 @@ class Artwork(models.Model):
                                  default=0.0,
                                  help_text="W",
                                  #  help_text='width in centimeters',
-                                 blank=True
+                                 null=True,
+                                 blank=True,
                                  )
     height_cm = models.FloatField("Height cm",
                                   default=0.0,
                                   help_text="H",
                                   #   help_text='height in centimeters',
-                                  blank=True
+                                  null=True,
+                                  blank=True,
                                   )
     depth_cm = models.FloatField("Depth cm",
                                  default=0.0,
                                  help_text="D",
                                  #  help_text='depth in centimeters',
-                                 blank=True
+                                 null=True,
+                                 blank=True,
                                  )
     width_in = models.FloatField("Width in",
                                  default=0.0,
                                  help_text="W",
                                  #  help_text='width in inches',
-                                 blank=True
+                                 null=True,
+                                 blank=True,
                                  )
     height_in = models.FloatField("Height in",
                                   default=0.0,
                                   help_text="H",
                                   #   help_text='height in inches',
-                                  blank=True
+                                  null=True,
+                                  blank=True,
                                   )
     depth_in = models.FloatField("Depth in",
                                  default=0.0,
                                  help_text="D",
                                  #  help_text='depth in inches',
-                                 blank=True
+                                 null=True,
+                                 blank=True,
                                  )
 
     SIZE_OPTIONS = (
