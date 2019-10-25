@@ -1,6 +1,6 @@
 {% load static %}
 
-    <div id="searchResults" style="display:flex;justify-content:flex-start;flex-wrap:wrap;width:999px;">
+    <div id="searchResults" class="center-block" style="display:flex;justify-content:flex-start;flex-wrap:wrap;">
 
         {% for artwork in object_list %}
         <a class="gallery-item-wrapper" href="{% url 'catalogue:artwork_detail' artwork.pk %}">

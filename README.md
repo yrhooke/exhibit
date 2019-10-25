@@ -55,9 +55,6 @@ Artwork management tool
 - [X] distribute artwork search among templates
 - [X] collapsible navbar for narrow screens - or fixed navbar for all screens
 - [X] make list view into more dynamic table (using flexbox?)
-
-### in current branch
-
 - [X] form cleanup in series/location/exhibition detail views
 - [X] series/artwork heirarchy
 - [X] form cleanup in artwork detail view
@@ -66,21 +63,24 @@ Artwork management tool
   - [X] artwork detail: card elements shouldn't move around too much
   - [X] model: more size category options, framed is checkbox (?)
 
+### in current branch
+
+- [ ] clean up css
+  - [ ] standardize html layout
+  - [ ] figure out what classes work for us
+  - [X] gray object type label called breadcrumb
+
 ### next phase
 
 - [ ] add headers for overview (list view) pages
 - [ ] add create new button to list views
 - [ ] differentiate between create and edit views better
-- [ ] clean up css
-  - [ ] gray object type label called breadcrumb
-  - [ ] standardize html layout
-  - [ ] figure out what classes work for us
 - [ ] reduce spacing between rows of object fields (in object-details)
 - [ ] better form validation (correct widgets, visibly fail on errors, etc)
+- [ ] fix workinexhibition
+  - [ ] can add
+  - [ ] can only add once
 - [ ] clean up spacing for search bar when series/location is missing
-  - [ ] fix workinexhibition
-    - [ ] can add
-    - [ ] can only add once 
 - [ ] sort order for artworks size category desc then year desc
 - [ ] store images on S3
 - [ ] remove all proprietary data from source control
@@ -101,7 +101,7 @@ Artwork management tool
 - [ ] add autocomplete in search
 - [ ] use https everywhere
 - [ ] figure out how to back up the database + s3
-- [ ] improve performance if image download too intensive
+- [ ] improve performance if page loading this slow on prod
 - [ ] search forgets previous set status/medium/owner bug
 
 ### Post Launch
@@ -111,6 +111,7 @@ Artwork management tool
 - [ ] manage sale currency better
 - [ ] filtering non-artworks list views
 - [ ] add "create new" button for series/location from within artwork edit view
+- [ ] mobile/responsive layout
 - [ ] compartmentalize deploy/switch to digitalocean
 - [ ] add test suite
 - [ ] harden security + work on backups
