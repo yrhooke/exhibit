@@ -66,18 +66,18 @@ Artwork management tool
   - [X] standardize html layout
   - [X] figure out what classes work for us
   - [X] gray object type label called breadcrumb
-
-### in current branch
-
 - [X] add headers for overview (list view) pages
 - [X] add create new button to list views
 - [X] differentiate between create and edit views better
 
-### next phase
+### in current branch
 
+- [ ] better form validation (correct widgets, visibly fail on errors, etc)
 - [ ] add proper placeholder to fields
 - [ ] reduce spacing between rows of object fields (in object-details)
-- [ ] better form validation (correct widgets, visibly fail on errors, etc)
+
+### next phase
+
 - [ ] fix workinexhibition
   - [ ] can add
   - [ ] can only add once

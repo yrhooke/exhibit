@@ -19,6 +19,6 @@ urlpatterns = [
     path('location/new/', views.LocationCreate.as_view(), name='location_new'),
     path('location/<int:pk>/', views.LocationUpdate.as_view(), name='location_detail'),
     path('location/<int:pk>/delete/', views.LocationDelete.as_view(), name='location-delete'),
-    path('ajax_calls/search/', views.autocompleteView),
+    # path('ajax_calls/search/', views.autocompleteView),
     path('api/addworkinexhibition', views.add_work_in_exhibition, name='add_workinexhibition'),
 ]

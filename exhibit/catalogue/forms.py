@@ -8,7 +8,16 @@ class WorkInExhibitionForm(forms.ModelForm):
         fields = '__all__'
 
 
-class ArtworkDetailForm(forms.ModelForm):
+class PlaceholderMixin(object):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        field_names = [field_name for field_name, _ in self.fields.items()]
+        for field_name in field_names:
+            field = self.fields.get(field_name)
+            field.widget.attrs.update({'placeholder': field.help_text})
+
+
+class ArtworkDetailForm(PlaceholderMixin, forms.ModelForm):
 
     class Meta():
         model = Artwork
@@ -42,6 +51,42 @@ class ArtworkDetailForm(forms.ModelForm):
         widgets = {
             'image': forms.FileInput,
         }
+
+
+class SeriesDetailForm(PlaceholderMixin, forms.ModelForm):
+
+    class Meta():
+        model = Series
+        fields = '__all__'
+
+
+class LocationDetailForm(PlaceholderMixin, forms.ModelForm):
+
+    class Meta():
+        model = Location
+        fields = [
+            'name',
+            'description',
+            'address_1',
+            'address_2',
+            'city',
+            'state',
+            'zip_code',
+            'country',
+        ]
+
+
+class ExhibitionDetailForm(PlaceholderMixin, forms.ModelForm):
+
+    class Meta():
+        model = Exhibition
+        fields = [
+            'name',
+            'description',
+            'location',
+            'start_date',
+            'end_date',
+        ]
 
 
 class ArtworkSearchForm(forms.ModelForm):

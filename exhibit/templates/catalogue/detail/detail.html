@@ -56,9 +56,11 @@
     </form>
     {% endblock object_details %}
 </div>
+{% if edit_mode %}
 <div id="related-items" class="section">
     <h3 class="related-items-header">{%  block related_items_header %}{% endblock %}</h3>
     {% block related_items %}
     {% endblock related_items %}
 </div>
+{% endif %}
 {% endblock content %}

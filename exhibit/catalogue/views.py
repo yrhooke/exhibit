@@ -1,24 +1,15 @@
-from django.views.generic.edit import CreateView, DeleteView, UpdateView
-from django.views.generic import ListView, TemplateView
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.urls import reverse_lazy, reverse
-import json
-from catalogue.models import Artwork, Series, Exhibition, Location
-from catalogue.forms import WorkInExhibitionForm, ArtworkSearchForm, LocationSearchForm, ExhibitionSearchForm, ArtworkDetailForm
-
-from django.core.exceptions import FieldError
-from django.db import models
-# unused but let's keep the import as memo
-# from django.shortcuts import render
 from django.http import HttpResponse
+from django.urls import reverse_lazy, reverse
+from django.views.generic import ListView, TemplateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.contrib.auth.mixins import LoginRequiredMixin
 
-model_map = {
-    "Artwork": Artwork,
-    "Series": Series,
-    "Exhibition": Exhibition,
-    "Location": Location
-}
+import json
 
+from catalogue.models import Artwork, Series, Exhibition, Location
+from catalogue.forms import ArtworkDetailForm, SeriesDetailForm, LocationDetailForm, ExhibitionDetailForm
+from catalogue.forms import ArtworkSearchForm, LocationSearchForm, ExhibitionSearchForm
+from catalogue.forms import WorkInExhibitionForm
 
 
 class SearchMixin(object):
@@ -121,30 +112,25 @@ class SearchMixin(object):
         return context
 
 
-def autocompleteView(request):
-    if request.is_ajax():
-        q = request.GET.get('term', '').capitalize()
-        search_qs = Artwork.objects.all()  # filter(title__startswith=q)
-        results = []
-        print(q)
-        for r in search_qs:
-            results.append(r.FIELD)
-        data = json.dumps(results)
-    else:
-        data = 'fail'
-    mimetype = 'application/json'
-    return HttpResponse(data, mimetype)
+# def autocompleteView(request):
+#     if request.is_ajax():
+#         q = request.GET.get('term', '').capitalize()
+#         search_qs = Artwork.objects.all()  # filter(title__startswith=q)
+#         results = []
+#         print(q)
+#         for r in search_qs:
+#             results.append(r.FIELD)
+#         data = json.dumps(results)
+#     else:
+#         data = 'fail'
+#     mimetype = 'application/json'
+#     return HttpResponse(data, mimetype)
 
-
-
-
-class HomeView(LoginRequiredMixin, ListView):
-    template_name = 'home.html'
-    model = Series
 
 
 create_action_button_text = 'Create'
 edit_action_button_text = 'Save Changes'
+
 
 class genericCreateView(CreateView):
     template_name = 'catalogue/detail/detail.html'
@@ -156,6 +142,7 @@ class genericCreateView(CreateView):
         context['action_name'] = create_action_button_text
         return context
 
+
 class genericUpdateView(UpdateView):
     template_name = 'catalogue/detail/detail.html'
 
@@ -165,35 +152,12 @@ class genericUpdateView(UpdateView):
 
         context['action_name'] = edit_action_button_text
         context['edit_mode'] = True
-        return context    
+        return context
 
-artwork_fields = [
-    'image',
-    'title',
-    'year',
-    'series',
-    'location',
-    'status',
-    'size',
-    'width_cm',
-    'height_cm',
-    'depth_cm',
-    'width_in',
-    'height_in',
-    'depth_in',
-    'rolled',
-    'medium',
-    'additional',
-    'owner',
-    'sold_by',
-    'price_nis',
-    'price_usd',
-    'sale_currency',
-    'sale_price',
-    'discount',
-    'sale_date',
-]
 
+class HomeView(LoginRequiredMixin, ListView):
+    template_name = 'home.html'
+    model = Series
 
 class ArtworkList(LoginRequiredMixin, SearchMixin, ListView):
     model = Artwork
@@ -202,7 +166,6 @@ class ArtworkList(LoginRequiredMixin, SearchMixin, ListView):
 
 class ArtworkCreate(LoginRequiredMixin, genericCreateView):
     model = Artwork
-    # fields = artwork_fields
     form_class = ArtworkDetailForm
     template_name = 'catalogue/detail/artwork_detail.html'
 
@@ -215,7 +178,6 @@ class ArtworkCreate(LoginRequiredMixin, genericCreateView):
 
 class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
     model = Artwork
-    # fields = artwork_fields
     form_class = ArtworkDetailForm
     template_name = 'catalogue/detail/artwork_detail.html'
 
@@ -271,12 +233,13 @@ class SeriesList(LoginRequiredMixin, ListView):
 
 class SeriesCreate(LoginRequiredMixin, genericCreateView):
     model = Series
-    fields = ['name']
+    form_class = SeriesDetailForm
+    template_name = 'catalogue/detail/series_detail.html'
 
 
 class SeriesUpdate(LoginRequiredMixin, SearchMixin, genericUpdateView):
     model = Series
-    fields = ['name']
+    form_class = SeriesDetailForm
     template_name = 'catalogue/detail/series_detail.html'
 
     def get_context_data(self, **kwargs):
@@ -309,12 +272,13 @@ class ExhibitionList(LoginRequiredMixin, ListView):
 
 class ExhibitionCreate(LoginRequiredMixin, genericCreateView):
     model = Exhibition
-    fields = exhibition_fields
+    form_class = ExhibitionDetailForm
+    template_name = 'catalogue/detail/exhibition_detail.html'
 
 
 class ExhibitionUpdate(LoginRequiredMixin, SearchMixin, genericUpdateView):
     model = Exhibition
-    fields = exhibition_fields
+    form_class = ExhibitionDetailForm
     template_name = 'catalogue/detail/exhibition_detail.html'
 
     def get_context_data(self, **kwargs):
@@ -351,12 +315,13 @@ class LocationList(LoginRequiredMixin, ListView):
 
 class LocationCreate(LoginRequiredMixin, genericCreateView):
     model = Location
-    fields = location_fields
+    form_class = LocationDetailForm
+    template_name = 'catalogue/detail/location_detail.html'
 
 
 class LocationUpdate(LoginRequiredMixin, SearchMixin, genericUpdateView):
     model = Location
-    fields = location_fields
+    form_class = LocationDetailForm
     template_name = 'catalogue/detail/location_detail.html'
 
     def get_context_data(self, **kwargs):
