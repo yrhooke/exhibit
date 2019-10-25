@@ -14,7 +14,10 @@ class PlaceholderMixin(object):
         field_names = [field_name for field_name, _ in self.fields.items()]
         for field_name in field_names:
             field = self.fields.get(field_name)
-            field.widget.attrs.update({'placeholder': field.help_text})
+            if field.help_text:
+                field.widget.attrs.update({'placeholder': field.help_text})
+            else:
+                field.widget.attrs.update({'placeholder': field.label})
 
 
 class ArtworkDetailForm(PlaceholderMixin, forms.ModelForm):

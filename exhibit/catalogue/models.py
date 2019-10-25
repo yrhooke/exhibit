@@ -13,40 +13,39 @@ class Artwork(models.Model):
 
     # Mandatory Fields ##
     image = models.ImageField('Image', upload_to='images/', null=True, help_text="Sample image of the artwork")
-    title = models.CharField('Title', max_length=200, help_text="The works's title")
-    series = models.ForeignKey('Series', on_delete=models.SET_NULL, null=True,
-                               help_text="The series to which the artwork belongs")
+    title = models.CharField('Title', max_length=200, help_text="Artwork title")
+    series = models.ForeignKey('Series', on_delete=models.SET_NULL, null=True)
     year = models.IntegerField('Year', help_text='Year of creation')
 
     # Optional Fields ##
     width_cm = models.FloatField("Width cm",
                                  default=0.0,
-                                 help_text='width in centimeters',
+                                #  help_text='width in centimeters',
                                  blank=True
                                  )
     height_cm = models.FloatField("Height cm",
                                   default=0.0,
-                                  help_text='height in centimeters',
+                                #   help_text='height in centimeters',
                                   blank=True
                                   )
     depth_cm = models.FloatField("Depth cm",
                                  default=0.0,
-                                 help_text='depth in centimeters',
+                                #  help_text='depth in centimeters',
                                  blank=True
                                  )
     width_in = models.FloatField("Width in",
                                  default=0.0,
-                                 help_text='width in inches',
+                                #  help_text='width in inches',
                                  blank=True
                                  )
     height_in = models.FloatField("Height in",
                                   default=0.0,
-                                  help_text='height in inches',
+                                #   help_text='height in inches',
                                   blank=True
                                   )
     depth_in = models.FloatField("Depth in",
                                  default=0.0,
-                                 help_text='depth in inches',
+                                #  help_text='depth in inches',
                                  blank=True
                                  )
 
@@ -71,7 +70,7 @@ class Artwork(models.Model):
     location = models.ForeignKey('Location',
                                  on_delete=models.SET_NULL,
                                  null=True,
-                                 help_text="Artwork's current location"
+                                 help_text="Current location"
                                  )
 
     ROLL_STATUS_CHOICES = (
@@ -80,9 +79,12 @@ class Artwork(models.Model):
     )
 
     rolled = models.CharField('Rolled/Streched', max_length=1, choices=ROLL_STATUS_CHOICES,
-                              blank=True, help_text="Is the work rolled or stretched?")
+                              blank=True)
+                            #   , help_text="Is the work rolled or stretched?")
 
-    framed = models.BooleanField('Framed', blank=True, default=False, help_text="Is the work framed?")
+
+    framed = models.BooleanField('Framed', blank=True, default=False)
+                                    # , help_text="Is the work framed?")
 
     OVERALL_STATUS_CHOICES = (
         ('D', 'Draft'),
@@ -91,12 +93,12 @@ class Artwork(models.Model):
         ('S', 'Sold'),
     )
     status = models.CharField('Status', max_length=1, choices=OVERALL_STATUS_CHOICES,
-                              default='D', blank=True, help_text="current status")
+                              default='D', blank=True, help_text="Current status")
     additional = models.TextField('Additional info', blank=True, help_text="Anything else of interest")
 
     # Sale fields
-    owner = models.CharField('Owner', max_length=200, default='Rotem Reshef', help_text="The artwork's current owner")
-    sold_by = models.CharField('Sold By', max_length=200, blank=True, help_text="The agent who facilitated the sale")
+    owner = models.CharField('Owner', max_length=200, default='Rotem Reshef', help_text="Current owner")
+    sold_by = models.CharField('Sold By', max_length=200, blank=True, help_text="The agent's name")
     price_nis = models.DecimalField("Price in NIS",
                                     max_digits=10,
                                     decimal_places=2,
@@ -153,7 +155,7 @@ class Artwork(models.Model):
 class Series(models.Model):
     """A model representing a series of artworks"""
 
-    name = models.CharField("Name", max_length=200)
+    name = models.CharField("Name", max_length=200, help_text="Series name")
 
     def __str__(self):
         """string representation of model"""
@@ -194,7 +196,7 @@ class Series(models.Model):
 class Exhibition(models.Model):
     """A model representing an exhibition"""
 
-    name = models.CharField("Name", max_length=200)
+    name = models.CharField("Name", max_length=200, help_text="Exhibition name")
     description = models.TextField("Description", blank=True)
     location = models.ForeignKey('Location', on_delete=models.SET_NULL,
                                  null=True)
@@ -223,7 +225,7 @@ class Exhibition(models.Model):
 class Location(models.Model):
     """A model representing a location"""
 
-    name = models.CharField("Name", max_length=250)
+    name = models.CharField("Name", max_length=250, help_text="Location name")
     description = models.TextField("Description", blank=True)
 
     # What's this naming scheme about? @TODO figure this out

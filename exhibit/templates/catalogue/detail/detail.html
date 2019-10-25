@@ -7,20 +7,21 @@
     .edit-field {
         background: transparent;
         vertical-align: middle;
-    border: none;
-    box-shadow: none;
-}
+        border: none;
+        box-shadow: none;
+    }
 
-.edit-field:focus {
-    background-color: #ffffff;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-}
+    .edit-field:focus {
+        background-color: #ffffff;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+    }
 
-#object-details .select2-container .select2-selection--single, #object-details .select2-container--default .select2-selection--single .select2-selection__rendered, #object-details .select2-container--default .select2-selection--single .select2-selection__arrow {
-    background-color: rgb(235, 235, 228);
-    border: none;
-}
-
+    #object-details .select2-container .select2-selection--single,
+    #object-details .select2-container--default .select2-selection--single .select2-selection__rendered,
+    #object-details .select2-container--default .select2-selection--single .select2-selection__arrow {
+        background-color: rgb(235, 235, 228);
+        border: none;
+    }
 </style>
 {% endif %}
 {% endblock custom_headers %}
@@ -43,13 +44,7 @@
         <div id="object-details-body" class="details-list form-inline">
             {% for field in form.visible_fields %}
             {% ifnotequal field.label form.name.label %}
-            <div class="form-group">
-                {{ field.label_tag }}
-                {% render_field field class="edit-field form-control" placeholder=field.name %}
-                {% if field.help_text %}
-                <small class="form-text text-muted">{{ field.help_text }}</small>
-                {% endif %}
-            </div>
+            {% include "catalogue/utils/field.html" with field=field %}
             {% endifnotequal %}
             {% endfor %}
         </div>

@@ -73,7 +73,7 @@ Artwork management tool
 ### in current branch
 
 - [ ] better form validation (correct widgets, visibly fail on errors, etc)
-- [ ] add proper placeholder to fields
+- [X] add proper placeholder to fields
 - [ ] reduce spacing between rows of object fields (in object-details)
 
 ### next phase

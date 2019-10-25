@@ -127,7 +127,6 @@ class SearchMixin(object):
 #     return HttpResponse(data, mimetype)
 
 
-
 create_action_button_text = 'Create'
 edit_action_button_text = 'Save Changes'
 
@@ -158,6 +157,7 @@ class genericUpdateView(UpdateView):
 class HomeView(LoginRequiredMixin, ListView):
     template_name = 'home.html'
     model = Series
+
 
 class ArtworkList(LoginRequiredMixin, SearchMixin, ListView):
     model = Artwork
@@ -256,15 +256,6 @@ class SeriesDelete(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy('index')
 
 
-exhibition_fields = [
-    'name',
-    'description',
-    'location',
-    'start_date',
-    'end_date',
-]
-
-
 class ExhibitionList(LoginRequiredMixin, ListView):
     model = Exhibition
     template_name = "catalogue/overview/exhibition.html"
@@ -294,18 +285,6 @@ class ExhibitionUpdate(LoginRequiredMixin, SearchMixin, genericUpdateView):
 class ExhibitionDelete(LoginRequiredMixin, DeleteView):
     model = Exhibition
     success_url = reverse_lazy('index')
-
-
-location_fields = [
-    'name',
-    'description',
-    'address_1',
-    'address_2',
-    'city',
-    'state',
-    'zip_code',
-    'country',
-]
 
 
 class LocationList(LoginRequiredMixin, ListView):
