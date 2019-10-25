@@ -87,7 +87,7 @@
     <div id="page-header" class="">
         <div class="form-inline">
             <div class="form-group">
-                {% render_field form.series class="header-item edit-field form-control rounded-0" %}
+                {% render_field form.series class="header-item edit-field form-control" %}
                 <span class="header-item separator" style="margin-left:1rem;margin-right:1.5rem;">: </span>
             </div>
         </div>
@@ -95,14 +95,13 @@
             <div class="form-group">
                 <span class="header-item separator"
                     style="padding-left:0rem;padding-right:2rem;margin-left:1rem;margin-right:1.5rem;"></span>
-                {% render_field form.title class="header-item edit-field form-control rounded-0" style="width:300px;" %}
-                {% render_field form.status class="header-item edit-field form-control rounded-0" %}
+                {% render_field form.title class="object-name header-item edit-field form-control" style="width:300px;" %}
+                {% render_field form.status class="header-item edit-field form-control" %}
                 <span class="header-item separator" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
-                <label class="header-item"
-                    for="{{ form.title.auto_id }}">{% block breadcrumb %}Artwork{% endblock breadcrumb %}</label>
+                <label class="header-item" id="breadcrumb" for="{{ form.title.auto_id }}">Artwork</label>
             </div>
             <div class="form-group">
-                <input type="submit" id="detail-submit" class="action-button btn btn-primary rounded-0"
+                <input type="submit" id="detail-submit" class="action-button btn btn-primary"
                     value="{{ action_name }}">
             </div>
         </div>
@@ -120,7 +119,9 @@
                         </div>
                         {% endif %}
                     </div>
-                    <label for={{ form.image.auto_id }} class="action-button btn btn-primary rounded-0" >Upload Image</label>
+                    <label for={{ form.image.auto_id }} class="action-button btn btn-primary">
+                        Upload Image
+                    </label>
                     {% render_field form.image style="display:none;" %}
                 </div>
             </div>
@@ -159,7 +160,7 @@
                             <h5>Size (h | w | d):</h5>
                             <div id="size-fields-cm" class="form-inline size-form-group">
                                 <div id="id_size_cm"
-                                    class="size-field-container edit-field form-control rounded-0 form-control-sm">
+                                    class="size-field-container edit-field form-control form-control-sm">
                                     {% render_field form.height_cm class="size-field" %}
                                     <span class="size-field-separator">|</span>
                                     {% render_field form.width_cm class="size-field" %}
@@ -170,7 +171,7 @@
                             </div>
                             <div id="size-fields-in" class="form-inline size-form-group">
                                 <div id="id_size_in"
-                                    class="size-field-container edit-field form-control rounded-0 form-control-sm">
+                                    class="size-field-container edit-field form-control form-control-sm">
                                     {% render_field form.height_in class="size-field" %}
                                     <span class="size-field-separator">|</span>
                                     {% render_field form.width_in class="size-field" %}
@@ -191,7 +192,7 @@
                     <!-- <form action="{% url 'catalogue:add_workinexhibition' %}" method="POST"> -->
                     <div class="form-inline" id="add-work-to-exhibition">
                         <!-- {% render_field exhibitionForm.artwork class="collapse" style="visibility:hidden;" %} -->
-                        <!-- {% render_field exhibitionForm.exhibition class="form-control rounded-0" id="new-exhibition-select" %} -->
+                        <!-- {% render_field exhibitionForm.exhibition class="form-control" id="new-exhibition-select" %} -->
                         <!-- <input type="submit" class="btn btn-primary btn-sm" value="Add new" id="new-exhibition-submit"> -->
                     </div>
                     <!-- </form> -->

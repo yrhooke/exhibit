@@ -8,19 +8,20 @@
         {% csrf_token %}
         <div id="page-header" class="form-inline">
             <div class="form-group">
-                {% render_field form.name class="header-item edit-field form-control rounded-0" %}
-                <span class="header-item separator" style="margin-left:1.5rem;margin-right:1.5rem;">  /  </span>
-                <label class="header-item"
+                {% render_field form.name class="object-name header-item edit-field form-control" %}
+                <span class="header-item separator" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
+                <label class="header-item" id="breadcrumb"
                     for="{{ form.name.auto_id }}">{% block breadcrumb %}{% endblock breadcrumb %}</label>
             </div>
-            <input type="submit" id="detail-submit" class="action-button btn btn-primary rounded-0" value="{{ action_name }}">
+            <input type="submit" id="detail-submit" class="action-button btn btn-primary"
+                value="{{ action_name }}">
         </div>
         <div id="object-details-body" class="details-list form-inline">
             {% for field in form.visible_fields %}
             {% ifnotequal field.label form.name.label %}
             <div class="form-group">
                 {{ field.label_tag }}
-                {% render_field field class="edit-field form-control rounded-0" placeholder=field.name %}
+                {% render_field field class="edit-field form-control" placeholder=field.name %}
                 {% if field.help_text %}
                 <small class="form-text text-muted">{{ field.help_text }}</small>
                 {% endif %}

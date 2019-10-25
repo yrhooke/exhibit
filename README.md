@@ -65,9 +65,9 @@ Artwork management tool
 
 ### in current branch
 
-- [ ] clean up css
-  - [ ] standardize html layout
-  - [ ] figure out what classes work for us
+- [X] clean up css
+  - [X] standardize html layout
+  - [X] figure out what classes work for us
   - [X] gray object type label called breadcrumb
 
 ### next phase

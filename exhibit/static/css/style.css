@@ -63,7 +63,6 @@ rgb(96, 124, 160) */
     color: white;
     font-size: 19px;
     transition: all 0.2s ease 0s;
-
 }
 
 /* Page content. The value of the margin-left property should match the value of the sidebar's width property */
@@ -76,9 +75,8 @@ rgb(96, 124, 160) */
 
 /*  *** UTILS - components reused across the project *** */
 
-
 .section {
-    width:100%;
+    width: 100%;
     margin-top: 15px;
 }
 
@@ -96,16 +94,33 @@ rgb(96, 124, 160) */
     padding: 0.5rem;
 }
 
-.action-button {
-    background-color:rgba(44, 45, 52, 1);
-    border: solid rgba(44, 45, 52, 1) 0px; 
-    width: 120px;
+/* all form elements are rectangular */
 
+.form-control {
+    border-radius: 0 !important;
 }
 
-.action-button:hover {
+button, .btn {
+    color: whitesmoke;
+    background-color: rgba(44, 45, 52, 1);
+    border: solid rgba(44, 45, 52, 1) 0px;
+    border-radius: 0 !important;
+}
+
+/* non rounded select2 elements */
+
+[class^='select2'] {
+    border-radius: 0px !important;
+}
+
+.action-button {
+    width: 120px;
+}
+
+.btn:hover {
     background-color: slategrey;
     border-color: slategrey;
+    color: white;
 }
 
 .edit-field {
@@ -115,22 +130,15 @@ rgb(96, 124, 160) */
     box-shadow: none;
 }
 
-
 .edit-field:focus {
     background-color: #ffffff;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
 }
-/* non rounded select2 elements */
-[class^='select2'] {
-    border-radius: 0px !important;
-  }
 
 h1, h2, h3, h4, h5, h6, label, th {
     font-family: brandon-reg;
     font-weight: 200;
 }
-
-
 
 /* -------------------------------------- */
 
@@ -155,9 +163,8 @@ h1, h2, h3, h4, h5, h6, label, th {
 }
 
 /* for selects in object details header */
-#page-header .select2-container .select2-selection--single,
-#page-header .select2-container--default .select2-selection--single .select2-selection__rendered,
-#page-header .select2-container--default .select2-selection--single .select2-selection__arrow {
+
+#page-header .select2-container .select2-selection--single, #page-header .select2-container--default .select2-selection--single .select2-selection__rendered, #page-header .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 3rem;
     line-height: 3rem;
     background-color: rgb(235, 235, 228);
@@ -165,11 +172,13 @@ h1, h2, h3, h4, h5, h6, label, th {
     font-size: 2rem;
 }
 
+.object-name {
+    padding-left: 0.3rem;
+}
 
 /* -------------------------------------- */
 
 /* *** Search Bar CSS *** */
-
 
 #search-bar-wrapper {
     width: 100%;
@@ -182,41 +191,41 @@ h1, h2, h3, h4, h5, h6, label, th {
     flex-wrap: nowrap;
     justify-content: space-between;
 }
+
 #search-bar-wrapper label {
     font-size: 14px;
 }
+
 #search-show-more {
     color: #0080C6;
     cursor: pointer;
     font-family: brandon-med;
 }
-#search-show-more:before{
-    content:'-Show Less';
+
+#search-show-more:before {
+    content: '-Show Less';
 }
-#search-show-more.collapsed:before{
-    content:'+Show More';
+
+#search-show-more.collapsed:before {
+    content: '+Show More';
 }
 
 .search-show-more-row {
     border-bottom: 1px solid #cccccc;
 }
 
-
-.select2-container .select2-selection--single,
-.select2-container--default .select2-selection--single .select2-selection__rendered,
-.select2-container--default .select2-selection--single .select2-selection__arrow {
+.select2-container .select2-selection--single, .select2-container--default .select2-selection--single .select2-selection__rendered, .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 40px;
     line-height: 40px;
 }
-#search-bar-wrapper .form-control{
+
+#search-bar-wrapper .form-control {
     height: 40px;
 }
 
 #search-bar-wrapper .btn {
     height: 40px;
-    width: 120px;
 }
-
 
 /* -------------------------------------- */
 
@@ -232,7 +241,6 @@ h1, h2, h3, h4, h5, h6, label, th {
     text-align: center;
 }
 
-
 /* Hide caption for search results table */
 
 caption {
@@ -244,9 +252,9 @@ caption {
 /* *** Gallery List layout *** */
 
 .gallery-list {
-    display:flex;
-    justify-content:flex-start;
-    flex-wrap:wrap;
+    display: flex;
+    justify-content: flex-start;
+    flex-wrap: wrap;
 }
 
 .gallery-item-wrapper {
@@ -294,6 +302,7 @@ a.gallery-item-wrapper:link, a.gallery-item-wrapper:visited, a.gallery-item-wrap
     justify-content: center;
     height: 100%;
 }
+
 ul.gallery-item-text {
     list-style-type: none;
     padding: 0px;
@@ -307,18 +316,19 @@ ul.gallery-item-text {
     padding: 0.3rem;
     height: 1.5rem;
 }
+
 #object-details-body textarea.form-control {
     line-height: 1.5rem;
     height: 2rem;
     resize: none;
     overflow: hidden;
 }
+
 #object-details-body label {
     padding: 0.3rem;
 }
-#object-details-body .select2-container .select2-selection--single,
-#object-details-body .select2-container--default .select2-selection--single .select2-selection__rendered,
-#object-details-body .select2-container--default .select2-selection--single .select2-selection__arrow {
+
+#object-details-body .select2-container .select2-selection--single, #object-details-body .select2-container--default .select2-selection--single .select2-selection__rendered, #object-details-body .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 1.5rem;
     line-height: 1.5rem;
     background-color: rgb(235, 235, 228);
@@ -330,7 +340,7 @@ ul.gallery-item-text {
 } */
 
 .details-list {
-    display:flex;
+    display: flex;
     flex-wrap: nowrap;
     flex-direction: column;
     align-items: start;
@@ -344,13 +354,12 @@ ul.gallery-item-text {
 
 /* *** Related Items layout *** */
 
-.related-items-header{
+.related-items-header {
     margin-left: 0.3rem;
     margin-right: 0.3rem;
     margin-top: 0.5rem;
     margin-bottom: 1rem;
 }
-
 
 /* -------------------------------------- */
 
@@ -358,12 +367,12 @@ ul.gallery-item-text {
 
 .card {
     background-color: transparent;
-    max-width:560px;
-    width:calc(100% - (2 * 1.8rem));
-    margin:1.8rem;
-    margin-top: 1rem ;
-    box-sizing:border-box;
-    min-width:400px;
+    max-width: 560px;
+    width: calc(100% - (2 * 1.8rem));
+    margin: 1.8rem;
+    margin-top: 1rem;
+    box-sizing: border-box;
+    min-width: 400px;
     height: max-content;
 }
 
@@ -404,7 +413,6 @@ ul.gallery-item-text {
     border-radius: 0
 }
 
-
 #size-fields-addtl {
     justify-content: end;
 }
@@ -423,7 +431,6 @@ ul.gallery-item-text {
     flex: 1 1 auto;
 }
 
-
 /* -------------------------------------- */
 
 /* *** Font Definitions *** */
@@ -438,11 +445,9 @@ ul.gallery-item-text {
     src: url('../fonts/hvd_fonts_-_brandongrotesque-medium.otf') format("truetype");
 }
 
-
 /* -------------------------------------- */
 
 /* *** OTHER *** */
-
 
 /* TEXTAREA AUTO RESIZE STYLES BEGIN */
 
@@ -455,7 +460,9 @@ ul.gallery-item-text {
 }*/
 
 /* the styles for 'txta' are applied to both the textarea and the hidden clone */
+
 /* these must be the same for both */
+
 .txtarea-hidden-div {
     width: 100%;
     /* max-width: 500px; */
@@ -465,7 +472,6 @@ ul.gallery-item-text {
     overflow: hidden;
     line-height: 1.5rem;
     padding: 0.3rem;
-  }
-  /* TEXTAREA AUTO RESIZE STYLES END */
+}
 
-
+/* TEXTAREA AUTO RESIZE STYLES END */
