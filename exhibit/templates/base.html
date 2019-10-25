@@ -32,6 +32,7 @@
   <!-- select2 stylesheet - for custom selects -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/css/select2.min.css" rel="stylesheet" />
 
+
   <!-- Project specific CSS -->
   <link rel="stylesheet" href="{% static 'css/style.css' %}">
 
@@ -95,6 +96,11 @@
   <!-- for custom selects -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.10/js/select2.full.js"></script>
 
+  <!-- Tempus Dominus Bootstrap package for presenting date fields -->
+  {# Django Tempus Dominus assets are included in `{{ form.media }}` #}
+  {% if form %}
+  {{ form.media }}
+  {% endif %}
   <!-- place project specific Javascript in this file -->
 
   <script src="{% static 'js/project.js' %}"></script>
@@ -211,7 +217,7 @@
           i.addEventListener('input', function () {
             addHiddenArea(i);
 
-           });
+          });
         })(i);
       }
       // TEXT AREA RESIZE DONE

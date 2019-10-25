@@ -74,6 +74,7 @@ THIRD_PARTY_APPS = [
     "allauth.socialaccount",
     "rest_framework",
     "widget_tweaks",
+    "tempus_dominus",
 ]
 
 LOCAL_APPS = [

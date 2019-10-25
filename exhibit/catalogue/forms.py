@@ -1,4 +1,6 @@
 from django import forms
+from tempus_dominus.widgets import DatePicker
+
 from .models import Artwork, Series, Location, Exhibition, WorkInExhibition
 
 
@@ -54,6 +56,7 @@ class ArtworkDetailForm(PlaceholderMixin, forms.ModelForm):
         ]
         widgets = {
             'image': forms.FileInput,
+            'sale_date': DatePicker,
         }
 
 
@@ -91,6 +94,10 @@ class ExhibitionDetailForm(PlaceholderMixin, forms.ModelForm):
             'start_date',
             'end_date',
         ]
+        widgets = {
+            'start_date': DatePicker,
+            'end_date': DatePicker,
+        }
 
 
 class ArtworkSearchForm(forms.ModelForm):

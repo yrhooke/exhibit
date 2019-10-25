@@ -74,18 +74,18 @@ Artwork management tool
 
 - [X] add proper placeholder to fields
 - [ ] better form validation (correct widgets, visibly fail on errors, etc)
-    - [ ] calendar types should show calender
+    - [X] calendar types should show calender
     - [ ] numeric types input limited
     - [ ] go object by object, try to create wrong, try to update wrong
       - [X] series
       - [X] location
-      - [ ] exhibition
-        - [ ] dates need to pop up calender
+      - [X] exhibition
+        - [X] dates need to pop up calender
       - [ ] artwork
         - [ ] upload image on create or edit doesn't work
         - [ ] handle missing value in size field
         - [ ] size fields should do percision validation like price_nis does
-        - [ ] date field for sale not well handled
+        - [X] date field for sale not well handled
 
 - [ ] reduce spacing between rows of object fields (in object-details)
 
@@ -117,6 +117,7 @@ Artwork management tool
 - [ ] figure out how to back up the database + s3
 - [ ] improve performance if page loading this slow on prod
 - [ ] search forgets previous set status/medium/owner bug
+- [ ] handle null results for search
 
 ### Post Launch
 
