@@ -15,8 +15,7 @@
             </div>
             <input type="submit" id="detail-submit" class="action-button btn btn-primary rounded-0" value="{{ action_name }}">
         </div>
-        <div id="object-details-body" class="form-inline"
-            style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
+        <div id="object-details-body" class="details-list form-inline">
             {% for field in form.visible_fields %}
             {% ifnotequal field.label form.name.label %}
             <div class="form-group">

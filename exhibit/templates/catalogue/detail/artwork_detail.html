@@ -110,12 +110,6 @@
     <div class="row mx-auto" id="artwork-details-wrapper" style="max-width:999px;">
         <div class="col-6" style="padding:0px;display:flex;align-items:center;flex-direction:column">
             <div id="artwork-image" class="card">
-                <!-- {% if form.instance.image %}
-                <img class="img-fluid card-img-top" src="{{ form.instance.image.url }}" alt="Artwork image">
-                {% else %}
-                <img class="img-fluid card-img-top" src="{% static 'catalogue/images/unicorn.png' %}"
-                    alt="Artwork image">
-                {% endif %} -->
                 <div class="card-body">
                     <div style="height:405px">
                         {% if form.instance.image %}
@@ -134,7 +128,7 @@
             <div id="sales-info" class="card">
                 <div class="card-body sale-form">
                     <h3 class='card-title'>Sale Info</h3>
-                    <div class="form-inline" style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
+                    <div class="details-list form-inline">
                         {% include "catalogue/utils/field.html" with field=form.owner %}
                         {% include "catalogue/utils/field.html" with field=form.sold_by %}
                         {% include "catalogue/utils/field.html" with field=form.price_nis %}
@@ -152,8 +146,7 @@
             <div id="artwork-details" class="card">
                 <div class="card-body">
                     <h3 class="card-title">Details</h3>
-                    <div id="object-details-body" class="form-inline"
-                        style="flex-wrap: nowrap;flex-direction: column;align-items: start;">
+                    <div id="object-details-body" class="details-list form-inline">
                         <!-- NOTE: year field used to have artwork-year class -->
                         {% include "catalogue/utils/field.html" with field=form.year %}
                         {% include "catalogue/utils/field.html" with field=form.size %}
