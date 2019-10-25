@@ -20,32 +20,38 @@ class Artwork(models.Model):
     # Optional Fields ##
     width_cm = models.FloatField("Width cm",
                                  default=0.0,
-                                #  help_text='width in centimeters',
+                                 help_text="W",
+                                 #  help_text='width in centimeters',
                                  blank=True
                                  )
     height_cm = models.FloatField("Height cm",
                                   default=0.0,
-                                #   help_text='height in centimeters',
+                                  help_text="H",
+                                  #   help_text='height in centimeters',
                                   blank=True
                                   )
     depth_cm = models.FloatField("Depth cm",
                                  default=0.0,
-                                #  help_text='depth in centimeters',
+                                 help_text="D",
+                                 #  help_text='depth in centimeters',
                                  blank=True
                                  )
     width_in = models.FloatField("Width in",
                                  default=0.0,
-                                #  help_text='width in inches',
+                                 help_text="W",
+                                 #  help_text='width in inches',
                                  blank=True
                                  )
     height_in = models.FloatField("Height in",
                                   default=0.0,
-                                #   help_text='height in inches',
+                                  help_text="H",
+                                  #   help_text='height in inches',
                                   blank=True
                                   )
     depth_in = models.FloatField("Depth in",
                                  default=0.0,
-                                #  help_text='depth in inches',
+                                 help_text="D",
+                                 #  help_text='depth in inches',
                                  blank=True
                                  )
 
@@ -80,11 +86,10 @@ class Artwork(models.Model):
 
     rolled = models.CharField('Rolled/Streched', max_length=1, choices=ROLL_STATUS_CHOICES,
                               blank=True)
-                            #   , help_text="Is the work rolled or stretched?")
-
+    #   , help_text="Is the work rolled or stretched?")
 
     framed = models.BooleanField('Framed', blank=True, default=False)
-                                    # , help_text="Is the work framed?")
+    # , help_text="Is the work framed?")
 
     OVERALL_STATUS_CHOICES = (
         ('D', 'Draft'),
