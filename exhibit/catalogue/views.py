@@ -20,10 +20,6 @@ model_map = {
 }
 
 
-class HomeView(LoginRequiredMixin, ListView):
-    template_name = 'home.html'
-    model = Series
-
 
 class SearchMixin(object):
     """method bundle for searching for Artworks"""
@@ -140,9 +136,15 @@ def autocompleteView(request):
     return HttpResponse(data, mimetype)
 
 
+
+
+class HomeView(LoginRequiredMixin, ListView):
+    template_name = 'home.html'
+    model = Series
+
+
 create_action_button_text = 'Create'
 edit_action_button_text = 'Save Changes'
-
 
 class genericCreateView(CreateView):
     template_name = 'catalogue/detail/detail.html'
@@ -150,10 +152,20 @@ class genericCreateView(CreateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
+
         context['action_name'] = create_action_button_text
         return context
 
+class genericUpdateView(UpdateView):
+    template_name = 'catalogue/detail/detail.html'
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+
+        context['action_name'] = edit_action_button_text
+        context['edit_mode'] = True
+        return context    
 
 artwork_fields = [
     'image',
@@ -201,7 +213,7 @@ class ArtworkCreate(LoginRequiredMixin, genericCreateView):
         return form
 
 
-class ArtworkUpdate(LoginRequiredMixin, UpdateView):
+class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
     model = Artwork
     # fields = artwork_fields
     form_class = ArtworkDetailForm
@@ -210,9 +222,7 @@ class ArtworkUpdate(LoginRequiredMixin, UpdateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
-        # Add in a QuerySet of all the books
-        context['action_name'] = edit_action_button_text
-        context['editMode'] = True
+
         exhibitions = [
             s.exhibition for s in self.object.workinexhibition_set.all()]
         context['exhibitionList'] = exhibitions
@@ -264,7 +274,7 @@ class SeriesCreate(LoginRequiredMixin, genericCreateView):
     fields = ['name']
 
 
-class SeriesUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
+class SeriesUpdate(LoginRequiredMixin, SearchMixin, genericUpdateView):
     model = Series
     fields = ['name']
     template_name = 'catalogue/detail/series_detail.html'
@@ -272,9 +282,8 @@ class SeriesUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(SeriesUpdate, self).get_context_data(series=self.get_object(), **kwargs)
-        # Add in a QuerySet of all the books
+
         context['hasSeries'] = True
-        context['action_name'] = edit_action_button_text
         context['members'] = self.object.artwork_set.all()
         return context
 
@@ -303,7 +312,7 @@ class ExhibitionCreate(LoginRequiredMixin, genericCreateView):
     fields = exhibition_fields
 
 
-class ExhibitionUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
+class ExhibitionUpdate(LoginRequiredMixin, SearchMixin, genericUpdateView):
     model = Exhibition
     fields = exhibition_fields
     template_name = 'catalogue/detail/exhibition_detail.html'
@@ -311,8 +320,7 @@ class ExhibitionUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
         context = super(ExhibitionUpdate, self).get_context_data(exhibition=self.object, **kwargs)
-        # Add in a QuerySet of all the books
-        context['action_name'] = edit_action_button_text
+
         context['hasExhibition'] = True
         artworks = [s.artwork for s in self.object.workinexhibition_set.all()]
         context['members'] = artworks
@@ -346,7 +354,7 @@ class LocationCreate(LoginRequiredMixin, genericCreateView):
     fields = location_fields
 
 
-class LocationUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
+class LocationUpdate(LoginRequiredMixin, SearchMixin, genericUpdateView):
     model = Location
     fields = location_fields
     template_name = 'catalogue/detail/location_detail.html'
@@ -355,8 +363,7 @@ class LocationUpdate(LoginRequiredMixin, SearchMixin, UpdateView):
 
         # Call the base implementation first to get a context
         context = super(LocationUpdate, self).get_context_data(location=self.object, **kwargs)
-        # Add in a QuerySet of all the books
-        context['action_name'] = edit_action_button_text
+
         context['hasLocation'] = True
         context['members'] = self.object.artwork_set.all()
         return context

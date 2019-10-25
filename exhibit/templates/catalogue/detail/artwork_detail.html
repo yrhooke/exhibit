@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 {% load static %}
 
-{% block custom_headers %}
+{% block javascript %}
 <script>
     $(document).ready(function () {
 
@@ -79,7 +79,7 @@
     });
 
 </script>
-{% endblock custom_headers %}
+{% endblock javascript %}
 
 {% block object_details %}
 <form action="." method="POST" enctype="multipart/form-data">
@@ -112,20 +112,20 @@
                 <div class="card-body">
                     <div style="height:405px">
                         {% if form.instance.image %}
-                        <img class="img-fluid mx-auto" src="{{ form.instance.image.url }}" alt="Artwork image"
+                        <img class="img-fluid mx-auto" id="id_image" src="{{ form.instance.image.url }}" alt="Artwork image"
                             style="height:100%;display:block">
                         {% else %}
-                        <div class="mx-auto" style="height:100%;display:block; width:75%;background-color: darkgrey;">
+                        <div class="mx-auto" id="id_image" style="height:100%;display:block; width:75%;background-color: darkgrey;">
                         </div>
                         {% endif %}
                     </div>
-                    <label for={{ form.image.auto_id }} class="action-button btn btn-primary">
+                    <label for="id_image" class="action-button btn btn-primary">
                         Upload Image
                     </label>
                     {% render_field form.image style="display:none;" %}
                 </div>
             </div>
-            {% if editMode %}
+            {% if edit_mode %}
             <div id="sales-info" class="card">
                 <div class="card-body sale-form">
                     <h3 class='card-title'>Sale Info</h3>
@@ -185,7 +185,7 @@
                     </div>
                 </div>
             </div>
-            {% if editMode %}
+            {% if edit_mode %}
             <div id="exhibitions" class="card">
                 <div class="card-body">
                     <h3 class="card-title">All Exhibitions</h3>
