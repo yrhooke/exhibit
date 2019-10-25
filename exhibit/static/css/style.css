@@ -86,9 +86,9 @@ rgb(96, 124, 160) */
     /* width:999px; */
 }
 
-#page-header {
+.page-header {
     display: flex;
-    flex-flow: row wrap;
+    flex-flow: row nowrap;
     align-items: center;
     margin-bottom: 1rem;
 }
@@ -109,6 +109,12 @@ rgb(96, 124, 160) */
     width: 999px;
     margin-left: auto !important;
     margin-right: auto !important;
+}
+
+.gallery-list {
+    display:flex;
+    justify-content:flex-start;
+    flex-wrap:wrap;
 }
 /* -------------------------------------- */
 

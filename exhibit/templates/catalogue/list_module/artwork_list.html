@@ -1,10 +1,14 @@
 {% load static %}
 
-    <div id="searchResults" class="center-block" style="display:flex;justify-content:flex-start;flex-wrap:wrap;">
+    <div id="searchResults" class="gallery-list center-block">
 
         {% for artwork in object_list %}
         <a class="gallery-item-wrapper" href="{% url 'catalogue:artwork_detail' artwork.pk %}">
+            {% if artwork.image.url %}
             <img class="gallery-item-image" src="{{ artwork.image.url }}" alt="{{ artwork.title }}">
+            {% else %}
+            <div class="gallery-item-image" style="background:darkgrey"></div>
+            {% endif %}
             <div class="gallery-item-hover">
                 <ul class="gallery-item-text">
                     <li>

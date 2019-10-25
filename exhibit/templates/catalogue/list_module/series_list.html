@@ -1,5 +1,5 @@
 <div id="search-results-wrapper" class="mx-auto">
-    <div id="searchResults" class="center-block" style="display:flex;justify-content:flex-start;flex-wrap:wrap;">
+    <div id="searchResults" class="gallery-list center-block">
 
         {% for series in object_list %}
         <a class="gallery-item-wrapper" href="{% url 'catalogue:series_detail' series.pk %}">
