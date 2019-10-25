@@ -414,6 +414,7 @@ h1, h2, h3, h4, h5, h6, label, th {
 } */
 #page-header {
     flex-wrap: nowrap;
+    margin-bottom: 1.2rem;
 }
 
 #page-header .object-details-header {
