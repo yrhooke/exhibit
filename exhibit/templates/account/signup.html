@@ -5,9 +5,9 @@
 
 {% block head_title %}{% trans "Signup" %}{% endblock %}
 
-{% block inner %}
-<h1>{% trans "Sign Up" %}</h1>
+{% block header_text %}{% trans "Sign Up" %}{% endblock %}
 
+{% block inner %}
 <p>{% blocktrans %}Already have an account? Then please <a href="{{ login_url }}">sign in</a>.{% endblocktrans %}</p>
 
 <form class="signup" id="signup_form" method="post" action="{% url 'account_signup' %}">
