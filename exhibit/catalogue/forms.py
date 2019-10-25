@@ -18,6 +18,7 @@ class PlaceholderMixin(object):
                 field.widget.attrs.update({'placeholder': field.help_text})
             else:
                 field.widget.attrs.update({'placeholder': field.label})
+            field.placeholder = field.widget.attrs['placeholder']
 
 
 class ArtworkDetailForm(PlaceholderMixin, forms.ModelForm):

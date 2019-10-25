@@ -2,6 +2,25 @@
 {% load widget_tweaks %}
 
 {% block custom_headers %}
+<script>
+    $(document).ready(function () {
+
+        let field_id;
+        let placeholder;
+        {% for field in form %}
+        {% if field.field.widget.input_type == "select" %}
+
+        field_id = "{{ field.auto_id }}";
+        placeHolder = "{{ field.field.placeholder }}";
+        console.log($("#" + field_id));
+        console.log(field_id + ": " + placeHolder);
+        $("#" + field_id).select2({
+            placeholder: placeHolder
+        });
+        {% endif %}
+        {% endfor %}
+    });
+</script>
 {% if edit_mode %}
 <style>
     .edit-field {

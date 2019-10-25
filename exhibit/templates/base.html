@@ -120,12 +120,12 @@
 
     $(document).ready(function () {
       // initialize select2
-      console.log($('#search-bar-main select'));
+      // console.log($('#search-bar-main select'));
       $('#search-bar-main select').select2();
-      console.log($('#search-bar-main select'));
+      // console.log($('#search-bar-main select'));
       $('#search-bar-more select').select2({ width: 'style' });
-      console.log($('#object-details select'));
-      $('#object-details select').select2();
+      // console.log($('#object-details select'));
+      // $('#object-details select').select2();
 
       // send filter data on submit in JSON serialized string
       $("#search-form").submit(() => {
@@ -190,7 +190,7 @@
         // This is in order to read the height
         hiddenDiv.style.visibility = 'hidden';
         hiddenDiv.style.display = 'block';
-        console.log('height' + hiddenDiv.offsetHeight);
+        // console.log('height' + hiddenDiv.offsetHeight);
         textarea.style.height = hiddenDiv.offsetHeight + 'px';
 
         // Make the hidden div display:none again
