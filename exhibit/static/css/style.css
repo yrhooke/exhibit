@@ -58,13 +58,6 @@ rgb(96, 124, 160) */
 
 /* Active/current link */
 
-/* .sidebar a.active {
-    background-color: #4CAF50;
-    color: white;
-} */
-
-/* Links on mouse-over */
-
 .sidebar .nav-link:hover:not(.active) {
     /* background-color: #555; */
     color: white;
@@ -77,14 +70,8 @@ rgb(96, 124, 160) */
 
 #main-page {
     padding: 0;
-    /* overflow-y: hidden; */
-    /* width: 100%; */
 }
 
-#page-contents {
-    /* margin: 0; */
-    /* width:999px; */
-}
 
 /* .page-header {
     display: flex;
@@ -176,13 +163,6 @@ rgb(96, 124, 160) */
 .action-button:hover {
     background-color: slategrey;
     border-color: slategrey;
-}
-
-.select2-container--default, .search-filter .select2-selection--single {
-    border: none;
-    box-shadow: none;
-    border-radius: 0;
-    color: rgb(96, 124, 160);
 }
 
 /* -------------------------------------- */
@@ -285,46 +265,16 @@ ul.gallery-item-text {
 
 /* Artwork Detail header */
 
-.artwork-header-field {
-    background: transparent;
-    /* margin-left: 1rem; */
-    /* margin-right: 1rem; */
-    vertical-align: middle;
-    border: none;
-    box-shadow: none;
-    /* border-bottom: 1px solid rgb(113, 114, 110); */
-    border-radius: 0;
-}
-
-.artwork-header-field:focus {
-    background-color: #ffffff;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-}
-
-/* #artwork-headers .select2-container--default {
-    background:  rgb(235, 235, 228); 
-} */
-
-#artwork-headers .select2-container--default .select2-selection--single {
-    background-color: rgb(235, 235, 228);
-    min-width: 8rem;
-}
-
 /* non rounded select2 elements */
 [class^='select2'] {
     border-radius: 0px !important;
   }
 
 
-#artwork-title {
-    min-width: 12rem;
-    width: 12rem;
-}
-
-#artwork-year {
+/* #artwork-year {
     -webkit-appearance: textfield;
     width: 4.5rem;
-}
+} */
 
 /* Artwork Detail size fields */
 
@@ -375,27 +325,6 @@ ul.gallery-item-text {
     justify-content: end;
 }
 
-/* Sale form into */
-
-.sale-form th {
-    font-weight: normal;
-}
-
-.sale-form td {
-    align-content: center;
-}
-
-#sale-price-td {
-    display: flex;
-    /* align-content: center; */
-}
-
-#sale-currency {
-    max-width: 3rem;
-    padding: 0.1rem;
-    text-align: center;
-}
-
 /* Exhibitions list */
 
 #add-work-to-exhibition {
@@ -410,66 +339,9 @@ ul.gallery-item-text {
     flex: 1 1 auto;
 }
 
-/* #size-fields-addtl .form-group{
-    justify-content: space-between;
-} */
-
-/* #artwork-details-wrapper {
-    display: flex;
-    flex-direction : column;
-    flex-wrap: wrap;
-    max-height: 1000px;
-    width: 100%;
-    
-}
-#artwork-details-wrapper .form-control {
-    width: 100px;
-} */
-
-/* #artwork-details-wrapper > div {
-    width: 50%;
-} */
-
-/* #artwork-image {
-    width: 400px;
-} */
-
-/* #artwork-image img { 
-    object-fit: contain;
-    width: 300px;
-}
-  #image {
-    background: blue;
-    height: 150px;
-  }
-  #sales {
-    background: red;
-    height: 50px;
-  }
-  #general {
-    height: 120px;
-    background: orange;
-  }
-  #exhibitions {
-    background: yellow;
-    overflow: scroll;
-  }
-  #exhibition-body {
-      height: 300px;
-  
-  }
-  
-  .img-fluid {  
-      width: 100%;
-  } */
-
 /* -------------------------------------- */
 
 /* *** Other Detail layout *** */
-
-textarea.detail-field {
-    height: 5rem;
-}
 
 .form-group {
     margin-bottom: 0.6rem;
@@ -503,71 +375,6 @@ h1, h2, h3, h4, h5, h6, label, th {
 /* -------------------------------------- */
 
 /* *** OTHER *** */
-
-/* input, select, .form-control {
-    background: transparent;
-    border: none;
-    box-shadow: none;
-    border-bottom: 1px solid rgb(113, 114, 110);
-    border-radius: 0;
-} */
-
-/* - NOTE THESE ARE THE THINGS I'M TESTING RIGHT NOW 
-input:focus, select:focus, .form-control:focus {
-    background-color: #ffffff;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-}
-
-a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, option {
-    font-family: brandon-reg;
-} - NOTE END OF TESTING SECTION */
-
-/* .sidenav {
-    height: 100%;
-} */
-
-/* .sidenav {
-    height: 100%;
-    width: 160px;
-    position: fixed;
-    z-index: 1;
-    top: 0;
-    left: 0;
-    color: rgb(227,117,70);
-    background-color: rgb(113,114,110);
-    overflow-x: hidden;
-    padding-top: 20px;
-}
-
-.sidenav a {
-    padding: 6px 8px 6px 16px;
-    text-decoration: none;
-    font-size: 25px;
-    color: #818181;
-    display: block;
-}
-
-.sidenav a:hover {
-    color: #f1f1f1;
-} */
-
-/* .main { */
-
-/* margin-left: 160px; */
-
-/* Same as the width of the sidenav */
-
-/* font-size: 28px; */
-
-/* Increased text to enable scrolling */
-
-/* padding: 0px 10px; */
-
-/* }  */
-
-/* #object-details .form-group { - this except not exceptions
-    height: 1.7rem;
-} */
 
 #object-details .form-control {
     padding: 0.3rem;
@@ -634,10 +441,6 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
     background-color: #ffffff;
     box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
 }
-
-/* #artwork-headers .select2-container--default {
-    background:  rgb(235, 235, 228); 
-} */
 
 
 /* TEXTAREA AUTO RESIZE STYLES BEGIN */
