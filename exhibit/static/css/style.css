@@ -494,6 +494,9 @@ h1, h2, h3, h4, h5, h6, label, th {
     font-weight: 200;
 }
 
+#related-items-header{
+    margin: 0.3rem;
+}
 /* -------------------------------------- */
 
 /* *** OTHER *** */

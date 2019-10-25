@@ -2,8 +2,9 @@
 
 {% block breadcrumb %}Exhibition{% endblock %}
 
+{% block related_items_header %}Artworks in Exhibition{% endblock %}
+
 {% block related_items %}
-<h3>Artworks in Exhibition</h3>
 {% include 'catalogue/search/search_bar.html' with artwork_search_form=artwork_search_form location_search_form=location_search_form exhibition_search_form=exhibition_search_form %}
 {% include 'catalogue/search/search_results.html' with object_list=search_results %}
 {% endblock %}
