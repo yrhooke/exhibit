@@ -1,4 +1,7 @@
 body {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
     font-size: 16px;
     font-family: brandon-reg, Arial, Helvetica, sans-serif;
     background-color: rgb(235, 235, 228);
@@ -20,7 +23,9 @@ rgb(96, 124, 160) */
 #wrapper {
     display: flex;
     width: 100%;
-    align-items: stretch;
+    flex: 1 1 auto;
+    flex-direction: row;
+    /* align-items: stretch; */
     /* padding-left: 160px; */
     /* transition: all 0.3s ease 0s; */
 }
@@ -122,8 +127,6 @@ button, .btn {
     border-color: slategrey;
     color: white;
 }
-
-
 
 h1, h2, h3, h4, h5, h6, label, th {
     font-family: brandon-reg;
