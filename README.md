@@ -70,11 +70,12 @@ Artwork management tool
 ### in current branch
 
 - [X] add headers for overview (list view) pages
-- [ ] add create new button to list views
-- [ ] differentiate between create and edit views better
+- [X] add create new button to list views
+- [X] differentiate between create and edit views better
 
 ### next phase
 
+- [ ] add proper placeholder to fields
 - [ ] reduce spacing between rows of object fields (in object-details)
 - [ ] better form validation (correct widgets, visibly fail on errors, etc)
 - [ ] fix workinexhibition
