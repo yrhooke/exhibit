@@ -72,7 +72,9 @@ rgb(96, 124, 160) */
     padding: 0;
 }
 
-/*  UTILS - components reused across the project */
+/* -------------------------------------- */
+
+/*  *** UTILS - components reused across the project *** */
 
 
 .section {
@@ -86,11 +88,84 @@ rgb(96, 124, 160) */
     margin-right: auto !important;
 }
 
-.gallery-list {
-    display:flex;
-    justify-content:flex-start;
-    flex-wrap:wrap;
+.form-group {
+    margin-bottom: 0.6rem;
 }
+
+.form-inline label {
+    padding: 0.5rem;
+}
+
+.action-button {
+    background-color:rgba(44, 45, 52, 1);
+    border: solid rgba(44, 45, 52, 1) 0px; 
+    width: 120px;
+
+}
+
+.action-button:hover {
+    background-color: slategrey;
+    border-color: slategrey;
+}
+
+.edit-field {
+    background: transparent;
+    vertical-align: middle;
+    border: none;
+    box-shadow: none;
+}
+
+
+.edit-field:focus {
+    background-color: #ffffff;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+}
+/* non rounded select2 elements */
+[class^='select2'] {
+    border-radius: 0px !important;
+  }
+
+h1, h2, h3, h4, h5, h6, label, th {
+    font-family: brandon-reg;
+    font-weight: 200;
+}
+
+
+
+/* -------------------------------------- */
+
+/* *** Page Header CSS *** */
+
+#page-header {
+    flex-wrap: nowrap;
+    margin-bottom: 1.2rem;
+    font-size: 2rem;
+}
+
+.header-item {
+    font-size: 2rem;
+    /* color: #2C2D34; */
+    height: min-content;
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+}
+
+#page-header label, #page-header .separator {
+    color: darkgray;
+}
+
+/* for selects in object details header */
+#page-header .select2-container .select2-selection--single,
+#page-header .select2-container--default .select2-selection--single .select2-selection__rendered,
+#page-header .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 3rem;
+    line-height: 3rem;
+    background-color: rgb(235, 235, 228);
+    border: none;
+    font-size: 2rem;
+}
+
+
 /* -------------------------------------- */
 
 /* *** Search Bar CSS *** */
@@ -142,16 +217,6 @@ rgb(96, 124, 160) */
     width: 120px;
 }
 
-.action-button {
-    background-color:rgba(44, 45, 52, 1);
-    border: solid rgba(44, 45, 52, 1) 0px; 
-    width: 120px;
-
-}
-.action-button:hover {
-    background-color: slategrey;
-    border-color: slategrey;
-}
 
 /* -------------------------------------- */
 
@@ -167,14 +232,6 @@ rgb(96, 124, 160) */
     text-align: center;
 }
 
-/* #searchResults tbody tr:nth-of-type(2n+1) {
-    background-color: rgb(0, 0, 0, 0.03);
-} */
-
-#searchResults img {
-    min-width: 100px;
-    width: 250px;
-}
 
 /* Hide caption for search results table */
 
@@ -184,7 +241,13 @@ caption {
 
 /* -------------------------------------- */
 
-/* *** Artwork List layout *** */
+/* *** Gallery List layout *** */
+
+.gallery-list {
+    display:flex;
+    justify-content:flex-start;
+    flex-wrap:wrap;
+}
 
 .gallery-item-wrapper {
     height: 293px;
@@ -197,7 +260,7 @@ a.gallery-item-wrapper:link, a.gallery-item-wrapper:visited, a.gallery-item-wrap
     color: rgb(44, 45, 52);
 }
 
-#searchResults .gallery-item-image, .gallery-item-image {
+.gallery-item-image {
     height: 293px;
     width: 293px;
     overflow: hidden;
@@ -238,6 +301,59 @@ ul.gallery-item-text {
 
 /* -------------------------------------- */
 
+/* ***  Object Details layout *** */
+
+#object-details-body .form-control {
+    padding: 0.3rem;
+    height: 1.5rem;
+}
+#object-details-body textarea.form-control {
+    line-height: 1.5rem;
+    height: 2rem;
+    resize: none;
+    overflow: hidden;
+}
+#object-details-body label {
+    padding: 0.3rem;
+}
+#object-details-body .select2-container .select2-selection--single,
+#object-details-body .select2-container--default .select2-selection--single .select2-selection__rendered,
+#object-details-body .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 1.5rem;
+    line-height: 1.5rem;
+    background-color: rgb(235, 235, 228);
+    border: none;
+}
+
+/* #object-details-body .select2-container--default .select2-selection--single {
+    min-width: 8rem;
+} */
+
+.details-list {
+    display:flex;
+    flex-wrap: nowrap;
+    flex-direction: column;
+    align-items: start;
+}
+
+#detail-submit {
+    margin-left: 8rem;
+}
+
+/* -------------------------------------- */
+
+/* *** Related Items layout *** */
+
+.related-items-header{
+    margin-left: 0.3rem;
+    margin-right: 0.3rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+
+/* -------------------------------------- */
+
 /* *** Artwork Detail layout *** */
 
 .card {
@@ -250,14 +366,6 @@ ul.gallery-item-text {
     min-width:400px;
     height: max-content;
 }
-
-/* Artwork Detail header */
-
-/* non rounded select2 elements */
-[class^='select2'] {
-    border-radius: 0px !important;
-  }
-
 
 /* #artwork-year {
     -webkit-appearance: textfield;
@@ -278,8 +386,6 @@ ul.gallery-item-text {
 .size-field-container {
     color: gray;
     display: inline-flex;
-    /* flex-wrap: nowrap; */
-    /* justify-content: space-around; */
     align-items: center;
     width: min-content;
     overflow-x: auto;
@@ -288,26 +394,16 @@ ul.gallery-item-text {
 }
 
 .size-field {
-    /* max-width: 5rem; */
-    /* width: fit-content; */
-    /* width: max-content; */
     width: 2rem;
     min-width: 1rem;
-    /* padding:2px; */
-    /* margin:1rem; */
     -webkit-appearance: textfield;
-    /* overflow: visible; */
     text-align: center;
     background: transparent;
     border: none;
     box-shadow: none;
-    /* border-bottom: 1px solid rgb(113, 114, 110); */
     border-radius: 0
 }
 
-.form-inline label {
-    padding: 0.5rem;
-}
 
 #size-fields-addtl {
     justify-content: end;
@@ -327,13 +423,6 @@ ul.gallery-item-text {
     flex: 1 1 auto;
 }
 
-/* -------------------------------------- */
-
-/* *** Other Detail layout *** */
-
-.form-group {
-    margin-bottom: 0.6rem;
-}
 
 /* -------------------------------------- */
 
@@ -349,94 +438,11 @@ ul.gallery-item-text {
     src: url('../fonts/hvd_fonts_-_brandongrotesque-medium.otf') format("truetype");
 }
 
-h1, h2, h3, h4, h5, h6, label, th {
-    font-family: brandon-reg;
-    font-weight: 200;
-}
 
-.related-items-header{
-    margin-left: 0.3rem;
-    margin-right: 0.3rem;
-    margin-top: 0.5rem;
-    margin-bottom: 1rem;
-}
 /* -------------------------------------- */
 
 /* *** OTHER *** */
 
-#object-details .form-control {
-    padding: 0.3rem;
-    height: 1.5rem;
-}
-#object-details textarea.form-control {
-    line-height: 1.5rem;
-    height: 2rem;
-    resize: none;
-    overflow: hidden;
-}
-#object-details label {
-    padding: 0.3rem;
-}
-#object-details .select2-container .select2-selection--single,
-#object-details .select2-container--default .select2-selection--single .select2-selection__rendered,
-#object-details .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 1.5rem;
-    line-height: 1.5rem;
-    background-color: rgb(235, 235, 228);
-    border: none;
-}
-
-/* for selects in object details header */
-#page-header .select2-container .select2-selection--single,
-#page-header .select2-container--default .select2-selection--single .select2-selection__rendered,
-#page-header .select2-container--default .select2-selection--single .select2-selection__arrow {
-    height: 3rem;
-    line-height: 3rem;
-    background-color: rgb(235, 235, 228);
-    border: none;
-    font-size: 2rem;
-}
-
-/* #object-details .select2-container--default .select2-selection--single {
-    min-width: 8rem;
-} */
-#page-header {
-    flex-wrap: nowrap;
-    margin-bottom: 1.2rem;
-}
-
-#page-header .object-details-header {
-    font-size: 2rem;
-    /* color: #2C2D34; */
-    height: min-content;
-    padding-top: 0rem;
-    padding-bottom: 0rem;
-}
-
-#page-header label, #page-header .separator {
-    color: darkgray;
-}
-
-
-.edit-field {
-    background: transparent;
-    vertical-align: middle;
-    border: none;
-    box-shadow: none;
-}
-
-
-.edit-field:focus {
-    background-color: #ffffff;
-    box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
-}
-
-.details-list {
-    display:flex;
-    flex-wrap: nowrap;
-    flex-direction: column;
-    align-items: start;
-}
 
 /* TEXTAREA AUTO RESIZE STYLES BEGIN */
 
@@ -462,6 +468,4 @@ h1, h2, h3, h4, h5, h6, label, th {
   }
   /* TEXTAREA AUTO RESIZE STYLES END */
 
-#detail-submit {
-    margin-left: 8rem;
-}
+

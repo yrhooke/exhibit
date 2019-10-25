@@ -8,9 +8,9 @@
         {% csrf_token %}
         <div id="page-header" class="form-inline">
             <div class="form-group">
-                {% render_field form.name class="object-details-header edit-field form-control rounded-0" %}
-                <span class="object-details-header separator" style="margin-left:1.5rem;margin-right:1.5rem;">  /  </span>
-                <label class="object-details-header"
+                {% render_field form.name class="header-item edit-field form-control rounded-0" %}
+                <span class="header-item separator" style="margin-left:1.5rem;margin-right:1.5rem;">  /  </span>
+                <label class="header-item"
                     for="{{ form.name.auto_id }}">{% block breadcrumb %}{% endblock breadcrumb %}</label>
             </div>
             <input type="submit" id="detail-submit" class="action-button btn btn-primary rounded-0" value="{{ action_name }}">
