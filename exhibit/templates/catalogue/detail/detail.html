@@ -2,7 +2,7 @@
 {% load widget_tweaks %}
 
 {% block content %}
-<div id="object-details" class="row">
+<div id="object-details" class="section">
     {% block object_details %}
     <form action="" method="post">
         {% csrf_token %}
@@ -31,7 +31,7 @@
     </form>
     {% endblock object_details %}
 </div>
-<div id="related-items" class="row">
+<div id="related-items" class="section">
     <h3 class="related-items-header">{%  block related_items_header %}{% endblock %}</h3>
     {% block related_items %}
     {% endblock related_items %}

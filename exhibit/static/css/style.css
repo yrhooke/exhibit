@@ -72,25 +72,13 @@ rgb(96, 124, 160) */
     padding: 0;
 }
 
+/*  UTILS - components reused across the project */
 
-/* .page-header {
-    display: flex;
-    flex-flow: row nowrap;
-    align-items: center;
-    margin-bottom: 1rem;
-} */
 
-#object-details {
-    width: 100%;
-    margin: 15px;
-    flex-direction: column;
+.section {
+    width:100%;
+    margin-top: 15px;
 }
-#related-items {
-    width: 100%;
-    margin: 15px;
-    flex-direction: column;
-}
-
 
 .center-block {
     width: 999px;
