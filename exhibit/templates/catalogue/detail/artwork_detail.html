@@ -84,7 +84,7 @@
 {% block object_details %}
 <form action="." method="POST" enctype="multipart/form-data">
     {% csrf_token %}
-    <div id="object-details-name" class="">
+    <div id="page-header" class="">
         <div class="form-inline">
             <div class="form-group">
                 {% render_field form.series class="object-details-header-text object-details-header edit-field form-control rounded-0" %}

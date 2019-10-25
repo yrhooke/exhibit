@@ -86,12 +86,12 @@ rgb(96, 124, 160) */
     /* width:999px; */
 }
 
-.page-header {
+/* .page-header {
     display: flex;
     flex-flow: row nowrap;
     align-items: center;
     margin-bottom: 1rem;
-}
+} */
 
 #object-details {
     width: 100%;
@@ -494,8 +494,11 @@ h1, h2, h3, h4, h5, h6, label, th {
     font-weight: 200;
 }
 
-#related-items-header{
-    margin: 0.3rem;
+.related-items-header{
+    margin-left: 0.3rem;
+    margin-right: 0.3rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1rem;
 }
 /* -------------------------------------- */
 
@@ -589,9 +592,9 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
 }
 
 /* for selects in object details header */
-#object-details-name .select2-container .select2-selection--single,
-#object-details-name .select2-container--default .select2-selection--single .select2-selection__rendered,
-#object-details-name .select2-container--default .select2-selection--single .select2-selection__arrow {
+#page-header .select2-container .select2-selection--single,
+#page-header .select2-container--default .select2-selection--single .select2-selection__rendered,
+#page-header .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 3rem;
     line-height: 3rem;
     background-color: rgb(235, 235, 228);
@@ -602,11 +605,11 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
 /* #object-details .select2-container--default .select2-selection--single {
     min-width: 8rem;
 } */
-#object-details-name {
+#page-header {
     flex-wrap: nowrap;
 }
 
-#object-details-name .object-details-header {
+#page-header .object-details-header {
     font-size: 2rem;
     /* color: #2C2D34; */
     height: min-content;
@@ -614,7 +617,7 @@ a, h1, h2, h3, h4, h5, h6, p, input, select, label, td, th, small, textarea, opt
     padding-bottom: 0rem;
 }
 
-#object-details-name label, #object-details-name .separator {
+#page-header label, #page-header .separator {
     color: darkgray;
 }
 
