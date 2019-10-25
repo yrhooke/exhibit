@@ -176,6 +176,10 @@ h1, h2, h3, h4, h5, h6, label, th {
     padding-left: 0.3rem;
 }
 
+.header-action {
+    margin-left: 8rem;
+}
+
 /* -------------------------------------- */
 
 /* *** Search Bar CSS *** */
@@ -348,10 +352,6 @@ ul.gallery-item-text {
     flex-wrap: nowrap;
     flex-direction: column;
     align-items: start;
-}
-
-#detail-submit {
-    margin-left: 8rem;
 }
 
 /* -------------------------------------- */

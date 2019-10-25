@@ -8,6 +8,8 @@
         <label class="header-item" id="breadcrumb"
             for="object-type">{% block breadcrumb %}Overview{% endblock breadcrumb %}</label>
     </div>
+    <a id="create-new" class="header-action action-button btn btn-primary"
+        href="{% block create_url %}{% endblock create_url %}">Create New</a>
 </div>
 <div class="section">
     {% block items_list  %} {% endblock items_list %}
