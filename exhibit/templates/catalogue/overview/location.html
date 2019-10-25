@@ -1,5 +1,7 @@
-{% extends "base.html" %}
+{% extends "catalogue/overview/overview.html" %}
 
-{% block content %}
+{% block object_type %}Locations{% endblock object_type %}
+
+{% block items_list %}
 {% include 'catalogue/list_module/location_list.html' with object_list=object_list %}
-{% endblock content %}
+{% endblock items_list %}

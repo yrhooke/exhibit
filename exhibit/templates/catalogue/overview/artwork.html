@@ -1,6 +1,8 @@
-{% extends "base.html" %}
+{% extends "catalogue/overview/overview.html" %}
 
-{% block content %}
+{% block object_type %}Artworks{% endblock object_type %}
+
+{% block items_list %}
 {% include 'catalogue/search/search_bar.html' with artwork_search_form=artwork_search_form location_search_form=location_search_form exhibition_search_form=exhibition_search_form %}
 {% include 'catalogue/search/search_results.html' with object_list=search_results %}
-{% endblock content %}
+{% endblock items_list %}

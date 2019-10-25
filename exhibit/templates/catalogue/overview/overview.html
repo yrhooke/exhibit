@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div id="page-header" class="section form-inline">
+    <div class="form-group" style="padding-left:1rem;">
+        <h1 id="object-type" class="object-name header-item">{%block object_type %}{% endblock object_type %}</h1>
+        <span class="header-item separator" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
+        <label class="header-item" id="breadcrumb"
+            for="object-type">{% block breadcrumb %}Overview{% endblock breadcrumb %}</label>
+    </div>
+</div>
+<div class="section">
+    {% block items_list  %} {% endblock items_list %}
+</div>
+{% endblock content %}

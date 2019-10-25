@@ -62,19 +62,19 @@ Artwork management tool
   - [X] series above title + year + status
   - [X] artwork detail: card elements shouldn't move around too much
   - [X] model: more size category options, framed is checkbox (?)
-
-### in current branch
-
 - [X] clean up css
   - [X] standardize html layout
   - [X] figure out what classes work for us
   - [X] gray object type label called breadcrumb
 
-### next phase
+### in current branch
 
-- [ ] add headers for overview (list view) pages
+- [X] add headers for overview (list view) pages
 - [ ] add create new button to list views
 - [ ] differentiate between create and edit views better
+
+### next phase
+
 - [ ] reduce spacing between rows of object fields (in object-details)
 - [ ] better form validation (correct widgets, visibly fail on errors, etc)
 - [ ] fix workinexhibition
