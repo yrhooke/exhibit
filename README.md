@@ -74,33 +74,32 @@ Artwork management tool
 
 - [X] add proper placeholder to fields
 - [ ] better form validation (correct widgets, visibly fail on errors, etc)
-    - [X] calendar types should show calender
-    - [X] numeric types input limited
-    - [ ] go object by object, try to create wrong, try to update wrong
-      - [X] series
-      - [X] location
-      - [X] exhibition
-        - [X] dates need to pop up calender
-      - [ ] artwork
-        - [ ] upload image on create or edit doesn't work
-        - [X] handle missing value in size field
-        - [X] date field for sale not well handled
-
-- [ ] reduce spacing between rows of object fields (in object-details)
+  - [X] calendar types should show calender
+  - [X] numeric types input limited
+  - [ ] go object by object, try to create wrong, try to update wrong
+    - [X] series
+    - [X] location
+    - [X] exhibition
+      - [X] dates need to pop up calender
+    - [ ] artwork
+      - [ ] upload image on create or edit doesn't work
+      - [X] handle missing value in size field
+      - [X] date field for sale not well handled
+- [X] reduce spacing between rows of object fields (in object-details)
 
 ### next phase
 
 - [ ] fix workinexhibition
   - [ ] can add
   - [ ] can only add once
-- [ ] clean up spacing for search bar when series/location is missing
-- [ ] sort order for artworks size category desc then year desc
 - [ ] store images on S3
 - [ ] remove all proprietary data from source control
 
 ### Want for launch
 
 - [ ] add pagination to search
+- [ ] clean up spacing for search bar when series/location is missing
+- [ ] sort order for artworks size category desc then year desc
 - [ ] image download - name is: title, year, size in, size cm separated by underscore
 - [ ] artwork data download
 - [ ] bulk artwork data download

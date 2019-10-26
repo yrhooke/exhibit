@@ -167,6 +167,7 @@ class Series(models.Model):
     """A model representing a series of artworks"""
 
     name = models.CharField("Name", max_length=200, help_text="Series name")
+    description = models.TextField("Description", blank=True)
 
     def __str__(self):
         """string representation of model"""

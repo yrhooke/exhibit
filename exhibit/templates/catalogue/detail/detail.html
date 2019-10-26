@@ -12,8 +12,6 @@
 
         field_id = "{{ field.auto_id }}";
         placeHolder = "{{ field.field.placeholder }}";
-        console.log($("#" + field_id));
-        console.log(field_id + ": " + placeHolder);
         $("#" + field_id).select2({
             placeholder: placeHolder
         });
@@ -41,6 +39,14 @@
         background-color: rgb(235, 235, 228);
         border: none;
     }
+
+    .details-list .form-group {
+        height: 1.8rem;
+    }
+
+    .details-list .ungroup {
+        height: unset;
+    }
 </style>
 {% endif %}
 {% endblock custom_headers %}
@@ -63,7 +69,11 @@
         <div id="object-details-body" class="details-list form-inline">
             {% for field in form.visible_fields %}
             {% ifnotequal field.label form.name.label %}
+            {% if field.field.widget.input_type == None %}
+            {% include "catalogue/utils/field.html" with field=field ungroup=True %}
+            {% else %}
             {% include "catalogue/utils/field.html" with field=field %}
+            {% endif %}
             {% endifnotequal %}
             {% endfor %}
         </div>

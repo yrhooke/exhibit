@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 
-<div class="form-group">
+<div class="{% if ungroup %}ungroup{% endif %} form-group">
     {{ field.label_tag }}
     {% render_field field class="edit-field form-control" %}
     {% if field.help_text %}

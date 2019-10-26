@@ -134,10 +134,10 @@
                         {% include "catalogue/utils/field.html" with field=form.rolled %}
                         {% include "catalogue/utils/field.html" with field=form.framed %}
                         {% include "catalogue/utils/field.html" with field=form.medium %}
-                        <div id="size-fields-measures" class="form-group"
+                        <div id="size-fields-measures" class=""
                             style="flex-direction:column;align-items:flex-start;margin-top:0.5rem;">
                             <h5>Size (h | w | d):</h5>
-                            <div id="size-fields-cm" class="form-inline size-form-group">
+                            <div id="size-fields-cm" class="form-inline form-group size-form-group">
                                 <div id="id_size_cm"
                                     class="size-field-container edit-field form-control form-control-sm">
                                     {% render_field form.height_cm class="size-field" %}
@@ -148,7 +148,7 @@
                                 </div>
                                 <label for="id_size_cm">cm</label>
                             </div>
-                            <div id="size-fields-in" class="form-inline size-form-group">
+                            <div id="size-fields-in" class="form-inline form-group size-form-group">
                                 <div id="id_size_in"
                                     class="size-field-container edit-field form-control form-control-sm">
                                     {% render_field form.height_in class="size-field" %}
@@ -160,7 +160,7 @@
                                 <label for="id_size_in">in</label>
                             </div>
                         </div>
-                        {% include "catalogue/utils/field.html" with field=form.additional %}
+                        {% include "catalogue/utils/field.html" with field=form.additional ungroup=True %}
                     </div>
                 </div>
             </div>
