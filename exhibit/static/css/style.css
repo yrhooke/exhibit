@@ -177,18 +177,22 @@ h1, h2, h3, h4, h5, h6, label, th {
 
 #search-bar-wrapper {
     width: 100%;
-    max-width: 923px;
     margin: 0 auto;
+}
+
+
+#search-bar-wrapper label {
+    font-size: 14px;
 }
 
 #search-bar-main {
     display: flex;
     flex-wrap: nowrap;
-    justify-content: space-between;
+    width: min-content;
 }
 
-#search-bar-wrapper label {
-    font-size: 14px;
+#search-bar-main .form-group {
+    margin-right: 0.5rem;
 }
 
 #search-show-more {

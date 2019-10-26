@@ -86,6 +86,7 @@ Artwork management tool
       - [X] handle missing value in size field
       - [X] date field for sale not well handled
 - [X] reduce spacing between rows of object fields (in object-details)
+- [X] clean up spacing for search bar when series/location is missing
 
 ### next phase
 
@@ -98,7 +99,6 @@ Artwork management tool
 ### Want for launch
 
 - [ ] add pagination to search
-- [ ] clean up spacing for search bar when series/location is missing
 - [ ] sort order for artworks size category desc then year desc
 - [ ] image download - name is: title, year, size in, size cm separated by underscore
 - [ ] artwork data download

@@ -1,7 +1,7 @@
 {% load widget_tweaks %}
 
 <div id="search-bar-wrapper">
-    <div id="search-bar-main" class="form-inline">
+    <div id="search-bar-main" class="form-inline mx-auto">
         <div class="form-group {% if hasSeries %}collapse{% endif %}">
             {% render_field artwork_search_form.series class="form-control search-artwork-details" %}
         </div>
