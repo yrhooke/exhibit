@@ -2,7 +2,7 @@
 
 <div class="{% if ungroup %}ungroup{% endif %} form-group">
     {{ field.label_tag }}
-    {% render_field field class="edit-field form-control" %}
+    {% render_field field class="edit-field form-control form-control-sm" %}
     {% if field.help_text %}
     <!-- <small class="form-text text-muted">{{ field.help_text }}</small> -->
     {% endif %}
