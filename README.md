@@ -69,11 +69,8 @@ Artwork management tool
 - [X] add headers for overview (list view) pages
 - [X] add create new button to list views
 - [X] differentiate between create and edit views better
-
-### in current branch
-
 - [X] add proper placeholder to fields
-- [ ] better form validation (correct widgets, visibly fail on errors, etc)
+- [X] better form validation (correct widgets, visibly fail on errors, etc)
   - [X] calendar types should show calender
   - [X] numeric types input limited
   - [ ] go object by object, try to create wrong, try to update wrong
@@ -81,20 +78,23 @@ Artwork management tool
     - [X] location
     - [X] exhibition
       - [X] dates need to pop up calender
-    - [ ] artwork
-      - [ ] upload image on create or edit doesn't work
+    - [X] artwork
+      - [X] upload image on create or edit doesn't work
       - [X] handle missing value in size field
       - [X] date field for sale not well handled
 - [X] reduce spacing between rows of object fields (in object-details)
 - [X] clean up spacing for search bar when series/location is missing
 
+### in current branch
+
+- [ ] store images on S3
+
 ### next phase
 
+- [ ] remove all proprietary data from source control
 - [ ] fix workinexhibition
   - [ ] can add
   - [ ] can only add once
-- [ ] store images on S3
-- [ ] remove all proprietary data from source control
 
 ### Want for launch
 
