@@ -92,10 +92,8 @@ class Artwork(models.Model):
 
     rolled = models.CharField('Rolled/Streched', max_length=1, choices=ROLL_STATUS_CHOICES,
                               blank=True)
-    #   , help_text="Is the work rolled or stretched?")
 
     framed = models.BooleanField('Framed', blank=True, default=False)
-    # , help_text="Is the work framed?")
 
     OVERALL_STATUS_CHOICES = (
         ('D', 'Draft'),

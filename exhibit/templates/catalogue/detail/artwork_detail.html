@@ -82,7 +82,7 @@
                 <label class="header-item" id="breadcrumb" for="{{ form.title.auto_id }}">Artwork</label>
             </div>
             <div class="form-group">
-                <input type="submit" id="detail-submit" class="header-action action-button btn btn-primary"
+                <input type="submit" id="detail-submit" class="header-action action-button btn"
                     value="{{ action_name }}">
             </div>
         </div>
@@ -100,10 +100,24 @@
                         </div>
                         {% endif %}
                     </div>
-                    <label for="id_image" class="action-button btn btn-primary">
+                        <!-- <div class="custom-file"> -->
+
+                          <!-- <div class="btn btn-primary btn-sm float-left">
+                                <input type="file" class="custom-file-input" id="customFile">
+                                <label class="custom-file-label" for="customFile">Upload</label>
+                              </div> -->
+                            <!-- <span>Choose file</span>
+                            <input type="file">
+                          </div> -->
+                          <!-- <div class="file-path-wrapper">
+                            <input class="file-path validate" type="text" placeholder="Upload your file">
+                          </div> -->
+                        <!-- </div> -->
+                      <!-- </form> -->
+                    <label for="id_image" class="action-button btn hidden-file-upload-label">
                         Upload Image
                     </label>
-                    {% render_field form.image style="display:none;" %}
+                    {% render_field form.image class="hidden-file-upload action-button" %}
                 </div>
             </div>
             <div id="sales-info" class="card">

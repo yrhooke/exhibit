@@ -122,10 +122,18 @@ button, .btn {
     width: 120px;
 }
 
-.btn:hover {
+.action-button:hover, btn:hover {
     background-color: slategrey;
     border-color: slategrey;
     color: white;
+}
+
+
+.action-button:active, .action-button:focus, .btn:active, btn:focus, .btn.focus {
+    background-color: seashell;
+    border-color: slategrey;
+    color: slategrey;
+    box-shadow:0 0 0 .1rem lightgray;
 }
 
 h1, h2, h3, h4, h5, h6, label, th {
@@ -414,6 +422,17 @@ ul.gallery-item-text {
     justify-content: end;
 }
 
+.hidden-file-upload {
+    position: relative;
+    z-index: 20;
+    opacity: 0;
+    margin-top:6px;
+}
+
+.hidden-file-upload-label {
+    position: absolute;
+    z-index: 10;
+}
 /* Exhibitions list */
 
 #add-work-to-exhibition {
