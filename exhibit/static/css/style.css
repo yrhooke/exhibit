@@ -1,3 +1,16 @@
+/* *** Font Definitions *** */
+
+@font-face {
+    font-family: "brandon-reg";
+    src: url("https://exhibit-assets.nyc3.digitaloceanspaces.com/static/fonts/hvd_fonts_-_brandongrotesque-regular.otf") format("truetype");
+}
+
+@font-face {
+    font-family: "brandon-med";
+    src: url("https://exhibit-assets.nyc3.digitaloceanspaces.com/static/fonts/hvd_fonts_-_brandongrotesque-medium.otf") format("truetype");
+}
+
+/* -------------------------------------- */
 body {
     display: flex;
     flex-direction: column;
@@ -449,19 +462,6 @@ ul.gallery-item-text {
 
 /* -------------------------------------- */
 
-/* *** Font Definitions *** */
-
-@font-face {
-    font-family: "brandon-reg";
-    src: url('https://exhibit-assets.nyc3.digitaloceanspaces.com/static/fonts/hvd_fonts_-_brandongrotesque-regular.otf') format("truetype");
-}
-
-@font-face {
-    font-family: "brandon-med";
-    src: url('https://exhibit-assets.nyc3.digitaloceanspaces.com/static/fonts/hvd_fonts_-_brandongrotesque-medium.otf') format("truetype");
-}
-
-/* -------------------------------------- */
 
 /* *** OTHER *** */
 
