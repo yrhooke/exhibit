@@ -8,7 +8,7 @@ env.read_env(str(ROOT_DIR.path(".envs/.local/.storage")))
 
 # USE DIGITALOCEAN FOR STORAGE
 # https://simpleisbetterthancomplex.com/tutorial/2017/08/01/how-to-setup-amazon-s3-in-a-django-project.html
-AWS_DEFAULT_ACL = None
+# AWS_DEFAULT_ACL = None # to set privacy setting to default private
 AWS_ACCESS_KEY_ID = env('DJANGO_AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('DJANGO_AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = env('DJANGO_AWS_STORAGE_BUCKET_NAME')
