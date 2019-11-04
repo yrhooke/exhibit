@@ -453,12 +453,12 @@ ul.gallery-item-text {
 
 @font-face {
     font-family: "brandon-reg";
-    src: url('../fonts/hvd_fonts_-_brandongrotesque-regular.otf') format("truetype");
+    src: url('https://exhibit-assets.nyc3.digitaloceanspaces.com/static/fonts/hvd_fonts_-_brandongrotesque-regular.otf') format("truetype");
 }
 
 @font-face {
     font-family: "brandon-med";
-    src: url('../fonts/hvd_fonts_-_brandongrotesque-medium.otf') format("truetype");
+    src: url('https://exhibit-assets.nyc3.digitaloceanspaces.com/static/fonts/hvd_fonts_-_brandongrotesque-medium.otf') format("truetype");
 }
 
 /* -------------------------------------- */
