@@ -90,11 +90,16 @@ Artwork management tool
 - [ ] store images on S3
   - [X] get S3 infrastructure online
   - [X] fix font issues
-  - [ ] separate static and media - use S3 for both
+  - [X] separate static and media - use S3 for both
+  - [ ] Does using DEFAULT_FILE_STORAGE for S3MediaStorage class work (no custom work in model)?
+  - [ ] make images private - use relay for access https://www.gyford.com/phil/writing/2012/09/26/django-s3-temporary/
+  - [ ] setup proper CORS for Spaces
+  - [ ] is there a way to control digitalOcean config from source?
   - [ ] create dev/test/prod environments
     - [ ] dev uses local static, S3 media
     - [ ] test + prod use S3 to serve both
-  - [ ] figure out if there's a best practice in terms of access you're not doing
+  - [ ] add loading state for media upload
+  - [ ] 
 
 ### next phase
 

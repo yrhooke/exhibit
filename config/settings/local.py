@@ -8,7 +8,7 @@ env.read_env(str(ROOT_DIR.path(".envs/.local/.storage")))
 
 # USE DIGITALOCEAN FOR STORAGE
 # https://simpleisbetterthancomplex.com/tutorial/2017/08/01/how-to-setup-amazon-s3-in-a-django-project.html
-AWS_DEFAULT_ACL = None # to set privacy setting to default private
+# AWS_DEFAULT_ACL = None # to set privacy setting to default private
 AWS_ACCESS_KEY_ID = env('DJANGO_AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('DJANGO_AWS_SECRET_ACCESS_KEY')
 AWS_STORAGE_BUCKET_NAME = env('DJANGO_AWS_STORAGE_BUCKET_NAME')
@@ -19,6 +19,9 @@ AWS_LOCATION = env('DJANGO_AWS_LOCATION')
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
 
+# Media file management
+DEFAULT_FILE_STORAGE = 'mysite.storage_backends.S3MediaStorage'
+AWS_MEDIA_BUCKET_NAME = env('DJANGO_AWS_MEDIA_BUCKET_NAME')
 # GENERAL
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#debug
