@@ -64,3 +64,4 @@ def test_merge(tmpdir_factory, merged_file_count: int, append_linesep: bool):
 
 if __name__ == "__main__":
     main()
+

@@ -38,3 +38,4 @@ class TestUserCreationForm:
         assert not form.is_valid()
         assert len(form.errors) == 1
         assert "username" in form.errors
+

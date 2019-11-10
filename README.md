@@ -88,6 +88,13 @@ Artwork management tool
 ### in current branch
 
 - [ ] store images on S3
+  - [X] get S3 infrastructure online
+  - [X] fix font issues
+  - [ ] separate static and media - use S3 for both
+  - [ ] create dev/test/prod environments
+    - [ ] dev uses local static, S3 media
+    - [ ] test + prod use S3 to serve both
+  - [ ] figure out if there's a best practice in terms of access you're not doing
 
 ### next phase
 

@@ -11,3 +11,4 @@ class UsersConfig(AppConfig):
             import exhibit.users.signals  # noqa F401
         except ImportError:
             pass
+

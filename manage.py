@@ -28,3 +28,4 @@ if __name__ == "__main__":
     sys.path.append(os.path.join(current_path, "exhibit"))
 
     execute_from_command_line(sys.argv)
+

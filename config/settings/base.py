@@ -270,3 +270,4 @@ SOCIALACCOUNT_ADAPTER = "exhibit.users.adapters.SocialAccountAdapter"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+

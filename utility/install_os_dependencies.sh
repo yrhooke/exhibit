@@ -94,3 +94,4 @@ case "$1" in
     help|"") usage_message;;
     *) wrong_command "$1";;
 esac
+

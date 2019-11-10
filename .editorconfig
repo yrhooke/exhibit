@@ -31,3 +31,4 @@ indent_style = tab
 [nginx.conf]
 indent_style = space
 indent_size = 2
+
