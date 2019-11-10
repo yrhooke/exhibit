@@ -5,10 +5,6 @@ from django.urls import reverse
 
 from datetime import date
 
-from config.settings.storage_backends import S3MediaStorage
-
-media_storage = S3MediaStorage()
-
 
 class Artwork(models.Model):
     """A model representing an individual work of art"""
@@ -20,7 +16,6 @@ class Artwork(models.Model):
         'Image',
         upload_to='images/',
         null=True,
-        storage=media_storage,
         help_text="Sample image of the artwork"
     )
     title = models.CharField('Title', max_length=200, help_text="Artwork title")
