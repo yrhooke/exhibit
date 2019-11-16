@@ -163,7 +163,7 @@ LOGGING = {
 # https://simpleisbetterthancomplex.com/tutorial/2017/08/01/how-to-setup-amazon-s3-in-a-django-project.html
 AWS_ACCESS_KEY_ID = env('DJANGO_AWS_ACCESS_KEY_ID')
 AWS_SECRET_ACCESS_KEY = env('DJANGO_AWS_SECRET_ACCESS_KEY')
-AWS_DEFAULT_ACL = None # to set privacy setting to default private
+# AWS_DEFAULT_ACL = None # to set privacy setting to default private
 AWS_S3_REGION_NAME= env('DJANGO_AWS_S3_REGION_NAME')
 AWS_S3_REGION_DOMAIN = f"{AWS_S3_REGION_NAME}.digitaloceanspaces.com"
 AWS_S3_ENDPOINT_URL=f"https://{AWS_S3_REGION_DOMAIN}"
