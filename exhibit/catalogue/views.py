@@ -170,9 +170,6 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
         # Call the base implementation first to get a context
         context = super().get_context_data(**kwargs)
 
-        exhibitions = [
-            s.exhibition for s in self.object.workinexhibition_set.all()]
-        context['exhibitionList'] = exhibitions
         context['exhibitionForm'] = WorkInExhibitionForm()
         return context
 
@@ -201,6 +198,15 @@ def add_work_in_exhibition(request):
                 return HttpResponseRedirect(reverse('home'))  
     
     return HttpResponseRedirect(reverse('home'))
+
+class ExhibitionsForArtwork(ListView):
+    template_name = "catalogue/list_module/exhibition_list.html"
+
+    def get_queryset(self):
+        artwork = Artwork.objects.get(pk=self.kwargs.get('pk'))
+        queryset= [s.exhibition for s in artwork.workinexhibition_set.all().order_by('-pk')]
+        return queryset
+
 
 
 class ArtworkDelete(LoginRequiredMixin, DeleteView):

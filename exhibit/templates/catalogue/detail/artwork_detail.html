@@ -4,6 +4,18 @@
 
 {% block javascript %}
 <script>
+    function updateExhibitions () {
+        let split_location = location.pathname.split('/');
+        let pk = split_location[split_location.length - 2];
+        console.log('updating');
+        $.get(
+            `/c/api/exhibitionsforartwork/${pk}`,
+            (data) => {
+                $("#related-exhibitions").html(data);
+            }             
+            
+            );
+    }
     $(document).ready(function () {
 
         // $("#artwork-series").on('change', setSelectWidth);
@@ -58,17 +70,30 @@
         $('#artwork-location').select2({ 'placeholder': 'Location' });
         $('#workinexhibition-exhibition').select2({ 'placeholder': 'New Exhibition' });
 
+        updateExhibitions();
+
         $('#new-exhibition-submit').on('click', () => {
             let artwork = $("#workinexhibition-artwork").children("option:selected").val();
             let exhibition = $("#workinexhibition-exhibition").children("option:selected").val();
+            let csrf = '{{csrf_token }}';
             if (exhibition){
-                let form = $('#workinexhibition-form');
-                form.append(`<input type="hidden" name="artwork" value=${artwork}>`);
-                form.append(`<input type="hidden" name="exhibition" value=${exhibition}>`);
-                form.submit();
+                console.log('exhibition');
+                $.post(
+                    '/c/api/addworkinexhibition', 
+                    {
+                        artwork: artwork,
+                        exhibition: exhibition,
+                        csrfmiddlewaretoken: csrf
+                    },
+                    updateExhibitions
+                )
             }
 
-        })
+
+        });
+});
+
+
 
     });
 
@@ -203,8 +228,7 @@
                         {% render_field exhibitionForm.exhibition class="form-control" id="workinexhibition-exhibition" %}
                         <button type="button" class="btn btn-primary btn-sm" id="new-exhibition-submit">Add new</button>
                     </div>
-                    <table class="table table-striped table-hover">
-                        {% include "catalogue/list_module/exhibition_list.html" with object_list=exhibitionList %}
+                    <table class="table table-striped table-hover" id="related-exhibitions">
                     </table>
 
                 </div>
