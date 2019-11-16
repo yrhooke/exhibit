@@ -56,7 +56,18 @@
         });
 
         $('#artwork-location').select2({ 'placeholder': 'Location' });
-        $('#new-exhibition-select').select2({ 'placeholder': 'New Exhibition' })
+        $('#workinexhibition-exhibition').select2({ 'placeholder': 'New Exhibition' });
+
+        $('#new-exhibition-submit').on('click', () => {
+            console.log('called');
+            let artwork = $("#workinexhibition-artwork").children("option:selected").val();
+            let exhibition = $("#workinexhibition-exhibition").children("option:selected").val();
+            let form = $('#workinexhibition-form');
+            form.append(`<input type="hidden" name="artwork" value=${artwork}>`)
+            form.append(`<input type="hidden" name="exhibition" value=${exhibition}>`)
+            form.submit();
+        })
+
     });
 
 </script>
@@ -93,27 +104,28 @@
                 <div class="card-body">
                     <div style="height:405px">
                         {% if form.instance.image %}
-                        <img class="img-fluid mx-auto" id="id_image" src="{{ form.instance.image.url }}" alt="Artwork image"
-                            style="height:100%;display:block">
+                        <img class="img-fluid mx-auto" id="id_image" src="{{ form.instance.image.url }}"
+                            alt="Artwork image" style="height:100%;display:block">
                         {% else %}
-                        <div class="mx-auto" id="id_image" style="height:100%;display:block; width:75%;background-color: darkgrey;">
+                        <div class="mx-auto" id="id_image"
+                            style="height:100%;display:block; width:75%;background-color: darkgrey;">
                         </div>
                         {% endif %}
                     </div>
-                        <!-- <div class="custom-file"> -->
+                    <!-- <div class="custom-file"> -->
 
-                          <!-- <div class="btn btn-primary btn-sm float-left">
+                    <!-- <div class="btn btn-primary btn-sm float-left">
                                 <input type="file" class="custom-file-input" id="customFile">
                                 <label class="custom-file-label" for="customFile">Upload</label>
                               </div> -->
-                            <!-- <span>Choose file</span>
+                    <!-- <span>Choose file</span>
                             <input type="file">
                           </div> -->
-                          <!-- <div class="file-path-wrapper">
+                    <!-- <div class="file-path-wrapper">
                             <input class="file-path validate" type="text" placeholder="Upload your file">
                           </div> -->
-                        <!-- </div> -->
-                      <!-- </form> -->
+                    <!-- </div> -->
+                    <!-- </form> -->
                     <label for="id_image" class="action-button btn hidden-file-upload-label">
                         Upload Image
                     </label>
@@ -182,13 +194,13 @@
             <div id="exhibitions" class="card">
                 <div class="card-body">
                     <h3 class="card-title">All Exhibitions</h3>
-                    <!-- <form action="{% url 'catalogue:add_workinexhibition' %}" method="POST"> -->
                     <div class="form-inline" id="add-work-to-exhibition">
-                        <!-- {% render_field exhibitionForm.artwork class="collapse" style="visibility:hidden;" %} -->
-                        <!-- {% render_field exhibitionForm.exhibition class="form-control" id="new-exhibition-select" %} -->
-                        <!-- <input type="submit" class="btn btn-primary btn-sm" value="Add new" id="new-exhibition-submit"> -->
+                        <select class="collapse" id="workinexhibition-artwork">
+                            <option value="{{ object.pk }}" selected=""></option>
+                        </select>
+                        {% render_field exhibitionForm.exhibition class="form-control" id="workinexhibition-exhibition" %}
+                        <button type="button" class="btn btn-primary btn-sm" id="new-exhibition-submit">Add new</button>
                     </div>
-                    <!-- </form> -->
                     <table class="table table-striped table-hover">
                         {% include "catalogue/list_module/exhibition_list.html" with object_list=exhibitionList %}
                     </table>
@@ -197,5 +209,9 @@
             </div>
             {% endif %}
         </div>
+    </div>
+</form>
+<form class="collapse" action="{% url 'catalogue:add_workinexhibition' %}" method="POST" id="workinexhibition-form">
+    {% csrf_token %}
 </form>
 {% endblock object_details %}

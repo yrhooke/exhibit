@@ -1,5 +1,5 @@
-from django.http import HttpResponse
-from django.urls import reverse_lazy, reverse
+from django.http import HttpResponse, HttpResponseRedirect
+from django.urls import reverse_lazy, reverse, NoReverseMatch
 from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -188,9 +188,7 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
         exhibitions = [
             s.exhibition for s in self.object.workinexhibition_set.all()]
         context['exhibitionList'] = exhibitions
-        context['exhibitionForm'] = WorkInExhibitionForm(
-            initial={'artwork': self.get_object()}
-        )
+        context['exhibitionForm'] = WorkInExhibitionForm()
         return context
 
     def get_form(self, form_class=None):
@@ -203,22 +201,21 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
 
 def add_work_in_exhibition(request):
     # if this is a POST request we need to process the form data
-    try:
-        if request.method == 'POST':
-            # create a form instance and populate it with data from the request:
-            form = WorkInExhibitionForm(request.POST)
-            # check whether it's valid:
-            if form.is_valid():
-                # process the data in form.cleaned_data as required
-                # ...
-                # redirect to a new URL:
-                form.save()
-                return HttpResponse('/thanks/')
-        else:
-            return HttpResponse("didn't POST")
-    except Exception as e:
-        print(e)
-        return HttpResponse('Failure')
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = WorkInExhibitionForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            form.save()
+            try:
+                return HttpResponseRedirect(reverse('catalogue:artwork_detail', args=[form.data.get('artwork')]))
+            except NoReverseMatch:
+                return HttpResponseRedirect(reverse('home'))  
+    else:
+        return HttpResponseRedirect(reverse('home'))
 
 
 class ArtworkDelete(LoginRequiredMixin, DeleteView):

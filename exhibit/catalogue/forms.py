@@ -8,6 +8,10 @@ class WorkInExhibitionForm(forms.ModelForm):
     class Meta():
         model = WorkInExhibition
         fields = '__all__'
+    
+    def __init__(self, *args, **kwargs):
+        super(WorkInExhibitionForm, self).__init__(*args, **kwargs)
+        self.fields['exhibition'].required = False
 
 
 class PlaceholderMixin(object):

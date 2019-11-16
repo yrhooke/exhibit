@@ -84,10 +84,7 @@ Artwork management tool
       - [X] date field for sale not well handled
 - [X] reduce spacing between rows of object fields (in object-details)
 - [X] clean up spacing for search bar when series/location is missing
-
-### in current branch
-
-- [ ] store images on S3
+- [X] store images on S3
   - [X] get S3 infrastructure online
   - [X] fix font issues
   - [X] separate static and media - use S3 for both
@@ -105,17 +102,20 @@ Artwork management tool
   - [X] setup proper CORS for Spaces
 - [X] remove all proprietary data from source control
 
+### in current branch
+
+- [ ] fix workinexhibition
+  - [X] can add
+  - [ ] can only add once
+
 ### next phase
 
 - [ ] add loading state for media upload
-- [ ] fix workinexhibition
-  - [ ] can add
-  - [ ] can only add once
+- [ ] add pagination to search
+- [ ] sort order for artworks size category desc then year desc then series id then title alphabetical
 
 ### Want for launch
 
-- [ ] add pagination to search
-- [ ] sort order for artworks size category desc then year desc then series id then title alphabetical
 - [ ] general UI changes
   - [ ] match font sizes to rotemreshef.com
   - [ ] decide on all help texts
@@ -146,6 +146,7 @@ Artwork management tool
 
 - [ ] make images private - use relay for access <https://www.gyford.com/phil/writing/2012/09/26/django-s3-temporary/>
   - [ ] configure AWS upload settings - private for media, public for css file
+  - [ ] secure AWS_DEFAULT_ALC through digitalOcean config
 - [ ] specific image folder per object
 - [ ] multiple images per object?
 - [ ] image file sizing per object?
