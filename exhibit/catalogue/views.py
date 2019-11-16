@@ -284,7 +284,7 @@ class LocationDelete(LoginRequiredMixin, DeleteView):
 
 def add_work_in_exhibition(request):
     # if this is a POST request we need to process the form data
-    response = {'success': False, 'errors':""}
+    response = {'success': False, 'errors':set()}
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = WorkInExhibitionForm(request.POST)
@@ -296,9 +296,17 @@ def add_work_in_exhibition(request):
             form.save()
             response['success'] = True
         else:
-            exhibition = request.POST.get('exhibition')
-            if not exhibition:
-                response['errors'] = "Specifying an exhibition is required"
+            for field in form:
+                for error in field.errors:
+                    response['errors'].add(f"{field.label}: "+ error)
+                for error in form.non_field_errors():
+                    response['errors'].add(error)
+            # exhibition = request.POST.get('exhibition')
+            # if not exhibition:
+            #     response['errors'].append("Specifying an exhibition is required")
+            
+            
+    response['errors'] = list(response['errors']) # JsonResponse doesn't handle sets well
     return JsonResponse(response)
 
 class ExhibitionsForArtwork(ListView):

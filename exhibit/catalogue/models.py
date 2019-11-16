@@ -283,3 +283,8 @@ class WorkInExhibition(models.Model):
                                 null=True)
     exhibition = models.ForeignKey('Exhibition', on_delete=models.SET_NULL,
                                    null=True)
+
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(fields=['artwork', 'exhibition'], name='artwork in exhibition once')
+        ]

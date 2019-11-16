@@ -73,7 +73,7 @@
         updateExhibitions();
 
         $('#new-exhibition-submit').on('click', () => {
-            $("workinexhibition-form-errors").empty();
+            $("#workinexhibition-form-errors").empty();
             let artwork = $("#workinexhibition-artwork").children("option:selected").val();
             let exhibition = $("#workinexhibition-exhibition").children("option:selected").val();
             let csrf = '{{csrf_token }}';
@@ -85,13 +85,17 @@
                     csrfmiddlewaretoken: csrf
                 },
                 (data) => {
-                    console.log(data);
                     if (data['success']) {
-                        console.log('success');
                         updateExhibitions();
                     } else {
-                        console.log('error');
-                        $("#workinexhibition-form-errors").html(data['errors']);
+                        data['errors'].forEach(element => {
+                            $("#workinexhibition-form-errors")
+                            data['errors'].forEach(error => {
+                                $("#workinexhibition-form-errors").append(
+                                    `<li>${error}</li>`
+                                )
+                            });
+                        });
                     }
 
                 });
@@ -230,7 +234,7 @@
                         {% render_field exhibitionForm.exhibition class="form-control" id="workinexhibition-exhibition" %}
                         <button type="button" class="btn btn-primary btn-sm" id="new-exhibition-submit">Add new</button>
                     </div>
-                    <div id="workinexhibition-form-errors"></div>
+                    <ul id="workinexhibition-form-errors"></ul>
                     <table class="table table-striped table-hover" id="related-exhibitions">
                     </table>
 

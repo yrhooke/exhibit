@@ -104,9 +104,9 @@ Artwork management tool
 
 ### in current branch
 
-- [ ] fix workinexhibition
+- [X] fix workinexhibition
   - [X] can add
-  - [ ] can only add once
+  - [X] can only add once
 
 ### next phase
 
@@ -144,6 +144,8 @@ Artwork management tool
 
 ### Post Launch
 
+- [ ] remove work from exhibition
+- [ ] add artworks to exhibition/location/series from their page
 - [ ] make images private - use relay for access <https://www.gyford.com/phil/writing/2012/09/26/django-s3-temporary/>
   - [ ] configure AWS upload settings - private for media, public for css file
   - [ ] secure AWS_DEFAULT_ALC through digitalOcean config
@@ -158,17 +160,16 @@ Artwork management tool
 - [ ] use textarea js to clean up size field + other fields' text resizing
 - [ ] add "create new" button for series/location from within artwork edit view
 - [ ] compartmentalize deploy/switch to digitalocean
+  - [ ] config files? docker up? - for different stages
 - [ ] harden security + work on backups
 - [ ] add test suite
 - [ ] add autocomplete in search
 - [ ] automatic size category fill in
 - [ ] save on change in edit view
 - [ ] mobile/responsive layout
-- [ ] build or remove deleteViews
+- [ ] Implement deleteViews
 - [ ] separate objects for sales/owners
 - [ ] filtering non-artworks list views
 - [ ] manage sale currency better
-- [ ] nice deploy
-  - [ ] config files? docker up? - for different stages
 
 heroku url: <https://hidden-coast-28492.herokuapp.com/>
