@@ -4,6 +4,7 @@ from django.urls import reverse
 # from django.db.models import Q
 
 from datetime import date
+from operator import itemgetter
 
 
 class Artwork(models.Model):
@@ -72,15 +73,15 @@ class Artwork(models.Model):
                                  )
 
     SIZE_OPTIONS = (
-        ('S', 'Small'),
-        ('M', 'Medium'),
-        ('L', 'Large'),
-        ('H', 'Scroll'),
+        ('1', 'Small'),
+        ('2', 'Medium'),
+        ('3', 'Large'),
+        ('4', 'Scroll'),
     )
 
     size = models.CharField('Size Category',
                             max_length=1,
-                            choices=SIZE_OPTIONS,
+                            choices=sorted(SIZE_OPTIONS, key=itemgetter(0)),
                             blank=True,
                             help_text="How large is this piece?"
                             )

@@ -101,21 +101,29 @@ Artwork management tool
     - [X] test + prod use S3 to serve both
   - [X] setup proper CORS for Spaces
 - [X] remove all proprietary data from source control
-
-### in current branch
-
 - [X] fix workinexhibition
   - [X] can add
   - [X] can only add once
 
+### in current branch
+
+- [X] sort order for artworks size category desc then year desc then series id then title alphabetical
+
 ### next phase
 
+- [ ] categories for locations (clients, galleries, permanent, other)
+- [ ] use https everywhere
+- [ ] figure out how to back up the database + s3
 - [ ] add loading state for media upload
 - [ ] add pagination to search
-- [ ] sort order for artworks size category desc then year desc then series id then title alphabetical
+- [ ] handle null results for search
+- [ ] add clear search button
 
 ### Want for launch
 
+- [ ] js refactor - distribute what's necessary per template
+- [ ] improve performance if page loading this slow on prod
+- [ ] search forgets previous set status/medium/owner bug
 - [ ] general UI changes
   - [ ] match font sizes to rotemreshef.com
   - [ ] decide on all help texts
@@ -125,6 +133,7 @@ Artwork management tool
 - [ ] Artwork detail view UI changes
   - [ ] don't crop wide images in detail view
   - [ ] make artwork detail view size fields presentable
+  - [ ] adjust width on selects to be presentable
 - [ ] List view UI changes
   - [ ] align text left in tables
 - [ ] search view UI changes
@@ -133,14 +142,9 @@ Artwork management tool
   - [ ] small box around search (card?)
   - [ ] add search icon?
   - [ ] in detail views, especially artwork detail view sales info, show label + field text in same size
-- [ ] categories for locations (clients, galleries, permanent, other)
-- [ ] js refactor - distribute what's necessary per template
-- [ ] use https everywhere
-- [ ] figure out how to back up the database + s3
-- [ ] improve performance if page loading this slow on prod
-- [ ] search forgets previous set status/medium/owner bug
-- [ ] handle null results for search
-- [ ] add clear search button
+  - [ ] adjust width on selects to be presentable
+- [ ] login views UI changes
+  - [ ] align as needed
 
 ### Post Launch
 

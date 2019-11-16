@@ -3,6 +3,7 @@ from django.urls import reverse_lazy, reverse, NoReverseMatch
 from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models.expressions import F
 
 import json
 
@@ -86,7 +87,15 @@ class SearchMixin(object):
         valid_queries = [query for query in queries if query]  # remove None queries
         queryset = Artwork.objects.filter(*valid_queries)
 
-        return queryset.order_by('-pk')[:50]
+        ordered_queryset = queryset.order_by(
+            F('size').desc(nulls_last=True),
+            F('year').desc(nulls_last=True),
+            'series__id',
+            'title',
+        )[:50]
+
+        # return queryset.order_by('size').desc(nulls_last=True).order_by('year').desc(nulls_last=True).order_by, 'series__id', 'title')[:50]
+        return ordered_queryset
 
     def get_context_data(self, **kwargs):
         context = super(SearchMixin, self).get_context_data(**kwargs)
@@ -179,9 +188,6 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
         form.fields['owner'].required = False
         form.fields['status'].required = True
         return form
-
-
-
 
 
 class ArtworkDelete(LoginRequiredMixin, DeleteView):
@@ -282,9 +288,10 @@ class LocationDelete(LoginRequiredMixin, DeleteView):
 
 # API
 
+
 def add_work_in_exhibition(request):
     # if this is a POST request we need to process the form data
-    response = {'success': False, 'errors':set()}
+    response = {'success': False, 'errors': set()}
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = WorkInExhibitionForm(request.POST)
@@ -298,21 +305,21 @@ def add_work_in_exhibition(request):
         else:
             for field in form:
                 for error in field.errors:
-                    response['errors'].add(f"{field.label}: "+ error)
+                    response['errors'].add(f"{field.label}: " + error)
                 for error in form.non_field_errors():
                     response['errors'].add(error)
             # exhibition = request.POST.get('exhibition')
             # if not exhibition:
             #     response['errors'].append("Specifying an exhibition is required")
-            
-            
-    response['errors'] = list(response['errors']) # JsonResponse doesn't handle sets well
+
+    response['errors'] = list(response['errors'])  # JsonResponse doesn't handle sets well
     return JsonResponse(response)
+
 
 class ExhibitionsForArtwork(ListView):
     template_name = "catalogue/list_module/exhibition_list.html"
 
     def get_queryset(self):
         artwork = Artwork.objects.get(pk=self.kwargs.get('pk'))
-        queryset= [s.exhibition for s in artwork.workinexhibition_set.all().order_by('-pk')]
+        queryset = [s.exhibition for s in artwork.workinexhibition_set.all().order_by('-pk')]
         return queryset
