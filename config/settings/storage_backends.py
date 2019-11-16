@@ -13,10 +13,9 @@ from storages.backends.s3boto3 import S3Boto3Storage
 @deconstructible
 class S3MediaStorage(S3Boto3Storage):
     location= 'media' # getattr(settings, 'MEDIA_URL')
-    file_overwrite = False
 
     def __init__(self, *args, **kwargs):
         kwargs['bucket'] = getattr(settings, 'AWS_MEDIA_BUCKET_NAME')
-        kwargs['custom_domain'] = f"{getattr(settings, 'AWS_MEDIA_BUCKET_NAME')}.{getattr(settings, 'AWS_S3_REGION_NAME')}.digitaloceanspaces.com"
+        kwargs['custom_domain'] = getattr(settings, 'AWS_S3_MEDIA_CUSTOM_DOMAIN')
         super(S3MediaStorage, self).__init__(*args, **kwargs)
 
