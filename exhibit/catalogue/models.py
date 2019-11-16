@@ -12,7 +12,16 @@ class Artwork(models.Model):
     # optional_field = {'blank' : True, 'null' : true}
 
     # Mandatory Fields ##
-    image = models.ImageField('Image', upload_to='images/', null=True, help_text="Sample image of the artwork")
+    def image_file_directory(instance, filename):
+    # file will be uploaded to MEDIA_ROOT/artworks/<artwork_id>/<filename>
+        return f'artworks/{instance.pk}/{filename}'
+
+    image = models.ImageField(
+        'Image',
+        upload_to=image_file_directory,
+        null=True,
+        help_text="Sample image of the artwork"
+    )
     title = models.CharField('Title', max_length=200, help_text="Artwork title")
     series = models.ForeignKey('Series', on_delete=models.SET_NULL, null=True)
     year = models.IntegerField('Year', help_text='Year of creation')

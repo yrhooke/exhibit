@@ -286,7 +286,6 @@ exhibit/media/
 
 .env
 .envs/*
-!.envs/.local/
 
 ### SQLITE
 
@@ -294,9 +293,6 @@ db.*
 
 ### VS Code
 .vscode/*
-
-### Fonts
-*.otf
 
 ### Media
 media/*

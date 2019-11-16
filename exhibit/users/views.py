@@ -18,6 +18,7 @@ class UserDetailView(LoginRequiredMixin, DetailView):
 user_detail_view = UserDetailView.as_view()
 
 
+
 class UserUpdateView(LoginRequiredMixin, UpdateView):
 
     model = User

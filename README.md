@@ -69,11 +69,8 @@ Artwork management tool
 - [X] add headers for overview (list view) pages
 - [X] add create new button to list views
 - [X] differentiate between create and edit views better
-
-### in current branch
-
 - [X] add proper placeholder to fields
-- [ ] better form validation (correct widgets, visibly fail on errors, etc)
+- [X] better form validation (correct widgets, visibly fail on errors, etc)
   - [X] calendar types should show calender
   - [X] numeric types input limited
   - [ ] go object by object, try to create wrong, try to update wrong
@@ -81,54 +78,93 @@ Artwork management tool
     - [X] location
     - [X] exhibition
       - [X] dates need to pop up calender
-    - [ ] artwork
-      - [ ] upload image on create or edit doesn't work
+    - [X] artwork
+      - [X] upload image on create or edit doesn't work
       - [X] handle missing value in size field
       - [X] date field for sale not well handled
 - [X] reduce spacing between rows of object fields (in object-details)
 - [X] clean up spacing for search bar when series/location is missing
 
+### in current branch
+
+- [ ] store images on S3
+  - [X] get S3 infrastructure online
+  - [X] fix font issues
+  - [X] separate static and media - use S3 for both
+  - [X] Does using DEFAULT_FILE_STORAGE for S3MediaStorage class work (no custom work in model)?
+  - [X] set up dev environment with nice examples to look at
+  - [ ] figure out how environment settings setup works
+    - [ ] how does settings code need to work?
+    - [ ] is there a way to control digitalOcean config from source?
+    - [ ] what should be in source and what shouldn't?
+    - [ ] how do we make deployment smooth to different stages?
+    - [ ] what is best path/setting for image upload/static files?
+  - [X] setup prod/test env config for image upload
+  - [X] set image upload location to what we want
+  - [ ] make images private - use relay for access <https://www.gyford.com/phil/writing/2012/09/26/django-s3-temporary/>
+  - [ ] create dev/test/prod environments
+    - [ ] dev uses local static, S3 media
+    - [ ] test + prod use S3 to serve both
+  - [ ] setup proper CORS for Spaces
+  - [ ] configure AWS upload settings - private for media, public for css file
+
 ### next phase
 
+- [ ] add loading state for media upload
+- [ ] remove all proprietary data from source control
 - [ ] fix workinexhibition
   - [ ] can add
   - [ ] can only add once
-- [ ] store images on S3
-- [ ] remove all proprietary data from source control
 
 ### Want for launch
 
 - [ ] add pagination to search
-- [ ] sort order for artworks size category desc then year desc
-- [ ] image download - name is: title, year, size in, size cm separated by underscore
-- [ ] artwork data download
-- [ ] bulk artwork data download
-- [ ] use icons for status
-- [ ] don't crop wide images in detail view
-- [ ] decide on all help texts
-- [ ] change font to narrow in most places, leave reg for "bold"
-- [ ] use textarea js to clean up size field + other fields' text resizing
+- [ ] sort order for artworks size category desc then year desc then series id then title alphabetical
+- [ ] general UI changes
+  - [ ] match font sizes to rotemreshef.com
+  - [ ] decide on all help texts
+  - [ ] change font to narrow in most places, leave reg for "bold"
+  - [ ] resize breadcrumbs - smaller
+  - [ ] in detail views, especially artwork detail view sales info, show text in black, label in grey (see current values and reverse)
+- [ ] Artwork detail view UI changes
+  - [ ] don't crop wide images in detail view
+  - [ ] make artwork detail view size fields presentable
+- [ ] List view UI changes
+  - [ ] align text left in tables
+- [ ] search view UI changes
+  - [ ] make advances search boxes smaller
+  - [ ] change "show more" to advanced/basic search
+  - [ ] small box around search (card?)
+  - [ ] add search icon?
+  - [ ] in detail views, especially artwork detail view sales info, show label + field text in same size
+- [ ] categories for locations (clients, galleries, permanent, other)
 - [ ] js refactor - distribute what's necessary per template
-- [ ] redo naming - give clearer class/id/name fields in html
-- [ ] add autocomplete in search
 - [ ] use https everywhere
 - [ ] figure out how to back up the database + s3
 - [ ] improve performance if page loading this slow on prod
 - [ ] search forgets previous set status/medium/owner bug
 - [ ] handle null results for search
+- [ ] add clear search button
 
 ### Post Launch
 
+- [ ] use icons for status
+- [ ] redo naming - give clearer class/id/name fields in html
+- [ ] image download - name is: title, year, size in, size cm separated by underscore
+- [ ] artwork data download
+- [ ] bulk artwork data download
+- [ ] use textarea js to clean up size field + other fields' text resizing
+- [ ] add "create new" button for series/location from within artwork edit view
+- [ ] compartmentalize deploy/switch to digitalocean
+- [ ] harden security + work on backups
+- [ ] add test suite
+- [ ] add autocomplete in search
 - [ ] automatic size category fill in
 - [ ] save on change in edit view
-- [ ] manage sale currency better
-- [ ] filtering non-artworks list views
-- [ ] add "create new" button for series/location from within artwork edit view
 - [ ] mobile/responsive layout
-- [ ] compartmentalize deploy/switch to digitalocean
-- [ ] add test suite
-- [ ] harden security + work on backups
 - [ ] build or remove deleteViews
 - [ ] separate objects for sales/owners
+- [ ] filtering non-artworks list views
+- [ ] manage sale currency better
 
 heroku url: <https://hidden-coast-28492.herokuapp.com/>

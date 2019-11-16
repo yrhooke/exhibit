@@ -75,6 +75,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "widget_tweaks",
     "tempus_dominus",
+    "storages",
 ]
 
 LOCAL_APPS = [
@@ -269,3 +270,4 @@ SOCIALACCOUNT_ADAPTER = "exhibit.users.adapters.SocialAccountAdapter"
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+

@@ -18,3 +18,4 @@ def user() -> settings.AUTH_USER_MODEL:
 @pytest.fixture
 def request_factory() -> RequestFactory:
     return RequestFactory()
+

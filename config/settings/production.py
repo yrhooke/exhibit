@@ -56,7 +56,7 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
 
 # STATIC
 # ------------------------
-STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
 # MEDIA
 # ------------------------------------------------------------------------------
 
@@ -156,3 +156,25 @@ LOGGING = {
 
 # Your stuff...
 # ------------------------------------------------------------------------------
+
+
+# USE DIGITALOCEAN FOR STORAGE
+# ------------------------------------------------------------------------------
+# https://simpleisbetterthancomplex.com/tutorial/2017/08/01/how-to-setup-amazon-s3-in-a-django-project.html
+AWS_ACCESS_KEY_ID = env('DJANGO_AWS_ACCESS_KEY_ID')
+AWS_SECRET_ACCESS_KEY = env('DJANGO_AWS_SECRET_ACCESS_KEY')
+# AWS_DEFAULT_ACL = None # to set privacy setting to default private
+AWS_S3_REGION_NAME= env('DJANGO_AWS_S3_REGION_NAME')
+AWS_S3_REGION_DOMAIN = f"{AWS_S3_REGION_NAME}.digitaloceanspaces.com"
+AWS_S3_ENDPOINT_URL=f"https://{AWS_S3_REGION_DOMAIN}"
+AWS_LOCATION = env('DJANGO_AWS_LOCATION')
+# Static Storage:
+AWS_STORAGE_BUCKET_NAME = env('DJANGO_AWS_STORAGE_BUCKET_NAME')
+AWS_S3_CUSTOM_DOMAIN = f"{AWS_STORAGE_BUCKET_NAME}.{AWS_S3_REGION_DOMAIN}"
+STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+STATIC_URL = f"https://{AWS_S3_CUSTOM_DOMAIN}/{AWS_LOCATION}/"
+
+# Media file management
+DEFAULT_FILE_STORAGE = 'config.settings.storage_backends.S3MediaStorage'
+AWS_MEDIA_BUCKET_NAME = env('DJANGO_AWS_MEDIA_BUCKET_NAME')
+AWS_S3_MEDIA_CUSTOM_DOMAIN =f"{AWS_MEDIA_BUCKET_NAME}.{AWS_S3_REGION_DOMAIN}" 

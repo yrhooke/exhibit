@@ -14,8 +14,12 @@ django-allauth==0.39.1  # https://github.com/pennersr/django-allauth
 django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
 django-redis==4.10.0  # https://github.com/niwinz/django-redis
 django-widget-tweaks==1.4.5  # https://github.com/jazzband/django-widget-tweaks
-django-tempus-dominus-5.1.2.8 # https://github.com/FlipperPA/django-tempus-dominus
+django-tempus-dominus==5.1.2.8 # https://github.com/FlipperPA/django-tempus-dominus
+django-storages==1.7.2 # https://github.com/jschneier/django-storages
 
 # Django REST Framework
 djangorestframework==3.10.2  # https://github.com/encode/django-rest-framework
 coreapi==2.3.3  # https://github.com/core-api/python-client
+
+# AWS/DigitalOcean
+boto3==1.10.8 # https://github.com/boto/boto3
