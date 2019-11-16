@@ -99,11 +99,14 @@ Artwork management tool
     - [ ] what should be in source and what shouldn't?
     - [ ] how do we make deployment smooth to different stages?
     - [ ] what is best path/setting for image upload/static files?
+  - [X] setup prod/test env config for image upload
+  - [X] set image upload location to what we want
   - [ ] make images private - use relay for access <https://www.gyford.com/phil/writing/2012/09/26/django-s3-temporary/>
-  - [ ] setup proper CORS for Spaces
   - [ ] create dev/test/prod environments
     - [ ] dev uses local static, S3 media
     - [ ] test + prod use S3 to serve both
+  - [ ] setup proper CORS for Spaces
+  - [ ] configure AWS upload settings - private for media, public for css file
 
 ### next phase
 

@@ -4,7 +4,6 @@ from .base import env
 # read local env
 env.read_env(str(ROOT_DIR.path(".envs/.local/.django")))
 env.read_env(str(ROOT_DIR.path(".envs/.local/.postgres")))
-env.read_env(str(ROOT_DIR.path(".envs/.local/.storage")))
 
 ## USE DIGITALOCEAN FOR STORAGE
 # ------------------------------------------------------------------------------

@@ -10,18 +10,72 @@
     /* Download only latin glyphs *
     src: local('Custom Font'), url('/fonts/custom-font.woff2') format('woff2'), url('/fonts/custom-font.woff') format('woff');
 } */
-
 @font-face {
-    font-family: "brandon-reg";
+    font-family: 'Brandon Grotesque Regular';
     font-display: swap;
-    src: url("/static/fonts/hvd_fonts_-_brandongrotesque-regular.otf") format("opentype");
+    src: local('Brandon Grotesque Regular'),url("/static/fonts/hvd_fonts_-_brandongrotesque-regular.otf") format("opentype");
 }
 
-/* @font-face {
-    font-family: "brandon-med" !important;
-    src: url("../fonts/hvd_fonts_-_brandongrotesque-medium.otf") format("truetype") !important;
-    font-display: swap;
-} */
+@font-face {
+    font-family: 'Brandon Grotesque Black';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Brandon Grotesque Black'), url('static/fonts/brandon-grotesque-black-58a8a3e824392.woff') format('woff');
+}
+@font-face {
+    font-family: 'Brandon Grotesque Bold';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Brandon Grotesque Bold'), url('static/fonts/brandon-grotesque-bold-587bd6400afd0.woff') format('woff');
+}
+@font-face {
+    font-family: 'Brandon Grotesque Bold Italic';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Brandon Grotesque Bold Italic'), url('static/fonts/brandon-grotesque-bold-italic-58a8a48221563.woff') format('woff');
+}
+@font-face {
+    font-family: 'Brandon Grotesque Light';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Brandon Grotesque Light'), url('static/fonts/brandon-grotesque-light-58a8a4b38001d.woff') format('woff');
+}
+@font-face {
+    font-family: 'Brandon Grotesque Light Italic';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Brandon Grotesque Light Italic'), url('static/fonts/brandon-grotesque-light-italic-58a8a4ccb88be.woff') format('woff');
+}
+@font-face {
+    font-family: 'Brandon Grotesque Medium';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Brandon Grotesque Medium'), url('static/fonts/brandon-grotesque-medium-587bd623e472a.woff') format('woff');
+}
+@font-face {
+    font-family: 'Brandon Grotesque Medium Italic';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Brandon Grotesque Medium Italic'), url('static/fonts/brandon-grotesque-medium-italic-58a8a3c40866a.woff') format('woff');
+}
+@font-face {
+    font-family: 'Brandon Grotesque Regular Italic';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Brandon Grotesque Regular Italic'), url('static/fonts/brandon-grotesque-regular-italic-58a8a456c4724.woff') format('woff');
+}
+@font-face {
+    font-family: 'Brandon Grotesque Thin';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Brandon Grotesque Thin'), url('static/fonts/brandon-grotesque-thin-587bd5b76cfba.woff') format('woff');
+}
+@font-face {
+    font-family: 'Brandon Grotesque Thin Italic';
+    font-style: normal;
+    font-weight: normal;
+    src: local('Brandon Grotesque Thin Italic'), url('static/fonts/brandon-grotesque-thin-italic-58a8a3a8861fe.woff') format('woff');
+}
 
 /* -------------------------------------- */
 
@@ -30,7 +84,7 @@ body {
     flex-direction: column;
     height: 100vh;
     font-size: 16px;
-    font-family: brandon-reg, Arial, Helvetica, sans-serif;
+    font-family: "Brandon Grotesque Regular", Arial, Helvetica, sans-serif;
     background-color: rgb(235, 235, 228);
 }
 
@@ -163,7 +217,7 @@ button, .btn {
 }
 
 h1, h2, h3, h4, h5, h6, label, th {
-    font-family: brandon-reg;
+    font-family: "Brandon Grotesque Regular";
     font-weight: 200;
 }
 
