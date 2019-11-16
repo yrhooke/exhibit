@@ -13,6 +13,7 @@ from storages.backends.s3boto3 import S3Boto3Storage
 @deconstructible
 class S3MediaStorage(S3Boto3Storage):
     location= 'media' # getattr(settings, 'MEDIA_URL')
+    file_overwrite = False
 
     def __init__(self, *args, **kwargs):
         kwargs['bucket'] = getattr(settings, 'AWS_MEDIA_BUCKET_NAME')

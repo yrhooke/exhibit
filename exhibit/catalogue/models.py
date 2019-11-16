@@ -11,14 +11,15 @@ class Artwork(models.Model):
 
     # optional_field = {'blank' : True, 'null' : true}
 
-    # Mandatory Fields ##
-    def image_file_directory(instance, filename):
+
+    def get_image_upload_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/artworks/<artwork_id>/<filename>
         return f'artworks/{instance.pk}/{filename}'
 
+    ## Mandatory Fields ##
     image = models.ImageField(
         'Image',
-        upload_to=image_file_directory,
+        upload_to="artworks/",
         null=True,
         help_text="Sample image of the artwork"
     )
@@ -168,7 +169,6 @@ class Artwork(models.Model):
         rolled,
         owner,
     ]
-
 
 class Series(models.Model):
     """A model representing a series of artworks"""

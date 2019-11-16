@@ -93,25 +93,21 @@ Artwork management tool
   - [X] separate static and media - use S3 for both
   - [X] Does using DEFAULT_FILE_STORAGE for S3MediaStorage class work (no custom work in model)?
   - [X] set up dev environment with nice examples to look at
-  - [ ] figure out how environment settings setup works
-    - [ ] how does settings code need to work?
-    - [ ] is there a way to control digitalOcean config from source?
-    - [ ] what should be in source and what shouldn't?
-    - [ ] how do we make deployment smooth to different stages?
-    - [ ] what is best path/setting for image upload/static files?
+  - [X] figure out how environment settings setup works
+    - [X] how does settings code need to work?
+    - [X] what should be in source and what shouldn't?
+    - [X] what is best path/setting for image upload/static files?
   - [X] setup prod/test env config for image upload
   - [X] set image upload location to what we want
-  - [ ] make images private - use relay for access <https://www.gyford.com/phil/writing/2012/09/26/django-s3-temporary/>
-  - [ ] create dev/test/prod environments
-    - [ ] dev uses local static, S3 media
-    - [ ] test + prod use S3 to serve both
-  - [ ] setup proper CORS for Spaces
-  - [ ] configure AWS upload settings - private for media, public for css file
+  - [X] create dev/test/prod environments
+    - [X] dev uses local static, S3 media
+    - [X] test + prod use S3 to serve both
+  - [X] setup proper CORS for Spaces
+- [X] remove all proprietary data from source control
 
 ### next phase
 
 - [ ] add loading state for media upload
-- [ ] remove all proprietary data from source control
 - [ ] fix workinexhibition
   - [ ] can add
   - [ ] can only add once
@@ -148,6 +144,11 @@ Artwork management tool
 
 ### Post Launch
 
+- [ ] make images private - use relay for access <https://www.gyford.com/phil/writing/2012/09/26/django-s3-temporary/>
+  - [ ] configure AWS upload settings - private for media, public for css file
+- [ ] specific image folder per object
+- [ ] multiple images per object?
+- [ ] image file sizing per object?
 - [ ] use icons for status
 - [ ] redo naming - give clearer class/id/name fields in html
 - [ ] image download - name is: title, year, size in, size cm separated by underscore
@@ -166,5 +167,7 @@ Artwork management tool
 - [ ] separate objects for sales/owners
 - [ ] filtering non-artworks list views
 - [ ] manage sale currency better
+- [ ] nice deploy
+  - [ ] config files? docker up? - for different stages
 
 heroku url: <https://hidden-coast-28492.herokuapp.com/>
