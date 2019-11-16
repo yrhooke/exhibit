@@ -4,7 +4,9 @@
         {% for series in object_list %}
         <a class="gallery-item-wrapper" href="{% url 'catalogue:series_detail' series.pk %}">
             {% if series.count > 0 %}
-            <img class="gallery-item-image" src="{{ series.image.url }}" alt="{{ series.name }}">
+            <div class="gallery-item-image">
+                <img class="gallery-item-image" src="{{ series.image.url }}" alt="{{ series.name }}">
+            </div>
             {% else %}
             <div class="gallery-item-image" style="background:darkgrey"></div>
             {% endif %}
