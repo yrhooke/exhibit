@@ -9,10 +9,7 @@ class WorkInExhibitionForm(forms.ModelForm):
         model = WorkInExhibition
         fields = '__all__'
     
-    def __init__(self, *args, **kwargs):
-        super(WorkInExhibitionForm, self).__init__(*args, **kwargs)
-        self.fields['exhibition'].required = False
-
+    use_required_attribute = False
 
 class PlaceholderMixin(object):
     def __init__(self, *args, **kwargs):

@@ -59,13 +59,15 @@
         $('#workinexhibition-exhibition').select2({ 'placeholder': 'New Exhibition' });
 
         $('#new-exhibition-submit').on('click', () => {
-            console.log('called');
             let artwork = $("#workinexhibition-artwork").children("option:selected").val();
             let exhibition = $("#workinexhibition-exhibition").children("option:selected").val();
-            let form = $('#workinexhibition-form');
-            form.append(`<input type="hidden" name="artwork" value=${artwork}>`)
-            form.append(`<input type="hidden" name="exhibition" value=${exhibition}>`)
-            form.submit();
+            if (exhibition){
+                let form = $('#workinexhibition-form');
+                form.append(`<input type="hidden" name="artwork" value=${artwork}>`);
+                form.append(`<input type="hidden" name="exhibition" value=${exhibition}>`);
+                form.submit();
+            }
+
         })
 
     });

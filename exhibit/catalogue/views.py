@@ -112,21 +112,6 @@ class SearchMixin(object):
         return context
 
 
-# def autocompleteView(request):
-#     if request.is_ajax():
-#         q = request.GET.get('term', '').capitalize()
-#         search_qs = Artwork.objects.all()  # filter(title__startswith=q)
-#         results = []
-#         print(q)
-#         for r in search_qs:
-#             results.append(r.FIELD)
-#         data = json.dumps(results)
-#     else:
-#         data = 'fail'
-#     mimetype = 'application/json'
-#     return HttpResponse(data, mimetype)
-
-
 create_action_button_text = 'Create'
 edit_action_button_text = 'Save Changes'
 
@@ -214,8 +199,8 @@ def add_work_in_exhibition(request):
                 return HttpResponseRedirect(reverse('catalogue:artwork_detail', args=[form.data.get('artwork')]))
             except NoReverseMatch:
                 return HttpResponseRedirect(reverse('home'))  
-    else:
-        return HttpResponseRedirect(reverse('home'))
+    
+    return HttpResponseRedirect(reverse('home'))
 
 
 class ArtworkDelete(LoginRequiredMixin, DeleteView):
