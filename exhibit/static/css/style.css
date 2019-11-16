@@ -285,7 +285,7 @@ h1, h2, h3, h4, h5, h6, label, th {
 #search-show-more {
     color: #0080C6;
     cursor: pointer;
-    font-family: brandon-med;
+    font-family: "Brandon Grotesque Regular";
 }
 
 #search-show-more:before {
@@ -382,7 +382,7 @@ a.gallery-item-wrapper:link, a.gallery-item-wrapper:visited, a.gallery-item-wrap
 }
 
 .gallery-item-title {
-    font: normal normal normal 29px/36px brandon-reg, sans-serif;
+    font: normal normal normal 29px/36px "Brandon Grotesque Regular", sans-serif;
 }
 
 .gallery-item-text {
