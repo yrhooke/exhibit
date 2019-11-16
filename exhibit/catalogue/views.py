@@ -1,4 +1,4 @@
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy, reverse, NoReverseMatch
 from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -181,31 +181,6 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
         return form
 
 
-def add_work_in_exhibition(request):
-    # if this is a POST request we need to process the form data
-    if request.method == 'POST':
-        # create a form instance and populate it with data from the request:
-        form = WorkInExhibitionForm(request.POST)
-        # check whether it's valid:
-        if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
-            form.save()
-            try:
-                return HttpResponseRedirect(reverse('catalogue:artwork_detail', args=[form.data.get('artwork')]))
-            except NoReverseMatch:
-                return HttpResponseRedirect(reverse('home'))  
-    
-    return HttpResponseRedirect(reverse('home'))
-
-class ExhibitionsForArtwork(ListView):
-    template_name = "catalogue/list_module/exhibition_list.html"
-
-    def get_queryset(self):
-        artwork = Artwork.objects.get(pk=self.kwargs.get('pk'))
-        queryset= [s.exhibition for s in artwork.workinexhibition_set.all().order_by('-pk')]
-        return queryset
 
 
 
@@ -304,3 +279,32 @@ class LocationUpdate(LoginRequiredMixin, SearchMixin, genericUpdateView):
 class LocationDelete(LoginRequiredMixin, DeleteView):
     model = Location
     success_url = reverse_lazy('index')
+
+# API
+
+def add_work_in_exhibition(request):
+    # if this is a POST request we need to process the form data
+    response = {'success': False, 'errors':""}
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = WorkInExhibitionForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            form.save()
+            response['success'] = True
+        else:
+            exhibition = request.POST.get('exhibition')
+            if not exhibition:
+                response['errors'] = "Specifying an exhibition is required"
+    return JsonResponse(response)
+
+class ExhibitionsForArtwork(ListView):
+    template_name = "catalogue/list_module/exhibition_list.html"
+
+    def get_queryset(self):
+        artwork = Artwork.objects.get(pk=self.kwargs.get('pk'))
+        queryset= [s.exhibition for s in artwork.workinexhibition_set.all().order_by('-pk')]
+        return queryset
