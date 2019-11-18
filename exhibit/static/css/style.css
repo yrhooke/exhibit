@@ -210,7 +210,7 @@ button, .btn {
 }
 
 .action-button:active, .action-button:focus, .btn:active, btn:focus, .btn.focus {
-    background-color: seashell;
+    background-color: white;
     border-color: slategrey;
     color: slategrey;
     box-shadow: 0 0 0 .1rem lightgray;

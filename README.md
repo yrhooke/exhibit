@@ -105,18 +105,18 @@ Artwork management tool
   - [X] can add
   - [X] can only add once
 - [X] sort order for artworks size category desc then year desc then series id then title alphabetical
+- [X] categories for locations (clients, galleries, permanent, other)
+- [X] use https everywhere
+- [X] figure out how to back up the database + s3 - need to do more later
 
 ### in current branch
 
-- [X] categories for locations (clients, galleries, permanent, other)
+- [ ] add loading state for media upload
+  - [X] preview from local
+  - [ ] loader after submission
 
 ### next phase
 
-- [ ] use https everywhere
-- [ ] figure out how to back up the database + s3
-- [ ] add loading state for media upload
-  - [ ] preview from local
-  - [ ] loader after submission
 - [ ] add pagination to search
 - [ ] handle null results for search
 - [ ] add clear search button
