@@ -1,5 +1,6 @@
 <div class="table-responsive">
-    <table class="{% if overview_mode %}overview-table{% endif %} table table table-striped table-hover" id="searchResults">
+    <table class="{% if overview_mode %}overview-table{% endif %} table table table-striped table-hover"
+        id="searchResults">
         <caption>List of Exhibitions</caption>
         <thead>
             <tr>
@@ -12,13 +13,13 @@
         </thead>
         <tbody>
             {% for exhibition in object_list %}
-            <tr>
-                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.name }}</a></td>
-                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.location.name }}</a>
-                </td>
-                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.start_date }}</a></td>
-                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.end_date }}</a></td>
-                <td><a href="{% url 'catalogue:exhibition_detail' exhibition.pk %}">{{ exhibition.count }}</a></td>
+            <tr onclick="window.location.href='{{ request.scheme }}://{{ request.get_host }}{% url 'catalogue:exhibition_detail' exhibition.pk %}'"
+                style="cursor:pointer">
+                <td>{{ exhibition.name }}</td>
+                <td>{{ exhibition.location.name }}</td>
+                <td>{{ exhibition.start_date }}</td>
+                <td>{{ exhibition.end_date }}</td>
+                <td>{{ exhibition.count }}</td>
             </tr>
             {% endfor %}
         </tbody>

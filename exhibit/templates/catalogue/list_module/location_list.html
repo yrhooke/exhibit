@@ -13,13 +13,14 @@
         </thead>
         <tbody>
             {% for location in object_list %}
-            <tr>
-                <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.name }}</a></td>
-                <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.city }}</a></td>
-                <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.state }}</a></td>
-                <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.country }}</a></td>
-                <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.address_1 }}</a></td>
-                <td><a href="{% url 'catalogue:location_detail' location.pk %}">{{ location.zip_code }}</a></td>
+            <tr onclick="window.location.href='{{ request.scheme }}://{{ request.get_host }}{% url 'catalogue:location_detail' location.pk %}'"
+                style="cursor:pointer">
+                <td>{{ location.name }}</td>
+                <td>{{ location.city }}</td>
+                <td>{{ location.state }}</td>
+                <td>{{ location.country }}</td>
+                <td>{{ location.address_1 }}</td>
+                <td>{{ location.zip_code }}</td>
                 <td>{{ location.city }}</td>
                 <td>{{ location.country }}</td>
             </tr>

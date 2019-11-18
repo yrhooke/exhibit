@@ -108,7 +108,7 @@ Artwork management tool
 
 ### in current branch
 
-- [ ] categories for locations (clients, galleries, permanent, other)
+- [X] categories for locations (clients, galleries, permanent, other)
 
 ### next phase
 
