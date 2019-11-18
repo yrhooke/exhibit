@@ -1,0 +1,8 @@
+<div class="location-category">
+    <h3 style="padding-left:1rem;">{{name}}</h3>
+    {% if object_list|length > 0 %}
+    {% include 'catalogue/list_module/location_list.html' with object_list=object_list overview_mode=True %}
+    {% else %}
+    <div style="height:70px;padding-left:2rem;">None</div>
+    {% endif %}
+</div>

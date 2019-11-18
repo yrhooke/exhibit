@@ -6,6 +6,15 @@
 
 {% block page_body %}
 <div class="section">
-    {% include 'catalogue/list_module/location_list.html' with object_list=object_list overview_mode=True %}
+    {% include 'catalogue/utils/location_category.html' with object_list=PermanentLocations name="Permanent Locations" %}
+</div>
+<div class="section">
+    {% include 'catalogue/utils/location_category.html' with object_list=GalleryLocations name="Galleries" %}
+</div>
+<div class="section">
+    {% include 'catalogue/utils/location_category.html' with object_list=ClientLocations name="Clients" %}
+</div>
+<div class="section">
+    {% include 'catalogue/utils/location_category.html' with object_list=OtherLocations name="Other" %}
 </div>
 {% endblock page_body %}

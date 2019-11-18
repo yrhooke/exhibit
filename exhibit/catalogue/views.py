@@ -260,6 +260,15 @@ class LocationList(LoginRequiredMixin, ListView):
     model = Location
     template_name = "catalogue/overview/location.html"
 
+    def get_context_data(self, **kwargs):
+        context = super(LocationList, self).get_context_data(**kwargs)
+        context['PermanentLocations'] = Location.objects.filter(category='P')
+        context['GalleryLocations'] = Location.objects.filter(category='G')
+        context['ClientLocations'] = Location.objects.filter(category='C')
+        context['OtherLocations'] = Location.objects.all().exclude(category__in=['C', 'G', 'P'])
+
+        return context
+
 
 class LocationCreate(LoginRequiredMixin, genericCreateView):
     model = Location
