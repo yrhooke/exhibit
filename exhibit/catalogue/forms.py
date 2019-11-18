@@ -74,6 +74,7 @@ class LocationDetailForm(PlaceholderMixin, forms.ModelForm):
         model = Location
         fields = [
             'name',
+            'category',
             'description',
             'address_1',
             'address_2',

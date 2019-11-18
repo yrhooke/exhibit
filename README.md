@@ -104,17 +104,19 @@ Artwork management tool
 - [X] fix workinexhibition
   - [X] can add
   - [X] can only add once
+- [X] sort order for artworks size category desc then year desc then series id then title alphabetical
 
 ### in current branch
 
-- [X] sort order for artworks size category desc then year desc then series id then title alphabetical
+- [ ] categories for locations (clients, galleries, permanent, other)
 
 ### next phase
 
-- [ ] categories for locations (clients, galleries, permanent, other)
 - [ ] use https everywhere
 - [ ] figure out how to back up the database + s3
 - [ ] add loading state for media upload
+  - [ ] preview from local
+  - [ ] loader after submission
 - [ ] add pagination to search
 - [ ] handle null results for search
 - [ ] add clear search button
@@ -130,6 +132,7 @@ Artwork management tool
   - [ ] change font to narrow in most places, leave reg for "bold"
   - [ ] resize breadcrumbs - smaller
   - [ ] in detail views, especially artwork detail view sales info, show text in black, label in grey (see current values and reverse)
+  - [ ] add allowClear to select2's (see except below)
 - [ ] Artwork detail view UI changes
   - [ ] don't crop wide images in detail view
   - [ ] make artwork detail view size fields presentable
@@ -177,3 +180,10 @@ Artwork management tool
 - [ ] manage sale currency better
 
 heroku url: <https://hidden-coast-28492.herokuapp.com/>
+
+```
+        $("#" + field_id).select2({
+            "placeholder": placeholder,
+            "allowClear": true
+        })
+```

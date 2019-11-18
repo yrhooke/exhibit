@@ -259,6 +259,15 @@ class Location(models.Model):
     zip_code = models.CharField(_("Zip code"), max_length=5, blank=True)
     country = models.CharField("Country", max_length=100)  # change later
 
+    LOCATION_CATEGORIES = (
+        ('P', 'Permanent'),
+        ('C', 'Client'),
+        ('G', 'Gallery'),
+    )
+
+    category = models.CharField('Category', max_length=1, choices=LOCATION_CATEGORIES,
+                              blank=True)
+
     def __str__(self):
         """string representation of model"""
         return self.name
