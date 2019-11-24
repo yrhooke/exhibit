@@ -289,11 +289,11 @@ h1, h2, h3, h4, h5, h6, label, th {
 }
 
 #search-show-more:before {
-    content: '-Show Less';
+    content: '-Basic Search';
 }
 
 #search-show-more.collapsed:before {
-    content: '+Show More';
+    content: '+Advanced Search';
 }
 
 .search-show-more-row {

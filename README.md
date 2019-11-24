@@ -115,6 +115,7 @@ Artwork management tool
 - [X] handle null results for search
 - [ ] add clear search button
 - [ ] search forgets previous set status/medium/owner bug
+- [X] change "show more" to advanced/basic search
 
 ### next phase
 
@@ -123,7 +124,7 @@ Artwork management tool
   - [ ] create image class
   - [ ] in create/upload form, on upload press create image object, link image object id Artwork
   - [ ] see if form submission and image upload can happen at same time if initiated separately
-    - [ ] if so, great. 
+    - [ ] if so, great.
     - [ ] If not block form submission until image upload complete
   - [ ] add image update status icon to artwork detail view
   - [ ] see that when updating image and moving halfway through you don't break anything
@@ -148,7 +149,6 @@ Artwork management tool
   - [ ] align text left in tables
 - [ ] search view UI changes
   - [ ] make advances search boxes smaller
-  - [ ] change "show more" to advanced/basic search
   - [ ] small box around search (card?)
   - [ ] add search icon?
   - [ ] in detail views, especially artwork detail view sales info, show label + field text in same size
