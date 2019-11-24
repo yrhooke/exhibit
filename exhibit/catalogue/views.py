@@ -4,6 +4,7 @@ from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.expressions import F
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 import json
 
@@ -15,8 +16,6 @@ from catalogue.forms import WorkInExhibitionForm
 
 class SearchMixin(object):
     """method bundle for searching for Artworks"""
-
-    context_object_name = 'search_results'
 
     def _parse_request_data(self):
         """Deserialize request POST data field from JSON"""
@@ -94,12 +93,13 @@ class SearchMixin(object):
             F('year').desc(nulls_last=True),
             'series__id',
             'title',
-        )[:50]
+        )
 
         # return queryset.order_by('size').desc(nulls_last=True).order_by('year').desc(nulls_last=True).order_by, 'series__id', 'title')[:50]
         return ordered_queryset
 
-    def get_queryset(self, **kwargs):
+    def get_context_data(self, **kwargs):
+        context = super(SearchMixin, self).get_context_data(**kwargs)
         artwork_search_args, exhibition_search_args = dict(), dict()
         if kwargs.get('series'):
             artwork_search_args['series'] = kwargs['series'].pk
@@ -107,11 +107,17 @@ class SearchMixin(object):
             artwork_search_args['location'] = kwargs['location'].pk
         if kwargs.get('exhibition'):
             exhibition_search_args = {'exhibition': kwargs['exhibition'].pk}
-        return self.execute_search(artworkargs=artwork_search_args,
-                                   exhibitionargs=exhibition_search_args)
+        search_results = self.execute_search(artworkargs=artwork_search_args,
+                                             exhibitionargs=exhibition_search_args)
 
-    def get_context_data(self, **kwargs):
-        context = super(SearchMixin, self).get_context_data(**kwargs)
+        page = self.request.GET.get('page', 1)
+        paginator = Paginator(search_results, 2)
+        try:
+            context['search_results'] = paginator.page(page)
+        except PageNotAnInteger:
+            context['search_results'] = paginator.page(1)
+        except EmptyPage:
+            context['search_results'] = paginator.page(paginator.num_pages)
 
         forms = self._prefill_forms(artworkargs={
             'owner': '',
@@ -160,7 +166,6 @@ class HomeView(LoginRequiredMixin, ListView):
 class ArtworkList(LoginRequiredMixin, SearchMixin, ListView):
     model = Artwork
     template_name = 'catalogue/overview/artwork.html'
-    paginate_by = 30
 
 
 class ArtworkCreate(LoginRequiredMixin, genericCreateView):
@@ -221,7 +226,6 @@ class SeriesUpdate(LoginRequiredMixin, SearchMixin, genericUpdateView):
         context = super(SeriesUpdate, self).get_context_data(series=self.get_object(), **kwargs)
 
         context['hasSeries'] = True
-        context['members'] = self.object.artwork_set.all()
         return context
 
 
@@ -252,7 +256,6 @@ class ExhibitionUpdate(LoginRequiredMixin, SearchMixin, genericUpdateView):
 
         context['hasExhibition'] = True
         artworks = [s.artwork for s in self.object.workinexhibition_set.all()]
-        context['members'] = artworks
         return context
 
 
@@ -292,7 +295,6 @@ class LocationUpdate(LoginRequiredMixin, SearchMixin, genericUpdateView):
         context = super(LocationUpdate, self).get_context_data(location=self.object, **kwargs)
 
         context['hasLocation'] = True
-        context['members'] = self.object.artwork_set.all()
         return context
 
 
