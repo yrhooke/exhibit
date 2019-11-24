@@ -282,7 +282,7 @@ h1, h2, h3, h4, h5, h6, label, th {
     margin-right: 0.5rem;
 }
 
-#search-show-more {
+.search-show-more {
     color: #0080C6;
     cursor: pointer;
     font-family: "Brandon Grotesque Regular";

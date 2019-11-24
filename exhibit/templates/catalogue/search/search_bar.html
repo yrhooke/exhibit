@@ -1,30 +1,35 @@
 {% load widget_tweaks %}
 
 <div id="search-bar-wrapper">
-    <div id="search-bar-main" class="form-inline">
-        <div class="form-group {% if hasSeries %}collapse{% endif %}">
-            {% render_field artwork_search_form.series class="form-control search-artwork-details" %}
+    <div id="search-bar-main-container" style="width:max-content">
+
+        <div id="search-bar-main" class="form-inline">
+            <div class="form-group {% if hasSeries %}collapse{% endif %}">
+                {% render_field artwork_search_form.series class="form-control search-artwork-details" %}
+            </div>
+            <div class="form-group">
+                {% render_field artwork_search_form.title class="form-control search-artwork-details" %}
+            </div>
+            <div class="form-group">
+                {% render_field artwork_search_form.size class="form-control search-artwork-details" %}
+            </div>
+            <div class="form-group {% if hasLocation %}collapse{% endif %}">
+                {% render_field artwork_search_form.location id="id_location_search" class="form-control search-artwork-details" %}
+            </div>
+            <div class="form-group">
+                {% render_field artwork_search_form.status class="form-control search-artwork-details" %}
+            </div>
+            <form action="" method="GET" id="search-form">
+                <button type="submit" id="search-submit-form" class="action-button btn">Search</button>
+            </form>
         </div>
-        <div class="form-group">
-            {% render_field artwork_search_form.title class="form-control search-artwork-details" %}
-        </div>
-        <div class="form-group">
-            {% render_field artwork_search_form.size class="form-control search-artwork-details" %}
-        </div>
-        <div class="form-group {% if hasLocation %}collapse{% endif %}">
-            {% render_field artwork_search_form.location id="id_location_search" class="form-control search-artwork-details" %}
-        </div>
-        <div class="form-group">
-            {% render_field artwork_search_form.status class="form-control search-artwork-details" %}
-        </div>
-        <form action="" method="GET" id="search-form">
-            <button type="submit" id="search-submit-form" class="action-button btn">Search</button>
-        </form>
-    </div>
-    <div class="form-group">
-        <span id="search-show-more" class="collapsed" data-toggle="collapse" data-target="#search-bar-more"
+        <div class="form-group" style="display:flex">
+            <span id="search-show-more" class="search-show-more collapsed" data-toggle="collapse" data-target="#search-bar-more"
             aria-expanded="false" aria-controls="search-bar-more"></span>
-    </div>
+            <span id="clear-search" style="margin-left:auto;"><a href="{{ request.path }}" class="search-show-more">Clear Search</a></span>
+            
+        </div>
+        </div>
     <div id="search-bar-more" class="form collapse">
         <div class="form-row search-show-more-row">
             <div class="form-group col-6">
