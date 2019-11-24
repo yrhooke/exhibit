@@ -399,6 +399,16 @@ ul.gallery-item-text {
 }
 
 /* -------------------------------------- */
+/* Pagination */
+
+.pagination {
+    width: max-content;
+}
+.pagination li {
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+/* -------------------------------------- */
 
 /* ***  Object Details layout *** */
 

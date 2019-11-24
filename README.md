@@ -111,7 +111,7 @@ Artwork management tool
 
 ### in current branch
 
-- [ ] add pagination to search
+- [X] add pagination to search
 - [X] handle null results for search
 - [ ] add clear search button
 - [ ] search forgets previous set status/medium/owner bug

@@ -16,6 +16,8 @@ from catalogue.forms import WorkInExhibitionForm
 class SearchMixin(object):
     """method bundle for searching for Artworks"""
 
+    context_object_name = 'search_results'
+
     def _parse_request_data(self):
         """Deserialize request POST data field from JSON"""
 
@@ -97,9 +99,7 @@ class SearchMixin(object):
         # return queryset.order_by('size').desc(nulls_last=True).order_by('year').desc(nulls_last=True).order_by, 'series__id', 'title')[:50]
         return ordered_queryset
 
-    def get_context_data(self, **kwargs):
-        context = super(SearchMixin, self).get_context_data(**kwargs)
-
+    def get_queryset(self, **kwargs):
         artwork_search_args, exhibition_search_args = dict(), dict()
         if kwargs.get('series'):
             artwork_search_args['series'] = kwargs['series'].pk
@@ -107,8 +107,12 @@ class SearchMixin(object):
             artwork_search_args['location'] = kwargs['location'].pk
         if kwargs.get('exhibition'):
             exhibition_search_args = {'exhibition': kwargs['exhibition'].pk}
-        context['search_results'] = self.execute_search(artworkargs=artwork_search_args,
-                                                        exhibitionargs=exhibition_search_args)
+        return self.execute_search(artworkargs=artwork_search_args,
+                                   exhibitionargs=exhibition_search_args)
+
+    def get_context_data(self, **kwargs):
+        context = super(SearchMixin, self).get_context_data(**kwargs)
+
         forms = self._prefill_forms(artworkargs={
             'owner': '',
             'medium': '',
@@ -156,6 +160,7 @@ class HomeView(LoginRequiredMixin, ListView):
 class ArtworkList(LoginRequiredMixin, SearchMixin, ListView):
     model = Artwork
     template_name = 'catalogue/overview/artwork.html'
+    paginate_by = 30
 
 
 class ArtworkCreate(LoginRequiredMixin, genericCreateView):
