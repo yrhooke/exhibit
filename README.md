@@ -113,8 +113,8 @@ Artwork management tool
 
 - [X] add pagination to search
 - [X] handle null results for search
-- [ ] add clear search button
-- [ ] search forgets previous set status/medium/owner bug
+- [X] add clear search button
+- [X] search forgets previous set status/medium/owner bug
 - [X] change "show more" to advanced/basic search
 
 ### next phase

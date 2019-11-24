@@ -109,6 +109,7 @@ class ArtworkSearchForm(forms.ModelForm):
     title = forms.CharField(required=False, widget=forms.TextInput(attrs={'placeholder': "Title"}))
     location = forms.ModelChoiceField(queryset=Location.objects.all(), required=False, empty_label="Location")
     year = forms.IntegerField(widget=forms.NumberInput(attrs={'placeholder': 'Year'}), required=False)
+    medium = forms.CharField(required=False)
     owner = forms.CharField(required=False)
 
     status_choices = (('', 'Status'), *Artwork.OVERALL_STATUS_CHOICES)

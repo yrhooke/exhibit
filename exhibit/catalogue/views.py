@@ -111,7 +111,7 @@ class SearchMixin(object):
                                              exhibitionargs=exhibition_search_args)
 
         page = self.request.GET.get('page', 1)
-        paginator = Paginator(search_results, 2)
+        paginator = Paginator(search_results, 30)
         try:
             context['search_results'] = paginator.page(page)
         except PageNotAnInteger:
@@ -119,11 +119,7 @@ class SearchMixin(object):
         except EmptyPage:
             context['search_results'] = paginator.page(paginator.num_pages)
 
-        forms = self._prefill_forms(artworkargs={
-            'owner': '',
-            'medium': '',
-            'status': None
-        })
+        forms = self._prefill_forms()
         context['artwork_search_form'] = forms[0]
         context['location_search_form'] = forms[1]
         context['exhibition_search_form'] = forms[2]
