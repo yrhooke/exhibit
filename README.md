@@ -111,25 +111,32 @@ Artwork management tool
 
 ### in current branch
 
-- [ ] add loading state for media upload
-  - [X] preview from local
-  - [ ] loader after submission
+- [ ] add pagination to search
+- [X] handle null results for search
+- [ ] add clear search button
+- [ ] search forgets previous set status/medium/owner bug
 
 ### next phase
 
-- [ ] add pagination to search
-- [ ] handle null results for search
-- [ ] add clear search button
+- [ ] add loading state for media upload
+  - [X] preview from local
+  - [ ] create image class
+  - [ ] in create/upload form, on upload press create image object, link image object id Artwork
+  - [ ] see if form submission and image upload can happen at same time if initiated separately
+    - [ ] if so, great. 
+    - [ ] If not block form submission until image upload complete
+  - [ ] add image update status icon to artwork detail view
+  - [ ] see that when updating image and moving halfway through you don't break anything
 
 ### Want for launch
 
-- [ ] js refactor - distribute what's necessary per template
 - [ ] improve performance if page loading this slow on prod
-- [ ] search forgets previous set status/medium/owner bug
+  - [ ] check it out
+  - [ ] is there a way to resize images to smaller? preprocessing, postprocessing???
 - [ ] general UI changes
   - [ ] match font sizes to rotemreshef.com
+  - [ ] Test all fonts, find a good font set
   - [ ] decide on all help texts
-  - [ ] change font to narrow in most places, leave reg for "bold"
   - [ ] resize breadcrumbs - smaller
   - [ ] in detail views, especially artwork detail view sales info, show text in black, label in grey (see current values and reverse)
   - [ ] add allowClear to select2's (see except below)
@@ -151,32 +158,34 @@ Artwork management tool
 
 ### Post Launch
 
+- [ ] js refactor - distribute what's necessary per template
 - [ ] remove work from exhibition
+  - [ ] Implement deleteViews
 - [ ] add artworks to exhibition/location/series from their page
 - [ ] make images private - use relay for access <https://www.gyford.com/phil/writing/2012/09/26/django-s3-temporary/>
   - [ ] configure AWS upload settings - private for media, public for css file
   - [ ] secure AWS_DEFAULT_ALC through digitalOcean config
-- [ ] specific image folder per object
-- [ ] multiple images per object?
-- [ ] image file sizing per object?
 - [ ] use icons for status
-- [ ] redo naming - give clearer class/id/name fields in html
-- [ ] image download - name is: title, year, size in, size cm separated by underscore
-- [ ] artwork data download
-- [ ] bulk artwork data download
+- [ ] specific image folder per object
+- [ ] image download
+  - [ ] image download - name is: title, year, size in, size cm separated by underscore
+  - [ ] artwork data download
+  - [ ] bulk artwork data download
 - [ ] use textarea js to clean up size field + other fields' text resizing
 - [ ] add "create new" button for series/location from within artwork edit view
 - [ ] compartmentalize deploy/switch to digitalocean
   - [ ] config files? docker up? - for different stages
+- [ ] separate objects for sales/owners
+- [ ] mobile/responsive layout
+- [ ] filtering non-artworks list views
+- [ ] save on change in edit view
+- [ ] multiple images per object?
+- [ ] image file sizing per object?
+- [ ] redo naming - give clearer class/id/name fields in html
 - [ ] harden security + work on backups
 - [ ] add test suite
 - [ ] add autocomplete in search
 - [ ] automatic size category fill in
-- [ ] save on change in edit view
-- [ ] mobile/responsive layout
-- [ ] Implement deleteViews
-- [ ] separate objects for sales/owners
-- [ ] filtering non-artworks list views
 - [ ] manage sale currency better
 
 heroku url: <https://hidden-coast-28492.herokuapp.com/>
