@@ -119,9 +119,8 @@ Artwork management tool
 - [ ] general UI changes
   - [X] match font sizes to rotemreshef.com
   - [X] Test all fonts, find a good font set
-  - [ ] decide on all help texts
   - [X] resize breadcrumbs - smaller
-  - [ ] in detail views, especially artwork detail view sales info, show text in black, label in grey (see current values and reverse)
+  - [X] in detail views, especially artwork detail view sales info, show text in black, label in grey (see current values and reverse)
 
 ### next phase
 
@@ -129,6 +128,7 @@ Artwork management tool
   - [ ] don't crop wide images in detail view
   - [ ] make artwork detail view size fields presentable
   - [ ] adjust width on selects to be presentable
+  - [ ] decide on all help texts
   - [ ] in detail views, especially artwork detail view sales info, show label + field text in same size
 - [ ] List view UI changes
   - [ ] align text left in tables

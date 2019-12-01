@@ -78,6 +78,14 @@ body {
     background-color: rgb(235, 235, 228);
 }
 
+label {
+    color: #495057;
+}
+
+.form-control {
+    color: #212529;
+ 
+}
 /* pallete:
 rgb(227,117,70)
 rgb(113,114,110)
@@ -126,7 +134,8 @@ rgb(96, 124, 160) */
 .sidebar a {
     box-sizing: border-box;
     height: 27px;
-    color: black;
+    color: #212529;
+    /* color: black; */
     margin: 16px;
     text-decoration: none;
     font-size: 17px;
@@ -136,7 +145,8 @@ rgb(96, 124, 160) */
 
 .sidebar .nav-link:hover:not(.active) {
     /* background-color: #555; */
-    color: white;
+    color: whitesmoke;
+    /* color: white; */
     font-size: 18px;
     transition: all 0.2s ease 0s;
 }
@@ -579,7 +589,7 @@ ul.gallery-item-text {
 /*  *** Sizing *** */
 
 
-website-sizes{
+/* website-sizes{
     splash-header: 70px;
     splash-subtext: 21px;
     nabvar: 17px;
@@ -619,3 +629,10 @@ form-implementation{
         }
     gallery: use background-image, specify size. images are cropped
 }
+
+form-control {
+    color: #495057;
+}
+body {
+    color: #212529;
+} */
