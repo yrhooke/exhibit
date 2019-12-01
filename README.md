@@ -117,7 +117,7 @@ Artwork management tool
 ### in current branch
 
 - [ ] general UI changes
-  - [ ] match font sizes to rotemreshef.com
+  - [X] match font sizes to rotemreshef.com
   - [X] Test all fonts, find a good font set
   - [ ] decide on all help texts
   - [X] resize breadcrumbs - smaller

@@ -210,6 +210,10 @@ h1, h2, h3, h4, h5, h6, label, th {
     font-weight: 200;
 }
 
+h3 {
+    font-size: 21px;
+}
+
 /* -------------------------------------- */
 
 /* *** Page Header CSS *** */
@@ -225,7 +229,6 @@ h1, h2, h3, h4, h5, h6, label, th {
 }
 
 .header-item {
-    /* font-size: 2rem; */
     font-size: 21px;
     /* color: #2C2D34; */
     height: min-content;
@@ -323,7 +326,7 @@ h1, h2, h3, h4, h5, h6, label, th {
 }
 
 #searchResults td {
-    font-size: 14px;
+    font-size: 15px;
     vertical-align: middle;
     text-align: center;
 }
