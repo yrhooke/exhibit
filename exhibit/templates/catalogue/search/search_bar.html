@@ -25,7 +25,8 @@
                     <div id="search-submit-button-contents" style="display:flex;justify-content:space-evenly;">
                         <span>Search</span>
                         <span>
-                            <img src="{% static 'images/search-13-256.ico' %}" style="height:20px;margin-top:-6px;" alt=" ">
+                            <img src="{% static 'images/search-13-256.ico' %}" style="height:20px;margin-top:-6px;"
+                                alt=" ">
                         </span>
                     </div>
                 </button>
@@ -40,56 +41,76 @@
     </div>
     <div id="search-bar-more" class="form collapse">
         <div class="form-row search-show-more-row">
-            <div class="form-group col-6">
-                {{ artwork_search_form.year.label_tag }}
-                {% render_field artwork_search_form.year class="form-control search-artwork-details" %}
+            <div class="col-4">
+                <div class="form-group">
+                    {{ artwork_search_form.year.label_tag }}
+                    {% render_field artwork_search_form.year class="form-control search-artwork-details" %}
+                </div>
             </div>
-            <div id='search-exhibition-details' class='form-group col-6 {% if hasExhibition %}collapse{% endif %}'>
-                {{ exhibition_search_form.exhibition.label_tag }}
-                {% render_field exhibition_search_form.exhibition class="form-control" style="width:100%;" %}
+            <div class="col-4">
+                <div id='search-exhibition-details' class='form-group {% if hasExhibition %}collapse{% endif %}'>
+                    {{ exhibition_search_form.exhibition.label_tag }}
+                    {% render_field exhibition_search_form.exhibition class="form-control" style="width:100%;" %}
+                </div>
             </div>
         </div>
         <div class="form-row search-show-more-row" style="border-bottom:1px solid #cccccc;">
-            <div class="form-group col-6">
-                {{ artwork_search_form.owner.label_tag }}
-                {% render_field artwork_search_form.owner class="form-control search-artwork-details" %}
+            <div class="col-4">
+
+                <div class="form-group">
+                    {{ artwork_search_form.owner.label_tag }}
+                    {% render_field artwork_search_form.owner class="form-control search-artwork-details" %}
+                </div>
             </div>
-            <div class="form-group col-6">
-                {{ artwork_search_form.medium.label_tag }}
-                {% render_field artwork_search_form.medium class="form-control search-artwork-details" %}
+            <div class="col-4">
+                <div class="form-group">
+                    {{ artwork_search_form.medium.label_tag }}
+                    {% render_field artwork_search_form.medium class="form-control search-artwork-details" %}
+                </div>
             </div>
         </div>
         <div id='search-location-details' class="{% if hasLocation %}collapse{% endif %}">
-            <span>Location Details</span>
+            <div style="font-size:18px;margin-top:0.5rem;margin-bottom:1rem;">Location Details</div>
             <div class="form-row search-show-more-row">
-                <div class="form-group col-12">
-                    {{ location_search_form.name.label_tag }}
-                    {% render_field location_search_form.name class="form-control" %}
-                </div>
-
-            </div>
-            <div class="form-row search-show-more-row">
-                <div class="form-group col-8">
-                    {{ location_search_form.address_1.label_tag }}
-                    {% render_field location_search_form.address_1 class="form-control" %}
-                </div>
-                <div class="form-group col-4">
-                    {{ location_search_form.zip_code.label_tag }}
-                    {% render_field location_search_form.zip_code class="form-control" %}
+                <div class="col-6">
+                    <div class="form-group">
+                        {{ location_search_form.name.label_tag }}
+                        {% render_field location_search_form.name class="form-control" %}
+                    </div>
                 </div>
             </div>
             <div class="form-row search-show-more-row">
-                <div class="form-group col-4">
-                    {{ location_search_form.city.label_tag }}
-                    {% render_field location_search_form.city class="form-control" %}
+                <div class="col-6">
+                    <div class="form-group">
+                        {{ location_search_form.address_1.label_tag }}
+                        {% render_field location_search_form.address_1 class="form-control" %}
+                    </div>
                 </div>
-                <div class="form-group col-4">
-                    {{ location_search_form.state.label_tag }}
-                    {% render_field location_search_form.state class="form-control" %}
+                <div class="col-4">
+                    <div class="form-group">
+                        {{ location_search_form.zip_code.label_tag }}
+                        {% render_field location_search_form.zip_code class="form-control" %}
+                    </div>
                 </div>
-                <div class="form-group col-4">
-                    {{ location_search_form.country.label_tag }}
-                    {% render_field location_search_form.country class="form-control" %}
+            </div>
+            <div class="form-row search-show-more-row">
+                <div class="col-4">
+                    <div class="form-group">
+                        {{ location_search_form.city.label_tag }}
+                        {% render_field location_search_form.city class="form-control" %}
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        {{ location_search_form.state.label_tag }}
+                        {% render_field location_search_form.state class="form-control" %}
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="form-group">
+                        {{ location_search_form.country.label_tag }}
+                        {% render_field location_search_form.country class="form-control" %}
+                    </div>
                 </div>
             </div>
         </div>
