@@ -133,8 +133,8 @@ Artwork management tool
 - [ ] Artwork detail view UI changes
   - [ ] don't crop wide images in detail view
   - [X] make artwork detail view size fields presentable
-  - [ ] adjust width on selects to be presentable
-  - [ ] decide on all help texts
+  - [X] adjust width on selects to be presentable
+  - [X] decide on all help texts
   - [ ] in detail views, especially artwork detail view sales info, show label + field text in same size
 
 ### next phase

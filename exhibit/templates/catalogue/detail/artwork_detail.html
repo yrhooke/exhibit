@@ -69,6 +69,8 @@
 
         $('#artwork-location').select2({ 'placeholder': 'Location' });
         $('#workinexhibition-exhibition').select2({ 'placeholder': 'New Exhibition' });
+        $('#id_location').select2({'placeholder': '{{form.location.field.placeholder}}', 'width': '140px'})
+        $('#id_rolled').select2({'placeholder': '{{form.rolled.field.placeholder}}', 'width': '140px'})
 
         updateExhibitions();
 

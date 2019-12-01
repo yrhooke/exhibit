@@ -32,42 +32,36 @@ class Artwork(models.Model):
     width_cm = models.FloatField("Width cm",
                                  default=0.0,
                                  help_text="W",
-                                 #  help_text='width in centimeters',
                                  null=True,
                                  blank=True,
                                  )
     height_cm = models.FloatField("Height cm",
                                   default=0.0,
                                   help_text="H",
-                                  #   help_text='height in centimeters',
                                   null=True,
                                   blank=True,
                                   )
     depth_cm = models.FloatField("Depth cm",
                                  default=0.0,
                                  help_text="D",
-                                 #  help_text='depth in centimeters',
                                  null=True,
                                  blank=True,
                                  )
     width_in = models.FloatField("Width in",
                                  default=0.0,
                                  help_text="W",
-                                 #  help_text='width in inches',
                                  null=True,
                                  blank=True,
                                  )
     height_in = models.FloatField("Height in",
                                   default=0.0,
                                   help_text="H",
-                                  #   help_text='height in inches',
                                   null=True,
                                   blank=True,
                                   )
     depth_in = models.FloatField("Depth in",
                                  default=0.0,
                                  help_text="D",
-                                 #  help_text='depth in inches',
                                  null=True,
                                  blank=True,
                                  )
@@ -83,7 +77,7 @@ class Artwork(models.Model):
                             max_length=1,
                             choices=sorted(SIZE_OPTIONS, key=itemgetter(0)),
                             blank=True,
-                            help_text="How large is this piece?"
+                            help_text="Size"
                             )
     medium = models.CharField('Medium', max_length=250, blank=True,
                               default='Diluted acrylic on canvas', help_text="medium of creation")
