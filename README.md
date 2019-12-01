@@ -121,15 +121,15 @@ Artwork management tool
 
 ### in current branch
 
-- [ ] List view UI changes
+- [X] List view UI changes
   - [X] align text left in tables
-- [ ] search view UI changes
-  - [ ] make advances search boxes smaller
+- [X] search view UI changes
+  - [X] make advances search boxes smaller
   - [X] small box around search (card?)
-  - [X] ] add search icon?
-  - [ ] adjust width on selects to be presentable
-- [ ] login views UI changes
-  - [ ] align as needed
+  - [X] add search icon?
+  - [X] adjust width on selects to be presentable - I think it's fine?
+- [X] login views UI changes
+  - [X] align as needed
 
 ### next phase
 

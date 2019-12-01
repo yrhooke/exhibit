@@ -341,14 +341,9 @@ h3 {
 
 /* *** Table specs for searchResults *** */
 
-#searchResults th {
-    /* text-align: center; */
-}
-
 #searchResults td {
     font-size: 15px;
     vertical-align: middle;
-    /* text-align: center; */
 }
 
 .overview-table {

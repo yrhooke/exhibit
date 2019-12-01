@@ -4,32 +4,33 @@
 {% block title %}User: {{ object.username }}{% endblock %}
 
 {% block content %}
-<div class="container">
-
-  <div class="row">
-    <div class="col-sm-12">
-
-      <h2>{{ object.username }}</h2>
-      {% if object.name %}
-        <p>{{ object.name }}</p>
-      {% endif %}
-    </div>
+<div id="page-header" class="section">
+  <div class="form-group">
+    <h2 id="object-type" class="page-title object-name header-item" style="display:inline;">{%block header_text %} {{object.username}}
+      {% endblock header_text %}</h2>
+    <span class="header-item separator" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
+    <label class="header-item" id="breadcrumb"
+      for="object-type">{% block breadcrumb %}Profile{% endblock breadcrumb %}</label>
   </div>
-
-{% if object == request.user %}
-<!-- Action buttons -->
-<div class="row">
-
-  <div class="col-sm-12">
-    <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
-    <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
-    <!-- Your Stuff: Custom user template urls -->
-  </div>
-
+  {% if object.name %}
+  <p style="font-size:21px;">{{ object.name }}</p>
+  {% endif %}
 </div>
-<!-- End Action buttons -->
-{% endif %}
+<div class="section">
+  <div class="col-sm-12" style="padding-left:0.3rem">
+    {% if object == request.user %}
+    <!-- Action buttons -->
+    <div class="row">
 
+      <div class="col-sm-12">
+        <a class="btn btn-primary" href="{% url 'users:update' %}" role="button">My Info</a>
+        <a class="btn btn-primary" href="{% url 'account_email' %}" role="button">E-Mail</a>
+        <!-- Your Stuff: Custom user template urls -->
+      </div>
 
+    </div>
+    <!-- End Action buttons -->
+    {% endif %}
+  </div>
 </div>
 {% endblock content %}
