@@ -111,8 +111,8 @@
     {% csrf_token %}
     <div id="page-header" class="">
         <div class="form-inline">
-            <div class="form-group">
-                {% render_field form.series class="header-item edit-field form-control" %}
+            <div class="form-group" id="series-select"> 
+                {% render_field form.series class="page-title header-item edit-field form-control" %}
                 <span class="header-item separator" style="margin-left:1rem;margin-right:1.5rem;">: </span>
             </div>
         </div>
@@ -120,7 +120,7 @@
             <div class="form-group">
                 <span class="header-item separator"
                     style="padding-left:0rem;padding-right:2rem;margin-left:1rem;margin-right:1.5rem;"></span>
-                {% render_field form.title class="object-name header-item edit-field form-control" style="width:300px;" %}
+                {% render_field form.title class="page-title object-name header-item edit-field form-control" style="width:300px;" %}
                 {% render_field form.status class="header-item edit-field form-control" %}
                 <span class="header-item separator" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
                 <label class="header-item" id="breadcrumb" for="{{ form.title.auto_id }}">Artwork</label>

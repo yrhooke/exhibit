@@ -58,7 +58,7 @@
         {% csrf_token %}
         <div id="page-header" class="form-inline">
             <div class="form-group">
-                {% render_field form.name class="object-name header-item edit-field form-control" %}
+                {% render_field form.name class="page-title object-name header-item edit-field form-control" %}
                 <span class="header-item separator" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
                 <label class="header-item" id="breadcrumb"
                     for="{{ form.name.auto_id }}">{% block breadcrumb %}{% endblock breadcrumb %}</label>

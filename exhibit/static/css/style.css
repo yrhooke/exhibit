@@ -129,7 +129,7 @@ rgb(96, 124, 160) */
     color: black;
     margin: 16px;
     text-decoration: none;
-    font-size: 18px;
+    font-size: 17px;
 }
 
 /* Active/current link */
@@ -137,7 +137,7 @@ rgb(96, 124, 160) */
 .sidebar .nav-link:hover:not(.active) {
     /* background-color: #555; */
     color: white;
-    font-size: 19px;
+    font-size: 18px;
     transition: all 0.2s ease 0s;
 }
 
@@ -220,26 +220,39 @@ h1, h2, h3, h4, h5, h6, label, th {
     font-size: 2rem;
 }
 
+.page-title.header-item{
+    font-size: 32px;
+}
+
 .header-item {
-    font-size: 2rem;
+    /* font-size: 2rem; */
+    font-size: 21px;
     /* color: #2C2D34; */
     height: min-content;
     padding-top: 0rem;
     padding-bottom: 0rem;
 }
 
+#breadcrumb {
+    font-size:21px;
+}
 #page-header label, #page-header .separator {
     color: darkgray;
 }
 
 /* for selects in object details header */
 
+
 #page-header .select2-container .select2-selection--single, #page-header .select2-container--default .select2-selection--single .select2-selection__rendered, #page-header .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 3rem;
+    line-height: 3rem;
+    font-size: 21px;
+}
+#series-select .select2-container .select2-selection--single, #series-select .select2-container--default .select2-selection--single .select2-selection__rendered, #series-select .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 3rem;
     line-height: 3rem;
     font-size: 2rem;
 }
-
 .object-name {
     padding-left: 0.3rem;
 }
@@ -557,3 +570,49 @@ ul.gallery-item-text {
 }
 
 /* TEXTAREA AUTO RESIZE STYLES END */
+
+/* -------------------------------------- */
+
+/*  *** Sizing *** */
+
+
+website-sizes{
+    splash-header: 70px;
+    splash-subtext: 21px;
+    nabvar: 17px;
+    exhibitoin-body-text: 18px;
+    exhibition-materials: 15px;
+    series-body-text: 17px;
+    gallery-non-header: 11px;
+    gallery-expanded: 18px;
+    main-page-works: 40px;
+    h5-main-page-series-header: 32px;
+    main-page-series-subheader: 21px italic;
+    main-page-series-body: 18px;
+    main-page-series-link: 19px;
+    subscribe-form-submit: 4px;
+    subscribe-form-input: 14px;
+}
+
+form-implementation{
+    div - no shape, just margin to one beneath
+        div label - display: none;
+        input centered - margin 8px, font size 14px; width height 100%;
+
+    button {
+        border-radius 0, 
+        background-color: rgba(44,45,52,1) !important;
+        border-color: rgba(255,255,255,1);
+        border-width: 0px;
+        color: rgba(238,238,238,1);
+        font: normal normal normal 14px/1.4em brandon-grot-w01-light,sans-serif;
+        }
+        span - for text {
+            .subscribe-button {
+                color: 
+                rgba(238,238,238,1);
+                font: normal normal normal 14px/1.4em brandon-grot-w01-light,sans-serif;
+            }
+        }
+    gallery: use background-image, specify size. images are cropped
+}
