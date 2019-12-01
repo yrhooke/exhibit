@@ -118,9 +118,6 @@ Artwork management tool
   - [X] Test all fonts, find a good font set
   - [X] resize breadcrumbs - smaller
   - [X] in detail views, especially artwork detail view sales info, show text in black, label in grey (see current values and reverse)
-
-### in current branch
-
 - [X] List view UI changes
   - [X] align text left in tables
 - [X] search view UI changes
@@ -131,21 +128,23 @@ Artwork management tool
 - [X] login views UI changes
   - [X] align as needed
 
-### next phase
+### in current branch
 
 - [ ] Artwork detail view UI changes
   - [ ] don't crop wide images in detail view
-  - [ ] make artwork detail view size fields presentable
+  - [X] make artwork detail view size fields presentable
   - [ ] adjust width on selects to be presentable
   - [ ] decide on all help texts
   - [ ] in detail views, especially artwork detail view sales info, show label + field text in same size
 
-### Want for launch
+### next phase
 
 - [ ] improve performance if page loading this slow on prod
   - [ ] check it out
   - [ ] is there a way to resize images to smaller? preprocessing, postprocessing???
   - [ ] add allowClear to select2's (see except below)
+- [ ] Implement deleteViews
+- [ ] remove work from exhibition
 - [ ] add loading state for media upload
   - [X] preview from local
   - [ ] create image class
@@ -155,14 +154,11 @@ Artwork management tool
     - [ ] If not block form submission until image upload complete
   - [ ] add image update status icon to artwork detail view
   - [ ] see that when updating image and moving halfway through you don't break anything
-- [ ] set no cache flag on css
 
 ### Post Launch
 
-- [ ] js refactor - distribute what's necessary per template
-- [ ] remove work from exhibition
-- [ ] Implement deleteViews
 - [ ] add artworks to exhibition/location/series from their page
+- [ ] js refactor - distribute what's necessary per template
 - [ ] make images private - use relay for access <https://www.gyford.com/phil/writing/2012/09/26/django-s3-temporary/>
   - [ ] configure AWS upload settings - private for media, public for css file
   - [ ] secure AWS_DEFAULT_ALC through digitalOcean config

@@ -111,7 +111,7 @@
     {% csrf_token %}
     <div id="page-header" class="">
         <div class="form-inline">
-            <div class="form-group" id="series-select"> 
+            <div class="form-group" id="series-select">
                 {% render_field form.series class="page-title header-item edit-field form-control" %}
                 <span class="header-item separator" style="margin-left:1rem;margin-right:1.5rem;">: </span>
             </div>
@@ -189,11 +189,9 @@
                         {% include "catalogue/utils/field.html" with field=form.framed %}
                         {% include "catalogue/utils/field.html" with field=form.medium %}
                         <label for="size-fields-measures">Size ( h w d ):</label>
-                        <div id="size-fields-measures" class=""
-                            style="flex-direction:column;align-items:flex-start;margin-top:0.5rem;">
-                            <div id="size-fields-in" class="form-inline form-group size-form-group">
-                                <div id="id_size_in"
-                                    class="size-field-container edit-field form-control form-control-sm">
+                        <div id="size-field-measures" style="margin-top:-0.5rem;">
+                            <div id="size-fields-in" class="form-group">
+                                <div id="id_size_in" class="size-field-container">
                                     {% render_field form.height_in class="size-field" %}
                                     <span class="size-field-separator">x</span>
                                     {% render_field form.width_in class="size-field" %}
@@ -202,9 +200,8 @@
                                 </div>
                                 <label for="id_size_in">in</label>
                             </div>
-                            <div id="size-fields-cm" class="form-inline form-group size-form-group">
-                                <div id="id_size_cm"
-                                    class="size-field-container edit-field form-control form-control-sm">
+                            <div id="size-fields-cm" class="form-group">
+                                <div id="id_size_cm" class="size-field-container">
                                     {% render_field form.height_cm class="size-field" %}
                                     <span class="size-field-separator">x</span>
                                     {% render_field form.width_cm class="size-field" %}

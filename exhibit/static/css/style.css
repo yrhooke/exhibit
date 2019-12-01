@@ -509,7 +509,7 @@ ul.gallery-item-text {
 
 /* Artwork Detail size fields */
 
-.size-form-group {
+.form-inline.size-form-group {
     display: flex;
     flex-wrap: nowrap;
 }
@@ -519,20 +519,21 @@ ul.gallery-item-text {
 }
 
 .size-field-container {
-    color: gray;
+    padding-left:1.5rem;
+    /* color: gray;
     display: inline-flex;
     align-items: center;
     width: min-content;
     overflow-x: auto;
     white-space: nowrap;
-    padding: 0.25rem;
+    padding: 0.25rem; */
 }
 
 .size-field {
     width: 2rem;
     min-width: 1rem;
     -webkit-appearance: textfield;
-    text-align: center;
+    text-align: start;
     background: transparent;
     border: none;
     box-shadow: none;
