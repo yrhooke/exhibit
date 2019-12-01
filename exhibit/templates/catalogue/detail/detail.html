@@ -63,8 +63,7 @@
                 <label class="header-item" id="breadcrumb"
                     for="{{ form.name.auto_id }}">{% block breadcrumb %}{% endblock breadcrumb %}</label>
             </div>
-            <input type="submit" id="detail-submit" class=" header-action action-button btn"
-                value="{{ action_name }}">
+            <input type="submit" id="detail-submit" class=" header-action action-button btn" value="{{ action_name }}">
         </div>
         <div id="object-details-body" class="details-list form-inline">
             {% for field in form.visible_fields %}
@@ -81,10 +80,15 @@
     {% endblock object_details %}
 </div>
 {% if edit_mode %}
+{% block related_items %}
 <div id="related-items" class="section">
-    <h3 class="related-items-header">{%  block related_items_header %}{% endblock %}</h3>
-    {% block related_items %}
-    {% endblock related_items %}
+        <div id="related-search-wrapper">
+            <h3 class="related-items-header">{%  block related_items_header %}{% endblock %}</h3>
+            {% include 'catalogue/search/search_bar.html' with artwork_search_form=artwork_search_form location_search_form=location_search_form exhibition_search_form=exhibition_search_form %}
+            {% include 'catalogue/search/search_results.html' with object_list=search_results %}
+        </div>
+    </div>
 </div>
+{% endblock related_items %}
 {% endif %}
 {% endblock content %}

@@ -477,6 +477,17 @@ ul.gallery-item-text {
     margin-bottom: 1rem;
 }
 
+#related-search-wrapper {
+    border: 1px solid rgba(0,0,0,.125);
+    border-radius: 0.25rem;
+    box-sizing: border-box;
+    padding: 10px;
+    width: 1019px;
+    max-width: 2000px;
+    margin-left: -10px;
+
+}
+
 /* -------------------------------------- */
 
 /* *** Artwork Detail layout *** */
