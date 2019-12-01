@@ -113,7 +113,7 @@ rgb(96, 124, 160) */
     /* flex for sidebar items */
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: start;
     justify-content: stretch;
     min-width: 160px;
     max-width: 160px;
@@ -124,7 +124,13 @@ rgb(96, 124, 160) */
 
 /* Sidebar header */
 
-.sidebar-header img {
+#sidebar-header {
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+}
+#sidebar-header img {
     display: block;
     height: 40px;
 }
@@ -332,13 +338,13 @@ h3 {
 /* *** Table specs for searchResults *** */
 
 #searchResults th {
-    text-align: center;
+    /* text-align: center; */
 }
 
 #searchResults td {
     font-size: 15px;
     vertical-align: middle;
-    text-align: center;
+    /* text-align: center; */
 }
 
 .overview-table {

@@ -113,14 +113,23 @@ Artwork management tool
 - [X] add clear search button
 - [X] search forgets previous set status/medium/owner bug
 - [X] change "show more" to advanced/basic search
-
-### in current branch
-
-- [ ] general UI changes
+- [X] general UI changes
   - [X] match font sizes to rotemreshef.com
   - [X] Test all fonts, find a good font set
   - [X] resize breadcrumbs - smaller
   - [X] in detail views, especially artwork detail view sales info, show text in black, label in grey (see current values and reverse)
+
+### in current branch
+
+- [ ] List view UI changes
+  - [X] align text left in tables
+- [ ] search view UI changes
+  - [ ] make advances search boxes smaller
+  - [ ] small box around search (card?)
+  - [ ] add search icon?
+  - [ ] adjust width on selects to be presentable
+- [ ] login views UI changes
+  - [ ] align as needed
 
 ### next phase
 
@@ -130,15 +139,6 @@ Artwork management tool
   - [ ] adjust width on selects to be presentable
   - [ ] decide on all help texts
   - [ ] in detail views, especially artwork detail view sales info, show label + field text in same size
-- [ ] List view UI changes
-  - [ ] align text left in tables
-- [ ] search view UI changes
-  - [ ] make advances search boxes smaller
-  - [ ] small box around search (card?)
-  - [ ] add search icon?
-  - [ ] adjust width on selects to be presentable
-- [ ] login views UI changes
-  - [ ] align as needed
 
 ### Want for launch
 

@@ -240,9 +240,11 @@
   <div id="wrapper">
     <!-- Side navigation -->
     <div class="sidebar" id="sidebar">
-      <a class="sidebar-header" href="{% url 'home' %}">
-        <img src="{% static 'images/logo_short.png' %}" alt="Exhibit">
-      </a>
+      <div id="sidebar-header">
+        <a class="sidebar-header" href="{% url 'home' %}">
+          <img src="{% static 'images/logo_short.png' %}" alt="Exhibit">
+        </a>
+      </div>
       {% if request.user.is_authenticated %}
       <a class="nav-link" href="{% url 'catalogue:artwork_index' %}">Artworks</a>
       <a class="nav-link" href="{% url 'catalogue:series_index' %}">Series</a>
