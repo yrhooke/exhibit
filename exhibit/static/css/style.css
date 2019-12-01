@@ -506,6 +506,14 @@ ul.gallery-item-text {
     height: max-content;
 }
 
+.bounding-box {
+    /* background-image: url(...); -- will fill in inline: */
+    background-size: contain;
+    background-position: center;
+    background-repeat: no-repeat;
+    height: 100%;
+    width: 100%;
+  }
 /* #artwork-year {
     -webkit-appearance: textfield;
     width: 4.5rem;

@@ -137,14 +137,11 @@
         <div class="col-6" style="padding:0px;display:flex;align-items:center;flex-direction:column">
             <div id="artwork-image" class="card">
                 <div class="card-body">
-                    <div style="height:405px">
-                        {% if form.instance.image %}
-                        <img class="img-fluid mx-auto" id="id_image" src="{{ form.instance.image.url }}"
-                            alt="Artwork image" style="height:100%;display:block">
+                    <div style="height:405px;">
+                            {% if form.instance.image %}
+                            <div class="bounding-box" style="background-image:url('{{ form.instance.image.url }}')"></div>
                         {% else %}
-                        <div class="mx-auto" id="id_image"
-                            style="height:100%;display:block; width:75%;background-color: darkgrey;">
-                        </div>
+                            <div class="bounding-box" style="background-color:darkgrey;"></div>
                         {% endif %}
                     </div>
                     <label for="id_image" class="action-button btn hidden-file-upload-label">

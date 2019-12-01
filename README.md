@@ -130,8 +130,8 @@ Artwork management tool
 
 ### in current branch
 
-- [ ] Artwork detail view UI changes
-  - [ ] don't crop wide images in detail view
+- [X] Artwork detail view UI changes
+  - [X] don't crop wide images in detail view
   - [X] make artwork detail view size fields presentable
   - [X] adjust width on selects to be presentable
   - [X] decide on all help texts
