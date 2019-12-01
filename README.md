@@ -135,7 +135,7 @@ Artwork management tool
   - [X] make artwork detail view size fields presentable
   - [X] adjust width on selects to be presentable
   - [X] decide on all help texts
-  - [ ] in detail views, especially artwork detail view sales info, show label + field text in same size
+  - [X] in detail views, especially artwork detail view sales info, show label + field text in same size
 
 ### next phase
 
