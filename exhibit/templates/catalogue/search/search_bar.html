@@ -1,4 +1,5 @@
 {% load widget_tweaks %}
+{% load static %}
 
 <div id="search-bar-wrapper">
     <div id="search-bar-main-container" style="width:max-content">
@@ -20,16 +21,23 @@
                 {% render_field artwork_search_form.status class="form-control search-artwork-details" %}
             </div>
             <form action="" method="GET" id="search-form">
-                <button type="submit" id="search-submit-form" class="action-button btn">Search</button>
+                <button type="submit" id="search-submit-form" class="action-button btn">
+                    <div id="search-submit-button-contents" style="display:flex;justify-content:space-evenly;">
+                        <span>Search</span>
+                        <span>
+                            <img src="{% static 'images/search-13-256.ico' %}" style="height:20px;margin-top:-6px;" alt=" ">
+                        </span>
+                    </div>
+                </button>
             </form>
         </div>
         <div class="form-group" style="display:flex">
-            <span id="search-show-more" class="search-show-more collapsed" data-toggle="collapse" data-target="#search-bar-more"
-            aria-expanded="false" aria-controls="search-bar-more"></span>
-            <span id="clear-search" style="margin-left:auto;"><a href="{{ request.path }}" class="search-show-more">Clear Search</a></span>
-            
+            <span id="search-show-more" class="search-show-more collapsed" data-toggle="collapse"
+                data-target="#search-bar-more" aria-expanded="false" aria-controls="search-bar-more"></span>
+            <span id="clear-search" style="margin-left:auto;"><a href="{{ request.path }}"
+                    class="search-show-more">Clear Search</a></span>
         </div>
-        </div>
+    </div>
     <div id="search-bar-more" class="form collapse">
         <div class="form-row search-show-more-row">
             <div class="form-group col-6">

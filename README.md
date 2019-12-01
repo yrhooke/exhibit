@@ -126,7 +126,7 @@ Artwork management tool
 - [ ] search view UI changes
   - [ ] make advances search boxes smaller
   - [X] small box around search (card?)
-  - [ ] add search icon?
+  - [X] ] add search icon?
   - [ ] adjust width on selects to be presentable
 - [ ] login views UI changes
   - [ ] align as needed
