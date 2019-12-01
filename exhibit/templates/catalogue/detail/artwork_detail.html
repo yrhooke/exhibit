@@ -7,7 +7,6 @@
     function updateExhibitions() {
         let split_location = location.pathname.split('/');
         let pk = split_location[split_location.length - 2];
-        console.log('updating');
         $.get(
             `/c/api/exhibitionsforartwork/${pk}`,
             (data) => {
@@ -69,8 +68,8 @@
 
         $('#artwork-location').select2({ 'placeholder': 'Location' });
         $('#workinexhibition-exhibition').select2({ 'placeholder': 'New Exhibition' });
-        $('#id_location').select2({'placeholder': '{{form.location.field.placeholder}}', 'width': '140px'})
-        $('#id_rolled').select2({'placeholder': '{{form.rolled.field.placeholder}}', 'width': '140px'})
+        $('#id_location').select2({ 'placeholder': '{{form.location.field.placeholder}}', 'width': '140px' })
+        $('#id_rolled').select2({ 'placeholder': '{{form.rolled.field.placeholder}}', 'width': '140px' })
 
         updateExhibitions();
 
@@ -138,10 +137,11 @@
             <div id="artwork-image" class="card">
                 <div class="card-body">
                     <div style="height:405px;">
-                            {% if form.instance.image %}
-                            <div class="bounding-box" style="background-image:url('{{ form.instance.image.url }}')"></div>
+                        {% if form.instance.image %}
+                        <div class="bounding-box" id="id_image"
+                            style="background-image:url('{{ form.instance.image.url }}')"></div>
                         {% else %}
-                            <div class="bounding-box" style="background-color:darkgrey;"></div>
+                        <div class="bounding-box" id="id_image" style="background-color:darkgrey;"></div>
                         {% endif %}
                     </div>
                     <label for="id_image" class="action-button btn hidden-file-upload-label">
@@ -150,11 +150,10 @@
                     {% render_field form.image class="hidden-file-upload action-button" onchange="loadFile(event)" %}
                     <script>
                         var loadFile = function (event) {
+                            let pathToImage = URL.createObjectURL(event.target.files[0]);
                             $("#id_image").replaceWith(
-                                '<img class="img-fluid mx-auto" id="id_image" src="" alt="Artwork image" style="height:100%;display:block">'
+                                `<div class="bounding-box" id="id_image" style="background-image:url(${pathToImage})"></div>`
                             )
-                            var output = document.getElementById('id_image');
-                            output.src = URL.createObjectURL(event.target.files[0]);
                         };
                     </script>
                 </div>
