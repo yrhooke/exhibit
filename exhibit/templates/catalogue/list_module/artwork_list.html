@@ -6,9 +6,7 @@
         {% for artwork in object_list %}
         <a class="gallery-item-wrapper" href="{% url 'catalogue:artwork_detail' artwork.pk %}">
             {% if artwork.image.url %}
-            <div class="gallery-item-image">
-                <img class="gallery-item-image" src="{{ artwork.image.url }}" alt="{{ artwork.title }}">
-            </div>
+            <div class="gallery-bounding-box" style="background-image:url('{{ artwork.image.url }}')"></div>
             {% else %}
             <div class="gallery-item-image" style="background:darkgrey"></div>
             {% endif %}
