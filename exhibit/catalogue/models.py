@@ -70,7 +70,8 @@ class Artwork(models.Model):
         ('1', 'Small'),
         ('2', 'Medium'),
         ('3', 'Large'),
-        ('4', 'Scroll'),
+        ('4', 'Extra Large'),
+        ('9', 'Scroll'),
     )
 
     size = models.CharField('Size Category',
