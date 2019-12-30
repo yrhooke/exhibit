@@ -54,17 +54,17 @@
         });
 
 
-        $(".size-field").each((index, elem) => {
-            let value = elem.value;
-            if (String(Number(value)) === value) {
-                elem.style.width = ((value.length) * 9 + 5) + 'px';
-            } else {
-                elem.style.width = ((value.length - 2) * 9 + 5) + 'px';
-            }
-        });
-        $('.size-field').on('keyup keydown', (event) => {
-            event.target.style.width = ((event.target.value.length) * 9 + 5) + 'px';
-        });
+        // $(".size-field").each((index, elem) => {
+        //     let value = elem.value;
+        //     if (String(Number(value)) === value) {
+        //         elem.style.width = ((value.length) * 9 + 5) + 'px';
+        //     } else {
+        //         elem.style.width = ((value.length - 2) * 9 + 5) + 'px';
+        //     }
+        // });
+        // $('.size-field').on('keyup keydown', (event) => {
+        //     event.target.style.width = ((event.target.value.length) * 9 + 5) + 'px';
+        // });
 
         $('#artwork-location').select2({ 'placeholder': 'Location' });
         $('#workinexhibition-exhibition').select2({ 'placeholder': 'New Exhibition' });
@@ -103,6 +103,85 @@
 
 
         });
+
+        // SIZE FIELD RESIZE
+        // see https://www.impressivewebs.com/textarea-auto-resize/ for source
+
+        // Targets all sizeFields with class "txta"
+        let sizeFields = document.querySelectorAll('.size-field'),
+        hiddenDiv = document.createElement('div'),
+        content = null;
+
+
+
+        // Build the hidden div's attributes
+
+        // The line below is needed if you move the style lines to CSS
+        // hiddenDiv.classList.add('hiddendiv');
+
+        // Add the "txta" styles, which are common to both sizeField and hiddendiv
+        // If you want, you can remove those from CSS and add them via JS
+        hiddenDiv.classList.add('.size-field');
+        // hiddenDiv.classList.add('form-control');
+
+        // Add the styles for the hidden div
+        // These can be in the CSS, just remove these three lines and uncomment the CSS
+        hiddenDiv.style.display = 'none';
+        hiddenDiv.style.whiteSpace = 'pre-wrap';
+        hiddenDiv.style.wordWrap = 'break-word';
+
+        // function for adding hidden area and fixing height to match contents
+        function addHiddenArea(sizeField) {
+            // Append hiddendiv to parent of sizeField, so the size is correct
+            sizeField.parentNode.appendChild(hiddenDiv);
+
+            // Remove this if you want the user to be able to resize it in modern browsers
+            sizeField.style.resize = 'none';
+
+            // This removes scrollbars
+            sizeField.style.overflow = 'hidden';
+
+            // Every input/change, grab the content
+            content = sizeField.value;
+
+            // Add the same content to the hidden div
+
+            // This is for old IE
+            content = content.replace(/\n/g, '<br style="line-height:1px;">');
+
+            // The <br ..> part is for old IE
+            // This also fixes the jumpy way the sizeField grows if line-height isn't included
+            hiddenDiv.innerHTML = content ;
+
+            // Briefly make the hidden div block but invisible
+            // This is in order to read the height
+            hiddenDiv.style.visibility = 'hidden';
+            hiddenDiv.style.display = 'inline';
+            // console.log('width ' + hiddenDiv.offsetWidth);
+            sizeField.style.width = (hiddenDiv.offsetWidth + 4) + 'px';
+
+            // Make the hidden div display:none again
+            hiddenDiv.style.visibility = 'visible';
+            hiddenDiv.style.display = 'none';
+        }
+
+
+        // Loop through all the sizeFields and add the event listener
+        for (let i of sizeFields) {
+        (function (i) {
+
+        // add hidden div initially to set height
+        addHiddenArea(i);
+
+        // Note: Use 'keyup' instead of 'input'
+        // if you want older IE support
+        i.addEventListener('input', function () {
+        addHiddenArea(i);
+
+        });
+        })(i);
+        }
+        // SIZE FIELD RESIZE DONE
     });
 </script>
 {% endblock javascript %}
@@ -188,23 +267,23 @@
                         {% include "catalogue/utils/field.html" with field=form.medium %}
                         <label for="size-fields-measures">Size ( h w d ):</label>
                         <div id="size-field-measures" style="margin-top:-0.5rem;">
-                            <div id="size-fields-in" class="form-group">
+                            <div id="size-fields-in" class="form-group" style="display:flex;">
                                 <div id="id_size_in" class="size-field-container">
-                                    {% render_field form.height_in class="size-field" %}
+                                    {% render_field form.height_in class="size-field edit-field" %}
                                     <span class="size-field-separator">x</span>
-                                    {% render_field form.width_in class="size-field" %}
+                                    {% render_field form.width_in class="size-field edit-field" %}
                                     <span class="size-field-separator">x</span>
-                                    {% render_field form.depth_in class="size-field" %}
+                                    {% render_field form.depth_in class="size-field edit-field" %}
                                 </div>
                                 <label for="id_size_in">in</label>
                             </div>
-                            <div id="size-fields-cm" class="form-group">
+                            <div id="size-fields-cm" class="form-group" style="display:flex;">
                                 <div id="id_size_cm" class="size-field-container">
-                                    {% render_field form.height_cm class="size-field" %}
+                                    {% render_field form.height_cm class="size-field edit-field" %}
                                     <span class="size-field-separator">x</span>
-                                    {% render_field form.width_cm class="size-field" %}
+                                    {% render_field form.width_cm class="size-field edit-field" %}
                                     <span class="size-field-separator">x</span>
-                                    {% render_field form.depth_cm class="size-field" %}
+                                    {% render_field form.depth_cm class="size-field edit-field" %}
                                 </div>
                                 <label for="id_size_cm">cm</label>
                             </div>

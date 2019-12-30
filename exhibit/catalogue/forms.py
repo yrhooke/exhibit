@@ -58,6 +58,12 @@ class ArtworkDetailForm(PlaceholderMixin, forms.ModelForm):
         widgets = {
             'image': forms.FileInput,
             'sale_date': DatePicker,
+            'width_cm': forms.TextInput,
+            'height_cm': forms.TextInput,
+            'depth_cm': forms.TextInput,
+            'width_in': forms.TextInput,
+            'height_in': forms.TextInput,
+            'depth_in': forms.TextInput,
         }
 
 

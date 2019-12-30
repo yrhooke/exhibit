@@ -127,15 +127,16 @@ Artwork management tool
   - [X] adjust width on selects to be presentable - I think it's fine?
 - [X] login views UI changes
   - [X] align as needed
-
-### in current branch
-
 - [X] Artwork detail view UI changes
   - [X] don't crop wide images in detail view
   - [X] make artwork detail view size fields presentable
   - [X] adjust width on selects to be presentable
   - [X] decide on all help texts
   - [X] in detail views, especially artwork detail view sales info, show label + field text in same size
+
+### in current branch
+
+- [X] use textarea js to clean up size field + other fields' text resizing
 
 ### next phase
 
@@ -157,6 +158,13 @@ Artwork management tool
 
 ### Post Launch
 
+- [ ] image download
+  - [ ] image download - name is: title, year, size in, size cm separated by underscore
+  - [ ] artwork data download
+  - [ ] bulk artwork data download
+- [ ] user access control for different fields
+- [ ] sale date/other date fields don't have clear button
+- [ ] add "create new" button for series/location from within artwork edit view
 - [ ] add artworks to exhibition/location/series from their page
 - [ ] js refactor - distribute what's necessary per template
 - [ ] make images private - use relay for access <https://www.gyford.com/phil/writing/2012/09/26/django-s3-temporary/>
@@ -164,12 +172,6 @@ Artwork management tool
   - [ ] secure AWS_DEFAULT_ALC through digitalOcean config
 - [ ] use icons for status
 - [ ] specific image folder per object
-- [ ] image download
-  - [ ] image download - name is: title, year, size in, size cm separated by underscore
-  - [ ] artwork data download
-  - [ ] bulk artwork data download
-- [ ] use textarea js to clean up size field + other fields' text resizing
-- [ ] add "create new" button for series/location from within artwork edit view
 - [ ] compartmentalize deploy/switch to digitalocean
   - [ ] config files? docker up? - for different stages
 - [ ] separate objects for sales/owners
@@ -178,7 +180,6 @@ Artwork management tool
 - [ ] save on change in edit view
 - [ ] multiple images per object?
 - [ ] image file sizing per object?
-- [ ] redo naming - give clearer class/id/name fields in html
 - [ ] harden security + work on backups
 - [ ] add test suite
 - [ ] add autocomplete in search
