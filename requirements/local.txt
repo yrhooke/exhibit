@@ -27,3 +27,8 @@ django-extensions==2.2.1  # https://github.com/django-extensions/django-extensio
 django-coverage-plugin==1.6.0  # https://github.com/nedbat/django_coverage_plugin
 pytest-django==3.5.1  # https://github.com/pytest-dev/pytest-django
 
+# Upload
+# ------------------------------------------------------------------------------
+beautifulsoup4==4.8.2 # https://www.crummy.com/software/BeautifulSoup/
+# ------------------------------------------------------------------------------
+soupsieve==1.9.5
