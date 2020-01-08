@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
 
+from credentials import *
 
 
 def find_csrf_token_in_html(html, form_selector):
@@ -26,13 +27,14 @@ def find_csrf_token_in_html(html, form_selector):
         return document
     return csrf_input.attrs.get('value')
 
-def log_in(domain, username, password):
+
+def create_logged_in_session(domain, username, password):
     """Log in to website
 
     Parameters
     ----------
     domain: string
-        domain of website
+        domain of Exhibit website
     username: string
         username for login
     password: string
@@ -42,23 +44,52 @@ def log_in(domain, username, password):
     -------
     client : logged in requests.session
     """
+    
     user_agent = 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.14; rv:71.0) Gecko/20100101 Firefox/71.0'
 
-    login_url = f'{domain}/accounts/login'
-    client = requests.session()
+    login_url = f'https://{domain}/accounts/login/'
+    client = requests.Session()
     # initiate session
     c = client.get(login_url)
     login_form_csrf_middleware_token = find_csrf_token_in_html(c.text, 'form.login')
+
+    # print(c.text)
+    # print(f'csrf: {login_form_csrf_middleware_token}')
+    login_headers = {
+        'Host' : domain,
+        'Origin': f'https://{domain}',
+        'Referer': f'https://{domain}/users/~redirect/',
+        'User-Agent': user_agent,
+        'content-type': 'application/x-www-form-urlencoded',
+    }
+
     login_form_data = {
         'csrfmiddlewaretoken': login_form_csrf_middleware_token,
         'login': username,
         'password': password,
         'next': '/',
     }
-    r = client.post(login_url, data=login_form_data, headers=dict(Referer=login_url), cookies=client.cookies)
-    print(r.cookies)
+    # print('Cookies before request:')
+    # print(client.cookies)
+    # r = requests.post(login_url, data=login_form_data , headers=login_headers)
+    test_url = 'http://httpbin.org/post'
+    r = client.post(login_url, data=login_form_data , headers=login_headers, allow_redirects=False)
+    # print('request headers:')
     # print(r.request.headers)
-    # print(r.request.cookies)
+    # print('request cookies:')
+    # print(r.request._cookies)
+    # print('request body:')
+    # print(r.request.body)
+    # print('request json:')
+    # # print(r.request.json)
+    # print('response cookies:')
+    # print(r.cookies)
+    # print('response headers:')
+    # print(r.headers)
+    # print(r.status_code, r.request.method)
+    # print('response content:')
+    # print(r.content)
+
     r.raise_for_status()
     return client
 
@@ -85,3 +116,5 @@ def upload_artwork(domain_name, series, image_filename, sessionid):
 
 
 
+client = log_in(test_domain, username, password)
+print(client.cookies)
