@@ -1,5 +1,7 @@
 from bs4 import BeautifulSoup
 import requests
+from requests_toolbelt.multipart import encoder
+import pandas as pd
 import os
 
 from credentials import *
@@ -12,9 +14,9 @@ def create_headers(domain, referer):
     headers = {
         'Host': domain,
         'Origin': f'https://{domain}',
-        'Referer': f'https://{domain}/users/~redirect/',
+        'Referer': referer,
         'User-Agent': user_agent,
-        'content-type': 'application/x-www-form-urlencoded',
+        # 'content-type': 'application/x-www-form-urlencoded',
     }
 
     return headers
@@ -69,6 +71,7 @@ def create_logged_in_session(domain, username, password):
     # print(c.text)
     # print(f'csrf: {login_form_csrf_middleware_token}')
     login_headers = create_headers(domain, f'https://{domain}/users/~redirect/')
+    login_headers['content-type']='application/x-www-form-urlencoded'
 
     login_form_data = {
         'csrfmiddlewaretoken': login_form_csrf_middleware_token,
@@ -98,41 +101,185 @@ def create_logged_in_session(domain, username, password):
     # print(r.content)
 
     r.raise_for_status()
+    if session.cookies.get('sessionid'):
+        print('Login: Success!')
+    else:
+        raise RuntimeError("can't log in")
     return session
 
 
+def load_artwork_from_file(filename, row):
 
-def extract_artwork_data_from_filename(filename):
-    return dict()
+    df = pd.read_csv(filename)
+
+    return df.loc[row]
 
 
-def construct_single_artwork_upload_data(series_id, filename, csrfmiddlewaretoken):
 
-    filename_data = extract_artwork_data_from_filename(filename)
+# class ArtworkDetailForm(PlaceholderMixin, forms.ModelForm):
+#     class Meta():
+#         model = Artwork
+#         fields = [
+#             'image',
+#             'title',
+#             'year',
+#             'series',
+#             'location',
+#             'status',
+#             'size',
+#             'width_cm',
+#             'height_cm',
+#             'depth_cm',
+#             'width_in',
+#             'height_in',
+#             'depth_in',
+#             'rolled',
+#             'framed',
+#             'medium',
+#             'additional',
+#             'owner',
+#             'sold_by',
+#             'price_nis',
+#             'price_usd',
+#             'sale_currency',
+#             'sale_price',
+#             'discount',
+#             'sale_date',
+#         ]
+#         widgets = {
+#             'image': forms.FileInput,
+#             'sale_date': DatePicker,
+#             'width_cm': forms.TextInput,
+#             'height_cm': forms.TextInput,
+#             'depth_cm': forms.TextInput,
+#             'width_in': forms.TextInput,
+#             'height_in': forms.TextInput,
+#             'depth_in': forms.TextInput,
+#         }
+
+
+# artwork_data = {
+#     'tit'
+# }
+
+
+# def extract_artwork_data_from_filename(filename):
+#     artwork_data = {
+#         'title',
+#         'year',
+#         'series',
+#         'location',
+#         'status',
+#         'size',
+#         'width_cm',
+#         'height_cm',
+#         'depth_cm',
+#         'width_in',
+#         'height_in',
+#         'depth_in',
+#         'rolled',
+#         'framed',
+#         'medium',
+#         'additional',
+#         'owner',
+#         'sold_by',
+#         'price_nis',
+#         'price_usd',
+#         'sale_currency',
+#         'sale_price',
+#         'discount',
+#         'sale_date',
+#     }
+#     return dict()
+
+# mandatory
+# {
+#     'title': ,
+#     'year': ,
+#     'series': ,
+#     'location': ,
+#     'status': ,
+#     'size': ,
+#     'width_cm: ,
+#     'height_cm': ,
+#     'width_in': ,
+#     'height_in': ,
+#     'additional',
+# }
+
+
+def construct_request_data_from_artwork(artwork, series, location, artwork_status):
+    """construct data field for request from artwork
+
+    Parameters
+    ----------
+        artwork: pandas.Series
+        series: string
+        location: string
+
+    Returns
+    -------
+        dict
+    """
+    size_fields = {
+        'Width cm': 'width_cm',
+        'Height cm': 'height_cm',
+        'Width inch': 'width_in',
+        'Height inch': 'height_in',
+
+    }
+
+    data_fields = {
+        'title': artwork.Title,
+        'year': artwork.Year,
+        'series': series,
+        'location': location,
+        'size': artwork['Size category'],
+        'status': artwork_status,
+    }
+
+    for field in size_fields.keys():
+        if artwork[field]:
+            data_fields[size_fields[field]] = artwork[field]
+    
+    return data_fields
+
+
+def construct_single_artwork_upload_data(artwork, series, csrfmiddlewaretoken):
+
+    location_id = '1'
+    series_id = '1'
+    artwork_status = 'D'
+    filename_data = construct_request_data_from_artwork(artwork, series_id, location_id, artwork_status)
 
     form_data = {
         'csrfmiddlewaretoken': csrfmiddlewaretoken,
-        'series_id': series_id,
-    }.update(filename_data)
+    }
+    form_data.update(filename_data)
 
     return form_data
 
+def construct_single_image_upload_data(image_file_name, image_file_obj):
+    return {
+        'image': (image_file_name, 'image/png', image_file_obj, 'image/)
+    }
 
-def upload_single_artwork(session, domain_name, series_id, image_filename, image_file):
+def upload_single_artwork(session, domain_name, series_id, artwork, image_file):
 
     artwork_create_url = f'https://{domain_name}/c/artwork/new/'
-    form_html = session.get(artwork_create_url).text
-    csrf_middleware_token = find_csrf_token_in_html(form_html, '.object-details form')
+    form_received_from_GET = session.get(artwork_create_url).text
+    csrf_middleware_token = find_csrf_token_in_html(form_received_from_GET, '#object-details form')
 
-    form_data = construct_single_artwork_upload_data(series_id, image_filename, csrf_middleware_token)
+    request_data = construct_single_artwork_upload_data(artwork, series_id, csrf_middleware_token)
+    file_data = construct_single_image_upload_data( artwork['Image file name'], image_file)
     headers = create_headers(domain_name, artwork_create_url)
 
+    multipart_encoder = encoder.MultipartEncoder(fields=request_data.update(file_data))
     try:
-        response = session.post(artwork_create_url, data=form_data, headers=headers, files={'image': image_file})
+        httpbin = "http://httpbin.org/post"
+        response = session.post(httpbin, data=request_data, headers=headers, files=file_data)
         response.raise_for_status()
-        print(f'{image_filename} uploaded successfully')
     except Exception as e:
-        print(f'error on {image_filename}')
         try:
             return (session, response)
         except UnboundLocalError:
@@ -140,19 +287,29 @@ def upload_single_artwork(session, domain_name, series_id, image_filename, image
     return (session, response)
 
 
+
 # session = requests.get(f'https://{test_domain}')
 # print(session.text)
-session = create_logged_in_session(test_domain, username, password)
-print(session.cookies)
 
-image_path = '/Users/yrhooke/Projects/exhibit/meta/1 תיקיות של ציורים/Figures small/022Figures_In_Every_Girl_2008._80x68in_203x173cmjpg.jpg'
-image_file_name = os.path.split(image_path)[-1]
+if __name__ == "__main__":
+    
+    image_path = test_image_path
+    artwork_table_path = test_artwork_table_path
+    artwork_index = test_artwork_index
 
-with open(image_path, 'rb') as image_file:
-    session, response = upload_single_artwork(session, test_domain, 1, image_file_name, image_file)
+    artwork = load_artwork_from_file(artwork_table_path, artwork_index)
+    # print(artwork)
+    # print(construct_request_data_from_artwork(artwork, 1, 1))
+
+    session = create_logged_in_session(test_domain, username, password)
+
+    with open(image_path, 'rb') as image_file:
+        session, response = upload_single_artwork(session, test_domain, 1, artwork, image_file)
+
     if response:
-        print(response.status)
-        print(response.text)
+        print(response.status_code)
+        with open('output2.html', 'w') as f:
+            f.write(response.text)
     else:
         print('no response')
         print(session)
