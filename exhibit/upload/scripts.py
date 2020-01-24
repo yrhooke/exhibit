@@ -71,7 +71,7 @@ def create_logged_in_session(domain, username, password):
     # print(c.text)
     # print(f'csrf: {login_form_csrf_middleware_token}')
     login_headers = create_headers(domain, f'https://{domain}/users/~redirect/')
-    login_headers['content-type']='application/x-www-form-urlencoded'
+    login_headers['content-type'] = 'application/x-www-form-urlencoded'
 
     login_form_data = {
         'csrfmiddlewaretoken': login_form_csrf_middleware_token,
@@ -113,7 +113,6 @@ def load_artwork_from_file(filename, row):
     df = pd.read_csv(filename)
 
     return df.loc[row]
-
 
 
 # class ArtworkDetailForm(PlaceholderMixin, forms.ModelForm):
@@ -158,64 +157,12 @@ def load_artwork_from_file(filename, row):
 #         }
 
 
-# artwork_data = {
-#     'tit'
-# }
-
-
-# def extract_artwork_data_from_filename(filename):
-#     artwork_data = {
-#         'title',
-#         'year',
-#         'series',
-#         'location',
-#         'status',
-#         'size',
-#         'width_cm',
-#         'height_cm',
-#         'depth_cm',
-#         'width_in',
-#         'height_in',
-#         'depth_in',
-#         'rolled',
-#         'framed',
-#         'medium',
-#         'additional',
-#         'owner',
-#         'sold_by',
-#         'price_nis',
-#         'price_usd',
-#         'sale_currency',
-#         'sale_price',
-#         'discount',
-#         'sale_date',
-#     }
-#     return dict()
-
-# mandatory
-# {
-#     'title': ,
-#     'year': ,
-#     'series': ,
-#     'location': ,
-#     'status': ,
-#     'size': ,
-#     'width_cm: ,
-#     'height_cm': ,
-#     'width_in': ,
-#     'height_in': ,
-#     'additional',
-# }
-
-
-def construct_request_data_from_artwork(artwork, series, location, artwork_status):
+def extract_single_artwork_data_from_pdSeries(artwork):
     """construct data field for request from artwork
 
     Parameters
     ----------
         artwork: pandas.Series
-        series: string
-        location: string
 
     Returns
     -------
@@ -229,40 +176,83 @@ def construct_request_data_from_artwork(artwork, series, location, artwork_statu
 
     }
 
+    size_mapping = {
+        'S': 1,
+        'M': 2,
+        'L': 3,
+        'XL': 4,
+        'S': 9
+    }
+
     data_fields = {
         'title': artwork.Title,
-        'year': artwork.Year,
-        'series': series,
-        'location': location,
-        'size': artwork['Size category'],
-        'status': artwork_status,
+        'year': str(artwork.Year),
+        'size': size_mapping.get(artwork['Size category'], ""),
     }
 
     for field in size_fields.keys():
-        if artwork[field]:
-            data_fields[size_fields[field]] = artwork[field]
-    
+        data_fields[size_fields[field]] = str(artwork.get(field, ""))
+
     return data_fields
 
 
 def construct_single_artwork_upload_data(artwork, series, csrfmiddlewaretoken):
 
-    location_id = '1'
-    series_id = '1'
-    artwork_status = 'D'
-    filename_data = construct_request_data_from_artwork(artwork, series_id, location_id, artwork_status)
+    location_id = 1
+    series_id = 1
+    artwork_status = 0
+    filename_data = extract_single_artwork_data_from_pdSeries(artwork)
 
     form_data = {
         'csrfmiddlewaretoken': csrfmiddlewaretoken,
+        'series': series_id,
+        'location': location_id,
+        'status': artwork_status,
+        'title': "",
+        'year': "",
+        'size': "",
+        'width_cm': 0.0,
+        'height_cm': 0.0,
+        'depth_cm': 0.0,
+        'width_in': 0.0,
+        'height_in': 0.0,
+        'depth_in': 0.0,
+        'rolled': "",
+        'medium': "Diluted acrylic on canvas",
+        'additional': "",
+        'owner': "Rotem Reshef",
+        'sold_by': "",
+        'price_nis': "",
+        'price_usd': "",
+        'sale_currency': "",
+        'sale_price': "",
+        'discount': "",
+        'sale_date': "",
     }
     form_data.update(filename_data)
 
     return form_data
 
+
 def construct_single_image_upload_data(image_file_name, image_file_obj):
     return {
-        'image': (image_file_name, 'image/png', image_file_obj, 'image/)
+        'image': (image_file_name, image_file_obj, 'image/jpeg')
     }
+
+
+def prepare_single_artwork_upload_request(session, domain_name, series_id, artwork, image_file):
+
+    artwork_create_url = f'https://{domain_name}/c/artwork/new/'
+    form_received_from_GET = session.get(artwork_create_url).text
+    csrf_middleware_token = find_csrf_token_in_html(form_received_from_GET, '#object-details form')
+
+    request_data = construct_single_artwork_upload_data(artwork, series_id, csrf_middleware_token)
+    file_data = construct_single_image_upload_data(artwork['Image file name'], image_file)
+    headers = create_headers(domain_name, artwork_create_url)
+    artwork_request = requests.Request(method="POST", url=artwork_create_url,
+                                       data=request_data, headers=headers, files=file_data)
+    return artwork_request
+
 
 def upload_single_artwork(session, domain_name, series_id, artwork, image_file):
 
@@ -271,13 +261,10 @@ def upload_single_artwork(session, domain_name, series_id, artwork, image_file):
     csrf_middleware_token = find_csrf_token_in_html(form_received_from_GET, '#object-details form')
 
     request_data = construct_single_artwork_upload_data(artwork, series_id, csrf_middleware_token)
-    file_data = construct_single_image_upload_data( artwork['Image file name'], image_file)
+    file_data = construct_single_image_upload_data(artwork['Image file name'], image_file)
     headers = create_headers(domain_name, artwork_create_url)
-
-    multipart_encoder = encoder.MultipartEncoder(fields=request_data.update(file_data))
     try:
-        httpbin = "http://httpbin.org/post"
-        response = session.post(httpbin, data=request_data, headers=headers, files=file_data)
+        response = session.post(artwork_create_url, data=request_data, headers=headers, files=file_data)
         response.raise_for_status()
     except Exception as e:
         try:
@@ -287,29 +274,22 @@ def upload_single_artwork(session, domain_name, series_id, artwork, image_file):
     return (session, response)
 
 
-
-# session = requests.get(f'https://{test_domain}')
-# print(session.text)
-
 if __name__ == "__main__":
-    
+
     image_path = test_image_path
     artwork_table_path = test_artwork_table_path
     artwork_index = test_artwork_index
 
     artwork = load_artwork_from_file(artwork_table_path, artwork_index)
-    # print(artwork)
-    # print(construct_request_data_from_artwork(artwork, 1, 1))
 
     session = create_logged_in_session(test_domain, username, password)
 
     with open(image_path, 'rb') as image_file:
         session, response = upload_single_artwork(session, test_domain, 1, artwork, image_file)
+        print(response)
+        print(response.request.headers)
 
-    if response:
-        print(response.status_code)
-        with open('output2.html', 'w') as f:
-            f.write(response.text)
-    else:
-        print('no response')
-        print(session)
+    with open('output4.txt', 'wb') as f:
+        f.write(response.request.body)
+    with open('output5.html', 'w') as f:
+        f.write(response.text)
