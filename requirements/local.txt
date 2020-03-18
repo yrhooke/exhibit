@@ -30,5 +30,9 @@ pytest-django==3.5.1  # https://github.com/pytest-dev/pytest-django
 # Upload
 # ------------------------------------------------------------------------------
 beautifulsoup4==4.8.2 # https://www.crummy.com/software/BeautifulSoup/
+soupsieve==1.9.5 # beautifulsoup dependency 
+pandas==0.25.3 # 
+numpy==1.18.1 # pandas dependency
+xlrd==1.2.0 # pandas excell
+requests-toolbelt==0.9.1
 # ------------------------------------------------------------------------------
-soupsieve==1.9.5
