@@ -246,19 +246,23 @@
         </a>
       </div>
       {% if request.user.is_authenticated %}
-      <a class="nav-link" href="{% url 'catalogue:artwork_index' %}">Artworks</a>
-      <a class="nav-link" href="{% url 'catalogue:series_index' %}">Series</a>
-      <a class="nav-link" href="{% url 'catalogue:exhibition_index' %}">Exhibitions</a>
-      <a class="nav-link" href="{% url 'catalogue:location_index' %}">Locations</a>
+      <div class="sidebar-row nav-link" style="display:flex">
+        <span><a class="sidebar-link sidebar-hover-highlight nav-link" style="padding:0rem;" href="{% url 'catalogue:artwork_index' %}">Artworks</a></span>
+        <div style="width:30px;"></div>
+        <span><a class="sidebar-link sidebar-hover-highlight nav-link" style="padding:0rem;margin-top:2px;" href="{% url 'catalogue:artwork_new' %}">+</a></span>
+      </div>
+      <a class="sidebar-row sidebar-link sidebar-hover-highlight nav-link" href="{% url 'catalogue:series_index' %}">Series</a>
+      <a class="sidebar-row sidebar-link sidebar-hover-highlight nav-link" href="{% url 'catalogue:exhibition_index' %}">Exhibitions</a>
+      <a class="sidebar-row sidebar-link sidebar-hover-highlight nav-link" href="{% url 'catalogue:location_index' %}">Locations</a>
       {# URL provided by django-allauth/account/urls.py #}
-      <a class="nav-link" class="nav-link" href="{% url 'users:detail' request.user.username  %}">My Profile</a>
+      <a class="sidebar-row sidebar-link sidebar-hover-highlight nav-link" href="{% url 'users:detail' request.user.username  %}">My Profile</a>
       {# URL provided by django-allauth/account/urls.py #}
-      <a class="nav-link" href="{% url 'account_logout' %}">Sign Out</a>
+      <a class="sidebar-row sidebar-link sidebar-hover-highlight nav-link" href="{% url 'account_logout' %}">Sign Out</a>
       {% else %}
       {# URL provided by django-allauth/account/urls.py #}
-      <a id="sign-up-link" class="nav-link" href="{% url 'account_signup' %}">Sign Up</a>
+      <a id="sign-up-link" class="sidebar-row sidebar-link sidebar-hover-highlight nav-link" href="{% url 'account_signup' %}">Sign Up</a>
       {# URL provided by django-allauth/account/urls.py #}
-      <a id="log-in-link" class="nav-link" href="{% url 'account_login' %}">Sign In</a>
+      <a id="log-in-link" class="sidebar-row sidebar-link sidebar-hover-highlight nav-link" href="{% url 'account_login' %}">Sign In</a>
       {% endif %}
     </div>
     <!-- Main page body -->

@@ -137,19 +137,20 @@ rgb(96, 124, 160) */
 
 /* Sidebar links */
 
-.sidebar a {
+.sidebar-row {
     box-sizing: border-box;
     height: 27px;
-    color: #212529;
-    /* color: black; */
     margin: 16px;
-    text-decoration: none;
-    font-size: 17px;
 }
 
+.sidebar-link {
+    color: #212529;
+    font-size: 17px;
+    text-decoration: none;
+}
 /* Active/current link */
 
-.sidebar .nav-link:hover:not(.active) {
+.sidebar .sidebar-hover-highlight:hover:not(.active) {
     /* background-color: #555; */
     color: whitesmoke;
     /* color: white; */
