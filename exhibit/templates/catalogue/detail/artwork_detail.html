@@ -205,8 +205,14 @@
                 <span class="header-item separator" style="margin-left:1.5rem;margin-right:1.5rem;"> / </span>
                 <label class="header-item" id="breadcrumb" for="{{ form.title.auto_id }}">Artwork</label>
             </div>
+            {% if edit_mode %}
             <div class="form-group">
-                <input type="submit" id="detail-submit" class="header-action action-button btn"
+                <a id="clone-artwork" class="double-header-action btn" href="{% url 'catalogue:artwork_clone' artwork_pk=artwork.pk %}"
+                    value="{{ action_name }}">Copy</a>
+            </div>
+            {% endif %}
+            <div class="form-group">
+                <input type="submit" id="detail-submit" class="{% if edit_mode %}double-header-action{% else %}header-action{% endif %} action-button btn"
                     value="{{ action_name }}">
             </div>
         </div>

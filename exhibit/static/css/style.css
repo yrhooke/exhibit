@@ -210,13 +210,13 @@ button, .btn {
     width: 120px;
 }
 
-.action-button:hover, btn:hover {
+.action-button:hover, .btn:hover {
     background-color: slategrey;
     border-color: slategrey;
     color: white;
 }
 
-.action-button:active, .action-button:focus, .btn:active, btn:focus, .btn.focus {
+.action-button:active, .action-button:focus, .btn:active, .btn:focus, .btn.focus {
     background-color: white;
     border-color: slategrey;
     color: slategrey;
@@ -277,10 +277,13 @@ h3 {
     padding-left: 0.3rem;
 }
 
+.double-header-action {
+    margin-left: 3rem;
+}
+
 .header-action {
     margin-left: 8rem;
 }
-
 /* -------------------------------------- */
 
 /* *** Search Bar CSS *** */

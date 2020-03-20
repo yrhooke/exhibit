@@ -5,6 +5,7 @@ app_name='catalogue'
 urlpatterns = [
     path('artwork/', views.ArtworkList.as_view(), name="artwork_index"),
     path('artwork/new/', views.ArtworkCreate.as_view(), name='artwork_new'),
+    path('artwork/clone/<int:artwork_pk>/', views.clone_artwork, name='artwork_clone'),
     path('artwork/<int:pk>/', views.ArtworkUpdate.as_view(), name='artwork_detail'),
     path('artwork/<int:pk>/delete/', views.ArtworkDelete.as_view(), name='artwork-delete'),
     path('series/', views.SeriesList.as_view(), name="series_index"),

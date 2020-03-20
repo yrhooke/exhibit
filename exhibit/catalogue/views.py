@@ -1,3 +1,5 @@
+import json
+
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse_lazy, reverse, NoReverseMatch
 from django.views.generic import ListView, TemplateView
@@ -5,8 +7,7 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.expressions import F
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-
-import json
+from django.shortcuts import redirect
 
 from catalogue.models import Artwork, Series, Exhibition, Location
 from catalogue.forms import ArtworkDetailForm, SeriesDetailForm, LocationDetailForm, ExhibitionDetailForm
@@ -195,6 +196,16 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
         form.fields['status'].required = True
         return form
 
+
+def clone_artwork(request, artwork_pk):
+    """creates a copy of an existing Artwork"""
+    artwork = Artwork.objects.get(pk=artwork_pk)
+    artwork.title = "Copy of " + artwork.title
+    artwork.pk = None
+
+    artwork.save()
+
+    return redirect(artwork)
 
 class ArtworkDelete(LoginRequiredMixin, DeleteView):
     model = Artwork
