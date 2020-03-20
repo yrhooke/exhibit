@@ -207,13 +207,13 @@
             </div>
             {% if edit_mode %}
             <div class="form-group">
-                <a id="clone-artwork" class="double-header-action btn" href="{% url 'catalogue:artwork_clone' artwork_pk=artwork.pk %}"
-                    value="{{ action_name }}">Copy</a>
+                <a id="clone-artwork" class="btn" href="{% url 'catalogue:artwork_clone' artwork_pk=artwork.pk %}"
+                    style="margin-left:5rem;">Copy</a>
             </div>
             {% endif %}
             <div class="form-group">
-                <input type="submit" id="detail-submit" class="{% if edit_mode %}double-header-action{% else %}header-action{% endif %} action-button btn"
-                    value="{{ action_name }}">
+                <input type="submit" id="detail-submit" class="{% if edit_mode %}{% else %}header-action{% endif %} action-button btn"
+                    value="{{ action_name }}"{% if edit_mode %}style="margin-left:1rem;"{% endif %}>
             </div>
         </div>
     </div>
