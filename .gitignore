@@ -302,3 +302,6 @@ media/*
 *.docx
 *.pages
 meta/*
+
+## elm
+elm-stuff/*
