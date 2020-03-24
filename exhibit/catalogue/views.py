@@ -212,10 +212,16 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
 def clone_artwork(request, artwork_pk):
     """creates a copy of an existing Artwork"""
     artwork = Artwork.objects.get(pk=artwork_pk)
+
+    new_artwork_image = ArtworkImage()
+    new_artwork_image.image = artwork.get_image
+    
     artwork.title = "Copy of " + artwork.title
     artwork.pk = None
-
     artwork.save()
+
+    new_artwork_image.artwork = artwork
+    new_artwork_image.save()
 
     return redirect(artwork)
 
