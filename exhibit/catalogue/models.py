@@ -16,7 +16,7 @@ class ArtworkImage(models.Model):
         null=True,
         help_text="Sample image of the artwork"
     )    
-    artwork = models.ForeignKey('Artwork', on_delete=models.CASCADE)
+    artwork = models.ForeignKey('Artwork', on_delete=models.CASCADE, null=True, blank=True)
 
 class Artwork(models.Model):
     """A model representing an individual work of art"""
@@ -165,6 +165,11 @@ class Artwork(models.Model):
 
     def get_absolute_url(self):
         return reverse('catalogue:artwork_detail', kwargs={'pk': self.pk})
+
+    @property
+    def get_image(self):
+        """newest image associated with artwork"""
+        return ArtworkImage.objects.filter(artwork=self.pk).last().image
 
     searchable_fields = [
         series,

@@ -6377,12 +6377,12 @@ var $author$project$ImageUpload$update = F2(
 											A2($elm$http$Http$stringPart, 'csrfmiddlewaretoken', model.csrftoken),
 											A2(
 											$elm$http$Http$stringPart,
-											'artwork_id',
+											'artwork',
 											$author$project$ImageUpload$stringifyArtworkID(model.artwork_id))
 										]),
 									A2(
 										$elm$core$List$map,
-										$elm$http$Http$filePart('files[]'),
+										$elm$http$Http$filePart('image'),
 										files))),
 							expect: $elm$http$Http$expectWhatever($author$project$ImageUpload$Uploaded),
 							headers: _List_Nil,

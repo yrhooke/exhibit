@@ -1,6 +1,6 @@
 import json
 
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotAllowed
 from django.urls import reverse_lazy, reverse, NoReverseMatch
 from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -216,14 +216,16 @@ def artworkimage(request, pk):
 def artworkimage_upload(request):
     if request.method == 'POST':
         form = ArtworkImageUploadForm(request.POST, request.FILES)
+        print(form)
         if form.is_valid():
-            form.save()
-            return redirect('home')
+            artworkimage = form.save()
+            return JsonResponse({
+                'image_id' : artworkimage.pk
+            })
+        else:
+            return JsonResponse({})
     else:
-        form = ArtworkImageUploadForm()
-    return render(request, 'catalogue/utils/artworkimage_upload.html', {
-        'form': form
-    })
+        return HttpResponseNotAllowed(['POST'])
 
 class ArtworkDelete(LoginRequiredMixin, DeleteView):
     model = Artwork

@@ -96,9 +96,9 @@ update msg model =
                 , body =
                     Http.multipartBody
                         ([ Http.stringPart "csrfmiddlewaretoken" model.csrftoken
-                         , Http.stringPart "artwork_id" (stringifyArtworkID model.artwork_id)
+                         , Http.stringPart "artwork" (stringifyArtworkID model.artwork_id)
                          ]
-                            ++ List.map (Http.filePart "files[]") files
+                            ++ List.map (Http.filePart "image") files
                         )
                 , expect = Http.expectWhatever Uploaded
                 , timeout = Nothing

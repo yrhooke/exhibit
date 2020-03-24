@@ -170,4 +170,4 @@ class ArtworkImageUploadForm(forms.ModelForm):
 
     class Meta:
         model = ArtworkImage
-        fields = ['image']
+        fields = ['image', 'artwork']
