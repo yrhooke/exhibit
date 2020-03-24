@@ -16,6 +16,7 @@ class ArtworkImage(models.Model):
         null=True,
         help_text="Sample image of the artwork"
     )    
+    artwork = models.ForeignKey('Artwork', on_delete=models.CASCADE)
 
 class Artwork(models.Model):
     """A model representing an individual work of art"""
