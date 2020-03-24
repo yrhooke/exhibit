@@ -5569,21 +5569,48 @@ var $author$project$ImageUpload$init = function (flags) {
 		},
 		$elm$core$Platform$Cmd$none);
 };
-var $author$project$ImageUpload$GotProgress = function (a) {
-	return {$: 'GotProgress', a: a};
+var $elm$core$Platform$Sub$batch = _Platform_batch;
+var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
+var $author$project$ImageUpload$subscriptions = function (model) {
+	return $elm$core$Platform$Sub$none;
 };
-var $elm$http$Http$MySub = F2(
-	function (a, b) {
-		return {$: 'MySub', a: a, b: b};
+var $author$project$ImageUpload$Done = {$: 'Done'};
+var $author$project$ImageUpload$Fail = {$: 'Fail'};
+var $author$project$ImageUpload$GotFile = function (a) {
+	return {$: 'GotFile', a: a};
+};
+var $author$project$ImageUpload$GotPreview = function (a) {
+	return {$: 'GotPreview', a: a};
+};
+var $author$project$ImageUpload$Uploaded = function (a) {
+	return {$: 'Uploaded', a: a};
+};
+var $author$project$ImageUpload$Uploading = {$: 'Uploading'};
+var $author$project$ImageUpload$ImageData = F2(
+	function (image_id, image_url) {
+		return {image_id: image_id, image_url: image_url};
 	});
-var $elm$http$Http$State = F2(
-	function (reqs, subs) {
-		return {reqs: reqs, subs: subs};
-	});
-var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
-var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
-var $elm$http$Http$init = $elm$core$Task$succeed(
-	A2($elm$http$Http$State, $elm$core$Dict$empty, _List_Nil));
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+var $elm$json$Json$Decode$maybe = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder),
+				$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing)
+			]));
+};
+var $author$project$ImageUpload$decodeUploadResult = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$ImageUpload$ImageData,
+	$elm$json$Json$Decode$maybe(
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$core$String$fromInt,
+			A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int))),
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
+var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
 		return {$: 'BadStatus_', a: a, b: b};
@@ -5603,6 +5630,8 @@ var $elm$http$Http$Sending = function (a) {
 	return {$: 'Sending', a: a};
 };
 var $elm$http$Http$Timeout_ = {$: 'Timeout_'};
+var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
+var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$core$Maybe$isJust = function (maybe) {
 	if (maybe.$ === 'Just') {
 		return true;
@@ -6124,6 +6153,104 @@ var $elm$core$Dict$update = F3(
 			return A2($elm$core$Dict$remove, targetKey, dictionary);
 		}
 	});
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var $elm$http$Http$expectStringResponse = F2(
+	function (toMsg, toResult) {
+		return A3(
+			_Http_expect,
+			'',
+			$elm$core$Basics$identity,
+			A2($elm$core$Basics$composeR, toResult, toMsg));
+	});
+var $elm$core$Result$mapError = F2(
+	function (f, result) {
+		if (result.$ === 'Ok') {
+			var v = result.a;
+			return $elm$core$Result$Ok(v);
+		} else {
+			var e = result.a;
+			return $elm$core$Result$Err(
+				f(e));
+		}
+	});
+var $elm$http$Http$BadBody = function (a) {
+	return {$: 'BadBody', a: a};
+};
+var $elm$http$Http$BadStatus = function (a) {
+	return {$: 'BadStatus', a: a};
+};
+var $elm$http$Http$BadUrl = function (a) {
+	return {$: 'BadUrl', a: a};
+};
+var $elm$http$Http$NetworkError = {$: 'NetworkError'};
+var $elm$http$Http$Timeout = {$: 'Timeout'};
+var $elm$http$Http$resolve = F2(
+	function (toResult, response) {
+		switch (response.$) {
+			case 'BadUrl_':
+				var url = response.a;
+				return $elm$core$Result$Err(
+					$elm$http$Http$BadUrl(url));
+			case 'Timeout_':
+				return $elm$core$Result$Err($elm$http$Http$Timeout);
+			case 'NetworkError_':
+				return $elm$core$Result$Err($elm$http$Http$NetworkError);
+			case 'BadStatus_':
+				var metadata = response.a;
+				return $elm$core$Result$Err(
+					$elm$http$Http$BadStatus(metadata.statusCode));
+			default:
+				var body = response.b;
+				return A2(
+					$elm$core$Result$mapError,
+					$elm$http$Http$BadBody,
+					toResult(body));
+		}
+	});
+var $elm$http$Http$expectJson = F2(
+	function (toMsg, decoder) {
+		return A2(
+			$elm$http$Http$expectStringResponse,
+			toMsg,
+			$elm$http$Http$resolve(
+				function (string) {
+					return A2(
+						$elm$core$Result$mapError,
+						$elm$json$Json$Decode$errorToString,
+						A2($elm$json$Json$Decode$decodeString, decoder, string));
+				}));
+	});
+var $elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+var $elm$file$File$Select$file = F2(
+	function (mimes, toMsg) {
+		return A2(
+			$elm$core$Task$perform,
+			toMsg,
+			_File_uploadOne(mimes));
+	});
+var $elm$http$Http$filePart = _Http_pair;
+var $elm$http$Http$multipartBody = function (parts) {
+	return A2(
+		_Http_pair,
+		'',
+		_Http_toFormData(parts));
+};
+var $elm$http$Http$Request = function (a) {
+	return {$: 'Request', a: a};
+};
+var $elm$http$Http$State = F2(
+	function (reqs, subs) {
+		return {reqs: reqs, subs: subs};
+	});
+var $elm$http$Http$init = $elm$core$Task$succeed(
+	A2($elm$http$Http$State, $elm$core$Dict$empty, _List_Nil));
 var $elm$core$Process$kill = _Scheduler_kill;
 var $elm$core$Process$spawn = _Scheduler_spawn;
 var $elm$http$Http$updateReqs = F3(
@@ -6242,9 +6369,6 @@ var $elm$http$Http$onSelfMsg = F3(
 var $elm$http$Http$Cancel = function (a) {
 	return {$: 'Cancel', a: a};
 };
-var $elm$http$Http$Request = function (a) {
-	return {$: 'Request', a: a};
-};
 var $elm$http$Http$cmdMap = F2(
 	function (func, cmd) {
 		if (cmd.$ === 'Cancel') {
@@ -6265,10 +6389,9 @@ var $elm$http$Http$cmdMap = F2(
 				});
 		}
 	});
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
+var $elm$http$Http$MySub = F2(
+	function (a, b) {
+		return {$: 'MySub', a: a, b: b};
 	});
 var $elm$http$Http$subMap = F2(
 	function (func, _v0) {
@@ -6282,144 +6405,6 @@ var $elm$http$Http$subMap = F2(
 _Platform_effectManagers['Http'] = _Platform_createManager($elm$http$Http$init, $elm$http$Http$onEffects, $elm$http$Http$onSelfMsg, $elm$http$Http$cmdMap, $elm$http$Http$subMap);
 var $elm$http$Http$command = _Platform_leaf('Http');
 var $elm$http$Http$subscription = _Platform_leaf('Http');
-var $elm$http$Http$track = F2(
-	function (tracker, toMsg) {
-		return $elm$http$Http$subscription(
-			A2($elm$http$Http$MySub, tracker, toMsg));
-	});
-var $author$project$ImageUpload$subscriptions = function (model) {
-	return A2($elm$http$Http$track, 'upload', $author$project$ImageUpload$GotProgress);
-};
-var $author$project$ImageUpload$Done = {$: 'Done'};
-var $author$project$ImageUpload$Fail = {$: 'Fail'};
-var $author$project$ImageUpload$GotFile = function (a) {
-	return {$: 'GotFile', a: a};
-};
-var $author$project$ImageUpload$GotPreview = function (a) {
-	return {$: 'GotPreview', a: a};
-};
-var $author$project$ImageUpload$Uploaded = function (a) {
-	return {$: 'Uploaded', a: a};
-};
-var $author$project$ImageUpload$Uploading = function (a) {
-	return {$: 'Uploading', a: a};
-};
-var $author$project$ImageUpload$ImageData = F2(
-	function (image_id, image_url) {
-		return {image_id: image_id, image_url: image_url};
-	});
-var $elm$json$Json$Decode$int = _Json_decodeInt;
-var $elm$json$Json$Decode$oneOf = _Json_oneOf;
-var $elm$json$Json$Decode$maybe = function (decoder) {
-	return $elm$json$Json$Decode$oneOf(
-		_List_fromArray(
-			[
-				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder),
-				$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing)
-			]));
-};
-var $author$project$ImageUpload$decodeUploadResult = A3(
-	$elm$json$Json$Decode$map2,
-	$author$project$ImageUpload$ImageData,
-	$elm$json$Json$Decode$maybe(
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$core$String$fromInt,
-			A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int))),
-	$elm$json$Json$Decode$maybe(
-		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
-var $elm$json$Json$Decode$decodeString = _Json_runOnString;
-var $elm$http$Http$expectStringResponse = F2(
-	function (toMsg, toResult) {
-		return A3(
-			_Http_expect,
-			'',
-			$elm$core$Basics$identity,
-			A2($elm$core$Basics$composeR, toResult, toMsg));
-	});
-var $elm$core$Result$mapError = F2(
-	function (f, result) {
-		if (result.$ === 'Ok') {
-			var v = result.a;
-			return $elm$core$Result$Ok(v);
-		} else {
-			var e = result.a;
-			return $elm$core$Result$Err(
-				f(e));
-		}
-	});
-var $elm$http$Http$BadBody = function (a) {
-	return {$: 'BadBody', a: a};
-};
-var $elm$http$Http$BadStatus = function (a) {
-	return {$: 'BadStatus', a: a};
-};
-var $elm$http$Http$BadUrl = function (a) {
-	return {$: 'BadUrl', a: a};
-};
-var $elm$http$Http$NetworkError = {$: 'NetworkError'};
-var $elm$http$Http$Timeout = {$: 'Timeout'};
-var $elm$http$Http$resolve = F2(
-	function (toResult, response) {
-		switch (response.$) {
-			case 'BadUrl_':
-				var url = response.a;
-				return $elm$core$Result$Err(
-					$elm$http$Http$BadUrl(url));
-			case 'Timeout_':
-				return $elm$core$Result$Err($elm$http$Http$Timeout);
-			case 'NetworkError_':
-				return $elm$core$Result$Err($elm$http$Http$NetworkError);
-			case 'BadStatus_':
-				var metadata = response.a;
-				return $elm$core$Result$Err(
-					$elm$http$Http$BadStatus(metadata.statusCode));
-			default:
-				var body = response.b;
-				return A2(
-					$elm$core$Result$mapError,
-					$elm$http$Http$BadBody,
-					toResult(body));
-		}
-	});
-var $elm$http$Http$expectJson = F2(
-	function (toMsg, decoder) {
-		return A2(
-			$elm$http$Http$expectStringResponse,
-			toMsg,
-			$elm$http$Http$resolve(
-				function (string) {
-					return A2(
-						$elm$core$Result$mapError,
-						$elm$json$Json$Decode$errorToString,
-						A2($elm$json$Json$Decode$decodeString, decoder, string));
-				}));
-	});
-var $elm$time$Time$Posix = function (a) {
-	return {$: 'Posix', a: a};
-};
-var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
-var $elm$file$File$Select$file = F2(
-	function (mimes, toMsg) {
-		return A2(
-			$elm$core$Task$perform,
-			toMsg,
-			_File_uploadOne(mimes));
-	});
-var $elm$http$Http$filePart = _Http_pair;
-var $elm$core$Basics$clamp = F3(
-	function (low, high, number) {
-		return (_Utils_cmp(number, low) < 0) ? low : ((_Utils_cmp(number, high) > 0) ? high : number);
-	});
-var $elm$http$Http$fractionSent = function (p) {
-	return (!p.size) ? 1 : A3($elm$core$Basics$clamp, 0, 1, p.sent / p.size);
-};
-var $elm$http$Http$multipartBody = function (parts) {
-	return A2(
-		_Http_pair,
-		'',
-		_Http_toFormData(parts));
-};
 var $elm$http$Http$request = function (r) {
 	return $elm$http$Http$command(
 		$elm$http$Http$Request(
@@ -6459,9 +6444,7 @@ var $author$project$ImageUpload$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{
-							status: $author$project$ImageUpload$Uploading(0)
-						}),
+						{status: $author$project$ImageUpload$Uploading}),
 					$elm$core$Platform$Cmd$batch(
 						_List_fromArray(
 							[
@@ -6498,21 +6481,6 @@ var $author$project$ImageUpload$update = F2(
 							image_data: A2($author$project$ImageUpload$updateImageURL, url, model.image_data)
 						}),
 					$elm$core$Platform$Cmd$none);
-			case 'GotProgress':
-				var progress = msg.a;
-				if (progress.$ === 'Sending') {
-					var p = progress.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								status: $author$project$ImageUpload$Uploading(
-									$elm$http$Http$fractionSent(p))
-							}),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-				}
 			default:
 				var result = msg.a;
 				if (result.$ === 'Ok') {
@@ -6660,7 +6628,6 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$core$Basics$round = _Basics_round;
 var $elm$html$Html$span = _VirtualDom_node('span');
 var $elm$html$Html$Attributes$src = function (url) {
 	return A2(
@@ -6695,14 +6662,9 @@ var $author$project$ImageUpload$uploaderView = function (model) {
 							]))
 					]));
 		case 'Uploading':
-			var fraction = _v0.a;
 			return A2(
 				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-						A2($elm$html$Html$Attributes$style, 'align-items', 'center')
-					]),
+				_List_Nil,
 				_List_fromArray(
 					[
 						A2(
@@ -6718,22 +6680,6 @@ var $author$project$ImageUpload$uploaderView = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Upload Image')
-							])),
-						A2(
-						$elm$html$Html$span,
-						_List_fromArray(
-							[
-								A2($elm$html$Html$Attributes$style, 'width', '10px')
-							]),
-						_List_Nil),
-						A2(
-						$elm$html$Html$span,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text(
-								$elm$core$String$fromInt(
-									$elm$core$Basics$round(100 * fraction)) + '%')
 							]))
 					]));
 		case 'Done':

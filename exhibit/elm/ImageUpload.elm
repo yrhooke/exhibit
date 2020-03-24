@@ -38,7 +38,7 @@ type alias Model =
 
 type Status
     = Waiting
-    | Uploading Float
+    | Uploading
     | Done
     | Fail
 
@@ -117,7 +117,7 @@ type Msg
     = Pick
     | GotFile File
     | GotPreview String
-    | GotProgress Http.Progress
+      -- | GotProgress Http.Progress
     | Uploaded (Result Http.Error ImageData)
 
 
@@ -130,7 +130,7 @@ update msg model =
             )
 
         GotFile file ->
-            ( { model | status = Uploading 0 }
+            ( { model | status = Uploading }
             , Cmd.batch
                 [ Http.request
                     { method = "POST"
@@ -153,14 +153,12 @@ update msg model =
         GotPreview url ->
             ( { model | image_data = updateImageURL url model.image_data }, Cmd.none )
 
-        GotProgress progress ->
-            case progress of
-                Http.Sending p ->
-                    ( { model | status = Uploading (Http.fractionSent p) }, Cmd.none )
-
-                Http.Receiving _ ->
-                    ( model, Cmd.none )
-
+        -- GotProgress progress ->
+        --     case progress of
+        --         Http.Sending p ->
+        --             ( { model | status = Uploading (Http.fractionSent p) }, Cmd.none )
+        --         Http.Receiving _ ->
+        --             ( model, Cmd.none )
         Uploaded result ->
             case result of
                 Ok image_data ->
@@ -198,7 +196,8 @@ stringifyArtworkID artwork_id =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Http.track "upload" GotProgress
+    -- Http.track "upload" GotProgress
+    Sub.none
 
 
 
@@ -238,7 +237,7 @@ imageView model =
                 Waiting ->
                     []
 
-                Uploading _ ->
+                Uploading ->
                     [ style "filter" "blur(2px)"
                     , style "-webkit-filter" "blur(2px)"
                     , style "z-index" "-1"
@@ -299,7 +298,7 @@ uploadingImageCoverView status =
         Waiting ->
             div [] []
 
-        Uploading _ ->
+        Uploading ->
             div
                 [ style "margin-top" "-405px"
                 , style "background" "rgba(256, 256, 256, 0.4)"
@@ -367,14 +366,15 @@ uploaderView model =
                     [ text "Upload Image" ]
                 ]
 
-        Uploading fraction ->
+        Uploading ->
             div
-                [ style "display"
-                    "flex"
-                , style
-                    "align-items"
-                    "center"
-                ]
+                -- [ style "display"
+                --     "flex"
+                -- , style
+                --     "align-items"
+                --     "center"
+                -- ]
+                []
                 [ div
                     [ class "btn"
                     , class "action-button"
@@ -383,8 +383,9 @@ uploaderView model =
                     , style "color" "white"
                     ]
                     [ text "Upload Image" ]
-                , span [ style "width" "10px" ] []
-                , span [] [ text (String.fromInt (round (100 * fraction)) ++ "%") ]
+
+                -- , span [ style "width" "10px" ] []
+                -- , span [] [ text (String.fromInt (round (100 * fraction)) ++ "%") ]
                 ]
 
         Done ->
