@@ -2,11 +2,13 @@ module ImageUpload exposing (..)
 
 import Browser
 import File exposing (File)
+import File.Select as Select
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
 import Json.Decode as D
+import Task
 
 
 
@@ -103,7 +105,9 @@ decodeImageURL flags =
 
 
 type Msg
-    = GotFiles (List File)
+    = Pick
+    | GotFile File
+    | GotPreview String
     | GotProgress Http.Progress
     | Uploaded (Result Http.Error ImageData)
 
@@ -111,24 +115,34 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        GotFiles files ->
-            ( { model | status = Uploading 0 }
-            , Http.request
-                { method = "POST"
-                , url = "/c/artwork/image/new"
-                , headers = []
-                , body =
-                    Http.multipartBody
-                        ([ Http.stringPart "csrfmiddlewaretoken" model.csrftoken
-                         , Http.stringPart "artwork" (stringifyArtworkID model.artwork_id)
-                         ]
-                            ++ List.map (Http.filePart "image") files
-                        )
-                , expect = Http.expectJson Uploaded decodeUploadResult
-                , timeout = Nothing
-                , tracker = Just "upload"
-                }
+        Pick ->
+            ( model
+            , Select.file [ "image/*" ] GotFile
             )
+
+        GotFile file ->
+            ( { model | status = Uploading 0 }
+            , Cmd.batch
+                [ Http.request
+                    { method = "POST"
+                    , url = "/c/artwork/image/new"
+                    , headers = []
+                    , body =
+                        Http.multipartBody
+                            [ Http.stringPart "csrfmiddlewaretoken" model.csrftoken
+                            , Http.stringPart "artwork" (stringifyArtworkID model.artwork_id)
+                            , Http.filePart "image" file
+                            ]
+                    , expect = Http.expectJson Uploaded decodeUploadResult
+                    , timeout = Nothing
+                    , tracker = Just "upload"
+                    }
+                , Task.perform GotPreview <| File.toUrl file
+                ]
+            )
+
+        GotPreview url ->
+            ( { model | image_data = updateImageURL url model.image_data }, Cmd.none )
 
         GotProgress progress ->
             case progress of
@@ -141,10 +155,15 @@ update msg model =
         Uploaded result ->
             case result of
                 Ok image_data ->
-                    ( { model | status = Done, image_data = image_data}, Cmd.none )
+                    ( { model | status = Done, image_data = image_data }, Cmd.none )
 
                 Err _ ->
                     ( { model | status = Fail }, Cmd.none )
+
+
+updateImageURL : String -> ImageData -> ImageData
+updateImageURL url data =
+    { data | image_url = Just url }
 
 
 decodeUploadResult : D.Decoder ImageData
@@ -232,14 +251,11 @@ uploaderView model =
     case model.status of
         Waiting ->
             div []
-                [ input
-                    [ type_ "file"
-                    , multiple True
-                    , on "change" (D.map GotFiles filesDecoder)
+                [ button
+                    [ type_ "button"
+                    , onClick Pick
                     ]
-                    []
-                , div [] [ text ("CSRF: " ++ model.csrftoken) ]
-                , div [] [ text ("Artwork ID: " ++ stringifyArtworkID model.artwork_id) ]
+                    [ text "Upload Image" ]
                 ]
 
         Uploading fraction ->

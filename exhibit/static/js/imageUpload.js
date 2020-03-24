@@ -6279,6 +6279,12 @@ var $author$project$ImageUpload$subscriptions = function (model) {
 };
 var $author$project$ImageUpload$Done = {$: 'Done'};
 var $author$project$ImageUpload$Fail = {$: 'Fail'};
+var $author$project$ImageUpload$GotFile = function (a) {
+	return {$: 'GotFile', a: a};
+};
+var $author$project$ImageUpload$GotPreview = function (a) {
+	return {$: 'GotPreview', a: a};
+};
 var $author$project$ImageUpload$Uploaded = function (a) {
 	return {$: 'Uploaded', a: a};
 };
@@ -6372,6 +6378,17 @@ var $elm$http$Http$expectJson = F2(
 						A2($elm$json$Json$Decode$decodeString, decoder, string));
 				}));
 	});
+var $elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+var $elm$file$File$Select$file = F2(
+	function (mimes, toMsg) {
+		return A2(
+			$elm$core$Task$perform,
+			toMsg,
+			_File_uploadOne(mimes));
+	});
 var $elm$http$Http$filePart = _Http_pair;
 var $elm$core$Basics$clamp = F3(
 	function (low, high, number) {
@@ -6400,40 +6417,70 @@ var $author$project$ImageUpload$stringifyArtworkID = function (artwork_id) {
 		return '';
 	}
 };
+var $elm$file$File$toUrl = _File_toUrl;
+var $author$project$ImageUpload$updateImageURL = F2(
+	function (url, data) {
+		return _Utils_update(
+			data,
+			{
+				image_url: $elm$core$Maybe$Just(url)
+			});
+	});
 var $author$project$ImageUpload$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
-			case 'GotFiles':
-				var files = msg.a;
+			case 'Pick':
+				return _Utils_Tuple2(
+					model,
+					A2(
+						$elm$file$File$Select$file,
+						_List_fromArray(
+							['image/*']),
+						$author$project$ImageUpload$GotFile));
+			case 'GotFile':
+				var file = msg.a;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
 							status: $author$project$ImageUpload$Uploading(0)
 						}),
-					$elm$http$Http$request(
+					$elm$core$Platform$Cmd$batch(
+						_List_fromArray(
+							[
+								$elm$http$Http$request(
+								{
+									body: $elm$http$Http$multipartBody(
+										_List_fromArray(
+											[
+												A2($elm$http$Http$stringPart, 'csrfmiddlewaretoken', model.csrftoken),
+												A2(
+												$elm$http$Http$stringPart,
+												'artwork',
+												$author$project$ImageUpload$stringifyArtworkID(model.artwork_id)),
+												A2($elm$http$Http$filePart, 'image', file)
+											])),
+									expect: A2($elm$http$Http$expectJson, $author$project$ImageUpload$Uploaded, $author$project$ImageUpload$decodeUploadResult),
+									headers: _List_Nil,
+									method: 'POST',
+									timeout: $elm$core$Maybe$Nothing,
+									tracker: $elm$core$Maybe$Just('upload'),
+									url: '/c/artwork/image/new'
+								}),
+								A2(
+								$elm$core$Task$perform,
+								$author$project$ImageUpload$GotPreview,
+								$elm$file$File$toUrl(file))
+							])));
+			case 'GotPreview':
+				var url = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
 						{
-							body: $elm$http$Http$multipartBody(
-								_Utils_ap(
-									_List_fromArray(
-										[
-											A2($elm$http$Http$stringPart, 'csrfmiddlewaretoken', model.csrftoken),
-											A2(
-											$elm$http$Http$stringPart,
-											'artwork',
-											$author$project$ImageUpload$stringifyArtworkID(model.artwork_id))
-										]),
-									A2(
-										$elm$core$List$map,
-										$elm$http$Http$filePart('image'),
-										files))),
-							expect: A2($elm$http$Http$expectJson, $author$project$ImageUpload$Uploaded, $author$project$ImageUpload$decodeUploadResult),
-							headers: _List_Nil,
-							method: 'POST',
-							timeout: $elm$core$Maybe$Nothing,
-							tracker: $elm$core$Maybe$Just('upload'),
-							url: '/c/artwork/image/new'
-						}));
+							image_data: A2($author$project$ImageUpload$updateImageURL, url, model.image_data)
+						}),
+					$elm$core$Platform$Cmd$none);
 			case 'GotProgress':
 				var progress = msg.a;
 				if (progress.$ === 'Sending') {
@@ -6505,35 +6552,9 @@ var $author$project$ImageUpload$imageView = function (image_url) {
 			_List_Nil);
 	}
 };
-var $author$project$ImageUpload$GotFiles = function (a) {
-	return {$: 'GotFiles', a: a};
-};
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
-	});
-var $elm$time$Time$Posix = function (a) {
-	return {$: 'Posix', a: a};
-};
-var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
-var $elm$file$File$decoder = _File_decoder;
-var $elm$json$Json$Decode$list = _Json_decodeList;
-var $author$project$ImageUpload$filesDecoder = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'files']),
-	$elm$json$Json$Decode$list($elm$file$File$decoder));
+var $author$project$ImageUpload$Pick = {$: 'Pick'};
+var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
-var $elm$html$Html$input = _VirtualDom_node('input');
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
-	});
-var $elm$html$Html$Attributes$multiple = $elm$html$Html$Attributes$boolProperty('multiple');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6545,6 +6566,12 @@ var $elm$html$Html$Events$on = F2(
 			event,
 			$elm$virtual_dom$VirtualDom$Normal(decoder));
 	});
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
+};
 var $elm$core$Basics$round = _Basics_round;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
@@ -6559,31 +6586,15 @@ var $author$project$ImageUpload$uploaderView = function (model) {
 				_List_fromArray(
 					[
 						A2(
-						$elm$html$Html$input,
+						$elm$html$Html$button,
 						_List_fromArray(
 							[
-								$elm$html$Html$Attributes$type_('file'),
-								$elm$html$Html$Attributes$multiple(true),
-								A2(
-								$elm$html$Html$Events$on,
-								'change',
-								A2($elm$json$Json$Decode$map, $author$project$ImageUpload$GotFiles, $author$project$ImageUpload$filesDecoder))
+								$elm$html$Html$Attributes$type_('button'),
+								$elm$html$Html$Events$onClick($author$project$ImageUpload$Pick)
 							]),
-						_List_Nil),
-						A2(
-						$elm$html$Html$div,
-						_List_Nil,
 						_List_fromArray(
 							[
-								$elm$html$Html$text('CSRF: ' + model.csrftoken)
-							])),
-						A2(
-						$elm$html$Html$div,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text(
-								'Artwork ID: ' + $author$project$ImageUpload$stringifyArtworkID(model.artwork_id))
+								$elm$html$Html$text('Upload Image')
 							]))
 					]));
 		case 'Uploading':
