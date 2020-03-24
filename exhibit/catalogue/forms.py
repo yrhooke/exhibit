@@ -1,7 +1,7 @@
 from django import forms
 from tempus_dominus.widgets import DatePicker
 
-from .models import Artwork, Series, Location, Exhibition, WorkInExhibition
+from .models import Artwork, Series, Location, Exhibition, WorkInExhibition, ArtworkImage
 
 
 class WorkInExhibitionForm(forms.ModelForm):
@@ -164,3 +164,10 @@ class ExhibitionSearchForm(forms.Form):
     """search for exhibitions"""
     exhibition = forms.ModelChoiceField(queryset=Exhibition.objects.all(), required=False,
                                         label="Was in Exhibition", empty_label="")
+
+class ArtworkImageUploadForm(forms.ModelForm):
+    """upload an ArtworkImage"""
+
+    class Meta:
+        model = ArtworkImage
+        fields = ['image']

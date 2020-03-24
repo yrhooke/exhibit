@@ -7,6 +7,16 @@ from datetime import date
 from operator import itemgetter
 
 
+class ArtworkImage(models.Model):
+    """A model representing an image file"""
+
+    image = models.ImageField(
+        'Image',
+        upload_to="artworks/",
+        null=True,
+        help_text="Sample image of the artwork"
+    )    
+
 class Artwork(models.Model):
     """A model representing an individual work of art"""
 

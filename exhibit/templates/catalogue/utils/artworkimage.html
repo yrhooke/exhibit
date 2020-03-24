@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div style="height:405px;">
+    {% if image %}
+    <div class="bounding-box" id="id_image"
+        style="background-image:url('{{ image.image.url }}')"></div>
+    {% else %}
+    <div class="bounding-box" id="id_image" style="background-color:darkgrey;"></div>
+    {% endif %}
+</div>
+{% endblock %}

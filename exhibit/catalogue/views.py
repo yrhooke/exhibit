@@ -7,12 +7,13 @@ from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.expressions import F
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 
-from catalogue.models import Artwork, Series, Exhibition, Location
+from catalogue.models import Artwork, Series, Exhibition, Location, ArtworkImage
 from catalogue.forms import ArtworkDetailForm, SeriesDetailForm, LocationDetailForm, ExhibitionDetailForm
 from catalogue.forms import ArtworkSearchForm, LocationSearchForm, ExhibitionSearchForm
 from catalogue.forms import WorkInExhibitionForm
+from catalogue.forms import ArtworkImageUploadForm
 
 
 class SearchMixin(object):
@@ -206,6 +207,23 @@ def clone_artwork(request, artwork_pk):
     artwork.save()
 
     return redirect(artwork)
+
+def artworkimage(request, pk):
+    image = ArtworkImage.objects.get(pk=pk)
+
+    return render(request, 'catalogue/utils/artworkimage.html', {'image' : image})
+    
+def artworkimage_upload(request):
+    if request.method == 'POST':
+        form = ArtworkImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+    else:
+        form = ArtworkImageUploadForm()
+    return render(request, 'catalogue/utils/artworkimage_upload.html', {
+        'form': form
+    })
 
 class ArtworkDelete(LoginRequiredMixin, DeleteView):
     model = Artwork
