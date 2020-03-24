@@ -13,7 +13,6 @@ class ArtworkImage(models.Model):
     image = models.ImageField(
         'Image',
         upload_to="artworks/",
-        null=True,
         help_text="Sample image of the artwork"
     )    
     artwork = models.ForeignKey('Artwork', on_delete=models.CASCADE, null=True, blank=True)
@@ -24,16 +23,13 @@ class Artwork(models.Model):
     # optional_field = {'blank' : True, 'null' : true}
 
 
-    def get_image_upload_path(instance, filename):
-    # file will be uploaded to MEDIA_ROOT/artworks/<artwork_id>/<filename>
-        return f'artworks/{instance.pk}/{filename}'
-
     ## Mandatory Fields ##
     image = models.ImageField(
         'Image',
         upload_to="artworks/",
         null=True,
-        help_text="Sample image of the artwork"
+        help_text="Sample image of the artwork",
+        blank = True
     )
     title = models.CharField('Title', max_length=200, help_text="Artwork title")
     series = models.ForeignKey('Series', on_delete=models.SET_NULL, null=True)
@@ -222,7 +218,7 @@ class Series(models.Model):
             return None
 
         artworks_in_series = Artwork.objects.filter(series__pk=self.pk).order_by('-pk')
-        return artworks_in_series.first().image
+        return artworks_in_series.first().get_image
 
 
 class Exhibition(models.Model):

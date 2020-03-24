@@ -5,8 +5,8 @@
     <div id="searchResults" class="gallery-list center-block">
         {% for artwork in object_list %}
         <a class="gallery-item-wrapper" href="{% url 'catalogue:artwork_detail' artwork.pk %}">
-            {% if artwork.image.url %}
-            <div class="gallery-bounding-box" style="background-image:url('{{ artwork.image.url }}')"></div>
+            {% if artwork.get_image.url %}
+            <div class="gallery-bounding-box" style="background-image:url('{{ artwork.get_image.url }}')"></div>
             {% else %}
             <div class="gallery-item-image" style="background:darkgrey"></div>
             {% endif %}
