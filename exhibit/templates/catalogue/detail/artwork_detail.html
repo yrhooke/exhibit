@@ -109,8 +109,8 @@
 
         // Targets all sizeFields with class "txta"
         let sizeFields = document.querySelectorAll('.size-field'),
-        hiddenDiv = document.createElement('div'),
-        content = null;
+            hiddenDiv = document.createElement('div'),
+            content = null;
 
 
 
@@ -151,7 +151,7 @@
 
             // The <br ..> part is for old IE
             // This also fixes the jumpy way the sizeField grows if line-height isn't included
-            hiddenDiv.innerHTML = content ;
+            hiddenDiv.innerHTML = content;
 
             // Briefly make the hidden div block but invisible
             // This is in order to read the height
@@ -168,18 +168,18 @@
 
         // Loop through all the sizeFields and add the event listener
         for (let i of sizeFields) {
-        (function (i) {
+            (function (i) {
 
-        // add hidden div initially to set height
-        addHiddenArea(i);
+                // add hidden div initially to set height
+                addHiddenArea(i);
 
-        // Note: Use 'keyup' instead of 'input'
-        // if you want older IE support
-        i.addEventListener('input', function () {
-        addHiddenArea(i);
+                // Note: Use 'keyup' instead of 'input'
+                // if you want older IE support
+                i.addEventListener('input', function () {
+                    addHiddenArea(i);
 
-        });
-        })(i);
+                });
+            })(i);
         }
         // SIZE FIELD RESIZE DONE
     });
@@ -212,8 +212,9 @@
             </div>
             {% endif %}
             <div class="form-group">
-                <input type="submit" id="detail-submit" class="{% if edit_mode %}{% else %}header-action{% endif %} action-button btn"
-                    value="{{ action_name }}"{% if edit_mode %}style="margin-left:1rem;"{% endif %}>
+                <input type="submit" id="detail-submit"
+                    class="{% if edit_mode %}{% else %}header-action{% endif %} action-button btn"
+                    value="{{ action_name }}" {% if edit_mode %}style="margin-left:1rem;" {% endif %}>
             </div>
         </div>
     </div>
@@ -221,14 +222,34 @@
         <div class="col-6" style="padding:0px;display:flex;align-items:center;flex-direction:column">
             <div id="artwork-image" class="card">
                 <div class="card-body">
-                    <div style="height:405px;">
-                        {% if form.instance.image %}
+                    <div id="elm-stuff">
+                        <div id="elm-flags">
+                            {% csrf_token %}
+                            <input type="hidden" name="artwork_id" value={{object.pk}}>
+                        </div>
+                        <div id="elm-app"></div>
+                        <script src="{% static 'js/imageUpload.js' %}"></script>
+                        <script>
+                            var csrftoken = document.getElementById('elm-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
+                            var artwork_id = document.getElementById('elm-flags').querySelector('input[name=artwork_id]').value;
+                            console.log(`csrftoken: ${csrftoken}, artwork_id: ${artwork_id}`)
+                            var app = Elm.ImageUpload.init({
+                                node: document.getElementById('elm-app'),
+                                flags: {
+                                    'csrftoken': csrftoken,
+                                    'artwork_id': artwork_id
+                                }
+                          });        
+                        </script>
+                    </div>
+                    <!-- <div style="height:405px;">
+                        {% if object.get_image %}
                         <div class="bounding-box" id="id_image"
-                            style="background-image:url('{{ form.instance.image.url }}')"></div>
+                            style="background-image:url('{{ object.get_image.url }}')"></div>
                         {% else %}
                         <div class="bounding-box" id="id_image" style="background-color:darkgrey;"></div>
                         {% endif %}
-                    </div>
+                    </div> -->
                     <label for="id_image" class="action-button btn hidden-file-upload-label">
                         Upload Image
                     </label>
