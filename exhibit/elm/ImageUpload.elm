@@ -58,7 +58,7 @@ init flags =
     ( { csrftoken = decodeCSRF flags
       , artwork_id = decodeArtworkID flags
       , image_data =
-            { image_id = Nothing
+            { image_id = decodeImageID flags
             , image_url = decodeImageURL flags
             }
       , status = Waiting
@@ -82,6 +82,15 @@ decodeArtworkID flags =
     case D.decodeValue (D.field "artwork_id" D.string) flags of
         Ok artwork_id ->
             Just artwork_id
+
+        Err message ->
+            Nothing
+
+
+decodeImageID flags =
+    case D.decodeValue (D.field "image_id" D.string) flags of
+        Ok image_id ->
+            Just image_id
 
         Err message ->
             Nothing
@@ -169,7 +178,7 @@ updateImageURL url data =
 decodeUploadResult : D.Decoder ImageData
 decodeUploadResult =
     D.map2 ImageData
-        (D.maybe (D.field "image_id" D.string))
+        (D.maybe (D.map String.fromInt (D.field "image_id" D.int)))
         (D.maybe (D.field "image_url" D.string))
 
 
@@ -202,7 +211,10 @@ view model =
         [ style "height" "405px"
         ]
         [ imageView model.image_data.image_url
+        , hiddenInputView model.image_data.image_id
         , uploaderView model
+
+        -- , div [] [text (Debug.toString model)]
         ]
 
 
@@ -266,6 +278,37 @@ uploaderView model =
 
         Fail ->
             h1 [] [ text "FAIL" ]
+
+
+hiddenInputView image_id =
+    select
+        [ name "artwork_image"
+        , required True
+        , id "id_artwork_image"
+        , style "display" "none"
+        ]
+        [ imageIdSelectionView image_id
+        ]
+
+
+imageIdSelectionView image_id =
+    case image_id of
+        Just id ->
+            option
+                [ value id
+                , selected True
+                ]
+                []
+
+        Nothing ->
+            option
+                [ value ""
+                ]
+                []
+
+
+
+-- <select name="artwork_image" placeholder="None" required="" id="id_artwork_image" data-select2-id="id_artwork_image" tabindex="-1" class="select2-hidden-accessible" aria-hidden="true">
 
 
 filesDecoder : D.Decoder (List File)

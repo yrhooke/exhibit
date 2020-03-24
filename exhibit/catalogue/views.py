@@ -177,6 +177,15 @@ class ArtworkCreate(LoginRequiredMixin, genericCreateView):
         form.fields['owner'].required = False
         form.fields['status'].required = True
         return form
+    
+    def form_valid(self, form):
+        self.object = form.save()
+
+        artwork_image = form.cleaned_data['artwork_image']
+        artwork_image.artwork = self.object
+        artwork_image.save()
+
+        return HttpResponseRedirect(self.get_success_url())
 
 
 class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
@@ -193,10 +202,11 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.fields['image'].required = False
+        # form.fields['image'].required = False
         form.fields['owner'].required = False
         form.fields['status'].required = True
         return form
+
 
 
 def clone_artwork(request, artwork_pk):

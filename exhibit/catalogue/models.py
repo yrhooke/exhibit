@@ -165,7 +165,13 @@ class Artwork(models.Model):
     @property
     def get_image(self):
         """newest image associated with artwork"""
-        return ArtworkImage.objects.filter(artwork=self.pk).last().image
+        image_model_instance = ArtworkImage.objects.filter(artwork=self.pk).last()
+        try:
+            result = image_model_instance.image
+            result.pk = image_model_instance.pk
+            return result
+        except AttributeError:
+            return None
 
     searchable_fields = [
         series,

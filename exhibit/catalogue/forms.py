@@ -26,10 +26,11 @@ class PlaceholderMixin(object):
 
 class ArtworkDetailForm(PlaceholderMixin, forms.ModelForm):
 
+    artwork_image = forms.ModelChoiceField(queryset=ArtworkImage.objects.all(), required=True)
+
     class Meta():
         model = Artwork
         fields = [
-            'image',
             'title',
             'year',
             'series',
@@ -56,7 +57,6 @@ class ArtworkDetailForm(PlaceholderMixin, forms.ModelForm):
             'sale_date',
         ]
         widgets = {
-            'image': forms.FileInput,
             'sale_date': DatePicker,
             'width_cm': forms.TextInput,
             'height_cm': forms.TextInput,

@@ -5527,6 +5527,19 @@ var $author$project$ImageUpload$decodeCSRF = function (flags) {
 		return '';
 	}
 };
+var $author$project$ImageUpload$decodeImageID = function (flags) {
+	var _v0 = A2(
+		$elm$json$Json$Decode$decodeValue,
+		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$string),
+		flags);
+	if (_v0.$ === 'Ok') {
+		var image_id = _v0.a;
+		return $elm$core$Maybe$Just(image_id);
+	} else {
+		var message = _v0.a;
+		return $elm$core$Maybe$Nothing;
+	}
+};
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $author$project$ImageUpload$decodeImageURL = function (flags) {
 	var _v0 = A2(
@@ -5549,7 +5562,7 @@ var $author$project$ImageUpload$init = function (flags) {
 			artwork_id: $author$project$ImageUpload$decodeArtworkID(flags),
 			csrftoken: $author$project$ImageUpload$decodeCSRF(flags),
 			image_data: {
-				image_id: $elm$core$Maybe$Nothing,
+				image_id: $author$project$ImageUpload$decodeImageID(flags),
 				image_url: $author$project$ImageUpload$decodeImageURL(flags)
 			},
 			status: $author$project$ImageUpload$Waiting
@@ -6295,6 +6308,7 @@ var $author$project$ImageUpload$ImageData = F2(
 	function (image_id, image_url) {
 		return {image_id: image_id, image_url: image_url};
 	});
+var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$json$Json$Decode$oneOf = _Json_oneOf;
 var $elm$json$Json$Decode$maybe = function (decoder) {
 	return $elm$json$Json$Decode$oneOf(
@@ -6308,7 +6322,10 @@ var $author$project$ImageUpload$decodeUploadResult = A3(
 	$elm$json$Json$Decode$map2,
 	$author$project$ImageUpload$ImageData,
 	$elm$json$Json$Decode$maybe(
-		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$string)),
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$core$String$fromInt,
+			A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int))),
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
@@ -6524,10 +6541,60 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			key,
 			$elm$json$Json$Encode$string(string));
 	});
-var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
+var $elm$html$Html$option = _VirtualDom_node('option');
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
+var $elm$html$Html$Attributes$selected = $elm$html$Html$Attributes$boolProperty('selected');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
+var $author$project$ImageUpload$imageIdSelectionView = function (image_id) {
+	if (image_id.$ === 'Just') {
+		var id = image_id.a;
+		return A2(
+			$elm$html$Html$option,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$value(id),
+					$elm$html$Html$Attributes$selected(true)
+				]),
+			_List_Nil);
+	} else {
+		return A2(
+			$elm$html$Html$option,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$value('')
+				]),
+			_List_Nil);
+	}
+};
+var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
+var $elm$html$Html$Attributes$required = $elm$html$Html$Attributes$boolProperty('required');
+var $elm$html$Html$select = _VirtualDom_node('select');
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $author$project$ImageUpload$hiddenInputView = function (image_id) {
+	return A2(
+		$elm$html$Html$select,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$name('artwork_image'),
+				$elm$html$Html$Attributes$required(true),
+				$elm$html$Html$Attributes$id('id_artwork_image'),
+				A2($elm$html$Html$Attributes$style, 'display', 'none')
+			]),
+		_List_fromArray(
+			[
+				$author$project$ImageUpload$imageIdSelectionView(image_id)
+			]));
+};
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $author$project$ImageUpload$imageView = function (image_url) {
 	if (image_url.$ === 'Just') {
 		var url = image_url.a;
@@ -6552,6 +6619,9 @@ var $author$project$ImageUpload$imageView = function (image_url) {
 			_List_Nil);
 	}
 };
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$core$Debug$toString = _Debug_toString;
 var $author$project$ImageUpload$Pick = {$: 'Pick'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$h1 = _VirtualDom_node('h1');
@@ -6573,8 +6643,6 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		$elm$json$Json$Decode$succeed(msg));
 };
 var $elm$core$Basics$round = _Basics_round;
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $author$project$ImageUpload$uploaderView = function (model) {
 	var _v0 = model.status;
@@ -6636,7 +6704,16 @@ var $author$project$ImageUpload$view = function (model) {
 		_List_fromArray(
 			[
 				$author$project$ImageUpload$imageView(model.image_data.image_url),
-				$author$project$ImageUpload$uploaderView(model)
+				$author$project$ImageUpload$hiddenInputView(model.image_data.image_id),
+				$author$project$ImageUpload$uploaderView(model),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$elm$core$Debug$toString(model))
+					]))
 			]));
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(

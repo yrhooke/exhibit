@@ -8,6 +8,7 @@
         let field_id;
         let placeholder;
         {% for field in form %}
+        {% if field.name != "artwork_image" %}
         {% if field.field.widget.input_type == "select" %}
 
         field_id = "{{ field.auto_id }}";
@@ -15,6 +16,7 @@
         $("#" + field_id).select2({
             "placeholder": placeholder,
         });
+        {% endif %}
         {% endif %}
         {% endfor %}
     });
