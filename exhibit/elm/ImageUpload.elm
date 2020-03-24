@@ -217,6 +217,7 @@ view model =
             ]
         , hiddenInputView model.image_data.image_id
         , uploaderView model
+
         -- , div [] [ text (Debug.toString model) ]
         ]
 
@@ -305,8 +306,16 @@ uploadingImageCoverView status =
                 , style "z-index" "2"
                 , style "width" "inherit"
                 , style "height" "inherit"
+                , style "display" "flex"
+                , style "justify-content" "center"
+                , style "align-items" "center"
                 ]
-                []
+                [ img
+                    [ src "/static/images/spinner.svg"
+                    , style "height" "32px"
+                    ]
+                    []
+                ]
 
         Done ->
             div [] []
@@ -318,8 +327,11 @@ uploadingImageCoverView status =
                 , style "z-index" "2"
                 , style "width" "inherit"
                 , style "height" "inherit"
+                , style "display" "flex"
+                , style "justify-content" "center"
+                , style "align-items" "center"
                 ]
-                []
+                [ div [] [ text "Upload Failed. Please try again" ] ]
 
 
 
@@ -353,16 +365,16 @@ uploaderView model =
                     , onClick Pick
                     ]
                     [ text "Upload Image" ]
-
-                -- , img
-                --     [ src "/static/images/spinner.svg"
-                --     , style "height" "32px"
-                --     ]
-                --     []
                 ]
 
         Uploading fraction ->
-            div []
+            div
+                [ style "display"
+                    "flex"
+                , style
+                    "align-items"
+                    "center"
+                ]
                 [ div
                     [ class "btn"
                     , class "action-button"
@@ -370,12 +382,16 @@ uploaderView model =
                     , style "border-color" "slategrey"
                     , style "color" "white"
                     ]
-                    [text "Upload Image"]
+                    [ text "Upload Image" ]
+                , span [ style "width" "10px" ] []
                 , span [] [ text (String.fromInt (round (100 * fraction)) ++ "%") ]
                 ]
 
         Done ->
-            div []
+            div
+                [ style "display" "flex"
+                , style "align-items" "center"
+                ]
                 [ button
                     [ type_ "button"
                     , class "btn"
@@ -383,6 +399,18 @@ uploaderView model =
                     , onClick Pick
                     ]
                     [ text "Upload Image" ]
+                , span
+                    [ style "display" "flex"
+                    , style "justify-content" "center"
+                    , style "align-items" "center"
+                    , style "width" "40px"
+                    ]
+                    [ img
+                        [ src "/static/images/upload_check.svg"
+                        , style "height" "25px"
+                        ]
+                        []
+                    ]
                 ]
 
         Fail ->

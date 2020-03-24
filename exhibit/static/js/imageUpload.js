@@ -6642,6 +6642,7 @@ var $author$project$ImageUpload$imageView = function (model) {
 };
 var $author$project$ImageUpload$Pick = {$: 'Pick'};
 var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$html$Html$img = _VirtualDom_node('img');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6661,6 +6662,12 @@ var $elm$html$Html$Events$onClick = function (msg) {
 };
 var $elm$core$Basics$round = _Basics_round;
 var $elm$html$Html$span = _VirtualDom_node('span');
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
@@ -6691,7 +6698,11 @@ var $author$project$ImageUpload$uploaderView = function (model) {
 			var fraction = _v0.a;
 			return A2(
 				$elm$html$Html$div,
-				_List_Nil,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+						A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+					]),
 				_List_fromArray(
 					[
 						A2(
@@ -6710,6 +6721,13 @@ var $author$project$ImageUpload$uploaderView = function (model) {
 							])),
 						A2(
 						$elm$html$Html$span,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'width', '10px')
+							]),
+						_List_Nil),
+						A2(
+						$elm$html$Html$span,
 						_List_Nil,
 						_List_fromArray(
 							[
@@ -6721,7 +6739,11 @@ var $author$project$ImageUpload$uploaderView = function (model) {
 		case 'Done':
 			return A2(
 				$elm$html$Html$div,
-				_List_Nil,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+						A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+					]),
 				_List_fromArray(
 					[
 						A2(
@@ -6736,6 +6758,26 @@ var $author$project$ImageUpload$uploaderView = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$text('Upload Image')
+							])),
+						A2(
+						$elm$html$Html$span,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+								A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+								A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+								A2($elm$html$Html$Attributes$style, 'width', '40px')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$img,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$src('/static/images/upload_check.svg'),
+										A2($elm$html$Html$Attributes$style, 'height', '25px')
+									]),
+								_List_Nil)
 							]))
 					]));
 		default:
@@ -6773,9 +6815,22 @@ var $author$project$ImageUpload$uploadingImageCoverView = function (status) {
 						A2($elm$html$Html$Attributes$style, 'background', 'rgba(256, 256, 256, 0.4)'),
 						A2($elm$html$Html$Attributes$style, 'z-index', '2'),
 						A2($elm$html$Html$Attributes$style, 'width', 'inherit'),
-						A2($elm$html$Html$Attributes$style, 'height', 'inherit')
+						A2($elm$html$Html$Attributes$style, 'height', 'inherit'),
+						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+						A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+						A2($elm$html$Html$Attributes$style, 'align-items', 'center')
 					]),
-				_List_Nil);
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src('/static/images/spinner.svg'),
+								A2($elm$html$Html$Attributes$style, 'height', '32px')
+							]),
+						_List_Nil)
+					]));
 		case 'Done':
 			return A2($elm$html$Html$div, _List_Nil, _List_Nil);
 		default:
@@ -6787,9 +6842,21 @@ var $author$project$ImageUpload$uploadingImageCoverView = function (status) {
 						A2($elm$html$Html$Attributes$style, 'background', 'rgba(256, 256, 256, 0.4)'),
 						A2($elm$html$Html$Attributes$style, 'z-index', '2'),
 						A2($elm$html$Html$Attributes$style, 'width', 'inherit'),
-						A2($elm$html$Html$Attributes$style, 'height', 'inherit')
+						A2($elm$html$Html$Attributes$style, 'height', 'inherit'),
+						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+						A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+						A2($elm$html$Html$Attributes$style, 'align-items', 'center')
 					]),
-				_List_Nil);
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Upload Failed. Please try again')
+							]))
+					]));
 	}
 };
 var $author$project$ImageUpload$view = function (model) {
