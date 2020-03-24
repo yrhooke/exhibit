@@ -226,18 +226,21 @@
                         <div id="elm-flags">
                             {% csrf_token %}
                             <input type="hidden" name="artwork_id" value={{object.pk}}>
+                            <input type="hidden" name="image_url_marker" value="{{object.get_image.url}}"></a>
                         </div>
                         <div id="elm-app"></div>
                         <script src="{% static 'js/imageUpload.js' %}"></script>
                         <script>
                             var csrftoken = document.getElementById('elm-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
                             var artwork_id = document.getElementById('elm-flags').querySelector('input[name=artwork_id]').value;
-                            console.log(`csrftoken: ${csrftoken}, artwork_id: ${artwork_id}`)
+                            var image_url = document.getElementById('elm-flags').querySelector('input[name=image_url_marker]').value;
+                            console.log(`csrftoken: ${csrftoken}, artwork_id: ${artwork_id}, image_url: ${image_url}`)
                             var app = Elm.ImageUpload.init({
                                 node: document.getElementById('elm-app'),
                                 flags: {
                                     'csrftoken': csrftoken,
-                                    'artwork_id': artwork_id
+                                    'artwork_id': artwork_id,
+                                    'image_url': image_url
                                 }
                           });        
                         </script>
@@ -250,7 +253,7 @@
                         <div class="bounding-box" id="id_image" style="background-color:darkgrey;"></div>
                         {% endif %}
                     </div> -->
-                    <label for="id_image" class="action-button btn hidden-file-upload-label">
+                    <!-- <label for="id_image" class="action-button btn hidden-file-upload-label">
                         Upload Image
                     </label>
                     {% render_field form.image class="hidden-file-upload action-button" onchange="loadFile(event)" %}
@@ -261,7 +264,7 @@
                                 `<div class="bounding-box" id="id_image" style="background-image:url(${pathToImage})"></div>`
                             )
                         };
-                    </script>
+                    </script> -->
                 </div>
             </div>
             <div id="sales-info" class="card">

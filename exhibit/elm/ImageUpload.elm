@@ -29,6 +29,7 @@ main =
 type alias Model =
     { csrftoken : String
     , artwork_id : Maybe String
+    , image_data : ImageData
     , status : Status
     }
 
@@ -40,6 +41,12 @@ type Status
     | Fail
 
 
+type alias ImageData =
+    { image_id : Maybe String
+    , image_url : Maybe String
+    }
+
+
 
 -- INIT
 
@@ -48,6 +55,10 @@ init : D.Value -> ( Model, Cmd Msg )
 init flags =
     ( { csrftoken = decodeCSRF flags
       , artwork_id = decodeArtworkID flags
+      , image_data =
+            { image_id = Nothing
+            , image_url = decodeImageURL flags
+            }
       , status = Waiting
       }
     , Cmd.none
@@ -74,6 +85,19 @@ decodeArtworkID flags =
             Nothing
 
 
+decodeImageURL flags =
+    case D.decodeValue (D.field "image_url" D.string) flags of
+        Ok url ->
+            if url /= "" then
+                Just url
+
+            else
+                Nothing
+
+        Err message ->
+            Nothing
+
+
 
 -- UPDATE
 
@@ -81,7 +105,7 @@ decodeArtworkID flags =
 type Msg
     = GotFiles (List File)
     | GotProgress Http.Progress
-    | Uploaded (Result Http.Error ())
+    | Uploaded (Result Http.Error ImageData)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -100,7 +124,7 @@ update msg model =
                          ]
                             ++ List.map (Http.filePart "image") files
                         )
-                , expect = Http.expectWhatever Uploaded
+                , expect = Http.expectJson Uploaded decodeUploadResult
                 , timeout = Nothing
                 , tracker = Just "upload"
                 }
@@ -116,21 +140,18 @@ update msg model =
 
         Uploaded result ->
             case result of
-                Ok _ ->
-                    ( { model | status = Done }, Cmd.none )
+                Ok image_data ->
+                    ( { model | status = Done, image_data = image_data}, Cmd.none )
 
                 Err _ ->
                     ( { model | status = Fail }, Cmd.none )
 
 
-
--- stringifyArtworkID : Maybe Int -> String
--- stringifyArtworkID artwork_id =
---     case artwork_id of
---         Just pk ->
---             String.fromInt pk
---         Nothing ->
---             ""
+decodeUploadResult : D.Decoder ImageData
+decodeUploadResult =
+    D.map2 ImageData
+        (D.maybe (D.field "image_id" D.string))
+        (D.maybe (D.field "image_url" D.string))
 
 
 stringifyArtworkID : Maybe String -> String
@@ -158,6 +179,56 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
+    div
+        [ style "height" "405px"
+        ]
+        [ imageView model.image_data.image_url
+        , uploaderView model
+        ]
+
+
+imageView : Maybe String -> Html Msg
+imageView image_url =
+    case image_url of
+        Just url ->
+            div
+                [ class "bounding-box"
+                , id
+                    "id_image"
+                , style
+                    "background-image"
+                    ("url('"
+                        ++ url
+                        ++ "')"
+                    )
+                ]
+                []
+
+        Nothing ->
+            div
+                [ class "bounding-box"
+                , id
+                    "id_image"
+                , style
+                    "background-color"
+                    "darkgrey"
+                ]
+                []
+
+
+
+-- <div style="height:405px;">
+--     {% if object.get_image %}
+--     <div class="bounding-box" id="id_image"
+--         style="background-image:url('{{ object.get_image.url }}')"></div>
+--     {% else %}
+--     <div class="bounding-box" id="id_image" style="background-color:darkgrey;"></div>
+--     {% endif %}
+-- </div>
+
+
+uploaderView : Model -> Html Msg
+uploaderView model =
     case model.status of
         Waiting ->
             div []
@@ -184,14 +255,3 @@ view model =
 filesDecoder : D.Decoder (List File)
 filesDecoder =
     D.at [ "target", "files" ] (D.list File.decoder)
-
-
-
--- <div style="height:405px;">
---     {% if object.get_image %}
---     <div class="bounding-box" id="id_image"
---         style="background-image:url('{{ object.get_image.url }}')"></div>
---     {% else %}
---     <div class="bounding-box" id="id_image" style="background-color:darkgrey;"></div>
---     {% endif %}
--- </div>

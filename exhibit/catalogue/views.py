@@ -1,6 +1,7 @@
 import json
 
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse, HttpResponseNotAllowed
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse 
+from django.http import HttpResponseNotAllowed, HttpResponseBadRequest
 from django.urls import reverse_lazy, reverse, NoReverseMatch
 from django.views.generic import ListView, TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -216,14 +217,14 @@ def artworkimage(request, pk):
 def artworkimage_upload(request):
     if request.method == 'POST':
         form = ArtworkImageUploadForm(request.POST, request.FILES)
-        print(form)
         if form.is_valid():
             artworkimage = form.save()
             return JsonResponse({
-                'image_id' : artworkimage.pk
+                'image_id' : artworkimage.pk,
+                'image_url': artworkimage.image.url,
             })
         else:
-            return JsonResponse({})
+            return HttpResponseBadRequest()
     else:
         return HttpResponseNotAllowed(['POST'])
 

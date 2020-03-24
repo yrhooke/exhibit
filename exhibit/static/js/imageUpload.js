@@ -5527,6 +5527,20 @@ var $author$project$ImageUpload$decodeCSRF = function (flags) {
 		return '';
 	}
 };
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $author$project$ImageUpload$decodeImageURL = function (flags) {
+	var _v0 = A2(
+		$elm$json$Json$Decode$decodeValue,
+		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string),
+		flags);
+	if (_v0.$ === 'Ok') {
+		var url = _v0.a;
+		return (url !== '') ? $elm$core$Maybe$Just(url) : $elm$core$Maybe$Nothing;
+	} else {
+		var message = _v0.a;
+		return $elm$core$Maybe$Nothing;
+	}
+};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$ImageUpload$init = function (flags) {
@@ -5534,6 +5548,10 @@ var $author$project$ImageUpload$init = function (flags) {
 		{
 			artwork_id: $author$project$ImageUpload$decodeArtworkID(flags),
 			csrftoken: $author$project$ImageUpload$decodeCSRF(flags),
+			image_data: {
+				image_id: $elm$core$Maybe$Nothing,
+				image_url: $author$project$ImageUpload$decodeImageURL(flags)
+			},
 			status: $author$project$ImageUpload$Waiting
 		},
 		$elm$core$Platform$Cmd$none);
@@ -6267,13 +6285,45 @@ var $author$project$ImageUpload$Uploaded = function (a) {
 var $author$project$ImageUpload$Uploading = function (a) {
 	return {$: 'Uploading', a: a};
 };
-var $elm$http$Http$expectBytesResponse = F2(
+var $author$project$ImageUpload$ImageData = F2(
+	function (image_id, image_url) {
+		return {image_id: image_id, image_url: image_url};
+	});
+var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+var $elm$json$Json$Decode$maybe = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder),
+				$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing)
+			]));
+};
+var $author$project$ImageUpload$decodeUploadResult = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$ImageUpload$ImageData,
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$string)),
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
+var $elm$json$Json$Decode$decodeString = _Json_runOnString;
+var $elm$http$Http$expectStringResponse = F2(
 	function (toMsg, toResult) {
 		return A3(
 			_Http_expect,
-			'arraybuffer',
-			_Http_toDataView,
+			'',
+			$elm$core$Basics$identity,
 			A2($elm$core$Basics$composeR, toResult, toMsg));
+	});
+var $elm$core$Result$mapError = F2(
+	function (f, result) {
+		if (result.$ === 'Ok') {
+			var v = result.a;
+			return $elm$core$Result$Ok(v);
+		} else {
+			var e = result.a;
+			return $elm$core$Result$Err(
+				f(e));
+		}
 	});
 var $elm$http$Http$BadBody = function (a) {
 	return {$: 'BadBody', a: a};
@@ -6286,17 +6336,6 @@ var $elm$http$Http$BadUrl = function (a) {
 };
 var $elm$http$Http$NetworkError = {$: 'NetworkError'};
 var $elm$http$Http$Timeout = {$: 'Timeout'};
-var $elm$core$Result$mapError = F2(
-	function (f, result) {
-		if (result.$ === 'Ok') {
-			var v = result.a;
-			return $elm$core$Result$Ok(v);
-		} else {
-			var e = result.a;
-			return $elm$core$Result$Err(
-				f(e));
-		}
-	});
 var $elm$http$Http$resolve = F2(
 	function (toResult, response) {
 		switch (response.$) {
@@ -6320,15 +6359,19 @@ var $elm$http$Http$resolve = F2(
 					toResult(body));
 		}
 	});
-var $elm$http$Http$expectWhatever = function (toMsg) {
-	return A2(
-		$elm$http$Http$expectBytesResponse,
-		toMsg,
-		$elm$http$Http$resolve(
-			function (_v0) {
-				return $elm$core$Result$Ok(_Utils_Tuple0);
-			}));
-};
+var $elm$http$Http$expectJson = F2(
+	function (toMsg, decoder) {
+		return A2(
+			$elm$http$Http$expectStringResponse,
+			toMsg,
+			$elm$http$Http$resolve(
+				function (string) {
+					return A2(
+						$elm$core$Result$mapError,
+						$elm$json$Json$Decode$errorToString,
+						A2($elm$json$Json$Decode$decodeString, decoder, string));
+				}));
+	});
 var $elm$http$Http$filePart = _Http_pair;
 var $elm$core$Basics$clamp = F3(
 	function (low, high, number) {
@@ -6384,7 +6427,7 @@ var $author$project$ImageUpload$update = F2(
 										$elm$core$List$map,
 										$elm$http$Http$filePart('image'),
 										files))),
-							expect: $elm$http$Http$expectWhatever($author$project$ImageUpload$Uploaded),
+							expect: A2($elm$http$Http$expectJson, $author$project$ImageUpload$Uploaded, $author$project$ImageUpload$decodeUploadResult),
 							headers: _List_Nil,
 							method: 'POST',
 							timeout: $elm$core$Maybe$Nothing,
@@ -6409,10 +6452,11 @@ var $author$project$ImageUpload$update = F2(
 			default:
 				var result = msg.a;
 				if (result.$ === 'Ok') {
+					var image_data = result.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{status: $author$project$ImageUpload$Done}),
+							{image_data: image_data, status: $author$project$ImageUpload$Done}),
 						$elm$core$Platform$Cmd$none);
 				} else {
 					return _Utils_Tuple2(
@@ -6424,10 +6468,46 @@ var $author$project$ImageUpload$update = F2(
 		}
 	});
 var $elm$json$Json$Decode$value = _Json_decodeValue;
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
+var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $author$project$ImageUpload$imageView = function (image_url) {
+	if (image_url.$ === 'Just') {
+		var url = image_url.a;
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('bounding-box'),
+					$elm$html$Html$Attributes$id('id_image'),
+					A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'' + (url + '\')'))
+				]),
+			_List_Nil);
+	} else {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('bounding-box'),
+					$elm$html$Html$Attributes$id('id_image'),
+					A2($elm$html$Html$Attributes$style, 'background-color', 'darkgrey')
+				]),
+			_List_Nil);
+	}
+};
 var $author$project$ImageUpload$GotFiles = function (a) {
 	return {$: 'GotFiles', a: a};
 };
-var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$json$Json$Decode$at = F2(
 	function (fields, decoder) {
 		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
@@ -6468,16 +6548,8 @@ var $elm$html$Html$Events$on = F2(
 var $elm$core$Basics$round = _Basics_round;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $author$project$ImageUpload$view = function (model) {
+var $author$project$ImageUpload$uploaderView = function (model) {
 	var _v0 = model.status;
 	switch (_v0.$) {
 		case 'Waiting':
@@ -6542,6 +6614,19 @@ var $author$project$ImageUpload$view = function (model) {
 						$elm$html$Html$text('FAIL')
 					]));
 	}
+};
+var $author$project$ImageUpload$view = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'height', '405px')
+			]),
+		_List_fromArray(
+			[
+				$author$project$ImageUpload$imageView(model.image_data.image_url),
+				$author$project$ImageUpload$uploaderView(model)
+			]));
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(
 	{init: $author$project$ImageUpload$init, subscriptions: $author$project$ImageUpload$subscriptions, update: $author$project$ImageUpload$update, view: $author$project$ImageUpload$view});
