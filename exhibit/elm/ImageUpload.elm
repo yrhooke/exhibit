@@ -208,46 +208,129 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div
-        [ style "height" "405px"
-        ]
-        [ imageView model.image_data.image_url
+        []
+        [ div
+            [ style "height" "405px"
+            ]
+            [ imageView model
+            , uploadingImageCoverView model.status
+            ]
         , hiddenInputView model.image_data.image_id
         , uploaderView model
-
-        -- , div [] [text (Debug.toString model)]
+        -- , div [] [ text (Debug.toString model) ]
         ]
 
 
-imageView : Maybe String -> Html Msg
-imageView image_url =
-    case image_url of
-        Just url ->
+imageView : Model -> Html Msg
+imageView model =
+    let
+        style_image_background =
+            case model.image_data.image_url of
+                Just image ->
+                    style "background-image" ("url('" ++ image ++ "')")
+
+                Nothing ->
+                    style "background-color" "darkgrey"
+
+        show_blurring =
+            case model.status of
+                Waiting ->
+                    []
+
+                Uploading _ ->
+                    [ style "filter" "blur(2px)"
+                    , style "-webkit-filter" "blur(2px)"
+                    , style "z-index" "-1"
+                    ]
+
+                Done ->
+                    []
+
+                Fail ->
+                    [ style "filter" "blur(2px)"
+                    , style "-webkit-filter" "blur(2px)"
+                    , style "z-index" "-1"
+                    ]
+    in
+    div
+        ([ class "bounding-box"
+         , id "id_image"
+         , style_image_background
+         ]
+            ++ show_blurring
+        )
+        []
+
+
+
+-- case image_url of
+--     Just url ->
+--         div
+--             [ class "bounding-box"
+--             , id
+--                 "id_image"
+--             , style
+--                 "background-image"
+--                 ("url('"
+--                     ++ url
+--                     ++ "')"
+--                 )
+--             , style "filter" "blur(2px)"
+--             , style "-webkit-filter" "blur(2px)"
+--             , style "z-index" "-1"
+--             ]
+--             []
+--     Nothing ->
+--         div
+--             [ class "bounding-box"
+--             , id
+--                 "id_image"
+--             , style
+--                 "background-color"
+--                 "darkgrey"
+--             ]
+--             []
+
+
+uploadingImageCoverView : Status -> Html Msg
+uploadingImageCoverView status =
+    case status of
+        Waiting ->
+            div [] []
+
+        Uploading _ ->
             div
-                [ class "bounding-box"
-                , id
-                    "id_image"
-                , style
-                    "background-image"
-                    ("url('"
-                        ++ url
-                        ++ "')"
-                    )
+                [ style "margin-top" "-405px"
+                , style "background" "rgba(256, 256, 256, 0.4)"
+                , style "z-index" "2"
+                , style "width" "inherit"
+                , style "height" "inherit"
                 ]
                 []
 
-        Nothing ->
+        Done ->
+            div [] []
+
+        Fail ->
             div
-                [ class "bounding-box"
-                , id
-                    "id_image"
-                , style
-                    "background-color"
-                    "darkgrey"
+                [ style "margin-top" "-405px"
+                , style "background" "rgba(256, 256, 256, 0.4)"
+                , style "z-index" "2"
+                , style "width" "inherit"
+                , style "height" "inherit"
                 ]
                 []
 
 
 
+-- div
+--     [ style "margin-top" "-405px"
+--     , style "background" "rgba(256, 256, 256, 0.4)"
+--     , style "z-index" "2"
+--     , style "width" "inherit"
+--     , style "height" "inherit"
+--     ]
+--     []
 -- <div style="height:405px;">
 --     {% if object.get_image %}
 --     <div class="bounding-box" id="id_image"
@@ -265,19 +348,53 @@ uploaderView model =
             div []
                 [ button
                     [ type_ "button"
+                    , class "btn"
+                    , class "action-button"
+                    , onClick Pick
+                    ]
+                    [ text "Upload Image" ]
+
+                -- , img
+                --     [ src "/static/images/spinner.svg"
+                --     , style "height" "32px"
+                --     ]
+                --     []
+                ]
+
+        Uploading fraction ->
+            div []
+                [ div
+                    [ class "btn"
+                    , class "action-button"
+                    , style "background-color" "slategrey"
+                    , style "border-color" "slategrey"
+                    , style "color" "white"
+                    ]
+                    [text "Upload Image"]
+                , span [] [ text (String.fromInt (round (100 * fraction)) ++ "%") ]
+                ]
+
+        Done ->
+            div []
+                [ button
+                    [ type_ "button"
+                    , class "btn"
+                    , class "action-button"
                     , onClick Pick
                     ]
                     [ text "Upload Image" ]
                 ]
 
-        Uploading fraction ->
-            h1 [] [ text (String.fromInt (round (100 * fraction)) ++ "%") ]
-
-        Done ->
-            h1 [] [ text "DONE" ]
-
         Fail ->
-            h1 [] [ text "FAIL" ]
+            div []
+                [ button
+                    [ type_ "button"
+                    , class "btn"
+                    , class "action-button"
+                    , onClick Pick
+                    ]
+                    [ text "Upload Image" ]
+                ]
 
 
 hiddenInputView image_id =
@@ -314,3 +431,32 @@ imageIdSelectionView image_id =
 filesDecoder : D.Decoder (List File)
 filesDecoder =
     D.at [ "target", "files" ] (D.list File.decoder)
+
+
+
+-- <div class="gallery-bounding-box" style="background-image:url('https://exhibit-prod-artworks.nyc3.digitaloceanspaces.com/media/artworks/Rotem_Reshef_Arcadia__2019_Katonah_Museum_of_Art_NY.jpg')"></div>
+-- <div class="gallery-item-hover">
+--     <ul class="gallery-item-text">
+--         <li>
+--             <div class="gallery-item-title">
+--                 <span>Arcadia</span>
+--             </div>
+--         </li>
+--         <li>
+--             <!-- <label for="artwork_series_116">Series:</label> -->
+--             <span id="artwork_series_116">Installations</span>
+--             <span class="separator"> | </span>
+--             <!-- <label for="artwork_year_116">Year:</label> -->
+--             <span id="artwork_year_116">2019</span>
+--         </li>
+--         <li>
+--             <!-- <label for="artwork_location_116">Location:</label> -->
+--             <span id="artwork_location_116">Studio, New York</span>
+--         </li>
+--         <li>
+--             21.9x2.0cm
+--             <span class="separator"> | </span>
+--             0.0x0.0in
+--         </li>
+--     </ul>
+-- </div>

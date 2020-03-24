@@ -6595,36 +6595,53 @@ var $author$project$ImageUpload$hiddenInputView = function (image_id) {
 			]));
 };
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
-var $author$project$ImageUpload$imageView = function (image_url) {
-	if (image_url.$ === 'Just') {
-		var url = image_url.a;
-		return A2(
-			$elm$html$Html$div,
+var $author$project$ImageUpload$imageView = function (model) {
+	var style_image_background = function () {
+		var _v1 = model.image_data.image_url;
+		if (_v1.$ === 'Just') {
+			var image = _v1.a;
+			return A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'' + (image + '\')'));
+		} else {
+			return A2($elm$html$Html$Attributes$style, 'background-color', 'darkgrey');
+		}
+	}();
+	var show_blurring = function () {
+		var _v0 = model.status;
+		switch (_v0.$) {
+			case 'Waiting':
+				return _List_Nil;
+			case 'Uploading':
+				return _List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'filter', 'blur(2px)'),
+						A2($elm$html$Html$Attributes$style, '-webkit-filter', 'blur(2px)'),
+						A2($elm$html$Html$Attributes$style, 'z-index', '-1')
+					]);
+			case 'Done':
+				return _List_Nil;
+			default:
+				return _List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'filter', 'blur(2px)'),
+						A2($elm$html$Html$Attributes$style, '-webkit-filter', 'blur(2px)'),
+						A2($elm$html$Html$Attributes$style, 'z-index', '-1')
+					]);
+		}
+	}();
+	return A2(
+		$elm$html$Html$div,
+		_Utils_ap(
 			_List_fromArray(
 				[
 					$elm$html$Html$Attributes$class('bounding-box'),
 					$elm$html$Html$Attributes$id('id_image'),
-					A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'' + (url + '\')'))
+					style_image_background
 				]),
-			_List_Nil);
-	} else {
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					$elm$html$Html$Attributes$class('bounding-box'),
-					$elm$html$Html$Attributes$id('id_image'),
-					A2($elm$html$Html$Attributes$style, 'background-color', 'darkgrey')
-				]),
-			_List_Nil);
-	}
+			show_blurring),
+		_List_Nil);
 };
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$core$Debug$toString = _Debug_toString;
 var $author$project$ImageUpload$Pick = {$: 'Pick'};
 var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$html$Html$h1 = _VirtualDom_node('h1');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -6643,6 +6660,9 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		$elm$json$Json$Decode$succeed(msg));
 };
 var $elm$core$Basics$round = _Basics_round;
+var $elm$html$Html$span = _VirtualDom_node('span');
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $author$project$ImageUpload$uploaderView = function (model) {
 	var _v0 = model.status;
@@ -6658,6 +6678,8 @@ var $author$project$ImageUpload$uploaderView = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$Attributes$type_('button'),
+								$elm$html$Html$Attributes$class('btn'),
+								$elm$html$Html$Attributes$class('action-button'),
 								$elm$html$Html$Events$onClick($author$project$ImageUpload$Pick)
 							]),
 						_List_fromArray(
@@ -6668,52 +6690,127 @@ var $author$project$ImageUpload$uploaderView = function (model) {
 		case 'Uploading':
 			var fraction = _v0.a;
 			return A2(
-				$elm$html$Html$h1,
+				$elm$html$Html$div,
 				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$html$Html$text(
-						$elm$core$String$fromInt(
-							$elm$core$Basics$round(100 * fraction)) + '%')
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('btn'),
+								$elm$html$Html$Attributes$class('action-button'),
+								A2($elm$html$Html$Attributes$style, 'background-color', 'slategrey'),
+								A2($elm$html$Html$Attributes$style, 'border-color', 'slategrey'),
+								A2($elm$html$Html$Attributes$style, 'color', 'white')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Upload Image')
+							])),
+						A2(
+						$elm$html$Html$span,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								$elm$core$String$fromInt(
+									$elm$core$Basics$round(100 * fraction)) + '%')
+							]))
 					]));
 		case 'Done':
 			return A2(
-				$elm$html$Html$h1,
+				$elm$html$Html$div,
 				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$html$Html$text('DONE')
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$type_('button'),
+								$elm$html$Html$Attributes$class('btn'),
+								$elm$html$Html$Attributes$class('action-button'),
+								$elm$html$Html$Events$onClick($author$project$ImageUpload$Pick)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Upload Image')
+							]))
 					]));
 		default:
 			return A2(
-				$elm$html$Html$h1,
+				$elm$html$Html$div,
 				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$html$Html$text('FAIL')
+						A2(
+						$elm$html$Html$button,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$type_('button'),
+								$elm$html$Html$Attributes$class('btn'),
+								$elm$html$Html$Attributes$class('action-button'),
+								$elm$html$Html$Events$onClick($author$project$ImageUpload$Pick)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Upload Image')
+							]))
 					]));
+	}
+};
+var $author$project$ImageUpload$uploadingImageCoverView = function (status) {
+	switch (status.$) {
+		case 'Waiting':
+			return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+		case 'Uploading':
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'margin-top', '-405px'),
+						A2($elm$html$Html$Attributes$style, 'background', 'rgba(256, 256, 256, 0.4)'),
+						A2($elm$html$Html$Attributes$style, 'z-index', '2'),
+						A2($elm$html$Html$Attributes$style, 'width', 'inherit'),
+						A2($elm$html$Html$Attributes$style, 'height', 'inherit')
+					]),
+				_List_Nil);
+		case 'Done':
+			return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+		default:
+			return A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'margin-top', '-405px'),
+						A2($elm$html$Html$Attributes$style, 'background', 'rgba(256, 256, 256, 0.4)'),
+						A2($elm$html$Html$Attributes$style, 'z-index', '2'),
+						A2($elm$html$Html$Attributes$style, 'width', 'inherit'),
+						A2($elm$html$Html$Attributes$style, 'height', 'inherit')
+					]),
+				_List_Nil);
 	}
 };
 var $author$project$ImageUpload$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
+		_List_Nil,
 		_List_fromArray(
 			[
-				A2($elm$html$Html$Attributes$style, 'height', '405px')
-			]),
-		_List_fromArray(
-			[
-				$author$project$ImageUpload$imageView(model.image_data.image_url),
-				$author$project$ImageUpload$hiddenInputView(model.image_data.image_id),
-				$author$project$ImageUpload$uploaderView(model),
 				A2(
 				$elm$html$Html$div,
-				_List_Nil,
 				_List_fromArray(
 					[
-						$elm$html$Html$text(
-						$elm$core$Debug$toString(model))
-					]))
+						A2($elm$html$Html$Attributes$style, 'height', '405px')
+					]),
+				_List_fromArray(
+					[
+						$author$project$ImageUpload$imageView(model),
+						$author$project$ImageUpload$uploadingImageCoverView(model.status)
+					])),
+				$author$project$ImageUpload$hiddenInputView(model.image_data.image_id),
+				$author$project$ImageUpload$uploaderView(model)
 			]));
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(
