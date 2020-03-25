@@ -6599,9 +6599,6 @@ var $author$project$ImageUpload$imageView = function (model) {
 			show_blurring),
 		_List_Nil);
 };
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$core$Debug$toString = _Debug_toString;
 var $author$project$ImageUpload$Pick = {$: 'Pick'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$img = _VirtualDom_node('img');
@@ -6629,6 +6626,8 @@ var $elm$html$Html$Attributes$src = function (url) {
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $author$project$ImageUpload$uploaderView = F2(
 	function (checkmark_url, status) {
@@ -6816,15 +6815,7 @@ var $author$project$ImageUpload$view = function (model) {
 						A2($author$project$ImageUpload$uploadingImageCoverView, model.loader_url, model.status)
 					])),
 				$author$project$ImageUpload$hiddenInputView(model.image_data.image_id),
-				A2($author$project$ImageUpload$uploaderView, model.checkmark_url, model.status),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						$elm$core$Debug$toString(model))
-					]))
+				A2($author$project$ImageUpload$uploaderView, model.checkmark_url, model.status)
 			]));
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(

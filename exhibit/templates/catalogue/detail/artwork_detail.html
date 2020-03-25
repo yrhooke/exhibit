@@ -226,6 +226,8 @@
                     <div id="elm-stuff">
                         <div id="elm-flags">
                             {% csrf_token %}
+                            <img src="{% static 'images/spinner.svg' %}" style="display:none;">
+                            <img src="{% static 'images/upload_check.svg' %}" style="display:none;">
                         </div>
                         <div id="elm-app"></div>
                         <script src="{% static 'js/imageUpload.js' %}"></script>

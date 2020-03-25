@@ -211,7 +211,8 @@ view model =
             ]
         , hiddenInputView model.image_data.image_id
         , uploaderView model.checkmark_url model.status
-        , div [] [ text (Debug.toString model) ]
+
+        -- , div [] [ text (Debug.toString model) ]
         ]
 
 
