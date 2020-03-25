@@ -208,7 +208,32 @@ main =
 -- MODEL
 
 
-type alias Model = Location
+type alias Model =
+    Activity
+
+
+type alias Activity =
+    { action : Action
+    , location : Location
+    , other_action_name : String
+    }
+
+
+newActivity : Activity
+newActivity =
+    { action = Moved
+    , location = newLocation
+    , other_action_name = ""
+    }
+
+
+type Action
+    = Sold
+    | Loaned
+    | Moved
+    | Assigned
+    | Shown
+    | Other
 
 
 type alias Location =
@@ -231,6 +256,8 @@ type alias Location =
     , permanent : Bool
     }
 
+
+newLocation : Location
 newLocation =
     { address_1 = ""
     , address_2 = ""
@@ -241,7 +268,7 @@ newLocation =
     , phone = ""
     , email = ""
     , additional = ""
-    , name = "John's delivery shack"
+    , name = ""
     , description = ""
     , is_temporary = True
     , agent = False
@@ -251,17 +278,14 @@ newLocation =
     , permanent = False
     }
 
-fieldNames =
-    { name = "name"
-    , address = "address"
-    }
-
 
 
 -- INIT
 
 
-init = newLocation
+init : Model
+init =
+    newActivity
 
 
 
@@ -269,6 +293,25 @@ init = newLocation
 
 
 type Msg
+    = UpdateAction Action
+    | UpdateLocation UpdateLocationMsg
+    | UpdateOtherAction String
+
+
+update : Msg -> Model -> Model
+update msg model =
+    case msg of
+        UpdateAction a ->
+            { model | action = a }
+
+        UpdateLocation locationMsg ->
+            { model | location = updateLocation locationMsg model.location }
+
+        UpdateOtherAction other_name ->
+            { model | other_action_name = other_name }
+
+
+type UpdateLocationMsg
     = UpdateAddress1 String
     | UpdateAddress2 String
     | UpdateCity String
@@ -288,58 +331,59 @@ type Msg
     | UpdatePermanent Bool
 
 
-update msg model =
+updateLocation : UpdateLocationMsg -> Location -> Location
+updateLocation msg location =
     case msg of
         UpdateAddress1 val ->
-            { model | address_1 = val }
+            { location | address_1 = val }
 
         UpdateAddress2 val ->
-            { model | address_2 = val }
+            { location | address_2 = val }
 
         UpdateCity val ->
-            { model | city = val }
+            { location | city = val }
 
         UpdateState val ->
-            { model | state = val }
+            { location | state = val }
 
         UpdateZipCode val ->
-            { model | zip_code = val }
+            { location | zip_code = val }
 
         UpdateCountry val ->
-            { model | country = val }
+            { location | country = val }
 
         UpdatePhone val ->
-            { model | phone = val }
+            { location | phone = val }
 
         UpdateEmail val ->
-            { model | email = val }
+            { location | email = val }
 
         UpdateAdditional val ->
-            { model | additional = val }
+            { location | additional = val }
 
         UpdateName val ->
-            { model | name = val }
+            { location | name = val }
 
         UpdateDescription val ->
-            { model | description = val }
+            { location | description = val }
 
         UpdateIsTemporary val ->
-            { model | is_temporary = val }
+            { location | is_temporary = val }
 
         UpdateAgent val ->
-            { model | agent = val }
+            { location | agent = val }
 
         UpdateClient val ->
-            { model | client = val }
+            { location | client = val }
 
         UpdateGallery val ->
-            { model | gallery = val }
+            { location | gallery = val }
 
         UpdateMine val ->
-            { model | mine = val }
+            { location | mine = val }
 
         UpdatePermanent val ->
-            { model | permanent = val }
+            { location | permanent = val }
 
 
 
@@ -349,45 +393,91 @@ update msg model =
 view : Model -> Html Msg
 view model =
     div []
-        [
-         viewTextField model.address_1 "Address" UpdateAddress1
-        , viewTextField model.address_2 "Address Cont." UpdateAddress2
-        , viewTextField model.city "City" UpdateCity
-        , viewTextField model.state "State" UpdateState
-        , viewTextField model.zip_code "Zip Code" UpdateZipCode
-        , viewTextField model.country "Country" UpdateCountry
-        , viewTextField model.phone "Phone" UpdatePhone
-        , viewTextField model.email "Email" UpdateEmail
-        , viewTextField model.additional "Additional Info" UpdateAdditional
-        , viewBoolField model.is_temporary "Save?" UpdateIsTemporary
-        , viewTextField model.name "Name" UpdateName
-        , viewTextField model.description "Description" UpdateDescription
-        , viewBoolField model.mine "Mine?" UpdateMine
-        , viewBoolField model.permanent "A Permanent location?" UpdatePermanent
-        , viewBoolField model.agent "An Agent" UpdateAgent
-        , viewBoolField model.client "A Client" UpdateClient
-        , viewBoolField model.gallery "A Gallery" UpdateGallery
+        [ viewAction model.action model.other_action_name
+        , viewLocation model.location
         ]
 
 
-viewTextField : String -> String -> (String -> Msg) -> Html Msg
+viewAction : Action -> String -> Html Msg
+viewAction action other_name =
+    div
+        [ style "display" "flex"
+        ]
+        [ button [ onClick (UpdateAction Sold) ]
+            [ text "Sold" ]
+        , button [ onClick (UpdateAction Loaned) ]
+            [ text "Loaned" ]
+        , button [ onClick (UpdateAction Moved) ]
+            [ text "Moved" ]
+        , button [ onClick (UpdateAction Assigned) ]
+            [ text "Assigned to agent" ]
+        , button [ onClick (UpdateAction Shown) ]
+            [ text "Shown" ]
+        , input
+            [ onInput UpdateOtherAction
+            , value other_name
+            ]
+            []
+        , button [ onClick (UpdateAction Other) ]
+            [ text "Other" ]
+        , div [] [ text (Debug.toString action) ]
+        , div [] [ text other_name ]
+        ]
+
+
+viewLocation : Location -> Html Msg
+viewLocation location =
+    div []
+        [ viewTextField location.address_1 "Address" UpdateAddress1
+        , viewTextField location.address_2 "Address Cont." UpdateAddress2
+        , viewTextField location.city "City" UpdateCity
+        , viewTextField location.state "State" UpdateState
+        , viewTextField location.zip_code "Zip Code" UpdateZipCode
+        , viewTextField location.country "Country" UpdateCountry
+        , viewTextField location.phone "Phone" UpdatePhone
+        , viewTextField location.email "Email" UpdateEmail
+        , viewTextField location.additional "Additional Info" UpdateAdditional
+        , viewBoolField location.is_temporary "Save?" UpdateIsTemporary
+        , viewTextField location.name "Name" UpdateName
+        , viewTextField location.description "Description" UpdateDescription
+        , viewBoolField location.mine "Mine?" UpdateMine
+        , viewBoolField location.permanent "A Permanent location?" UpdatePermanent
+        , viewBoolField location.agent "An Agent" UpdateAgent
+        , viewBoolField location.client "A Client" UpdateClient
+        , viewBoolField location.gallery "A Gallery" UpdateGallery
+        ]
+
+
+viewTextField : String -> String -> (String -> UpdateLocationMsg) -> Html Msg
 viewTextField field label_ action =
     div []
         [ label [] [ text (label_ ++ ": ") ]
         , input
-            [ onInput action
+            [ onInput (UpdateLocation << action)
             , value field
             ]
             []
         , div [] [ text field ]
         ]
 
-viewBoolField : Bool -> String -> (Bool -> Msg) -> Html Msg
+
+viewBoolField : Bool -> String -> (Bool -> UpdateLocationMsg) -> Html Msg
 viewBoolField field label_ action =
     div []
-        [ label [] [text (label_ ++ ": ")]
-        , input [ type_ "checkbox"
+        [ label [] [ text (label_ ++ ": ") ]
+        , input
+            [ type_ "checkbox"
             , checked field
-            , onCheck action] []
-        , div [] [text (if field then "True" else "False")]
+            , onCheck (UpdateLocation << action)
+            ]
+            []
+        , div []
+            [ text
+                (if field then
+                    "True"
+
+                 else
+                    "False"
+                )
+            ]
         ]

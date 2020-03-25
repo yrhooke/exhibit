@@ -6820,8 +6820,10 @@ var $author$project$ImageUpload$view = function (model) {
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(
 	{init: $author$project$ImageUpload$init, subscriptions: $author$project$ImageUpload$subscriptions, update: $author$project$ImageUpload$update, view: $author$project$ImageUpload$view});
-var $author$project$ArtworkActivity$newLocation = {additional: '', address_1: '', address_2: '', agent: false, city: '', client: false, country: '', description: '', email: '', gallery: false, is_temporary: true, mine: false, name: 'John\'s delivery shack', permanent: false, phone: '', state: '', zip_code: ''};
-var $author$project$ArtworkActivity$init = $author$project$ArtworkActivity$newLocation;
+var $author$project$ArtworkActivity$Moved = {$: 'Moved'};
+var $author$project$ArtworkActivity$newLocation = {additional: '', address_1: '', address_2: '', agent: false, city: '', client: false, country: '', description: '', email: '', gallery: false, is_temporary: true, mine: false, name: '', permanent: false, phone: '', state: '', zip_code: ''};
+var $author$project$ArtworkActivity$newActivity = {action: $author$project$ArtworkActivity$Moved, location: $author$project$ArtworkActivity$newLocation, other_action_name: ''};
+var $author$project$ArtworkActivity$init = $author$project$ArtworkActivity$newActivity;
 var $elm$browser$Browser$sandbox = function (impl) {
 	return _Browser_element(
 		{
@@ -6840,95 +6842,255 @@ var $elm$browser$Browser$sandbox = function (impl) {
 			view: impl.view
 		});
 };
-var $author$project$ArtworkActivity$update = F2(
-	function (msg, model) {
+var $author$project$ArtworkActivity$updateLocation = F2(
+	function (msg, location) {
 		switch (msg.$) {
 			case 'UpdateAddress1':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{address_1: val});
 			case 'UpdateAddress2':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{address_2: val});
 			case 'UpdateCity':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{city: val});
 			case 'UpdateState':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{state: val});
 			case 'UpdateZipCode':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{zip_code: val});
 			case 'UpdateCountry':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{country: val});
 			case 'UpdatePhone':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{phone: val});
 			case 'UpdateEmail':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{email: val});
 			case 'UpdateAdditional':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{additional: val});
 			case 'UpdateName':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{name: val});
 			case 'UpdateDescription':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{description: val});
 			case 'UpdateIsTemporary':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{is_temporary: val});
 			case 'UpdateAgent':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{agent: val});
 			case 'UpdateClient':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{client: val});
 			case 'UpdateGallery':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{gallery: val});
 			case 'UpdateMine':
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{mine: val});
 			default:
 				var val = msg.a;
 				return _Utils_update(
-					model,
+					location,
 					{permanent: val});
 		}
+	});
+var $author$project$ArtworkActivity$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'UpdateAction':
+				var a = msg.a;
+				return _Utils_update(
+					model,
+					{action: a});
+			case 'UpdateLocation':
+				var locationMsg = msg.a;
+				return _Utils_update(
+					model,
+					{
+						location: A2($author$project$ArtworkActivity$updateLocation, locationMsg, model.location)
+					});
+			default:
+				var other_name = msg.a;
+				return _Utils_update(
+					model,
+					{other_action_name: other_name});
+		}
+	});
+var $author$project$ArtworkActivity$Assigned = {$: 'Assigned'};
+var $author$project$ArtworkActivity$Loaned = {$: 'Loaned'};
+var $author$project$ArtworkActivity$Other = {$: 'Other'};
+var $author$project$ArtworkActivity$Shown = {$: 'Shown'};
+var $author$project$ArtworkActivity$Sold = {$: 'Sold'};
+var $author$project$ArtworkActivity$UpdateAction = function (a) {
+	return {$: 'UpdateAction', a: a};
+};
+var $author$project$ArtworkActivity$UpdateOtherAction = function (a) {
+	return {$: 'UpdateOtherAction', a: a};
+};
+var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var $elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$html$Html$Events$targetValue = A2(
+	$elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	$elm$json$Json$Decode$string);
+var $elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		$elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			$elm$json$Json$Decode$map,
+			$elm$html$Html$Events$alwaysStop,
+			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
+};
+var $elm$core$Debug$toString = _Debug_toString;
+var $author$project$ArtworkActivity$viewAction = F2(
+	function (action, other_name) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'display', 'flex')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onClick(
+							$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Sold))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Sold')
+						])),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onClick(
+							$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Loaned))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Loaned')
+						])),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onClick(
+							$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Moved))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Moved')
+						])),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onClick(
+							$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Assigned))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Assigned to agent')
+						])),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onClick(
+							$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Shown))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Shown')
+						])),
+					A2(
+					$elm$html$Html$input,
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onInput($author$project$ArtworkActivity$UpdateOtherAction),
+							$elm$html$Html$Attributes$value(other_name)
+						]),
+					_List_Nil),
+					A2(
+					$elm$html$Html$button,
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onClick(
+							$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Other))
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text('Other')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							$elm$core$Debug$toString(action))
+						]))
+				]));
 	});
 var $author$project$ArtworkActivity$UpdateAdditional = function (a) {
 	return {$: 'UpdateAdditional', a: a};
@@ -6981,13 +7143,16 @@ var $author$project$ArtworkActivity$UpdateState = function (a) {
 var $author$project$ArtworkActivity$UpdateZipCode = function (a) {
 	return {$: 'UpdateZipCode', a: a};
 };
+var $author$project$ArtworkActivity$UpdateLocation = function (a) {
+	return {$: 'UpdateLocation', a: a};
+};
 var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
-var $elm$html$Html$input = _VirtualDom_node('input');
-var $elm$html$Html$label = _VirtualDom_node('label');
-var $elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
 	});
+var $elm$html$Html$label = _VirtualDom_node('label');
 var $elm$json$Json$Decode$bool = _Json_decodeBool;
 var $elm$html$Html$Events$targetChecked = A2(
 	$elm$json$Json$Decode$at,
@@ -7020,7 +7185,8 @@ var $author$project$ArtworkActivity$viewBoolField = F3(
 						[
 							$elm$html$Html$Attributes$type_('checkbox'),
 							$elm$html$Html$Attributes$checked(field),
-							$elm$html$Html$Events$onCheck(action)
+							$elm$html$Html$Events$onCheck(
+							A2($elm$core$Basics$composeL, $author$project$ArtworkActivity$UpdateLocation, action))
 						]),
 					_List_Nil),
 					A2(
@@ -7033,33 +7199,6 @@ var $author$project$ArtworkActivity$viewBoolField = F3(
 						]))
 				]));
 	});
-var $elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
-};
-var $elm$html$Html$Events$stopPropagationOn = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
-	});
-var $elm$html$Html$Events$targetValue = A2(
-	$elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	$elm$json$Json$Decode$string);
-var $elm$html$Html$Events$onInput = function (tagger) {
-	return A2(
-		$elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$html$Html$Events$alwaysStop,
-			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
-};
 var $author$project$ArtworkActivity$viewTextField = F3(
 	function (field, label_, action) {
 		return A2(
@@ -7078,7 +7217,8 @@ var $author$project$ArtworkActivity$viewTextField = F3(
 					$elm$html$Html$input,
 					_List_fromArray(
 						[
-							$elm$html$Html$Events$onInput(action),
+							$elm$html$Html$Events$onInput(
+							A2($elm$core$Basics$composeL, $author$project$ArtworkActivity$UpdateLocation, action)),
 							$elm$html$Html$Attributes$value(field)
 						]),
 					_List_Nil),
@@ -7091,29 +7231,39 @@ var $author$project$ArtworkActivity$viewTextField = F3(
 						]))
 				]));
 	});
+var $author$project$ArtworkActivity$viewLocation = function (location) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A3($author$project$ArtworkActivity$viewTextField, location.address_1, 'Address', $author$project$ArtworkActivity$UpdateAddress1),
+				A3($author$project$ArtworkActivity$viewTextField, location.address_2, 'Address Cont.', $author$project$ArtworkActivity$UpdateAddress2),
+				A3($author$project$ArtworkActivity$viewTextField, location.city, 'City', $author$project$ArtworkActivity$UpdateCity),
+				A3($author$project$ArtworkActivity$viewTextField, location.state, 'State', $author$project$ArtworkActivity$UpdateState),
+				A3($author$project$ArtworkActivity$viewTextField, location.zip_code, 'Zip Code', $author$project$ArtworkActivity$UpdateZipCode),
+				A3($author$project$ArtworkActivity$viewTextField, location.country, 'Country', $author$project$ArtworkActivity$UpdateCountry),
+				A3($author$project$ArtworkActivity$viewTextField, location.phone, 'Phone', $author$project$ArtworkActivity$UpdatePhone),
+				A3($author$project$ArtworkActivity$viewTextField, location.email, 'Email', $author$project$ArtworkActivity$UpdateEmail),
+				A3($author$project$ArtworkActivity$viewTextField, location.additional, 'Additional Info', $author$project$ArtworkActivity$UpdateAdditional),
+				A3($author$project$ArtworkActivity$viewBoolField, location.is_temporary, 'Save?', $author$project$ArtworkActivity$UpdateIsTemporary),
+				A3($author$project$ArtworkActivity$viewTextField, location.name, 'Name', $author$project$ArtworkActivity$UpdateName),
+				A3($author$project$ArtworkActivity$viewTextField, location.description, 'Description', $author$project$ArtworkActivity$UpdateDescription),
+				A3($author$project$ArtworkActivity$viewBoolField, location.mine, 'Mine?', $author$project$ArtworkActivity$UpdateMine),
+				A3($author$project$ArtworkActivity$viewBoolField, location.permanent, 'A Permanent location?', $author$project$ArtworkActivity$UpdatePermanent),
+				A3($author$project$ArtworkActivity$viewBoolField, location.agent, 'An Agent', $author$project$ArtworkActivity$UpdateAgent),
+				A3($author$project$ArtworkActivity$viewBoolField, location.client, 'A Client', $author$project$ArtworkActivity$UpdateClient),
+				A3($author$project$ArtworkActivity$viewBoolField, location.gallery, 'A Gallery', $author$project$ArtworkActivity$UpdateGallery)
+			]));
+};
 var $author$project$ArtworkActivity$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
 		_List_fromArray(
 			[
-				A3($author$project$ArtworkActivity$viewTextField, model.address_1, 'Address', $author$project$ArtworkActivity$UpdateAddress1),
-				A3($author$project$ArtworkActivity$viewTextField, model.address_2, 'Address Cont.', $author$project$ArtworkActivity$UpdateAddress2),
-				A3($author$project$ArtworkActivity$viewTextField, model.city, 'City', $author$project$ArtworkActivity$UpdateCity),
-				A3($author$project$ArtworkActivity$viewTextField, model.state, 'State', $author$project$ArtworkActivity$UpdateState),
-				A3($author$project$ArtworkActivity$viewTextField, model.zip_code, 'Zip Code', $author$project$ArtworkActivity$UpdateZipCode),
-				A3($author$project$ArtworkActivity$viewTextField, model.country, 'Country', $author$project$ArtworkActivity$UpdateCountry),
-				A3($author$project$ArtworkActivity$viewTextField, model.phone, 'Phone', $author$project$ArtworkActivity$UpdatePhone),
-				A3($author$project$ArtworkActivity$viewTextField, model.email, 'Email', $author$project$ArtworkActivity$UpdateEmail),
-				A3($author$project$ArtworkActivity$viewTextField, model.additional, 'Additional Info', $author$project$ArtworkActivity$UpdateAdditional),
-				A3($author$project$ArtworkActivity$viewBoolField, model.is_temporary, 'Save?', $author$project$ArtworkActivity$UpdateIsTemporary),
-				A3($author$project$ArtworkActivity$viewTextField, model.name, 'Name', $author$project$ArtworkActivity$UpdateName),
-				A3($author$project$ArtworkActivity$viewTextField, model.description, 'Description', $author$project$ArtworkActivity$UpdateDescription),
-				A3($author$project$ArtworkActivity$viewBoolField, model.mine, 'Mine?', $author$project$ArtworkActivity$UpdateMine),
-				A3($author$project$ArtworkActivity$viewBoolField, model.permanent, 'A Permanent location?', $author$project$ArtworkActivity$UpdatePermanent),
-				A3($author$project$ArtworkActivity$viewBoolField, model.agent, 'An Agent', $author$project$ArtworkActivity$UpdateAgent),
-				A3($author$project$ArtworkActivity$viewBoolField, model.client, 'A Client', $author$project$ArtworkActivity$UpdateClient),
-				A3($author$project$ArtworkActivity$viewBoolField, model.gallery, 'A Gallery', $author$project$ArtworkActivity$UpdateGallery)
+				A2($author$project$ArtworkActivity$viewAction, model.action, model.other_action_name),
+				$author$project$ArtworkActivity$viewLocation(model.location)
 			]));
 };
 var $author$project$ArtworkActivity$main = $elm$browser$Browser$sandbox(
