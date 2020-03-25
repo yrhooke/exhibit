@@ -32,6 +32,8 @@ type alias Model =
     { csrftoken : String
     , artwork_id : Maybe String
     , image_data : ImageData
+    , loader_url : String
+    , checkmark_url : String
     , status : Status
     }
 
@@ -55,42 +57,35 @@ type alias ImageData =
 
 init : D.Value -> ( Model, Cmd Msg )
 init flags =
-    ( { csrftoken = decodeCSRF flags
-      , artwork_id = decodeArtworkID flags
+    ( { csrftoken = decodeFieldtoString "csrftoken" flags
+      , artwork_id = decodeFieldtoMaybeString "artwork_id" flags
       , image_data =
-            { image_id = decodeImageID flags
+            { image_id = decodeFieldtoMaybeString "image_id" flags
             , image_url = decodeImageURL flags
             }
+      , loader_url = decodeFieldtoString "loader_url" flags
+      , checkmark_url = decodeFieldtoString "checkmark_url" flags
       , status = Waiting
       }
     , Cmd.none
     )
 
 
-decodeCSRF : D.Value -> String
-decodeCSRF flags =
-    case D.decodeValue (D.field "csrftoken" D.string) flags of
-        Ok token ->
-            token
+decodeFieldtoString : String -> D.Value -> String
+decodeFieldtoString field flags =
+    case D.decodeValue (D.field field D.string) flags of
+        Ok str ->
+            str
 
         Err message ->
             ""
 
 
-decodeArtworkID : D.Value -> Maybe String
-decodeArtworkID flags =
-    case D.decodeValue (D.field "artwork_id" D.string) flags of
-        Ok artwork_id ->
-            Just artwork_id
-
-        Err message ->
-            Nothing
-
-
-decodeImageID flags =
-    case D.decodeValue (D.field "image_id" D.string) flags of
-        Ok image_id ->
-            Just image_id
+decodeFieldtoMaybeString : String -> D.Value -> Maybe String
+decodeFieldtoMaybeString field flags =
+    case D.decodeValue (D.field field D.string) flags of
+        Ok str ->
+            Just str
 
         Err message ->
             Nothing
@@ -212,12 +207,11 @@ view model =
             [ style "height" "405px"
             ]
             [ imageView model
-            , uploadingImageCoverView model.status
+            , uploadingImageCoverView model.loader_url model.status
             ]
         , hiddenInputView model.image_data.image_id
-        , uploaderView model
-
-        -- , div [] [ text (Debug.toString model) ]
+        , uploaderView model.checkmark_url model.status
+        , div [] [ text (Debug.toString model) ]
         ]
 
 
@@ -292,8 +286,8 @@ imageView model =
 --             []
 
 
-uploadingImageCoverView : Status -> Html Msg
-uploadingImageCoverView status =
+uploadingImageCoverView : String -> Status -> Html Msg
+uploadingImageCoverView loader_url status =
     case status of
         Waiting ->
             div [] []
@@ -310,7 +304,7 @@ uploadingImageCoverView status =
                 , style "align-items" "center"
                 ]
                 [ img
-                    [ src "/static/images/spinner.svg"
+                    [ src loader_url
                     , style "height" "32px"
                     ]
                     []
@@ -352,9 +346,9 @@ uploadingImageCoverView status =
 -- </div>
 
 
-uploaderView : Model -> Html Msg
-uploaderView model =
-    case model.status of
+uploaderView : String -> Status -> Html Msg
+uploaderView checkmark_url status =
+    case status of
         Waiting ->
             div []
                 [ button
@@ -407,7 +401,7 @@ uploaderView model =
                     , style "width" "40px"
                     ]
                     [ img
-                        [ src "/static/images/upload_check.svg"
+                        [ src checkmark_url
                         , style "height" "25px"
                         ]
                         []

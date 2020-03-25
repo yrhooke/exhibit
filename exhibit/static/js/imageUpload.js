@@ -5501,45 +5501,34 @@ var $author$project$ImageUpload$Waiting = {$: 'Waiting'};
 var $elm$json$Json$Decode$decodeValue = _Json_run;
 var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$ImageUpload$decodeArtworkID = function (flags) {
-	var _v0 = A2(
-		$elm$json$Json$Decode$decodeValue,
-		A2($elm$json$Json$Decode$field, 'artwork_id', $elm$json$Json$Decode$string),
-		flags);
-	if (_v0.$ === 'Ok') {
-		var artwork_id = _v0.a;
-		return $elm$core$Maybe$Just(artwork_id);
-	} else {
-		var message = _v0.a;
-		return $elm$core$Maybe$Nothing;
-	}
-};
-var $author$project$ImageUpload$decodeCSRF = function (flags) {
-	var _v0 = A2(
-		$elm$json$Json$Decode$decodeValue,
-		A2($elm$json$Json$Decode$field, 'csrftoken', $elm$json$Json$Decode$string),
-		flags);
-	if (_v0.$ === 'Ok') {
-		var token = _v0.a;
-		return token;
-	} else {
-		var message = _v0.a;
-		return '';
-	}
-};
-var $author$project$ImageUpload$decodeImageID = function (flags) {
-	var _v0 = A2(
-		$elm$json$Json$Decode$decodeValue,
-		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$string),
-		flags);
-	if (_v0.$ === 'Ok') {
-		var image_id = _v0.a;
-		return $elm$core$Maybe$Just(image_id);
-	} else {
-		var message = _v0.a;
-		return $elm$core$Maybe$Nothing;
-	}
-};
+var $author$project$ImageUpload$decodeFieldtoMaybeString = F2(
+	function (field, flags) {
+		var _v0 = A2(
+			$elm$json$Json$Decode$decodeValue,
+			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$string),
+			flags);
+		if (_v0.$ === 'Ok') {
+			var str = _v0.a;
+			return $elm$core$Maybe$Just(str);
+		} else {
+			var message = _v0.a;
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $author$project$ImageUpload$decodeFieldtoString = F2(
+	function (field, flags) {
+		var _v0 = A2(
+			$elm$json$Json$Decode$decodeValue,
+			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$string),
+			flags);
+		if (_v0.$ === 'Ok') {
+			var str = _v0.a;
+			return str;
+		} else {
+			var message = _v0.a;
+			return '';
+		}
+	});
 var $elm$core$Basics$neq = _Utils_notEqual;
 var $author$project$ImageUpload$decodeImageURL = function (flags) {
 	var _v0 = A2(
@@ -5559,12 +5548,14 @@ var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$ImageUpload$init = function (flags) {
 	return _Utils_Tuple2(
 		{
-			artwork_id: $author$project$ImageUpload$decodeArtworkID(flags),
-			csrftoken: $author$project$ImageUpload$decodeCSRF(flags),
+			artwork_id: A2($author$project$ImageUpload$decodeFieldtoMaybeString, 'artwork_id', flags),
+			checkmark_url: A2($author$project$ImageUpload$decodeFieldtoString, 'checkmark_url', flags),
+			csrftoken: A2($author$project$ImageUpload$decodeFieldtoString, 'csrftoken', flags),
 			image_data: {
-				image_id: $author$project$ImageUpload$decodeImageID(flags),
+				image_id: A2($author$project$ImageUpload$decodeFieldtoMaybeString, 'image_id', flags),
 				image_url: $author$project$ImageUpload$decodeImageURL(flags)
 			},
+			loader_url: A2($author$project$ImageUpload$decodeFieldtoString, 'loader_url', flags),
 			status: $author$project$ImageUpload$Waiting
 		},
 		$elm$core$Platform$Cmd$none);
@@ -6608,6 +6599,9 @@ var $author$project$ImageUpload$imageView = function (model) {
 			show_blurring),
 		_List_Nil);
 };
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$core$Debug$toString = _Debug_toString;
 var $author$project$ImageUpload$Pick = {$: 'Pick'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$img = _VirtualDom_node('img');
@@ -6635,176 +6629,175 @@ var $elm$html$Html$Attributes$src = function (url) {
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $author$project$ImageUpload$uploaderView = function (model) {
-	var _v0 = model.status;
-	switch (_v0.$) {
-		case 'Waiting':
-			return A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$type_('button'),
-								$elm$html$Html$Attributes$class('btn'),
-								$elm$html$Html$Attributes$class('action-button'),
-								$elm$html$Html$Events$onClick($author$project$ImageUpload$Pick)
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Upload Image')
-							]))
-					]));
-		case 'Uploading':
-			return A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('btn'),
-								$elm$html$Html$Attributes$class('action-button'),
-								A2($elm$html$Html$Attributes$style, 'background-color', 'slategrey'),
-								A2($elm$html$Html$Attributes$style, 'border-color', 'slategrey'),
-								A2($elm$html$Html$Attributes$style, 'color', 'white')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Upload Image')
-							]))
-					]));
-		case 'Done':
-			return A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-						A2($elm$html$Html$Attributes$style, 'align-items', 'center')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$type_('button'),
-								$elm$html$Html$Attributes$class('btn'),
-								$elm$html$Html$Attributes$class('action-button'),
-								$elm$html$Html$Events$onClick($author$project$ImageUpload$Pick)
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Upload Image')
-							])),
-						A2(
-						$elm$html$Html$span,
-						_List_fromArray(
-							[
-								A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-								A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
-								A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
-								A2($elm$html$Html$Attributes$style, 'width', '40px')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$img,
-								_List_fromArray(
-									[
-										$elm$html$Html$Attributes$src('/static/images/upload_check.svg'),
-										A2($elm$html$Html$Attributes$style, 'height', '25px')
-									]),
-								_List_Nil)
-							]))
-					]));
-		default:
-			return A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$button,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$type_('button'),
-								$elm$html$Html$Attributes$class('btn'),
-								$elm$html$Html$Attributes$class('action-button'),
-								$elm$html$Html$Events$onClick($author$project$ImageUpload$Pick)
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Upload Image')
-							]))
-					]));
-	}
-};
-var $author$project$ImageUpload$uploadingImageCoverView = function (status) {
-	switch (status.$) {
-		case 'Waiting':
-			return A2($elm$html$Html$div, _List_Nil, _List_Nil);
-		case 'Uploading':
-			return A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'margin-top', '-405px'),
-						A2($elm$html$Html$Attributes$style, 'background', 'rgba(256, 256, 256, 0.4)'),
-						A2($elm$html$Html$Attributes$style, 'z-index', '2'),
-						A2($elm$html$Html$Attributes$style, 'width', 'inherit'),
-						A2($elm$html$Html$Attributes$style, 'height', 'inherit'),
-						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-						A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
-						A2($elm$html$Html$Attributes$style, 'align-items', 'center')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$img,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$src('/static/images/spinner.svg'),
-								A2($elm$html$Html$Attributes$style, 'height', '32px')
-							]),
-						_List_Nil)
-					]));
-		case 'Done':
-			return A2($elm$html$Html$div, _List_Nil, _List_Nil);
-		default:
-			return A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						A2($elm$html$Html$Attributes$style, 'margin-top', '-405px'),
-						A2($elm$html$Html$Attributes$style, 'background', 'rgba(256, 256, 256, 0.4)'),
-						A2($elm$html$Html$Attributes$style, 'z-index', '2'),
-						A2($elm$html$Html$Attributes$style, 'width', 'inherit'),
-						A2($elm$html$Html$Attributes$style, 'height', 'inherit'),
-						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-						A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
-						A2($elm$html$Html$Attributes$style, 'align-items', 'center')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$div,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text('Upload Failed. Please try again')
-							]))
-					]));
-	}
-};
+var $author$project$ImageUpload$uploaderView = F2(
+	function (checkmark_url, status) {
+		switch (status.$) {
+			case 'Waiting':
+				return A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('button'),
+									$elm$html$Html$Attributes$class('btn'),
+									$elm$html$Html$Attributes$class('action-button'),
+									$elm$html$Html$Events$onClick($author$project$ImageUpload$Pick)
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Upload Image')
+								]))
+						]));
+			case 'Uploading':
+				return A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('btn'),
+									$elm$html$Html$Attributes$class('action-button'),
+									A2($elm$html$Html$Attributes$style, 'background-color', 'slategrey'),
+									A2($elm$html$Html$Attributes$style, 'border-color', 'slategrey'),
+									A2($elm$html$Html$Attributes$style, 'color', 'white')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Upload Image')
+								]))
+						]));
+			case 'Done':
+				return A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+							A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('button'),
+									$elm$html$Html$Attributes$class('btn'),
+									$elm$html$Html$Attributes$class('action-button'),
+									$elm$html$Html$Events$onClick($author$project$ImageUpload$Pick)
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Upload Image')
+								])),
+							A2(
+							$elm$html$Html$span,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+									A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+									A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+									A2($elm$html$Html$Attributes$style, 'width', '40px')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src(checkmark_url),
+											A2($elm$html$Html$Attributes$style, 'height', '25px')
+										]),
+									_List_Nil)
+								]))
+						]));
+			default:
+				return A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$type_('button'),
+									$elm$html$Html$Attributes$class('btn'),
+									$elm$html$Html$Attributes$class('action-button'),
+									$elm$html$Html$Events$onClick($author$project$ImageUpload$Pick)
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Upload Image')
+								]))
+						]));
+		}
+	});
+var $author$project$ImageUpload$uploadingImageCoverView = F2(
+	function (loader_url, status) {
+		switch (status.$) {
+			case 'Waiting':
+				return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+			case 'Uploading':
+				return A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'margin-top', '-405px'),
+							A2($elm$html$Html$Attributes$style, 'background', 'rgba(256, 256, 256, 0.4)'),
+							A2($elm$html$Html$Attributes$style, 'z-index', '2'),
+							A2($elm$html$Html$Attributes$style, 'width', 'inherit'),
+							A2($elm$html$Html$Attributes$style, 'height', 'inherit'),
+							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+							A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+							A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$img,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$src(loader_url),
+									A2($elm$html$Html$Attributes$style, 'height', '32px')
+								]),
+							_List_Nil)
+						]));
+			case 'Done':
+				return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+			default:
+				return A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'margin-top', '-405px'),
+							A2($elm$html$Html$Attributes$style, 'background', 'rgba(256, 256, 256, 0.4)'),
+							A2($elm$html$Html$Attributes$style, 'z-index', '2'),
+							A2($elm$html$Html$Attributes$style, 'width', 'inherit'),
+							A2($elm$html$Html$Attributes$style, 'height', 'inherit'),
+							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+							A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+							A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$div,
+							_List_Nil,
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Upload Failed. Please try again')
+								]))
+						]));
+		}
+	});
 var $author$project$ImageUpload$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -6820,10 +6813,18 @@ var $author$project$ImageUpload$view = function (model) {
 				_List_fromArray(
 					[
 						$author$project$ImageUpload$imageView(model),
-						$author$project$ImageUpload$uploadingImageCoverView(model.status)
+						A2($author$project$ImageUpload$uploadingImageCoverView, model.loader_url, model.status)
 					])),
 				$author$project$ImageUpload$hiddenInputView(model.image_data.image_id),
-				$author$project$ImageUpload$uploaderView(model)
+				A2($author$project$ImageUpload$uploaderView, model.checkmark_url, model.status),
+				A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$elm$core$Debug$toString(model))
+					]))
 			]));
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(

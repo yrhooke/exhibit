@@ -226,27 +226,32 @@
                     <div id="elm-stuff">
                         <div id="elm-flags">
                             {% csrf_token %}
-                            <input type="hidden" name="artwork_id" value={{object.pk}}>
-                            <input type="hidden" name="image_url_marker" value="{{object.get_image.url}}">
-                            <input type="hidden" name="artwork_image_id" value="{{object.get_image.pk}}">
                         </div>
                         <div id="elm-app"></div>
                         <script src="{% static 'js/imageUpload.js' %}"></script>
                         <script>
-                            var csrftoken = document.getElementById('elm-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
-                            var artwork_id = document.getElementById('elm-flags').querySelector('input[name=artwork_id]').value;
-                            var image_url = document.getElementById('elm-flags').querySelector('input[name=image_url_marker]').value;
-                            var image_id = document.getElementById('elm-flags').querySelector('input[name=artwork_image_id]').value;
-                            console.log(`csrftoken: ${csrftoken}, artwork_id: ${artwork_id}, image_url: ${image_url}`)
-                            var app = Elm.ImageUpload.init({
-                                node: document.getElementById('elm-app'),
-                                flags: {
+                            function elm_flags() {
+                                let csrftoken = document.getElementById('elm-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
+                                let artwork_id = "{{ object.pk }}";
+                                let image_url = "{{ object.get_image.url }}";
+                                let image_id = "{{ object.get_image.pk }}";
+                                let loader_url = "{% static 'images/spinner.svg' %}"
+                                let checkmark_url = "{% static 'images/upload_check.svg' %}"
+                                let elm_flags = {
                                     'csrftoken': csrftoken,
                                     'artwork_id': artwork_id,
                                     'image_url': image_url,
-                                    'image_id': image_id
-                                }
-                          });        
+                                    'image_id': image_id,
+                                    'loader_url': loader_url,
+                                    'checkmark_url': checkmark_url
+                                };
+                                return elm_flags
+                            }
+                            console.log(elm_flags())
+                            var app = Elm.ImageUpload.init({
+                                node: document.getElementById('elm-app'),
+                                flags: elm_flags()
+                            });        
                         </script>
                     </div>
                     <!-- <div style="height:405px;">
