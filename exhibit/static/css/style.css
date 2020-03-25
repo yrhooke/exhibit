@@ -129,6 +129,7 @@ rgb(96, 124, 160) */
     display:flex;
     flex-direction:column;
     align-items:center;
+    margin-top: 11px;
 }
 #sidebar-header img {
     display: block;
