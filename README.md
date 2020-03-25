@@ -133,10 +133,32 @@ Artwork management tool
   - [X] adjust width on selects to be presentable
   - [X] decide on all help texts
   - [X] in detail views, especially artwork detail view sales info, show label + field text in same size
+- [X] add loading state for media upload
+  - [X] preview from local
+  - [X] create image class
+  - [X] in create/upload form, on upload press create image object, link image object id Artwork
+  - [X] see if form submission and image upload can happen at same time if initiated separately
+    - [ ] if so, great.
+    - [ ] If not block form submission until image upload complete
+  - [X] add image update status icon to artwork detail view
+  - [X] see that when updating image and moving halfway through you don't break anything
+- [X] use textarea js to clean up size field + other fields' text resizing
 
 ### in current branch
 
-- [X] use textarea js to clean up size field + other fields' text resizing
+- [ ] Improved location/sales data
+  - [X] brainstorm what's needed
+  - [ ] define new/modified models
+  - [ ] write validations/constraints to ensure model constraints followed
+    - [ ] for example - sales can only happen with clients
+    - [ ] etc.
+  - [ ] add backend paths for everything we want (creating/updating/deleting activities + sales)
+  - [ ] front end - artwork detail view
+  - [ ] front end - location detail view
+  - [ ] front end - location list view
+  - [ ] front end - exhibition view
+  - [ ] site map reorganization as necessary
+  - [ ] add data migrations to ensure everything works well on website
 
 ### next phase
 
@@ -146,15 +168,6 @@ Artwork management tool
   - [ ] add allowClear to select2's (see except below)
 - [ ] Implement deleteViews
 - [ ] remove work from exhibition
-- [ ] add loading state for media upload
-  - [X] preview from local
-  - [ ] create image class
-  - [ ] in create/upload form, on upload press create image object, link image object id Artwork
-  - [ ] see if form submission and image upload can happen at same time if initiated separately
-    - [ ] if so, great.
-    - [ ] If not block form submission until image upload complete
-  - [ ] add image update status icon to artwork detail view
-  - [ ] see that when updating image and moving halfway through you don't break anything
 
 ### Post Launch
 

@@ -3,6 +3,7 @@
 {% load static %}
 
 {% block javascript %}
+<script src="{% static 'js/elm.js' %}"></script>
 <script>
     function updateExhibitions() {
         let split_location = location.pathname.split('/');
@@ -230,7 +231,6 @@
                             <img src="{% static 'images/upload_check.svg' %}" style="display:none;">
                         </div>
                         <div id="elm-app"></div>
-                        <script src="{% static 'js/imageUpload.js' %}"></script>
                         <script>
                             function elm_flags() {
                                 let csrftoken = document.getElementById('elm-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
@@ -357,6 +357,16 @@
 <form class="collapse" action="{% url 'catalogue:add_workinexhibition' %}" method="POST" id="workinexhibition-form">
     {% csrf_token %}
 </form>
+<div id="elm-activity-wrapper">
+    <div id="elm-activity"></div>
+    <script>
+        var elm_activity = Elm.ArtworkActivity.init({
+            node: document.getElementById('elm-app'),
+            flags: elm_flags()
+        });      
+    </script>
+</div>
+
 {% endblock object_details %}
 
 {% block related_items %}
@@ -365,7 +375,7 @@
 {% block left_swipe %}
 {% if prev_artwork %}
 <a id="left-swipe-action" class="swipe-action" href="{% url 'catalogue:artwork_detail' prev_artwork.pk %}"
- onclick="getElementById('left-swipe-action').focus()">
+    onclick="getElementById('left-swipe-action').focus()">
     <div class="swipe-action-icon">&lt;</div>
 </a>
 {% endif %}
@@ -374,7 +384,7 @@
 {% block right_swipe %}
 {% if next_artwork %}
 <a id="right-swipe-action" class="swipe-action" href="{% url 'catalogue:artwork_detail' next_artwork.pk %}"
-onclick="getElementById('right-swipe-action').focus()">
+    onclick="getElementById('right-swipe-action').focus()">
     <div class="swipe-action-icon">&gt;</div>
 </a>
 {% endif %}
