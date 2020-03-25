@@ -35,7 +35,7 @@
 
 
   <!-- Project specific CSS -->
-  <link rel="stylesheet" href="{% static 'css/style.css' %}?version='0.3.0">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?version='0.4.0">
 
 
 
@@ -285,8 +285,12 @@
       {% endfor %}
       {% endif %}
 
+      <div id="main-page-body">
+        {% block left_swipe %}{% endblock %}
       <div id="page-contents" class="center-block">
         {% block content %} {% endblock %}
+      </div>
+       {% block right_swipe %}{% endblock %}
       </div>
     </div> <!-- /container -->
   </div>

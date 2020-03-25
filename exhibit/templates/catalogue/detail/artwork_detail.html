@@ -361,3 +361,21 @@
 
 {% block related_items %}
 {% endblock %}
+
+{% block left_swipe %}
+{% if prev_artwork %}
+<a id="left-swipe-action" class="swipe-action" href="{% url 'catalogue:artwork_detail' prev_artwork.pk %}"
+ onclick="getElementById('left-swipe-action').focus()">
+    <div class="swipe-action-icon">&lt;</div>
+</a>
+{% endif %}
+{% endblock %}
+
+{% block right_swipe %}
+{% if next_artwork %}
+<a id="right-swipe-action" class="swipe-action" href="{% url 'catalogue:artwork_detail' next_artwork.pk %}"
+onclick="getElementById('right-swipe-action').focus()">
+    <div class="swipe-action-icon">&gt;</div>
+</a>
+{% endif %}
+{% endblock %}

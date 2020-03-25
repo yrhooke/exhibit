@@ -1,6 +1,6 @@
 import json
 
-from django.http import HttpResponse, HttpResponseRedirect, JsonResponse 
+from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.http import HttpResponseNotAllowed, HttpResponseBadRequest
 from django.urls import reverse_lazy, reverse, NoReverseMatch
 from django.views.generic import ListView, TemplateView
@@ -15,6 +15,18 @@ from catalogue.forms import ArtworkDetailForm, SeriesDetailForm, LocationDetailF
 from catalogue.forms import ArtworkSearchForm, LocationSearchForm, ExhibitionSearchForm
 from catalogue.forms import WorkInExhibitionForm
 from catalogue.forms import ArtworkImageUploadForm
+
+
+def order_artwork_list(queryset):
+    """return list of artworks according to canonical ordering"""
+    ordered_queryset = queryset.order_by(
+        F('size').desc(nulls_last=True),
+        F('year').desc(nulls_last=True),
+        'series__id',
+        'title',
+    )
+
+    return ordered_queryset
 
 
 class SearchMixin(object):
@@ -91,12 +103,7 @@ class SearchMixin(object):
         valid_queries = [query for query in queries if query]  # remove None queries
         queryset = Artwork.objects.filter(*valid_queries)
 
-        ordered_queryset = queryset.order_by(
-            F('size').desc(nulls_last=True),
-            F('year').desc(nulls_last=True),
-            'series__id',
-            'title',
-        )
+        ordered_queryset = order_artwork_list(queryset)
 
         # return queryset.order_by('size').desc(nulls_last=True).order_by('year').desc(nulls_last=True).order_by, 'series__id', 'title')[:50]
         return ordered_queryset
@@ -177,7 +184,7 @@ class ArtworkCreate(LoginRequiredMixin, genericCreateView):
         form.fields['owner'].required = False
         form.fields['status'].required = True
         return form
-    
+
     def form_valid(self, form):
         self.object = form.save()
 
@@ -198,6 +205,8 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
         context = super().get_context_data(**kwargs)
 
         context['exhibitionForm'] = WorkInExhibitionForm()
+        context['prev_artwork'] = self.prev_artwork()
+        context['next_artwork'] = self.next_artwork()
         return context
 
     def get_form(self, form_class=None):
@@ -207,6 +216,30 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
         form.fields['status'].required = True
         return form
 
+    def next_artwork(self):
+        """return the next artwork according to the canonical ordering"""
+        artwork = self.object
+        works_in_series = order_artwork_list(Artwork.objects.filter(series=self.object.series))
+        works_iterator = iter(works_in_series)
+        for work in works_iterator:
+            if work == artwork:
+                break
+        try:
+            return next(works_iterator)
+        except StopIteration:
+            return None
+
+    def prev_artwork(self):
+        """return the next artwork according to the canonical ordering"""
+        artwork = self.object
+        works_in_series = order_artwork_list(Artwork.objects.filter(series=self.object.series))
+        works_iterator = iter(works_in_series)
+        prev = None
+        for work in works_iterator:
+            if work == artwork:
+                break
+            prev = work
+        return prev
 
 
 def clone_artwork(request, artwork_pk):
@@ -215,7 +248,7 @@ def clone_artwork(request, artwork_pk):
 
     new_artwork_image = ArtworkImage()
     new_artwork_image.image = artwork.get_image
-    
+
     artwork.title = "Copy of " + artwork.title
     artwork.pk = None
     artwork.save()
@@ -225,24 +258,27 @@ def clone_artwork(request, artwork_pk):
 
     return redirect(artwork)
 
+
 def artworkimage(request, pk):
     image = ArtworkImage.objects.get(pk=pk)
 
-    return render(request, 'catalogue/utils/artworkimage.html', {'image' : image})
-    
+    return render(request, 'catalogue/utils/artworkimage.html', {'image': image})
+
+
 def artworkimage_upload(request):
     if request.method == 'POST':
         form = ArtworkImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
             artworkimage = form.save()
             return JsonResponse({
-                'image_id' : artworkimage.pk,
+                'image_id': artworkimage.pk,
                 'image_url': artworkimage.image.url,
             })
         else:
             return HttpResponseBadRequest()
     else:
         return HttpResponseNotAllowed(['POST'])
+
 
 class ArtworkDelete(LoginRequiredMixin, DeleteView):
     model = Artwork
