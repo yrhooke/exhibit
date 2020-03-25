@@ -6820,10 +6820,23 @@ var $author$project$ImageUpload$view = function (model) {
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(
 	{init: $author$project$ImageUpload$init, subscriptions: $author$project$ImageUpload$subscriptions, update: $author$project$ImageUpload$update, view: $author$project$ImageUpload$view});
+var $miyamoen$select_list$Types$SelectList = F3(
+	function (a, b, c) {
+		return {$: 'SelectList', a: a, b: b, c: c};
+	});
+var $miyamoen$select_list$Types$fromLists = F3(
+	function (before, a, after) {
+		return A3(
+			$miyamoen$select_list$Types$SelectList,
+			$elm$core$List$reverse(before),
+			a,
+			after);
+	});
+var $miyamoen$select_list$SelectList$fromLists = $miyamoen$select_list$Types$fromLists;
 var $author$project$ArtworkActivity$Moved = {$: 'Moved'};
 var $author$project$ArtworkActivity$newLocation = {additional: '', address_1: '', address_2: '', agent: false, city: '', client: false, country: '', description: '', email: '', gallery: false, is_temporary: true, mine: false, name: '', permanent: false, phone: '', state: '', zip_code: ''};
 var $author$project$ArtworkActivity$newActivity = {action: $author$project$ArtworkActivity$Moved, location: $author$project$ArtworkActivity$newLocation, other_action_name: ''};
-var $author$project$ArtworkActivity$init = $author$project$ArtworkActivity$newActivity;
+var $author$project$ArtworkActivity$init = A3($miyamoen$select_list$SelectList$fromLists, _List_Nil, $author$project$ArtworkActivity$newActivity, _List_Nil);
 var $elm$browser$Browser$sandbox = function (impl) {
 	return _Browser_element(
 		{
@@ -6842,6 +6855,261 @@ var $elm$browser$Browser$sandbox = function (impl) {
 			view: impl.view
 		});
 };
+var $miyamoen$select_list$Types$listAfter = function (_v0) {
+	var xs = _v0.c;
+	return xs;
+};
+var $miyamoen$select_list$SelectList$listAfter = $miyamoen$select_list$Types$listAfter;
+var $miyamoen$select_list$Types$listBefore = function (_v0) {
+	var xs = _v0.a;
+	return $elm$core$List$reverse(xs);
+};
+var $miyamoen$select_list$SelectList$listBefore = $miyamoen$select_list$Types$listBefore;
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $miyamoen$select_list$Types$reverseAppend = F2(
+	function (xs, ys) {
+		return A3($elm$core$List$foldl, $elm$core$List$cons, ys, xs);
+	});
+var $elm$core$List$drop = F2(
+	function (n, list) {
+		drop:
+		while (true) {
+			if (n <= 0) {
+				return list;
+			} else {
+				if (!list.b) {
+					return list;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs;
+					n = $temp$n;
+					list = $temp$list;
+					continue drop;
+				}
+			}
+		}
+	});
+var $elm$core$List$takeReverse = F3(
+	function (n, list, kept) {
+		takeReverse:
+		while (true) {
+			if (n <= 0) {
+				return kept;
+			} else {
+				if (!list.b) {
+					return kept;
+				} else {
+					var x = list.a;
+					var xs = list.b;
+					var $temp$n = n - 1,
+						$temp$list = xs,
+						$temp$kept = A2($elm$core$List$cons, x, kept);
+					n = $temp$n;
+					list = $temp$list;
+					kept = $temp$kept;
+					continue takeReverse;
+				}
+			}
+		}
+	});
+var $elm$core$List$takeTailRec = F2(
+	function (n, list) {
+		return $elm$core$List$reverse(
+			A3($elm$core$List$takeReverse, n, list, _List_Nil));
+	});
+var $elm$core$List$takeFast = F3(
+	function (ctr, n, list) {
+		if (n <= 0) {
+			return _List_Nil;
+		} else {
+			var _v0 = _Utils_Tuple2(n, list);
+			_v0$1:
+			while (true) {
+				_v0$5:
+				while (true) {
+					if (!_v0.b.b) {
+						return list;
+					} else {
+						if (_v0.b.b.b) {
+							switch (_v0.a) {
+								case 1:
+									break _v0$1;
+								case 2:
+									var _v2 = _v0.b;
+									var x = _v2.a;
+									var _v3 = _v2.b;
+									var y = _v3.a;
+									return _List_fromArray(
+										[x, y]);
+								case 3:
+									if (_v0.b.b.b.b) {
+										var _v4 = _v0.b;
+										var x = _v4.a;
+										var _v5 = _v4.b;
+										var y = _v5.a;
+										var _v6 = _v5.b;
+										var z = _v6.a;
+										return _List_fromArray(
+											[x, y, z]);
+									} else {
+										break _v0$5;
+									}
+								default:
+									if (_v0.b.b.b.b && _v0.b.b.b.b.b) {
+										var _v7 = _v0.b;
+										var x = _v7.a;
+										var _v8 = _v7.b;
+										var y = _v8.a;
+										var _v9 = _v8.b;
+										var z = _v9.a;
+										var _v10 = _v9.b;
+										var w = _v10.a;
+										var tl = _v10.b;
+										return (ctr > 1000) ? A2(
+											$elm$core$List$cons,
+											x,
+											A2(
+												$elm$core$List$cons,
+												y,
+												A2(
+													$elm$core$List$cons,
+													z,
+													A2(
+														$elm$core$List$cons,
+														w,
+														A2($elm$core$List$takeTailRec, n - 4, tl))))) : A2(
+											$elm$core$List$cons,
+											x,
+											A2(
+												$elm$core$List$cons,
+												y,
+												A2(
+													$elm$core$List$cons,
+													z,
+													A2(
+														$elm$core$List$cons,
+														w,
+														A3($elm$core$List$takeFast, ctr + 1, n - 4, tl)))));
+									} else {
+										break _v0$5;
+									}
+							}
+						} else {
+							if (_v0.a === 1) {
+								break _v0$1;
+							} else {
+								break _v0$5;
+							}
+						}
+					}
+				}
+				return list;
+			}
+			var _v1 = _v0.b;
+			var x = _v1.a;
+			return _List_fromArray(
+				[x]);
+		}
+	});
+var $elm$core$List$take = F2(
+	function (n, list) {
+		return A3($elm$core$List$takeFast, 0, n, list);
+	});
+var $miyamoen$select_list$Select$splitAt = F2(
+	function (n, list) {
+		var _v0 = _Utils_Tuple2(
+			A2($elm$core$List$take, n - 1, list),
+			A2($elm$core$List$drop, n - 1, list));
+		var before = _v0.a;
+		var rest = _v0.b;
+		if (rest.b) {
+			var a = rest.a;
+			var after = rest.b;
+			return $elm$core$Maybe$Just(
+				_Utils_Tuple3(before, a, after));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $miyamoen$select_list$Select$by = F2(
+	function (n, _v0) {
+		var before = _v0.a;
+		var a = _v0.b;
+		var after = _v0.c;
+		return (n > 0) ? A2(
+			$elm$core$Maybe$map,
+			function (_v1) {
+				var nextBefore = _v1.a;
+				var next = _v1.b;
+				var nextAfter = _v1.c;
+				return A3(
+					$miyamoen$select_list$Types$SelectList,
+					A2(
+						$miyamoen$select_list$Types$reverseAppend,
+						nextBefore,
+						A2($elm$core$List$cons, a, before)),
+					next,
+					nextAfter);
+			},
+			A2($miyamoen$select_list$Select$splitAt, n, after)) : ((n < 0) ? A2(
+			$elm$core$Maybe$map,
+			function (_v2) {
+				var nextAfter = _v2.a;
+				var next = _v2.b;
+				var nextBefore = _v2.c;
+				return A3(
+					$miyamoen$select_list$Types$SelectList,
+					nextBefore,
+					next,
+					A2(
+						$miyamoen$select_list$Types$reverseAppend,
+						nextAfter,
+						A2($elm$core$List$cons, a, after)));
+			},
+			A2($miyamoen$select_list$Select$splitAt, -n, before)) : $elm$core$Maybe$Just(
+			A3($miyamoen$select_list$Types$SelectList, before, a, after)));
+	});
+var $miyamoen$select_list$SelectList$selectBy = $miyamoen$select_list$Select$by;
+var $miyamoen$select_list$Types$toList = function (_v0) {
+	var before = _v0.a;
+	var a = _v0.b;
+	var after = _v0.c;
+	return A2(
+		$miyamoen$select_list$Types$reverseAppend,
+		before,
+		A2($elm$core$List$cons, a, after));
+};
+var $miyamoen$select_list$Select$head = function (original) {
+	var _v0 = $miyamoen$select_list$Types$toList(original);
+	if (_v0.b) {
+		var a = _v0.a;
+		var after = _v0.b;
+		return A3($miyamoen$select_list$Types$SelectList, _List_Nil, a, after);
+	} else {
+		return original;
+	}
+};
+var $miyamoen$select_list$SelectList$selectHead = $miyamoen$select_list$Select$head;
+var $miyamoen$select_list$Types$selected = function (_v0) {
+	var a = _v0.b;
+	return a;
+};
+var $miyamoen$select_list$SelectList$selected = $miyamoen$select_list$Types$selected;
+var $miyamoen$select_list$SelectList$toList = $miyamoen$select_list$Types$toList;
 var $author$project$ArtworkActivity$updateLocation = F2(
 	function (msg, location) {
 		switch (msg.$) {
@@ -6932,7 +7200,7 @@ var $author$project$ArtworkActivity$updateLocation = F2(
 					{permanent: val});
 		}
 	});
-var $author$project$ArtworkActivity$update = F2(
+var $author$project$ArtworkActivity$updateActivity = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'UpdateAction':
@@ -6954,6 +7222,39 @@ var $author$project$ArtworkActivity$update = F2(
 					{other_action_name: other_name});
 		}
 	});
+var $author$project$ArtworkActivity$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'UpdateActivity':
+				var activitymsg = msg.a;
+				return A3(
+					$miyamoen$select_list$SelectList$fromLists,
+					$miyamoen$select_list$SelectList$listBefore(model),
+					A2(
+						$author$project$ArtworkActivity$updateActivity,
+						activitymsg,
+						$miyamoen$select_list$SelectList$selected(model)),
+					$miyamoen$select_list$SelectList$listAfter(model));
+			case 'Select':
+				var index = msg.a;
+				var _v1 = A2(
+					$miyamoen$select_list$SelectList$selectBy,
+					index,
+					$miyamoen$select_list$SelectList$selectHead(model));
+				if (_v1.$ === 'Just') {
+					var activities = _v1.a;
+					return activities;
+				} else {
+					return model;
+				}
+			default:
+				return A3(
+					$miyamoen$select_list$SelectList$fromLists,
+					_List_Nil,
+					$author$project$ArtworkActivity$newActivity,
+					$miyamoen$select_list$SelectList$toList(model));
+		}
+	});
 var $author$project$ArtworkActivity$Assigned = {$: 'Assigned'};
 var $author$project$ArtworkActivity$Loaned = {$: 'Loaned'};
 var $author$project$ArtworkActivity$Other = {$: 'Other'};
@@ -6962,9 +7263,17 @@ var $author$project$ArtworkActivity$Sold = {$: 'Sold'};
 var $author$project$ArtworkActivity$UpdateAction = function (a) {
 	return {$: 'UpdateAction', a: a};
 };
-var $author$project$ArtworkActivity$UpdateOtherAction = function (a) {
-	return {$: 'UpdateOtherAction', a: a};
+var $author$project$ArtworkActivity$UpdateActivity = function (a) {
+	return {$: 'UpdateActivity', a: a};
 };
+var $author$project$ArtworkActivity$UpdateOtherActionName = function (a) {
+	return {$: 'UpdateOtherActionName', a: a};
+};
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
@@ -7013,7 +7322,8 @@ var $author$project$ArtworkActivity$viewAction = F2(
 					_List_fromArray(
 						[
 							$elm$html$Html$Events$onClick(
-							$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Sold))
+							$author$project$ArtworkActivity$UpdateActivity(
+								$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Sold)))
 						]),
 					_List_fromArray(
 						[
@@ -7024,7 +7334,8 @@ var $author$project$ArtworkActivity$viewAction = F2(
 					_List_fromArray(
 						[
 							$elm$html$Html$Events$onClick(
-							$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Loaned))
+							$author$project$ArtworkActivity$UpdateActivity(
+								$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Loaned)))
 						]),
 					_List_fromArray(
 						[
@@ -7035,7 +7346,8 @@ var $author$project$ArtworkActivity$viewAction = F2(
 					_List_fromArray(
 						[
 							$elm$html$Html$Events$onClick(
-							$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Moved))
+							$author$project$ArtworkActivity$UpdateActivity(
+								$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Moved)))
 						]),
 					_List_fromArray(
 						[
@@ -7046,7 +7358,8 @@ var $author$project$ArtworkActivity$viewAction = F2(
 					_List_fromArray(
 						[
 							$elm$html$Html$Events$onClick(
-							$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Assigned))
+							$author$project$ArtworkActivity$UpdateActivity(
+								$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Assigned)))
 						]),
 					_List_fromArray(
 						[
@@ -7057,7 +7370,8 @@ var $author$project$ArtworkActivity$viewAction = F2(
 					_List_fromArray(
 						[
 							$elm$html$Html$Events$onClick(
-							$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Shown))
+							$author$project$ArtworkActivity$UpdateActivity(
+								$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Shown)))
 						]),
 					_List_fromArray(
 						[
@@ -7067,7 +7381,8 @@ var $author$project$ArtworkActivity$viewAction = F2(
 					$elm$html$Html$input,
 					_List_fromArray(
 						[
-							$elm$html$Html$Events$onInput($author$project$ArtworkActivity$UpdateOtherAction),
+							$elm$html$Html$Events$onInput(
+							A2($elm$core$Basics$composeL, $author$project$ArtworkActivity$UpdateActivity, $author$project$ArtworkActivity$UpdateOtherActionName)),
 							$elm$html$Html$Attributes$value(other_name)
 						]),
 					_List_Nil),
@@ -7076,7 +7391,8 @@ var $author$project$ArtworkActivity$viewAction = F2(
 					_List_fromArray(
 						[
 							$elm$html$Html$Events$onClick(
-							$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Other))
+							$author$project$ArtworkActivity$UpdateActivity(
+								$author$project$ArtworkActivity$UpdateAction($author$project$ArtworkActivity$Other)))
 						]),
 					_List_fromArray(
 						[
@@ -7089,6 +7405,13 @@ var $author$project$ArtworkActivity$viewAction = F2(
 						[
 							$elm$html$Html$text(
 							$elm$core$Debug$toString(action))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(other_name)
 						]))
 				]));
 	});
@@ -7147,11 +7470,6 @@ var $author$project$ArtworkActivity$UpdateLocation = function (a) {
 	return {$: 'UpdateLocation', a: a};
 };
 var $elm$html$Html$Attributes$checked = $elm$html$Html$Attributes$boolProperty('checked');
-var $elm$core$Basics$composeL = F3(
-	function (g, f, x) {
-		return g(
-			f(x));
-	});
 var $elm$html$Html$label = _VirtualDom_node('label');
 var $elm$json$Json$Decode$bool = _Json_decodeBool;
 var $elm$html$Html$Events$targetChecked = A2(
@@ -7186,7 +7504,10 @@ var $author$project$ArtworkActivity$viewBoolField = F3(
 							$elm$html$Html$Attributes$type_('checkbox'),
 							$elm$html$Html$Attributes$checked(field),
 							$elm$html$Html$Events$onCheck(
-							A2($elm$core$Basics$composeL, $author$project$ArtworkActivity$UpdateLocation, action))
+							A2(
+								$elm$core$Basics$composeL,
+								A2($elm$core$Basics$composeL, $author$project$ArtworkActivity$UpdateActivity, $author$project$ArtworkActivity$UpdateLocation),
+								action))
 						]),
 					_List_Nil),
 					A2(
@@ -7218,7 +7539,10 @@ var $author$project$ArtworkActivity$viewTextField = F3(
 					_List_fromArray(
 						[
 							$elm$html$Html$Events$onInput(
-							A2($elm$core$Basics$composeL, $author$project$ArtworkActivity$UpdateLocation, action)),
+							A2(
+								$elm$core$Basics$composeL,
+								A2($elm$core$Basics$composeL, $author$project$ArtworkActivity$UpdateActivity, $author$project$ArtworkActivity$UpdateLocation),
+								action)),
 							$elm$html$Html$Attributes$value(field)
 						]),
 					_List_Nil),
@@ -7256,14 +7580,125 @@ var $author$project$ArtworkActivity$viewLocation = function (location) {
 				A3($author$project$ArtworkActivity$viewBoolField, location.gallery, 'A Gallery', $author$project$ArtworkActivity$UpdateGallery)
 			]));
 };
-var $author$project$ArtworkActivity$view = function (model) {
+var $author$project$ArtworkActivity$viewActivityDetail = function (activity) {
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
 		_List_fromArray(
 			[
-				A2($author$project$ArtworkActivity$viewAction, model.action, model.other_action_name),
-				$author$project$ArtworkActivity$viewLocation(model.location)
+				A2($author$project$ArtworkActivity$viewAction, activity.action, activity.other_action_name),
+				$author$project$ArtworkActivity$viewLocation(activity.location)
+			]));
+};
+var $author$project$ArtworkActivity$NewActivity = {$: 'NewActivity'};
+var $author$project$ArtworkActivity$Select = function (a) {
+	return {$: 'Select', a: a};
+};
+var $author$project$ArtworkActivity$actionName = F2(
+	function (other_name, action) {
+		switch (action.$) {
+			case 'Sold':
+				return 'Sold';
+			case 'Loaned':
+				return 'Loaned';
+			case 'Moved':
+				return 'Moved';
+			case 'Assigned':
+				return 'Assigned';
+			case 'Shown':
+				return 'Shown';
+			default:
+				return other_name;
+		}
+	});
+var $author$project$ArtworkActivity$viewActivity = F2(
+	function (index, activity) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'border', '1px solid black'),
+					A2($elm$html$Html$Attributes$style, 'margin', '10px'),
+					$elm$html$Html$Events$onClick(
+					$author$project$ArtworkActivity$Select(index))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(
+							A2($author$project$ArtworkActivity$actionName, activity.other_action_name, activity.action) + ' to:')
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_Nil,
+					_List_fromArray(
+						[
+							$elm$html$Html$text(activity.location.name)
+						]))
+				]));
+	});
+var $author$project$ArtworkActivity$viewActivityList = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				A2($elm$html$Html$Attributes$style, 'flex-direction', 'column')
+			]),
+		A2(
+			$elm$core$List$cons,
+			A2(
+				$elm$html$Html$button,
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onClick($author$project$ArtworkActivity$NewActivity)
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text('Add new')
+					])),
+			A2(
+				$elm$core$List$indexedMap,
+				$author$project$ArtworkActivity$viewActivity,
+				$miyamoen$select_list$SelectList$toList(model))));
+};
+var $author$project$ArtworkActivity$view = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				A2($elm$html$Html$Attributes$style, 'width', '100%')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'flex-grow', '1'),
+						A2($elm$html$Html$Attributes$style, 'id', 'activity-list')
+					]),
+				_List_fromArray(
+					[
+						$author$project$ArtworkActivity$viewActivityList(model)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'flex-grow', '1'),
+						A2($elm$html$Html$Attributes$style, 'id', 'activity-detail')
+					]),
+				_List_fromArray(
+					[
+						$author$project$ArtworkActivity$viewActivityDetail(
+						$miyamoen$select_list$SelectList$selected(model))
+					]))
 			]));
 };
 var $author$project$ArtworkActivity$main = $elm$browser$Browser$sandbox(

@@ -4,12 +4,12 @@ import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import SelectList exposing (SelectList)
 
 
 
 -- import Http
 -- import Json.Decode as D
--- import SelectList exposing (SelectList)
 -- -- MAIN
 -- main =
 --     Browser.element
@@ -209,7 +209,7 @@ main =
 
 
 type alias Model =
-    Activity
+    SelectList Activity
 
 
 type alias Activity =
@@ -234,6 +234,28 @@ type Action
     | Assigned
     | Shown
     | Other
+
+
+actionName : String -> Action -> String
+actionName other_name action =
+    case action of
+        Sold ->
+            "Sold"
+
+        Loaned ->
+            "Loaned"
+
+        Moved ->
+            "Moved"
+
+        Assigned ->
+            "Assigned"
+
+        Shown ->
+            "Shown"
+
+        Other ->
+            other_name
 
 
 type alias Location =
@@ -285,7 +307,7 @@ newLocation =
 
 init : Model
 init =
-    newActivity
+    SelectList.fromLists [] newActivity []
 
 
 
@@ -293,13 +315,40 @@ init =
 
 
 type Msg
-    = UpdateAction Action
-    | UpdateLocation UpdateLocationMsg
-    | UpdateOtherAction String
+    = Select Int
+    | UpdateActivity ActivityMsg
+    | NewActivity
 
 
 update : Msg -> Model -> Model
 update msg model =
+    case msg of
+        UpdateActivity activitymsg ->
+            SelectList.fromLists
+                (SelectList.listBefore model)
+                (updateActivity activitymsg (SelectList.selected model))
+                (SelectList.listAfter model)
+
+        Select index ->
+            case SelectList.selectBy index (SelectList.selectHead model) of
+                Just activities ->
+                    activities
+
+                Nothing ->
+                    model
+
+        NewActivity ->
+            SelectList.fromLists [] newActivity (SelectList.toList model)
+
+
+type ActivityMsg
+    = UpdateAction Action
+    | UpdateLocation UpdateLocationMsg
+    | UpdateOtherActionName String
+
+
+updateActivity : ActivityMsg -> Activity -> Activity
+updateActivity msg model =
     case msg of
         UpdateAction a ->
             { model | action = a }
@@ -307,7 +356,7 @@ update msg model =
         UpdateLocation locationMsg ->
             { model | location = updateLocation locationMsg model.location }
 
-        UpdateOtherAction other_name ->
+        UpdateOtherActionName other_name ->
             { model | other_action_name = other_name }
 
 
@@ -392,9 +441,57 @@ updateLocation msg location =
 
 view : Model -> Html Msg
 view model =
+    div
+        [ style "display" "flex"
+        , style "width" "100%"
+        ]
+        [ div
+            [ style "flex-grow" "1"
+            , style "id" "activity-list"
+            ]
+            [ viewActivityList model
+            ]
+        , div
+            [ style "flex-grow" "1"
+            , style "id" "activity-detail"
+            ]
+            [ viewActivityDetail
+                (SelectList.selected model)
+            ]
+        ]
+
+
+viewActivityList : Model -> Html Msg
+viewActivityList model =
+    div
+        [ style "display" "flex"
+        , style "flex-direction" "column"
+        ]
+        (button [ onClick NewActivity ] [ text "Add new" ]
+            :: List.indexedMap viewActivity (SelectList.toList model)
+        )
+
+
+viewActivity : Int -> Activity -> Html Msg
+viewActivity index activity =
+    div
+        [ style "border" "1px solid black"
+        , style "margin" "10px"
+        , onClick (Select index)
+        ]
+        [ div []
+            [ text (actionName activity.other_action_name activity.action ++ " to:") ]
+        , div
+            []
+            [ text activity.location.name ]
+        ]
+
+
+viewActivityDetail : Activity -> Html Msg
+viewActivityDetail activity =
     div []
-        [ viewAction model.action model.other_action_name
-        , viewLocation model.location
+        [ viewAction activity.action activity.other_action_name
+        , viewLocation activity.location
         ]
 
 
@@ -403,22 +500,22 @@ viewAction action other_name =
     div
         [ style "display" "flex"
         ]
-        [ button [ onClick (UpdateAction Sold) ]
+        [ button [ onClick (UpdateActivity (UpdateAction Sold)) ]
             [ text "Sold" ]
-        , button [ onClick (UpdateAction Loaned) ]
+        , button [ onClick (UpdateActivity (UpdateAction Loaned)) ]
             [ text "Loaned" ]
-        , button [ onClick (UpdateAction Moved) ]
+        , button [ onClick (UpdateActivity (UpdateAction Moved)) ]
             [ text "Moved" ]
-        , button [ onClick (UpdateAction Assigned) ]
+        , button [ onClick (UpdateActivity (UpdateAction Assigned)) ]
             [ text "Assigned to agent" ]
-        , button [ onClick (UpdateAction Shown) ]
+        , button [ onClick (UpdateActivity (UpdateAction Shown)) ]
             [ text "Shown" ]
         , input
-            [ onInput UpdateOtherAction
+            [ onInput (UpdateActivity << UpdateOtherActionName)
             , value other_name
             ]
             []
-        , button [ onClick (UpdateAction Other) ]
+        , button [ onClick (UpdateActivity (UpdateAction Other)) ]
             [ text "Other" ]
         , div [] [ text (Debug.toString action) ]
         , div [] [ text other_name ]
@@ -453,7 +550,7 @@ viewTextField field label_ action =
     div []
         [ label [] [ text (label_ ++ ": ") ]
         , input
-            [ onInput (UpdateLocation << action)
+            [ onInput (UpdateActivity << UpdateLocation << action)
             , value field
             ]
             []
@@ -468,7 +565,7 @@ viewBoolField field label_ action =
         , input
             [ type_ "checkbox"
             , checked field
-            , onCheck (UpdateLocation << action)
+            , onCheck (UpdateActivity << UpdateLocation << action)
             ]
             []
         , div []
