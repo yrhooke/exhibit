@@ -54,7 +54,7 @@ class Location(models.Model):
     city = models.CharField(_("City"), max_length=64)
     state = models.CharField(_("State"), blank=True, max_length=2,
                              help_text='US state, optional field')
-    zip_code = models.CharField(_("Zip code"), max_length=5, blank=True)
+    zip_code = models.CharField(_("Zip code"), max_length=10, blank=True)
     country = models.CharField("Country", max_length=100)  # change later
 
     LOCATION_CATEGORIES = (
@@ -96,7 +96,8 @@ class WorkInExhibition(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['artwork', 'exhibition'], name='artwork in exhibition once')
         ]
-    
+
+
 class SaleData(models.Model):
     """Class representing a sale"""
 
@@ -105,6 +106,7 @@ class SaleData(models.Model):
 
     # Sale Fields
     agent = models.ForeignKey('Location', on_delete=models.SET_NULL, null=True help_text="The agent's name")
+    sale_currency = models.CharField("Sale currency", max_length=10, blank=True)
     sale_price = models.DecimalField("Sale Price",
                                      max_digits=10,
                                      decimal_places=2,
@@ -112,12 +114,19 @@ class SaleData(models.Model):
                                      blank=True,
                                      help_text="Price of final sale"
                                      )
-    sale_currency = models.CharField("Sale currency", max_length=10, blank=True)
-    discount = models.DecimalField("Discount",
-                                   max_digits=10,
-                                   decimal_places=2,
-                                   null=True,
-                                   blank=True,
-                                   help_text="Discount if any"
-                                   )
-    sale_date = models.DateField("Sale Date", blank=True, null=True)
+    discount = models.CharField("Discount", max_length=25 help_text="In amount or percentage")
+     agent_fee = models.DecimalField("Amount to Artist",
+                                    max_digits=10,
+                                    decimal_places=2,
+                                    null=True,
+                                    blank=True,
+                                    help_text="amount to the agent"
+                                    )
+    amount_to_artist = models.DecimalField("Amount to Artist",
+                                    max_digits=10,
+                                    decimal_places=2,
+                                    null=True,
+                                    blank=True,
+                                    help_text="Amount to artist after fees"
+
+    sale_date=models.DateField("Sale Date", blank=True, null=True)
