@@ -1,6 +1,6 @@
 {% load widget_tweaks %}
 
-<div class="{% if ungroup %}ungroup{% endif %} form-group">
+<div class="{% if ungroup %}ungroup{% endif %} form-group" style="display:flex;">
     {{ field.label_tag }}
     {% render_field field class="edit-field form-control form-control-sm" %}
     {% if field.help_text %}

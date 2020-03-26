@@ -20,6 +20,8 @@ class LocationDetailForm(PlaceholderMixin, forms.ModelForm):
             'name',
             'category',
             'description',
+            'phone_number',
+            'email',
             'address_1',
             'address_2',
             'city',
