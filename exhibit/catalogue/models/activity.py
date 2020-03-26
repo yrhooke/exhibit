@@ -103,6 +103,7 @@ class SaleData(models.Model):
 
     artwork = models.ForeignKey('Artwork', on_delete=models.CASCADE)
     buyer = models.ForeignKey('Location', related_name='buyer', on_delete=models.SET_NULL, null=True)
+    notes = models.TextField("Notes", blank=True)
 
     # Sale Fields
     agent = models.ForeignKey('Location', related_name='agent', on_delete=models.SET_NULL, null=True, help_text="The agent's name")
