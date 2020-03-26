@@ -119,8 +119,6 @@ class Artwork(models.Model):
     additional = models.TextField('Additional info', blank=True, help_text="Anything else of interest")
 
     # Sale fields
-    owner = models.CharField('Owner', max_length=200, default='Rotem Reshef', help_text="Current owner")
-    sold_by = models.CharField('Sold By', max_length=200, blank=True, help_text="The agent's name")
     price_nis = models.DecimalField("Price in NIS",
                                     max_digits=10,
                                     decimal_places=2,
@@ -135,22 +133,7 @@ class Artwork(models.Model):
                                     blank=True,
                                     help_text="Price USD"
                                     )
-    sale_price = models.DecimalField("Sale Price",
-                                     max_digits=10,
-                                     decimal_places=2,
-                                     null=True,
-                                     blank=True,
-                                     help_text="Price of final sale"
-                                     )
-    sale_currency = models.CharField("Sale currency", max_length=10, blank=True)
-    discount = models.DecimalField("Discount",
-                                   max_digits=10,
-                                   decimal_places=2,
-                                   null=True,
-                                   blank=True,
-                                   help_text="Discount if any"
-                                   )
-    sale_date = models.DateField("Sale Date", blank=True, null=True)
+
 
     # @TODO convert owner to foreignkey
 

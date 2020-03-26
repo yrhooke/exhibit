@@ -42,6 +42,10 @@ class Location(models.Model):
     name = models.CharField("Name", max_length=250, help_text="Location name")
     description = models.TextField("Description", blank=True)
 
+    # contact details
+    phone_number = models.CharField("Phone number", max_length=25, blank=True)
+    email = models.EmailField("Email", max_length=128, blank=True)
+
     # What's this naming scheme about? @TODO figure this out
     address_1 = models.CharField(_("Address"), max_length=128)
     address_2 = models.CharField(_("Address cont'd"), max_length=128,
@@ -92,3 +96,28 @@ class WorkInExhibition(models.Model):
         constraints = [
             models.UniqueConstraint(fields=['artwork', 'exhibition'], name='artwork in exhibition once')
         ]
+    
+class SaleData(models.Model):
+    """Class representing a sale"""
+
+    artwork = models.ForeignKey('Artwork', on_delete=models.CASCADE)
+    buyer = models.ForeignKey('Location', on_delete=models.SET_NULL, null=True)
+
+    # Sale Fields
+    agent = models.ForeignKey('Location', on_delete=models.SET_NULL, null=True help_text="The agent's name")
+    sale_price = models.DecimalField("Sale Price",
+                                     max_digits=10,
+                                     decimal_places=2,
+                                     null=True,
+                                     blank=True,
+                                     help_text="Price of final sale"
+                                     )
+    sale_currency = models.CharField("Sale currency", max_length=10, blank=True)
+    discount = models.DecimalField("Discount",
+                                   max_digits=10,
+                                   decimal_places=2,
+                                   null=True,
+                                   blank=True,
+                                   help_text="Discount if any"
+                                   )
+    sale_date = models.DateField("Sale Date", blank=True, null=True)
