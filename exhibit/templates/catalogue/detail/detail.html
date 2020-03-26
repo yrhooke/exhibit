@@ -95,3 +95,11 @@
 {% endblock related_items %}
 {% endif %}
 {% endblock content %}
+
+{% block javascript %}
+<script>
+    var descriptionNode = document.getElementById('id_description');
+    descriptionNode.style.width = "600px";
+    descriptionNode.parentNode.firstElementChild.style.alignSelf = "start";
+</script>
+{% endblock javascript %}
