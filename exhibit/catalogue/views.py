@@ -181,7 +181,7 @@ class ArtworkCreate(LoginRequiredMixin, genericCreateView):
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
-        form.fields['owner'].required = False
+        # form.fields['owner'].required = False
         form.fields['status'].required = True
         return form
 
@@ -212,7 +212,7 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
         # form.fields['image'].required = False
-        form.fields['owner'].required = False
+        # form.fields['owner'].required = False
         form.fields['status'].required = True
         return form
 

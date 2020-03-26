@@ -135,7 +135,6 @@ class Artwork(models.Model):
                                     )
 
 
-    # @TODO convert owner to foreignkey
 
     def __str__(self):
         """string representation of model"""
@@ -164,7 +163,6 @@ class Artwork(models.Model):
         size,
         medium,
         rolled,
-        owner,
     ]
 
 class Series(models.Model):

@@ -22,9 +22,6 @@ class Exhibition(models.Model):
     searchable_fields = [
         name,
         description,
-        location,
-        start_date,
-        end_date,
     ]
 
     # def count(self):
@@ -59,7 +56,7 @@ class Location(models.Model):
     agent = models.BooleanField(_("Is an agent"), default=False)
     client = models.BooleanField(_("A Client"), default=False)
     gallery = models.BooleanField(_("Gallery or Museum"), default=False)
-    mine = = models.BooleanField(_("My Location"), default=False, help_text="If the work is here I have it")
+    mine = models.BooleanField(_("My Location"), default=False, help_text="If the work is here I have it")
     
     ### Other
     permanent = models.BooleanField("Permanent location", default=False)
@@ -95,7 +92,7 @@ class Activity(models.Model):
     )
     activity_type = models.CharField('Type', max_length=1, choices=ACTIVITY_TYPES,
                               help_text="Type of Activity")
-    location = models.ForeignKey("Location" verbose_name="Location/Person", on_delete=models.CASCADE)
+    location = models.ForeignKey("Location", on_delete=models.CASCADE)
 
     ### time data
     start_date = models.DateField("Start Date", default=date.today, blank=True, null=True)
