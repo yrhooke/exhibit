@@ -64,7 +64,7 @@ class Location(models.Model):
     )
 
     category = models.CharField('Category', max_length=1, choices=LOCATION_CATEGORIES,
-                              blank=True)
+                                blank=True)
 
     def __str__(self):
         """string representation of model"""
@@ -102,10 +102,10 @@ class SaleData(models.Model):
     """Class representing a sale"""
 
     artwork = models.ForeignKey('Artwork', on_delete=models.CASCADE)
-    buyer = models.ForeignKey('Location', on_delete=models.SET_NULL, null=True)
+    buyer = models.ForeignKey('Location', related_name='buyer', on_delete=models.SET_NULL, null=True)
 
     # Sale Fields
-    agent = models.ForeignKey('Location', on_delete=models.SET_NULL, null=True help_text="The agent's name")
+    agent = models.ForeignKey('Location', related_name='agent', on_delete=models.SET_NULL, null=True, help_text="The agent's name")
     sale_currency = models.CharField("Sale currency", max_length=10, blank=True)
     sale_price = models.DecimalField("Sale Price",
                                      max_digits=10,
@@ -114,8 +114,8 @@ class SaleData(models.Model):
                                      blank=True,
                                      help_text="Price of final sale"
                                      )
-    discount = models.CharField("Discount", max_length=25 help_text="In amount or percentage")
-     agent_fee = models.DecimalField("Amount to Artist",
+    discount = models.CharField("Discount", max_length=25, blank=True, help_text="In amount or percentage")
+    agent_fee = models.DecimalField("Amount to Artist",
                                     max_digits=10,
                                     decimal_places=2,
                                     null=True,
@@ -123,10 +123,10 @@ class SaleData(models.Model):
                                     help_text="amount to the agent"
                                     )
     amount_to_artist = models.DecimalField("Amount to Artist",
-                                    max_digits=10,
-                                    decimal_places=2,
-                                    null=True,
-                                    blank=True,
-                                    help_text="Amount to artist after fees"
+                                           max_digits=10,
+                                           decimal_places=2,
+                                           null=True,
+                                           blank=True,
+                                           help_text="Amount to artist after fees")
 
-    sale_date=models.DateField("Sale Date", blank=True, null=True)
+    sale_date = models.DateField("Sale Date", blank=True, null=True)
