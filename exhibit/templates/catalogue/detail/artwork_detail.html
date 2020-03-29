@@ -234,9 +234,9 @@
                         <script>
                             function elm_flags() {
                                 let csrftoken = document.getElementById('elm-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
-                                let artwork_id = {{ object.pk }};
+                                let artwork_id = {{ object.pk |default:"null"}};
                                 let image_url = "{{ object.get_image.url }}";
-                                let image_id = {{ object.get_image.pk }};
+                                let image_id = {{ object.get_image.pk |default:"null"}};
                                 let loader_url = "{% static 'images/spinner.svg' %}"
                                 let checkmark_url = "{% static 'images/upload_check.svg' %}"
                                 let elm_flags = {
