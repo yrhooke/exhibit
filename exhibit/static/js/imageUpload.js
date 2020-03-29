@@ -6227,6 +6227,7 @@ var $elm$file$File$Select$file = F2(
 			_File_uploadOne(mimes));
 	});
 var $elm$http$Http$filePart = _Http_pair;
+var $elm$core$Debug$log = _Debug_log;
 var $elm$http$Http$multipartBody = function (parts) {
 	return A2(
 		_Http_pair,
@@ -6410,6 +6411,7 @@ var $author$project$ImageUpload$stringifyArtworkID = function (artwork_id) {
 		return '';
 	}
 };
+var $elm$core$Debug$toString = _Debug_toString;
 var $elm$file$File$toUrl = _File_toUrl;
 var $author$project$ImageUpload$updateImageURL = F2(
 	function (url, data) {
@@ -6421,6 +6423,10 @@ var $author$project$ImageUpload$updateImageURL = F2(
 	});
 var $author$project$ImageUpload$update = F2(
 	function (msg, model) {
+		var debug = A2(
+			$elm$core$Debug$log,
+			'State: ' + $elm$core$Debug$toString(model.status),
+			1);
 		switch (msg.$) {
 			case 'Pick':
 				return _Utils_Tuple2(
@@ -6454,7 +6460,7 @@ var $author$project$ImageUpload$update = F2(
 									expect: A2($elm$http$Http$expectJson, $author$project$ImageUpload$Uploaded, $author$project$ImageUpload$decodeUploadResult),
 									headers: _List_Nil,
 									method: 'POST',
-									timeout: $elm$core$Maybe$Nothing,
+									timeout: $elm$core$Maybe$Just(60000),
 									tracker: $elm$core$Maybe$Just('upload'),
 									url: '/c/artwork/image/new'
 								}),
@@ -6743,7 +6749,13 @@ var $author$project$ImageUpload$uploadingImageCoverView = F2(
 	function (loader_url, status) {
 		switch (status.$) {
 			case 'Waiting':
-				return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+				return A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'id', 'image-loading-cover')
+						]),
+					_List_Nil);
 			case 'Uploading':
 				return A2(
 					$elm$html$Html$div,
@@ -6756,7 +6768,8 @@ var $author$project$ImageUpload$uploadingImageCoverView = F2(
 							A2($elm$html$Html$Attributes$style, 'height', 'inherit'),
 							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
 							A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
-							A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+							A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+							A2($elm$html$Html$Attributes$style, 'id', 'image-loading-cover')
 						]),
 					_List_fromArray(
 						[
@@ -6765,12 +6778,19 @@ var $author$project$ImageUpload$uploadingImageCoverView = F2(
 							_List_fromArray(
 								[
 									$elm$html$Html$Attributes$src(loader_url),
-									A2($elm$html$Html$Attributes$style, 'height', '32px')
+									A2($elm$html$Html$Attributes$style, 'height', '32px'),
+									A2($elm$html$Html$Attributes$style, 'z-index', '3')
 								]),
 							_List_Nil)
 						]));
 			case 'Done':
-				return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+				return A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'id', 'image-loading-cover')
+						]),
+					_List_Nil);
 			default:
 				return A2(
 					$elm$html$Html$div,
@@ -6783,13 +6803,18 @@ var $author$project$ImageUpload$uploadingImageCoverView = F2(
 							A2($elm$html$Html$Attributes$style, 'height', 'inherit'),
 							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
 							A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
-							A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+							A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+							A2($elm$html$Html$Attributes$style, 'id', 'image-loading-cover')
 						]),
 					_List_fromArray(
 						[
 							A2(
 							$elm$html$Html$div,
-							_List_Nil,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'z-index', '3'),
+									A2($elm$html$Html$Attributes$style, 'color', 'white')
+								]),
 							_List_fromArray(
 								[
 									$elm$html$Html$text('Upload Failed. Please try again')

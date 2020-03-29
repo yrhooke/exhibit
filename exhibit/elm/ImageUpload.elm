@@ -118,6 +118,10 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        debug =
+            Debug.log ("State: " ++ Debug.toString model.status) 1
+    in
     case msg of
         Pick ->
             ( model
@@ -138,7 +142,7 @@ update msg model =
                             , Http.filePart "image" file
                             ]
                     , expect = Http.expectJson Uploaded decodeUploadResult
-                    , timeout = Nothing
+                    , timeout = Just 60000
                     , tracker = Just "upload"
                     }
                 , Task.perform GotPreview <| File.toUrl file
@@ -291,7 +295,10 @@ uploadingImageCoverView : String -> Status -> Html Msg
 uploadingImageCoverView loader_url status =
     case status of
         Waiting ->
-            div [] []
+            div
+                [ style "id" "image-loading-cover"
+                ]
+                []
 
         Uploading ->
             div
@@ -303,16 +310,21 @@ uploadingImageCoverView loader_url status =
                 , style "display" "flex"
                 , style "justify-content" "center"
                 , style "align-items" "center"
+                , style "id" "image-loading-cover"
                 ]
                 [ img
                     [ src loader_url
                     , style "height" "32px"
+                    , style "z-index" "3"
                     ]
                     []
                 ]
 
         Done ->
-            div [] []
+            div
+                [ style "id" "image-loading-cover"
+                ]
+                []
 
         Fail ->
             div
@@ -324,8 +336,14 @@ uploadingImageCoverView loader_url status =
                 , style "display" "flex"
                 , style "justify-content" "center"
                 , style "align-items" "center"
+                , style "id" "image-loading-cover"
                 ]
-                [ div [] [ text "Upload Failed. Please try again" ] ]
+                [ div
+                    [ style "z-index" "3"
+                    , style "color" "white"
+                    ]
+                    [ text "Upload Failed. Please try again" ]
+                ]
 
 
 
