@@ -5500,21 +5500,22 @@ var $elm$browser$Browser$element = _Browser_element;
 var $author$project$ImageUpload$Waiting = {$: 'Waiting'};
 var $elm$json$Json$Decode$decodeValue = _Json_run;
 var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$ImageUpload$decodeFieldtoMaybeString = F2(
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $author$project$ImageUpload$decodeFieldtoMaybeInt = F2(
 	function (field, flags) {
 		var _v0 = A2(
 			$elm$json$Json$Decode$decodeValue,
-			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$string),
+			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$int),
 			flags);
 		if (_v0.$ === 'Ok') {
-			var str = _v0.a;
-			return $elm$core$Maybe$Just(str);
+			var num = _v0.a;
+			return $elm$core$Maybe$Just(num);
 		} else {
 			var message = _v0.a;
 			return $elm$core$Maybe$Nothing;
 		}
 	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
 var $author$project$ImageUpload$decodeFieldtoString = F2(
 	function (field, flags) {
 		var _v0 = A2(
@@ -5548,11 +5549,11 @@ var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$ImageUpload$init = function (flags) {
 	return _Utils_Tuple2(
 		{
-			artwork_id: A2($author$project$ImageUpload$decodeFieldtoMaybeString, 'artwork_id', flags),
+			artwork_id: A2($author$project$ImageUpload$decodeFieldtoMaybeInt, 'artwork_id', flags),
 			checkmark_url: A2($author$project$ImageUpload$decodeFieldtoString, 'checkmark_url', flags),
 			csrftoken: A2($author$project$ImageUpload$decodeFieldtoString, 'csrftoken', flags),
 			image_data: {
-				image_id: A2($author$project$ImageUpload$decodeFieldtoMaybeString, 'image_id', flags),
+				image_id: A2($author$project$ImageUpload$decodeFieldtoMaybeInt, 'image_id', flags),
 				image_url: $author$project$ImageUpload$decodeImageURL(flags)
 			},
 			loader_url: A2($author$project$ImageUpload$decodeFieldtoString, 'loader_url', flags),
@@ -5581,7 +5582,6 @@ var $author$project$ImageUpload$ImageData = F2(
 	function (image_id, image_url) {
 		return {image_id: image_id, image_url: image_url};
 	});
-var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$json$Json$Decode$oneOf = _Json_oneOf;
 var $elm$json$Json$Decode$maybe = function (decoder) {
 	return $elm$json$Json$Decode$oneOf(
@@ -5595,10 +5595,7 @@ var $author$project$ImageUpload$decodeUploadResult = A3(
 	$elm$json$Json$Decode$map2,
 	$author$project$ImageUpload$ImageData,
 	$elm$json$Json$Decode$maybe(
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$core$String$fromInt,
-			A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int))),
+		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int)),
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
@@ -6227,6 +6224,7 @@ var $elm$file$File$Select$file = F2(
 			_File_uploadOne(mimes));
 	});
 var $elm$http$Http$filePart = _Http_pair;
+var $elm$core$Debug$log = _Debug_log;
 var $elm$http$Http$multipartBody = function (parts) {
 	return A2(
 		_Http_pair,
@@ -6405,11 +6403,12 @@ var $elm$http$Http$stringPart = _Http_pair;
 var $author$project$ImageUpload$stringifyArtworkID = function (artwork_id) {
 	if (artwork_id.$ === 'Just') {
 		var pk = artwork_id.a;
-		return pk;
+		return $elm$core$String$fromInt(pk);
 	} else {
 		return '';
 	}
 };
+var $elm$core$Debug$toString = _Debug_toString;
 var $elm$file$File$toUrl = _File_toUrl;
 var $author$project$ImageUpload$updateImageURL = F2(
 	function (url, data) {
@@ -6421,6 +6420,10 @@ var $author$project$ImageUpload$updateImageURL = F2(
 	});
 var $author$project$ImageUpload$update = F2(
 	function (msg, model) {
+		var debug = A2(
+			$elm$core$Debug$log,
+			'State: ' + $elm$core$Debug$toString(model.status),
+			1);
 		switch (msg.$) {
 			case 'Pick':
 				return _Utils_Tuple2(
@@ -6454,7 +6457,7 @@ var $author$project$ImageUpload$update = F2(
 									expect: A2($elm$http$Http$expectJson, $author$project$ImageUpload$Uploaded, $author$project$ImageUpload$decodeUploadResult),
 									headers: _List_Nil,
 									method: 'POST',
-									timeout: $elm$core$Maybe$Nothing,
+									timeout: $elm$core$Maybe$Just(60000),
 									tracker: $elm$core$Maybe$Just('upload'),
 									url: '/c/artwork/image/new'
 								}),
@@ -6501,16 +6504,15 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
-var $elm$html$Html$option = _VirtualDom_node('option');
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
 		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
 	});
-var $elm$html$Html$Attributes$selected = $elm$html$Html$Attributes$boolProperty('selected');
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $elm$html$Html$option = _VirtualDom_node('option');
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$ImageUpload$imageIdSelectionView = function (image_id) {
 	if (image_id.$ === 'Just') {
@@ -6519,8 +6521,9 @@ var $author$project$ImageUpload$imageIdSelectionView = function (image_id) {
 			$elm$html$Html$option,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$value(id),
-					$elm$html$Html$Attributes$selected(true)
+					A2($elm$html$Html$Attributes$attribute, 'selected', ''),
+					$elm$html$Html$Attributes$value(
+					$elm$core$String$fromInt(id))
 				]),
 			_List_Nil);
 	} else {
@@ -6534,6 +6537,14 @@ var $author$project$ImageUpload$imageIdSelectionView = function (image_id) {
 	}
 };
 var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
 var $elm$html$Html$Attributes$required = $elm$html$Html$Attributes$boolProperty('required');
 var $elm$html$Html$select = _VirtualDom_node('select');
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
@@ -6743,7 +6754,13 @@ var $author$project$ImageUpload$uploadingImageCoverView = F2(
 	function (loader_url, status) {
 		switch (status.$) {
 			case 'Waiting':
-				return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+				return A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'id', 'image-loading-cover')
+						]),
+					_List_Nil);
 			case 'Uploading':
 				return A2(
 					$elm$html$Html$div,
@@ -6756,7 +6773,8 @@ var $author$project$ImageUpload$uploadingImageCoverView = F2(
 							A2($elm$html$Html$Attributes$style, 'height', 'inherit'),
 							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
 							A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
-							A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+							A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+							A2($elm$html$Html$Attributes$style, 'id', 'image-loading-cover')
 						]),
 					_List_fromArray(
 						[
@@ -6765,12 +6783,19 @@ var $author$project$ImageUpload$uploadingImageCoverView = F2(
 							_List_fromArray(
 								[
 									$elm$html$Html$Attributes$src(loader_url),
-									A2($elm$html$Html$Attributes$style, 'height', '32px')
+									A2($elm$html$Html$Attributes$style, 'height', '32px'),
+									A2($elm$html$Html$Attributes$style, 'z-index', '3')
 								]),
 							_List_Nil)
 						]));
 			case 'Done':
-				return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+				return A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'id', 'image-loading-cover')
+						]),
+					_List_Nil);
 			default:
 				return A2(
 					$elm$html$Html$div,
@@ -6783,13 +6808,18 @@ var $author$project$ImageUpload$uploadingImageCoverView = F2(
 							A2($elm$html$Html$Attributes$style, 'height', 'inherit'),
 							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
 							A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
-							A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+							A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+							A2($elm$html$Html$Attributes$style, 'id', 'image-loading-cover')
 						]),
 					_List_fromArray(
 						[
 							A2(
 							$elm$html$Html$div,
-							_List_Nil,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'z-index', '3'),
+									A2($elm$html$Html$Attributes$style, 'color', 'white')
+								]),
 							_List_fromArray(
 								[
 									$elm$html$Html$text('Upload Failed. Please try again')

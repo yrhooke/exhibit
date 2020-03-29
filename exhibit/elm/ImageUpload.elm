@@ -30,7 +30,7 @@ main =
 
 type alias Model =
     { csrftoken : String
-    , artwork_id : Maybe String
+    , artwork_id : Maybe Int
     , image_data : ImageData
     , loader_url : String
     , checkmark_url : String
@@ -46,7 +46,7 @@ type Status
 
 
 type alias ImageData =
-    { image_id : Maybe String
+    { image_id : Maybe Int
     , image_url : Maybe String
     }
 
@@ -58,9 +58,9 @@ type alias ImageData =
 init : D.Value -> ( Model, Cmd Msg )
 init flags =
     ( { csrftoken = decodeFieldtoString "csrftoken" flags
-      , artwork_id = decodeFieldtoMaybeString "artwork_id" flags
+      , artwork_id = decodeFieldtoMaybeInt "artwork_id" flags
       , image_data =
-            { image_id = decodeFieldtoMaybeString "image_id" flags
+            { image_id = decodeFieldtoMaybeInt "image_id" flags
             , image_url = decodeImageURL flags
             }
       , loader_url = decodeFieldtoString "loader_url" flags
@@ -86,6 +86,16 @@ decodeFieldtoMaybeString field flags =
     case D.decodeValue (D.field field D.string) flags of
         Ok str ->
             Just str
+
+        Err message ->
+            Nothing
+
+
+decodeFieldtoMaybeInt : String -> D.Value -> Maybe Int
+decodeFieldtoMaybeInt field flags =
+    case D.decodeValue (D.field field D.int) flags of
+        Ok num ->
+            Just num
 
         Err message ->
             Nothing
@@ -118,6 +128,10 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        debug =
+            Debug.log ("State: " ++ Debug.toString model.status) 1
+    in
     case msg of
         Pick ->
             ( model
@@ -138,7 +152,7 @@ update msg model =
                             , Http.filePart "image" file
                             ]
                     , expect = Http.expectJson Uploaded decodeUploadResult
-                    , timeout = Nothing
+                    , timeout = Just 60000
                     , tracker = Just "upload"
                     }
                 , Task.perform GotPreview <| File.toUrl file
@@ -171,15 +185,15 @@ updateImageURL url data =
 decodeUploadResult : D.Decoder ImageData
 decodeUploadResult =
     D.map2 ImageData
-        (D.maybe (D.map String.fromInt (D.field "image_id" D.int)))
+        (D.maybe (D.field "image_id" D.int))
         (D.maybe (D.field "image_url" D.string))
 
 
-stringifyArtworkID : Maybe String -> String
+stringifyArtworkID : Maybe Int -> String
 stringifyArtworkID artwork_id =
     case artwork_id of
         Just pk ->
-            pk
+            String.fromInt pk
 
         Nothing ->
             ""
@@ -291,7 +305,10 @@ uploadingImageCoverView : String -> Status -> Html Msg
 uploadingImageCoverView loader_url status =
     case status of
         Waiting ->
-            div [] []
+            div
+                [ style "id" "image-loading-cover"
+                ]
+                []
 
         Uploading ->
             div
@@ -303,16 +320,21 @@ uploadingImageCoverView loader_url status =
                 , style "display" "flex"
                 , style "justify-content" "center"
                 , style "align-items" "center"
+                , style "id" "image-loading-cover"
                 ]
                 [ img
                     [ src loader_url
                     , style "height" "32px"
+                    , style "z-index" "3"
                     ]
                     []
                 ]
 
         Done ->
-            div [] []
+            div
+                [ style "id" "image-loading-cover"
+                ]
+                []
 
         Fail ->
             div
@@ -324,8 +346,14 @@ uploadingImageCoverView loader_url status =
                 , style "display" "flex"
                 , style "justify-content" "center"
                 , style "align-items" "center"
+                , style "id" "image-loading-cover"
                 ]
-                [ div [] [ text "Upload Failed. Please try again" ] ]
+                [ div
+                    [ style "z-index" "3"
+                    , style "color" "white"
+                    ]
+                    [ text "Upload Failed. Please try again" ]
+                ]
 
 
 
@@ -428,16 +456,16 @@ hiddenInputView image_id =
         , id "id_artwork_image"
         , style "display" "none"
         ]
-        [ imageIdSelectionView image_id
-        ]
+        [ imageIdSelectionView image_id ]
 
 
+imageIdSelectionView : Maybe Int -> Html msg
 imageIdSelectionView image_id =
     case image_id of
         Just id ->
             option
-                [ value id
-                , selected True
+                [ attribute "selected" ""
+                , value (String.fromInt id)
                 ]
                 []
 
