@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.expressions import F
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import redirect, render
+from django.core.exceptions import ObjectDoesNotExist 
 
 from catalogue.models import Artwork, Series, Exhibition, Location, ArtworkImage, SaleData
 from catalogue.forms import ArtworkDetailForm, SeriesDetailForm, LocationDetailForm, ExhibitionDetailForm
@@ -433,13 +434,17 @@ class HttpResponseUnauthorized(HttpResponse):
 def saleData_update(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
-            form = SaleDataUpdateForm(request.POST)
-            print(form)
+            try:
+                saledata = SaleData.objects.get(id=request.POST.get("id"))
+                form = SaleDataUpdateForm(request.POST, instance=saledata)
+            except ObjectDoesNotExist:
+                form = SaleDataUpdateForm(request.POST)
             if form.is_valid():
                 saledata = form.save()
                 json_response = {
-                    "saledata_id": saledata.pk,
+                    "id": saledata.pk,
                     "artwork": saledata.artwork.pk,
+                    "buyer": saledata.buyer.pk,
                     "notes": saledata.notes,
                     "saleCurrency": saledata.sale_currency,
                     "salePrice": saledata.sale_price,

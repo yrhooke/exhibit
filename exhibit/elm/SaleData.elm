@@ -65,16 +65,23 @@ type Field
 decodeSaleData : D.Decoder SaleData
 decodeSaleData =
     D.succeed SaleData
-        |> Pipeline.required "saledata_id" (D.int |> D.maybe)
+        |> Pipeline.required "id" (D.int |> D.maybe)
         |> Pipeline.required "artwork" D.int
         |> Pipeline.required "buyer" D.int
-        |> Pipeline.required "notes" D.string
-        |> Pipeline.required "saleCurrency" D.string
-        |> Pipeline.required "salePrice" D.string
-        |> Pipeline.required "discount" D.string
-        |> Pipeline.required "agentFee" D.string
-        |> Pipeline.required "amountToArtist" D.string
-        |> Pipeline.required "saleDate" (D.map stringDefault (D.nullable D.string))
+        |> Pipeline.required "notes" nullableStringDecoder
+        |> Pipeline.required "saleCurrency" nullableStringDecoder
+        |> Pipeline.required "salePrice" nullableStringDecoder
+        |> Pipeline.required "discount" nullableStringDecoder
+        |> Pipeline.required "agentFee" nullableStringDecoder
+        |> Pipeline.required "amountToArtist" nullableStringDecoder
+        |> Pipeline.required "saleDate" nullableStringDecoder
+
+
+nullableStringDecoder : D.Decoder String
+nullableStringDecoder =
+    D.string
+        |> D.maybe
+        |> D.map (Maybe.withDefault "")
 
 
 stringDefault : Maybe String -> String
@@ -93,7 +100,7 @@ encodeSaleData record =
         encodeIDField idField =
             case idField of
                 Just id ->
-                    [ ( "saledata_id", E.int <| id ) ]
+                    [ ( "id", E.int <| id ) ]
 
                 Nothing ->
                     []
@@ -119,7 +126,7 @@ saleDataToForm record =
         encodeIDField idField =
             case idField of
                 Just id ->
-                    [ Http.stringPart "saledata_id" (String.fromInt id) ]
+                    [ Http.stringPart "id" (String.fromInt id) ]
 
                 Nothing ->
                     []
@@ -305,21 +312,21 @@ update msg model =
                             Debug.log ("Submitting: " ++ Debug.toString model.saleData) ""
                     in
                     ( { model | updated = Updating, errors = [] }
-                      -- , Http.request
-                      --     { method = "POST"
-                      --     , url = "/c/api/saledata"
-                      --     , headers =
-                      --         []
-                      --     , body =
-                      --         Http.multipartBody
-                      --             (Http.stringPart "csrfmiddlewaretoken" model.csrftoken
-                      --                 :: saleDataToForm model.saleData
-                      --             )
-                      --     , expect = Http.expectJson ServerResponse decodeSaleData
-                      --     , timeout = Nothing
-                      --     , tracker = Just "upload"
-                      --     }
-                    , Cmd.none
+                    , Http.request
+                        { method = "POST"
+                        , url = "/c/api/saledata"
+                        , headers =
+                            []
+                        , body =
+                            Http.multipartBody
+                                (Http.stringPart "csrfmiddlewaretoken" model.csrftoken
+                                    :: saleDataToForm model.saleData
+                                )
+                        , expect = Http.expectJson ServerResponse decodeSaleData
+                        , timeout = Nothing
+                        , tracker = Just "upload"
+                        }
+                      -- , Cmd.none
                     )
 
                 Err errors ->
@@ -358,10 +365,7 @@ ifNotBlankOrFloat subjectToString error =
 saleDataValidator : Validate.Validator ( Field, String ) SaleData
 saleDataValidator =
     Validate.all
-        [ -- [ ifBlank String.fromInt .artwork ( Artwork, "Artwork is a required field" )
-          -- , ifBlank String.fromInt .buyer ( Buyer, "Buyer is a required field" )
-          ifNotBlankOrFloat .salePrice ( SalePrice, "Price must be a number" )
-        , ifNotBlankOrFloat .discount ( Discount, "we need a number here" )
+        [ ifNotBlankOrFloat .salePrice ( SalePrice, "Price must be a number" )
         , ifNotBlankOrFloat .agentFee ( AgentFee, "we need a number here" )
         , ifNotBlankOrFloat .amountToArtist ( AmountToArtist, "we need a number here" )
         ]
