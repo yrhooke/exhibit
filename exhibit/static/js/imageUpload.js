@@ -5500,21 +5500,22 @@ var $elm$browser$Browser$element = _Browser_element;
 var $author$project$ImageUpload$Waiting = {$: 'Waiting'};
 var $elm$json$Json$Decode$decodeValue = _Json_run;
 var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$ImageUpload$decodeFieldtoMaybeString = F2(
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $author$project$ImageUpload$decodeFieldtoMaybeInt = F2(
 	function (field, flags) {
 		var _v0 = A2(
 			$elm$json$Json$Decode$decodeValue,
-			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$string),
+			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$int),
 			flags);
 		if (_v0.$ === 'Ok') {
-			var str = _v0.a;
-			return $elm$core$Maybe$Just(str);
+			var num = _v0.a;
+			return $elm$core$Maybe$Just(num);
 		} else {
 			var message = _v0.a;
 			return $elm$core$Maybe$Nothing;
 		}
 	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
 var $author$project$ImageUpload$decodeFieldtoString = F2(
 	function (field, flags) {
 		var _v0 = A2(
@@ -5548,11 +5549,11 @@ var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$ImageUpload$init = function (flags) {
 	return _Utils_Tuple2(
 		{
-			artwork_id: A2($author$project$ImageUpload$decodeFieldtoMaybeString, 'artwork_id', flags),
+			artwork_id: A2($author$project$ImageUpload$decodeFieldtoMaybeInt, 'artwork_id', flags),
 			checkmark_url: A2($author$project$ImageUpload$decodeFieldtoString, 'checkmark_url', flags),
 			csrftoken: A2($author$project$ImageUpload$decodeFieldtoString, 'csrftoken', flags),
 			image_data: {
-				image_id: A2($author$project$ImageUpload$decodeFieldtoMaybeString, 'image_id', flags),
+				image_id: A2($author$project$ImageUpload$decodeFieldtoMaybeInt, 'image_id', flags),
 				image_url: $author$project$ImageUpload$decodeImageURL(flags)
 			},
 			loader_url: A2($author$project$ImageUpload$decodeFieldtoString, 'loader_url', flags),
@@ -5581,7 +5582,6 @@ var $author$project$ImageUpload$ImageData = F2(
 	function (image_id, image_url) {
 		return {image_id: image_id, image_url: image_url};
 	});
-var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$json$Json$Decode$oneOf = _Json_oneOf;
 var $elm$json$Json$Decode$maybe = function (decoder) {
 	return $elm$json$Json$Decode$oneOf(
@@ -5595,10 +5595,7 @@ var $author$project$ImageUpload$decodeUploadResult = A3(
 	$elm$json$Json$Decode$map2,
 	$author$project$ImageUpload$ImageData,
 	$elm$json$Json$Decode$maybe(
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$core$String$fromInt,
-			A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int))),
+		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int)),
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
@@ -6406,7 +6403,7 @@ var $elm$http$Http$stringPart = _Http_pair;
 var $author$project$ImageUpload$stringifyArtworkID = function (artwork_id) {
 	if (artwork_id.$ === 'Just') {
 		var pk = artwork_id.a;
-		return pk;
+		return $elm$core$String$fromInt(pk);
 	} else {
 		return '';
 	}
@@ -6507,16 +6504,15 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
-var $elm$html$Html$option = _VirtualDom_node('option');
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
 		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
 	});
-var $elm$html$Html$Attributes$selected = $elm$html$Html$Attributes$boolProperty('selected');
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $elm$html$Html$option = _VirtualDom_node('option');
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$ImageUpload$imageIdSelectionView = function (image_id) {
 	if (image_id.$ === 'Just') {
@@ -6525,8 +6521,9 @@ var $author$project$ImageUpload$imageIdSelectionView = function (image_id) {
 			$elm$html$Html$option,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$value(id),
-					$elm$html$Html$Attributes$selected(true)
+					A2($elm$html$Html$Attributes$attribute, 'selected', ''),
+					$elm$html$Html$Attributes$value(
+					$elm$core$String$fromInt(id))
 				]),
 			_List_Nil);
 	} else {
@@ -6540,6 +6537,14 @@ var $author$project$ImageUpload$imageIdSelectionView = function (image_id) {
 	}
 };
 var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
 var $elm$html$Html$Attributes$required = $elm$html$Html$Attributes$boolProperty('required');
 var $elm$html$Html$select = _VirtualDom_node('select');
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
