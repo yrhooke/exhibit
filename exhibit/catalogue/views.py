@@ -10,7 +10,7 @@ from django.db.models.expressions import F
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import redirect, render
 
-from catalogue.models import Artwork, Series, Exhibition, Location, ArtworkImage
+from catalogue.models import Artwork, Series, Exhibition, Location, ArtworkImage, SaleData
 from catalogue.forms import ArtworkDetailForm, SeriesDetailForm, LocationDetailForm, ExhibitionDetailForm
 from catalogue.forms import ArtworkSearchForm, LocationSearchForm, ExhibitionSearchForm
 from catalogue.forms import WorkInExhibitionForm
@@ -419,3 +419,7 @@ class ExhibitionsForArtwork(ListView):
         artwork = Artwork.objects.get(pk=self.kwargs.get('pk'))
         queryset = [s.exhibition for s in artwork.workinexhibition_set.all().order_by('-pk')]
         return queryset
+
+
+class SaleDataCreate(CreateView, LoginRequiredMixin):
+    model = SaleData

@@ -1,7 +1,7 @@
 from django import forms
 from tempus_dominus.widgets import DatePicker
 
-from ..models import Artwork, Series, Location, Exhibition, WorkInExhibition, ArtworkImage
+from ..models import Artwork, Series, Location, Exhibition, WorkInExhibition, ArtworkImage, SaleData
 from .utils import PlaceholderMixin
 
 
@@ -47,3 +47,8 @@ class ExhibitionDetailForm(PlaceholderMixin, forms.ModelForm):
             'end_date': DatePicker,
         }
 
+class SaleDataUpdateForm(forms.ModelForm):
+
+    class Meta():
+        model = SaleData
+        fields = '__all__'
