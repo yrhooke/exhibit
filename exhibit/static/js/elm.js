@@ -5497,11 +5497,11 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$SalesData$Updated = {$: 'Updated'};
+var $author$project$SaleData$Updated = {$: 'Updated'};
 var $elm$json$Json$Decode$decodeValue = _Json_run;
 var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$SalesData$decodeFieldtoString = F2(
+var $author$project$SaleData$decodeFieldtoString = F2(
 	function (field, flags) {
 		var _v0 = A2(
 			$elm$json$Json$Decode$decodeValue,
@@ -5515,7 +5515,7 @@ var $author$project$SalesData$decodeFieldtoString = F2(
 			return '';
 		}
 	});
-var $author$project$SalesData$SaleData = function (id) {
+var $author$project$SaleData$SaleData = function (id) {
 	return function (artwork) {
 		return function (buyer) {
 			return function (notes) {
@@ -5563,7 +5563,7 @@ var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 			A2($elm$json$Json$Decode$field, key, valDecoder),
 			decoder);
 	});
-var $author$project$SalesData$stringDefault = function (str) {
+var $author$project$SaleData$stringDefault = function (str) {
 	if (str.$ === 'Just') {
 		var s = str.a;
 		return s;
@@ -5571,12 +5571,12 @@ var $author$project$SalesData$stringDefault = function (str) {
 		return '';
 	}
 };
-var $author$project$SalesData$decodeSaleData = A3(
+var $author$project$SaleData$decodeSaleData = A3(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 	'saleDate',
 	A2(
 		$elm$json$Json$Decode$map,
-		$author$project$SalesData$stringDefault,
+		$author$project$SaleData$stringDefault,
 		$elm$json$Json$Decode$nullable($elm$json$Json$Decode$string)),
 	A3(
 		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
@@ -5614,40 +5614,40 @@ var $author$project$SalesData$decodeSaleData = A3(
 										$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 										'saledata_id',
 										$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int),
-										$elm$json$Json$Decode$succeed($author$project$SalesData$SaleData)))))))))));
+										$elm$json$Json$Decode$succeed($author$project$SaleData$SaleData)))))))))));
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$SalesData$init = function (flags) {
-	var _v0 = A2($elm$json$Json$Decode$decodeValue, $author$project$SalesData$decodeSaleData, flags);
+var $author$project$SaleData$init = function (flags) {
+	var _v0 = A2($elm$json$Json$Decode$decodeValue, $author$project$SaleData$decodeSaleData, flags);
 	if (_v0.$ === 'Ok') {
 		var data = _v0.a;
 		return _Utils_Tuple2(
 			{
-				csrftoken: A2($author$project$SalesData$decodeFieldtoString, 'csrftoken', flags),
+				csrftoken: A2($author$project$SaleData$decodeFieldtoString, 'csrftoken', flags),
 				saleData: data,
-				updated: $author$project$SalesData$Updated
+				updated: $author$project$SaleData$Updated
 			},
 			$elm$core$Platform$Cmd$none);
 	} else {
 		return _Utils_Tuple2(
 			{
-				csrftoken: A2($author$project$SalesData$decodeFieldtoString, 'csrftoken', flags),
+				csrftoken: A2($author$project$SaleData$decodeFieldtoString, 'csrftoken', flags),
 				saleData: {agentFee: '', amountToArtist: '', artwork: 2, buyer: 2, discount: '', id: $elm$core$Maybe$Nothing, notes: '', saleCurrency: '', saleDate: '', salePrice: ''},
-				updated: $author$project$SalesData$Updated
+				updated: $author$project$SaleData$Updated
 			},
 			$elm$core$Platform$Cmd$none);
 	}
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$SalesData$subscriptions = function (model) {
+var $author$project$SaleData$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
 };
-var $author$project$SalesData$Behind = {$: 'Behind'};
-var $author$project$SalesData$ServerResponse = function (a) {
+var $author$project$SaleData$Behind = {$: 'Behind'};
+var $author$project$SaleData$ServerResponse = function (a) {
 	return {$: 'ServerResponse', a: a};
 };
-var $author$project$SalesData$Updating = {$: 'Updating'};
+var $author$project$SaleData$Updating = {$: 'Updating'};
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
@@ -6438,7 +6438,7 @@ var $elm$http$Http$request = function (r) {
 			{allowCookiesFromOtherDomains: false, body: r.body, expect: r.expect, headers: r.headers, method: r.method, timeout: r.timeout, tracker: r.tracker, url: r.url}));
 };
 var $elm$http$Http$stringPart = _Http_pair;
-var $author$project$SalesData$saleDataToForm = function (record) {
+var $author$project$SaleData$saleDataToForm = function (record) {
 	var encodeIDField = function (idField) {
 		if (idField.$ === 'Just') {
 			var id = idField.a;
@@ -6474,50 +6474,50 @@ var $author$project$SalesData$saleDataToForm = function (record) {
 				A2($elm$http$Http$stringPart, 'sale_date', record.saleDate)
 			]));
 };
-var $author$project$SalesData$setAgentFee = F2(
+var $author$project$SaleData$setAgentFee = F2(
 	function (newAgentFee, saleData) {
 		return _Utils_update(
 			saleData,
 			{agentFee: newAgentFee});
 	});
-var $author$project$SalesData$setAmountToArtist = F2(
+var $author$project$SaleData$setAmountToArtist = F2(
 	function (newAmountToArtist, saleData) {
 		return _Utils_update(
 			saleData,
 			{amountToArtist: newAmountToArtist});
 	});
-var $author$project$SalesData$setDiscount = F2(
+var $author$project$SaleData$setDiscount = F2(
 	function (newDiscount, saleData) {
 		return _Utils_update(
 			saleData,
 			{discount: newDiscount});
 	});
-var $author$project$SalesData$setNotes = F2(
+var $author$project$SaleData$setNotes = F2(
 	function (newNotes, saleData) {
 		return _Utils_update(
 			saleData,
 			{notes: newNotes});
 	});
-var $author$project$SalesData$setSaleCurrency = F2(
+var $author$project$SaleData$setSaleCurrency = F2(
 	function (newSaleCurrency, saleData) {
 		return _Utils_update(
 			saleData,
 			{saleCurrency: newSaleCurrency});
 	});
-var $author$project$SalesData$setSaleDate = F2(
+var $author$project$SaleData$setSaleDate = F2(
 	function (newSaleDate, saleData) {
 		return _Utils_update(
 			saleData,
 			{saleDate: newSaleDate});
 	});
-var $author$project$SalesData$setSalePrice = F2(
+var $author$project$SaleData$setSalePrice = F2(
 	function (newSalePrice, saleData) {
 		return _Utils_update(
 			saleData,
 			{salePrice: newSalePrice});
 	});
 var $elm$core$Debug$toString = _Debug_toString;
-var $author$project$SalesData$update = F2(
+var $author$project$SaleData$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'UpdateNotes':
@@ -6526,8 +6526,8 @@ var $author$project$SalesData$update = F2(
 					_Utils_update(
 						model,
 						{
-							saleData: A2($author$project$SalesData$setNotes, val, model.saleData),
-							updated: $author$project$SalesData$Behind
+							saleData: A2($author$project$SaleData$setNotes, val, model.saleData),
+							updated: $author$project$SaleData$Behind
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'UpdateSaleCurrency':
@@ -6536,8 +6536,8 @@ var $author$project$SalesData$update = F2(
 					_Utils_update(
 						model,
 						{
-							saleData: A2($author$project$SalesData$setSaleCurrency, val, model.saleData),
-							updated: $author$project$SalesData$Behind
+							saleData: A2($author$project$SaleData$setSaleCurrency, val, model.saleData),
+							updated: $author$project$SaleData$Behind
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'UpdateSalePrice':
@@ -6546,8 +6546,8 @@ var $author$project$SalesData$update = F2(
 					_Utils_update(
 						model,
 						{
-							saleData: A2($author$project$SalesData$setSalePrice, val, model.saleData),
-							updated: $author$project$SalesData$Behind
+							saleData: A2($author$project$SaleData$setSalePrice, val, model.saleData),
+							updated: $author$project$SaleData$Behind
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'UpdateDiscount':
@@ -6556,8 +6556,8 @@ var $author$project$SalesData$update = F2(
 					_Utils_update(
 						model,
 						{
-							saleData: A2($author$project$SalesData$setDiscount, val, model.saleData),
-							updated: $author$project$SalesData$Behind
+							saleData: A2($author$project$SaleData$setDiscount, val, model.saleData),
+							updated: $author$project$SaleData$Behind
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'UpdateAgentFee':
@@ -6566,8 +6566,8 @@ var $author$project$SalesData$update = F2(
 					_Utils_update(
 						model,
 						{
-							saleData: A2($author$project$SalesData$setAgentFee, val, model.saleData),
-							updated: $author$project$SalesData$Behind
+							saleData: A2($author$project$SaleData$setAgentFee, val, model.saleData),
+							updated: $author$project$SaleData$Behind
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'UpdateAmountToArtist':
@@ -6576,8 +6576,8 @@ var $author$project$SalesData$update = F2(
 					_Utils_update(
 						model,
 						{
-							saleData: A2($author$project$SalesData$setAmountToArtist, val, model.saleData),
-							updated: $author$project$SalesData$Behind
+							saleData: A2($author$project$SaleData$setAmountToArtist, val, model.saleData),
+							updated: $author$project$SaleData$Behind
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'UpdateSaleDate':
@@ -6586,8 +6586,8 @@ var $author$project$SalesData$update = F2(
 					_Utils_update(
 						model,
 						{
-							saleData: A2($author$project$SalesData$setSaleDate, val, model.saleData),
-							updated: $author$project$SalesData$Behind
+							saleData: A2($author$project$SaleData$setSaleDate, val, model.saleData),
+							updated: $author$project$SaleData$Behind
 						}),
 					$elm$core$Platform$Cmd$none);
 			case 'SubmitForm':
@@ -6598,15 +6598,15 @@ var $author$project$SalesData$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{updated: $author$project$SalesData$Updating}),
+						{updated: $author$project$SaleData$Updating}),
 					$elm$http$Http$request(
 						{
 							body: $elm$http$Http$multipartBody(
 								A2(
 									$elm$core$List$cons,
 									A2($elm$http$Http$stringPart, 'csrfmiddlewaretoken', model.csrftoken),
-									$author$project$SalesData$saleDataToForm(model.saleData))),
-							expect: A2($elm$http$Http$expectJson, $author$project$SalesData$ServerResponse, $author$project$SalesData$decodeSaleData),
+									$author$project$SaleData$saleDataToForm(model.saleData))),
+							expect: A2($elm$http$Http$expectJson, $author$project$SaleData$ServerResponse, $author$project$SaleData$decodeSaleData),
 							headers: _List_Nil,
 							method: 'POST',
 							timeout: $elm$core$Maybe$Nothing,
@@ -6624,37 +6624,37 @@ var $author$project$SalesData$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{saleData: data, updated: $author$project$SalesData$Updated}),
+							{saleData: data, updated: $author$project$SaleData$Updated}),
 						$elm$core$Platform$Cmd$none);
 				} else {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{updated: $author$project$SalesData$Behind}),
+							{updated: $author$project$SaleData$Behind}),
 						$elm$core$Platform$Cmd$none);
 				}
 		}
 	});
 var $elm$json$Json$Decode$value = _Json_decodeValue;
-var $author$project$SalesData$UpdateAgentFee = function (a) {
+var $author$project$SaleData$UpdateAgentFee = function (a) {
 	return {$: 'UpdateAgentFee', a: a};
 };
-var $author$project$SalesData$UpdateAmountToArtist = function (a) {
+var $author$project$SaleData$UpdateAmountToArtist = function (a) {
 	return {$: 'UpdateAmountToArtist', a: a};
 };
-var $author$project$SalesData$UpdateDiscount = function (a) {
+var $author$project$SaleData$UpdateDiscount = function (a) {
 	return {$: 'UpdateDiscount', a: a};
 };
-var $author$project$SalesData$UpdateNotes = function (a) {
+var $author$project$SaleData$UpdateNotes = function (a) {
 	return {$: 'UpdateNotes', a: a};
 };
-var $author$project$SalesData$UpdateSaleCurrency = function (a) {
+var $author$project$SaleData$UpdateSaleCurrency = function (a) {
 	return {$: 'UpdateSaleCurrency', a: a};
 };
-var $author$project$SalesData$UpdateSaleDate = function (a) {
+var $author$project$SaleData$UpdateSaleDate = function (a) {
 	return {$: 'UpdateSaleDate', a: a};
 };
-var $author$project$SalesData$UpdateSalePrice = function (a) {
+var $author$project$SaleData$UpdateSalePrice = function (a) {
 	return {$: 'UpdateSalePrice', a: a};
 };
 var $elm$html$Html$div = _VirtualDom_node('div');
@@ -6667,7 +6667,7 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
-var $author$project$SalesData$SubmitForm = {$: 'SubmitForm'};
+var $author$project$SaleData$SubmitForm = {$: 'SubmitForm'};
 var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$label = _VirtualDom_node('label');
@@ -6722,7 +6722,7 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
-var $author$project$SalesData$inputTextView = F4(
+var $author$project$SaleData$inputTextView = F4(
 	function (label_name, id_, updateMsg, val) {
 		return A2(
 			$elm$html$Html$div,
@@ -6745,7 +6745,7 @@ var $author$project$SalesData$inputTextView = F4(
 						[
 							$elm$html$Html$Attributes$id(id_),
 							$elm$html$Html$Events$onInput(updateMsg),
-							$elm$html$Html$Events$onBlur($author$project$SalesData$SubmitForm),
+							$elm$html$Html$Events$onBlur($author$project$SaleData$SubmitForm),
 							$elm$html$Html$Attributes$value(val)
 						]),
 					_List_Nil),
@@ -6758,7 +6758,7 @@ var $author$project$SalesData$inputTextView = F4(
 						]))
 				]));
 	});
-var $author$project$SalesData$printSyncStatus = function (status) {
+var $author$project$SaleData$printSyncStatus = function (status) {
 	switch (status.$) {
 		case 'Updated':
 			return 'Updated';
@@ -6770,7 +6770,7 @@ var $author$project$SalesData$printSyncStatus = function (status) {
 };
 var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $author$project$SalesData$view = function (model) {
+var $author$project$SaleData$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
 		_List_Nil,
@@ -6796,7 +6796,7 @@ var $author$project$SalesData$view = function (model) {
 						_List_fromArray(
 							[
 								$elm$html$Html$text(
-								$author$project$SalesData$printSyncStatus(model.updated))
+								$author$project$SaleData$printSyncStatus(model.updated))
 							])),
 						A2(
 						$elm$html$Html$div,
@@ -6815,17 +6815,17 @@ var $author$project$SalesData$view = function (model) {
 								}())
 							]))
 					])),
-				A4($author$project$SalesData$inputTextView, 'Notes:', 'id_notes', $author$project$SalesData$UpdateNotes, model.saleData.notes),
-				A4($author$project$SalesData$inputTextView, 'SaleCurrency:', 'id_sale_currency', $author$project$SalesData$UpdateSaleCurrency, model.saleData.saleCurrency),
-				A4($author$project$SalesData$inputTextView, 'SalePrice:', 'id_sale_price', $author$project$SalesData$UpdateSalePrice, model.saleData.salePrice),
-				A4($author$project$SalesData$inputTextView, 'Discount:', 'id_discount', $author$project$SalesData$UpdateDiscount, model.saleData.discount),
-				A4($author$project$SalesData$inputTextView, 'AgentFee:', 'id_agent_fee', $author$project$SalesData$UpdateAgentFee, model.saleData.agentFee),
-				A4($author$project$SalesData$inputTextView, 'AmountToArtist:', 'id_amount_to_artist', $author$project$SalesData$UpdateAmountToArtist, model.saleData.amountToArtist),
-				A4($author$project$SalesData$inputTextView, 'SaleDate:', 'id_sale_date', $author$project$SalesData$UpdateSaleDate, model.saleData.saleDate)
+				A4($author$project$SaleData$inputTextView, 'Notes:', 'id_notes', $author$project$SaleData$UpdateNotes, model.saleData.notes),
+				A4($author$project$SaleData$inputTextView, 'SaleCurrency:', 'id_sale_currency', $author$project$SaleData$UpdateSaleCurrency, model.saleData.saleCurrency),
+				A4($author$project$SaleData$inputTextView, 'SalePrice:', 'id_sale_price', $author$project$SaleData$UpdateSalePrice, model.saleData.salePrice),
+				A4($author$project$SaleData$inputTextView, 'Discount:', 'id_discount', $author$project$SaleData$UpdateDiscount, model.saleData.discount),
+				A4($author$project$SaleData$inputTextView, 'AgentFee:', 'id_agent_fee', $author$project$SaleData$UpdateAgentFee, model.saleData.agentFee),
+				A4($author$project$SaleData$inputTextView, 'AmountToArtist:', 'id_amount_to_artist', $author$project$SaleData$UpdateAmountToArtist, model.saleData.amountToArtist),
+				A4($author$project$SaleData$inputTextView, 'SaleDate:', 'id_sale_date', $author$project$SaleData$UpdateSaleDate, model.saleData.saleDate)
 			]));
 };
-var $author$project$SalesData$main = $elm$browser$Browser$element(
-	{init: $author$project$SalesData$init, subscriptions: $author$project$SalesData$subscriptions, update: $author$project$SalesData$update, view: $author$project$SalesData$view});
+var $author$project$SaleData$main = $elm$browser$Browser$element(
+	{init: $author$project$SaleData$init, subscriptions: $author$project$SaleData$subscriptions, update: $author$project$SaleData$update, view: $author$project$SaleData$view});
 var $author$project$ImageUpload$Waiting = {$: 'Waiting'};
 var $author$project$ImageUpload$decodeFieldtoMaybeInt = F2(
 	function (field, flags) {
@@ -7344,4 +7344,4 @@ var $author$project$ImageUpload$view = function (model) {
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(
 	{init: $author$project$ImageUpload$init, subscriptions: $author$project$ImageUpload$subscriptions, update: $author$project$ImageUpload$update, view: $author$project$ImageUpload$view});
-_Platform_export({'ImageUpload':{'init':$author$project$ImageUpload$main($elm$json$Json$Decode$value)(0)},'SalesData':{'init':$author$project$SalesData$main($elm$json$Json$Decode$value)(0)}});}(this));
+_Platform_export({'ImageUpload':{'init':$author$project$ImageUpload$main($elm$json$Json$Decode$value)(0)},'SaleData':{'init':$author$project$SaleData$main($elm$json$Json$Decode$value)(0)}});}(this));

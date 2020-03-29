@@ -1,4 +1,4 @@
-module SalesData exposing (..)
+module SaleData exposing (..)
 
 import Browser
 import Html exposing (..)
