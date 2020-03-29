@@ -30,11 +30,14 @@ main =
 type alias Model =
     { saleData : SaleData
     , updated : SyncStatus
+    , csrftoken : String
     }
 
 
 type alias SaleData =
-    { artwork : Int
+    { id : Maybe Int
+    , artwork : Int
+    , buyer : Int
     , notes : String
     , saleCurrency : String
     , salePrice : String
@@ -48,28 +51,74 @@ type alias SaleData =
 decodeSaleData : D.Decoder SaleData
 decodeSaleData =
     D.succeed SaleData
+        |> Pipeline.required "saledata_id" (D.int |> D.maybe)
         |> Pipeline.required "artwork" D.int
+        |> Pipeline.required "buyer" D.int
         |> Pipeline.required "notes" D.string
         |> Pipeline.required "saleCurrency" D.string
         |> Pipeline.required "salePrice" D.string
         |> Pipeline.required "discount" D.string
         |> Pipeline.required "agentFee" D.string
         |> Pipeline.required "amountToArtist" D.string
-        |> Pipeline.required "saleDate" D.string
+        |> Pipeline.required "saleDate" (D.map stringDefault (D.nullable D.string))
 
+stringDefault : Maybe String -> String
+stringDefault str =
+    case str of
+        Just s ->
+            s
+        
+        Nothing ->
+            ""
 
 encodeSaleData : SaleData -> E.Value
 encodeSaleData record =
+    let
+        encodeIDField idField =
+            case idField of
+                Just id ->
+                    [ ( "saledata_id", E.int <| id ) ]
+
+                Nothing ->
+                    []
+    in
     E.object
-        [ ( "artwork", E.int <| record.artwork )
-        , ( "notes", E.string <| record.notes )
-        , ( "saleCurrency", E.string <| record.saleCurrency )
-        , ( "salePrice", E.string <| record.salePrice )
-        , ( "discount", E.string <| record.discount )
-        , ( "agentFee", E.string <| record.agentFee )
-        , ( "amountToArtist", E.string <| record.amountToArtist )
-        , ( "saleDate", E.string <| record.saleDate )
-        ]
+        (encodeIDField record.id
+            ++ [ ( "artwork", E.int <| record.artwork )
+               , ( "buyer", E.int <| record.buyer )
+               , ( "notes", E.string <| record.notes )
+               , ( "saleCurrency", E.string <| record.saleCurrency )
+               , ( "salePrice", E.string <| record.salePrice )
+               , ( "discount", E.string <| record.discount )
+               , ( "agentFee", E.string <| record.agentFee )
+               , ( "amountToArtist", E.string <| record.amountToArtist )
+               , ( "saleDate", E.string <| record.saleDate )
+               ]
+        )
+
+
+saleDataToForm : SaleData -> List Http.Part
+saleDataToForm record =
+    let
+        encodeIDField idField =
+            case idField of
+                Just id ->
+                    [ Http.stringPart "saledata_id" (String.fromInt id) ]
+
+                Nothing ->
+                    []
+    in
+    encodeIDField record.id
+        ++ [ Http.stringPart "artwork" (String.fromInt record.artwork)
+           , Http.stringPart "buyer" (String.fromInt record.buyer)
+           , Http.stringPart "notes" record.notes
+           , Http.stringPart "sale_currency" record.saleCurrency
+           , Http.stringPart "sale_price" record.salePrice
+           , Http.stringPart "discount" record.discount
+           , Http.stringPart "agent_fee" record.agentFee
+           , Http.stringPart "amount_to_artist" record.amountToArtist
+           , Http.stringPart "sale_date" record.saleDate
+           ]
 
 
 setNotes : String -> SaleData -> SaleData
@@ -139,13 +188,16 @@ init flags =
         Ok data ->
             ( { saleData = data
               , updated = Updated
+              , csrftoken = decodeFieldtoString "csrftoken" flags
               }
             , Cmd.none
             )
 
         Err _ ->
             ( { saleData =
-                    { artwork = -1
+                    { id = Nothing
+                    , artwork = 2
+                    , buyer = 2
                     , notes = ""
                     , saleCurrency = ""
                     , salePrice = ""
@@ -154,10 +206,21 @@ init flags =
                     , amountToArtist = ""
                     , saleDate = ""
                     }
+              , csrftoken = decodeFieldtoString "csrftoken" flags
               , updated = Updated
               }
             , Cmd.none
             )
+
+
+decodeFieldtoString : String -> D.Value -> String
+decodeFieldtoString field flags =
+    case D.decodeValue (D.field field D.string) flags of
+        Ok str ->
+            str
+
+        Err message ->
+            ""
 
 
 
@@ -203,15 +266,20 @@ update msg model =
 
         SubmitForm ->
             let
-                debug = Debug.log ("Submitting: " ++ (Debug.toString  model.saleData)) ""
+                debug =
+                    Debug.log ("Submitting: " ++ Debug.toString model.saleData) ""
             in
-            
             ( { model | updated = Updating }
             , Http.request
                 { method = "POST"
-                , url = "/c/artwork/image/new"
-                , headers = []
-                , body = Http.jsonBody (encodeSaleData model.saleData)
+                , url = "/c/api/saledata"
+                , headers =
+                    []
+                , body =
+                    Http.multipartBody
+                        (Http.stringPart "csrfmiddlewaretoken" model.csrftoken
+                            :: saleDataToForm model.saleData
+                        )
                 , expect = Http.expectJson ServerResponse decodeSaleData
                 , timeout = Nothing
                 , tracker = Just "upload"
@@ -221,7 +289,7 @@ update msg model =
         ServerResponse response ->
             let
                 debug =
-                    Debug.log ("Response: " ++ (Debug.toString response)) ""
+                    Debug.log ("Response: " ++ Debug.toString response) ""
             in
             case response of
                 Ok data ->
@@ -232,10 +300,6 @@ update msg model =
 
 
 
--- updateUserInputFloat : Maybe Float -> Maybe Float
--- updateUserInputFloat input =
---     case input of
---         Just float
 -- SUBSCRIPTIONS
 
 
@@ -252,7 +316,24 @@ view : Model -> Html Msg
 view model =
     div
         []
-        [ div [ style "color" "blue" ] [ text (printSyncStatus model.updated) ]
+        [ div
+            [ id "headers"
+            , style "display" "flex"
+            , style "justify-content" "space-between"
+            , style "width" "100%"
+            ]
+            [ div [ style "color" "blue" ] [ text (printSyncStatus model.updated) ]
+            , div []
+                [ text
+                    (case model.saleData.id of
+                        Just id ->
+                            "Exists: " ++ String.fromInt id
+
+                        Nothing ->
+                            "Draft"
+                    )
+                ]
+            ]
         , inputTextView "Notes:" "id_notes" UpdateNotes model.saleData.notes
         , inputTextView "SaleCurrency:" "id_sale_currency" UpdateSaleCurrency model.saleData.saleCurrency
         , inputTextView "SalePrice:" "id_sale_price" UpdateSalePrice model.saleData.salePrice

@@ -5498,13 +5498,64 @@ var $elm$core$Task$perform = F2(
 	});
 var $elm$browser$Browser$element = _Browser_element;
 var $author$project$SalesData$Updated = {$: 'Updated'};
-var $author$project$SalesData$SaleData = F8(
-	function (artwork, notes, saleCurrency, salePrice, discount, agentFee, amountToArtist, saleDate) {
-		return {agentFee: agentFee, amountToArtist: amountToArtist, artwork: artwork, discount: discount, notes: notes, saleCurrency: saleCurrency, saleDate: saleDate, salePrice: salePrice};
-	});
-var $elm$json$Json$Decode$int = _Json_decodeInt;
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
+var $elm$json$Json$Decode$decodeValue = _Json_run;
 var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $author$project$SalesData$decodeFieldtoString = F2(
+	function (field, flags) {
+		var _v0 = A2(
+			$elm$json$Json$Decode$decodeValue,
+			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$string),
+			flags);
+		if (_v0.$ === 'Ok') {
+			var str = _v0.a;
+			return str;
+		} else {
+			var message = _v0.a;
+			return '';
+		}
+	});
+var $author$project$SalesData$SaleData = function (id) {
+	return function (artwork) {
+		return function (buyer) {
+			return function (notes) {
+				return function (saleCurrency) {
+					return function (salePrice) {
+						return function (discount) {
+							return function (agentFee) {
+								return function (amountToArtist) {
+									return function (saleDate) {
+										return {agentFee: agentFee, amountToArtist: amountToArtist, artwork: artwork, buyer: buyer, discount: discount, id: id, notes: notes, saleCurrency: saleCurrency, saleDate: saleDate, salePrice: salePrice};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+var $elm$json$Json$Decode$int = _Json_decodeInt;
+var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+var $elm$json$Json$Decode$maybe = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder),
+				$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing)
+			]));
+};
+var $elm$json$Json$Decode$null = _Json_decodeNull;
+var $elm$json$Json$Decode$nullable = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				$elm$json$Json$Decode$null($elm$core$Maybe$Nothing),
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder)
+			]));
+};
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
 var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 	function (key, valDecoder, decoder) {
 		return A2(
@@ -5512,11 +5563,21 @@ var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 			A2($elm$json$Json$Decode$field, key, valDecoder),
 			decoder);
 	});
-var $elm$json$Json$Decode$string = _Json_decodeString;
+var $author$project$SalesData$stringDefault = function (str) {
+	if (str.$ === 'Just') {
+		var s = str.a;
+		return s;
+	} else {
+		return '';
+	}
+};
 var $author$project$SalesData$decodeSaleData = A3(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 	'saleDate',
-	$elm$json$Json$Decode$string,
+	A2(
+		$elm$json$Json$Decode$map,
+		$author$project$SalesData$stringDefault,
+		$elm$json$Json$Decode$nullable($elm$json$Json$Decode$string)),
 	A3(
 		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 		'amountToArtist',
@@ -5543,13 +5604,17 @@ var $author$project$SalesData$decodeSaleData = A3(
 							$elm$json$Json$Decode$string,
 							A3(
 								$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-								'artwork',
+								'buyer',
 								$elm$json$Json$Decode$int,
-								$elm$json$Json$Decode$succeed($author$project$SalesData$SaleData)))))))));
-var $elm$json$Json$Decode$decodeValue = _Json_run;
-var $elm$core$Basics$negate = function (n) {
-	return -n;
-};
+								A3(
+									$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+									'artwork',
+									$elm$json$Json$Decode$int,
+									A3(
+										$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+										'saledata_id',
+										$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int),
+										$elm$json$Json$Decode$succeed($author$project$SalesData$SaleData)))))))))));
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$SalesData$init = function (flags) {
@@ -5557,12 +5622,17 @@ var $author$project$SalesData$init = function (flags) {
 	if (_v0.$ === 'Ok') {
 		var data = _v0.a;
 		return _Utils_Tuple2(
-			{saleData: data, updated: $author$project$SalesData$Updated},
+			{
+				csrftoken: A2($author$project$SalesData$decodeFieldtoString, 'csrftoken', flags),
+				saleData: data,
+				updated: $author$project$SalesData$Updated
+			},
 			$elm$core$Platform$Cmd$none);
 	} else {
 		return _Utils_Tuple2(
 			{
-				saleData: {agentFee: '', amountToArtist: '', artwork: -1, discount: '', notes: '', saleCurrency: '', saleDate: '', salePrice: ''},
+				csrftoken: A2($author$project$SalesData$decodeFieldtoString, 'csrftoken', flags),
+				saleData: {agentFee: '', amountToArtist: '', artwork: 2, buyer: 2, discount: '', id: $elm$core$Maybe$Nothing, notes: '', saleCurrency: '', saleDate: '', salePrice: ''},
 				updated: $author$project$SalesData$Updated
 			},
 			$elm$core$Platform$Cmd$none);
@@ -5578,51 +5648,6 @@ var $author$project$SalesData$ServerResponse = function (a) {
 	return {$: 'ServerResponse', a: a};
 };
 var $author$project$SalesData$Updating = {$: 'Updating'};
-var $elm$json$Json$Encode$int = _Json_wrap;
-var $elm$json$Json$Encode$object = function (pairs) {
-	return _Json_wrap(
-		A3(
-			$elm$core$List$foldl,
-			F2(
-				function (_v0, obj) {
-					var k = _v0.a;
-					var v = _v0.b;
-					return A3(_Json_addField, k, v, obj);
-				}),
-			_Json_emptyObject(_Utils_Tuple0),
-			pairs));
-};
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $author$project$SalesData$encodeSaleData = function (record) {
-	return $elm$json$Json$Encode$object(
-		_List_fromArray(
-			[
-				_Utils_Tuple2(
-				'artwork',
-				$elm$json$Json$Encode$int(record.artwork)),
-				_Utils_Tuple2(
-				'notes',
-				$elm$json$Json$Encode$string(record.notes)),
-				_Utils_Tuple2(
-				'saleCurrency',
-				$elm$json$Json$Encode$string(record.saleCurrency)),
-				_Utils_Tuple2(
-				'salePrice',
-				$elm$json$Json$Encode$string(record.salePrice)),
-				_Utils_Tuple2(
-				'discount',
-				$elm$json$Json$Encode$string(record.discount)),
-				_Utils_Tuple2(
-				'agentFee',
-				$elm$json$Json$Encode$string(record.agentFee)),
-				_Utils_Tuple2(
-				'amountToArtist',
-				$elm$json$Json$Encode$string(record.amountToArtist)),
-				_Utils_Tuple2(
-				'saleDate',
-				$elm$json$Json$Encode$string(record.saleDate))
-			]));
-};
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
@@ -6237,13 +6262,13 @@ var $elm$http$Http$expectJson = F2(
 						A2($elm$json$Json$Decode$decodeString, decoder, string));
 				}));
 	});
-var $elm$http$Http$jsonBody = function (value) {
+var $elm$core$Debug$log = _Debug_log;
+var $elm$http$Http$multipartBody = function (parts) {
 	return A2(
 		_Http_pair,
-		'application/json',
-		A2($elm$json$Json$Encode$encode, 0, value));
+		'',
+		_Http_toFormData(parts));
 };
-var $elm$core$Debug$log = _Debug_log;
 var $elm$http$Http$Request = function (a) {
 	return {$: 'Request', a: a};
 };
@@ -6412,6 +6437,43 @@ var $elm$http$Http$request = function (r) {
 		$elm$http$Http$Request(
 			{allowCookiesFromOtherDomains: false, body: r.body, expect: r.expect, headers: r.headers, method: r.method, timeout: r.timeout, tracker: r.tracker, url: r.url}));
 };
+var $elm$http$Http$stringPart = _Http_pair;
+var $author$project$SalesData$saleDataToForm = function (record) {
+	var encodeIDField = function (idField) {
+		if (idField.$ === 'Just') {
+			var id = idField.a;
+			return _List_fromArray(
+				[
+					A2(
+					$elm$http$Http$stringPart,
+					'saledata_id',
+					$elm$core$String$fromInt(id))
+				]);
+		} else {
+			return _List_Nil;
+		}
+	};
+	return _Utils_ap(
+		encodeIDField(record.id),
+		_List_fromArray(
+			[
+				A2(
+				$elm$http$Http$stringPart,
+				'artwork',
+				$elm$core$String$fromInt(record.artwork)),
+				A2(
+				$elm$http$Http$stringPart,
+				'buyer',
+				$elm$core$String$fromInt(record.buyer)),
+				A2($elm$http$Http$stringPart, 'notes', record.notes),
+				A2($elm$http$Http$stringPart, 'sale_currency', record.saleCurrency),
+				A2($elm$http$Http$stringPart, 'sale_price', record.salePrice),
+				A2($elm$http$Http$stringPart, 'discount', record.discount),
+				A2($elm$http$Http$stringPart, 'agent_fee', record.agentFee),
+				A2($elm$http$Http$stringPart, 'amount_to_artist', record.amountToArtist),
+				A2($elm$http$Http$stringPart, 'sale_date', record.saleDate)
+			]));
+};
 var $author$project$SalesData$setAgentFee = F2(
 	function (newAgentFee, saleData) {
 		return _Utils_update(
@@ -6539,14 +6601,17 @@ var $author$project$SalesData$update = F2(
 						{updated: $author$project$SalesData$Updating}),
 					$elm$http$Http$request(
 						{
-							body: $elm$http$Http$jsonBody(
-								$author$project$SalesData$encodeSaleData(model.saleData)),
+							body: $elm$http$Http$multipartBody(
+								A2(
+									$elm$core$List$cons,
+									A2($elm$http$Http$stringPart, 'csrfmiddlewaretoken', model.csrftoken),
+									$author$project$SalesData$saleDataToForm(model.saleData))),
 							expect: A2($elm$http$Http$expectJson, $author$project$SalesData$ServerResponse, $author$project$SalesData$decodeSaleData),
 							headers: _List_Nil,
 							method: 'POST',
 							timeout: $elm$core$Maybe$Nothing,
 							tracker: $elm$core$Maybe$Just('upload'),
-							url: '/c/artwork/image/new'
+							url: '/c/api/saledata'
 						}));
 			default:
 				var response = msg.a;
@@ -6593,7 +6658,7 @@ var $author$project$SalesData$UpdateSalePrice = function (a) {
 	return {$: 'UpdateSalePrice', a: a};
 };
 var $elm$html$Html$div = _VirtualDom_node('div');
-var $author$project$SalesData$SubmitForm = {$: 'SubmitForm'};
+var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
 	function (key, string) {
 		return A2(
@@ -6601,8 +6666,9 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			key,
 			$elm$json$Json$Encode$string(string));
 	});
-var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
+var $author$project$SalesData$SubmitForm = {$: 'SubmitForm'};
+var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$label = _VirtualDom_node('label');
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
@@ -6714,12 +6780,40 @@ var $author$project$SalesData$view = function (model) {
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'color', 'blue')
+						$elm$html$Html$Attributes$id('headers'),
+						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+						A2($elm$html$Html$Attributes$style, 'justify-content', 'space-between'),
+						A2($elm$html$Html$Attributes$style, 'width', '100%')
 					]),
 				_List_fromArray(
 					[
-						$elm$html$Html$text(
-						$author$project$SalesData$printSyncStatus(model.updated))
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'color', 'blue')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								$author$project$SalesData$printSyncStatus(model.updated))
+							])),
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text(
+								function () {
+									var _v0 = model.saleData.id;
+									if (_v0.$ === 'Just') {
+										var id = _v0.a;
+										return 'Exists: ' + $elm$core$String$fromInt(id);
+									} else {
+										return 'Draft';
+									}
+								}())
+							]))
 					])),
 				A4($author$project$SalesData$inputTextView, 'Notes:', 'id_notes', $author$project$SalesData$UpdateNotes, model.saleData.notes),
 				A4($author$project$SalesData$inputTextView, 'SaleCurrency:', 'id_sale_currency', $author$project$SalesData$UpdateSaleCurrency, model.saleData.saleCurrency),
@@ -6733,15 +6827,15 @@ var $author$project$SalesData$view = function (model) {
 var $author$project$SalesData$main = $elm$browser$Browser$element(
 	{init: $author$project$SalesData$init, subscriptions: $author$project$SalesData$subscriptions, update: $author$project$SalesData$update, view: $author$project$SalesData$view});
 var $author$project$ImageUpload$Waiting = {$: 'Waiting'};
-var $author$project$ImageUpload$decodeFieldtoMaybeString = F2(
+var $author$project$ImageUpload$decodeFieldtoMaybeInt = F2(
 	function (field, flags) {
 		var _v0 = A2(
 			$elm$json$Json$Decode$decodeValue,
-			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$string),
+			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$int),
 			flags);
 		if (_v0.$ === 'Ok') {
-			var str = _v0.a;
-			return $elm$core$Maybe$Just(str);
+			var num = _v0.a;
+			return $elm$core$Maybe$Just(num);
 		} else {
 			var message = _v0.a;
 			return $elm$core$Maybe$Nothing;
@@ -6778,11 +6872,11 @@ var $author$project$ImageUpload$decodeImageURL = function (flags) {
 var $author$project$ImageUpload$init = function (flags) {
 	return _Utils_Tuple2(
 		{
-			artwork_id: A2($author$project$ImageUpload$decodeFieldtoMaybeString, 'artwork_id', flags),
+			artwork_id: A2($author$project$ImageUpload$decodeFieldtoMaybeInt, 'artwork_id', flags),
 			checkmark_url: A2($author$project$ImageUpload$decodeFieldtoString, 'checkmark_url', flags),
 			csrftoken: A2($author$project$ImageUpload$decodeFieldtoString, 'csrftoken', flags),
 			image_data: {
-				image_id: A2($author$project$ImageUpload$decodeFieldtoMaybeString, 'image_id', flags),
+				image_id: A2($author$project$ImageUpload$decodeFieldtoMaybeInt, 'image_id', flags),
 				image_url: $author$project$ImageUpload$decodeImageURL(flags)
 			},
 			loader_url: A2($author$project$ImageUpload$decodeFieldtoString, 'loader_url', flags),
@@ -6809,23 +6903,11 @@ var $author$project$ImageUpload$ImageData = F2(
 	function (image_id, image_url) {
 		return {image_id: image_id, image_url: image_url};
 	});
-var $elm$json$Json$Decode$oneOf = _Json_oneOf;
-var $elm$json$Json$Decode$maybe = function (decoder) {
-	return $elm$json$Json$Decode$oneOf(
-		_List_fromArray(
-			[
-				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder),
-				$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing)
-			]));
-};
 var $author$project$ImageUpload$decodeUploadResult = A3(
 	$elm$json$Json$Decode$map2,
 	$author$project$ImageUpload$ImageData,
 	$elm$json$Json$Decode$maybe(
-		A2(
-			$elm$json$Json$Decode$map,
-			$elm$core$String$fromInt,
-			A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int))),
+		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int)),
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
 var $elm$time$Time$Posix = function (a) {
@@ -6840,17 +6922,10 @@ var $elm$file$File$Select$file = F2(
 			_File_uploadOne(mimes));
 	});
 var $elm$http$Http$filePart = _Http_pair;
-var $elm$http$Http$multipartBody = function (parts) {
-	return A2(
-		_Http_pair,
-		'',
-		_Http_toFormData(parts));
-};
-var $elm$http$Http$stringPart = _Http_pair;
 var $author$project$ImageUpload$stringifyArtworkID = function (artwork_id) {
 	if (artwork_id.$ === 'Just') {
 		var pk = artwork_id.a;
-		return pk;
+		return $elm$core$String$fromInt(pk);
 	} else {
 		return '';
 	}
@@ -6866,6 +6941,10 @@ var $author$project$ImageUpload$updateImageURL = F2(
 	});
 var $author$project$ImageUpload$update = F2(
 	function (msg, model) {
+		var debug = A2(
+			$elm$core$Debug$log,
+			'State: ' + $elm$core$Debug$toString(model.status),
+			1);
 		switch (msg.$) {
 			case 'Pick':
 				return _Utils_Tuple2(
@@ -6899,7 +6978,7 @@ var $author$project$ImageUpload$update = F2(
 									expect: A2($elm$http$Http$expectJson, $author$project$ImageUpload$Uploaded, $author$project$ImageUpload$decodeUploadResult),
 									headers: _List_Nil,
 									method: 'POST',
-									timeout: $elm$core$Maybe$Nothing,
+									timeout: $elm$core$Maybe$Just(60000),
 									tracker: $elm$core$Maybe$Just('upload'),
 									url: '/c/artwork/image/new'
 								}),
@@ -6935,16 +7014,15 @@ var $author$project$ImageUpload$update = F2(
 				}
 		}
 	});
-var $elm$html$Html$option = _VirtualDom_node('option');
-var $elm$json$Json$Encode$bool = _Json_wrap;
-var $elm$html$Html$Attributes$boolProperty = F2(
-	function (key, bool) {
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
 		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$bool(bool));
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
 	});
-var $elm$html$Html$Attributes$selected = $elm$html$Html$Attributes$boolProperty('selected');
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $elm$html$Html$option = _VirtualDom_node('option');
 var $author$project$ImageUpload$imageIdSelectionView = function (image_id) {
 	if (image_id.$ === 'Just') {
 		var id = image_id.a;
@@ -6952,8 +7030,9 @@ var $author$project$ImageUpload$imageIdSelectionView = function (image_id) {
 			$elm$html$Html$option,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$value(id),
-					$elm$html$Html$Attributes$selected(true)
+					A2($elm$html$Html$Attributes$attribute, 'selected', ''),
+					$elm$html$Html$Attributes$value(
+					$elm$core$String$fromInt(id))
 				]),
 			_List_Nil);
 	} else {
@@ -6967,6 +7046,14 @@ var $author$project$ImageUpload$imageIdSelectionView = function (image_id) {
 	}
 };
 var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
+var $elm$json$Json$Encode$bool = _Json_wrap;
+var $elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$bool(bool));
+	});
 var $elm$html$Html$Attributes$required = $elm$html$Html$Attributes$boolProperty('required');
 var $elm$html$Html$select = _VirtualDom_node('select');
 var $author$project$ImageUpload$hiddenInputView = function (image_id) {
@@ -7161,7 +7248,13 @@ var $author$project$ImageUpload$uploadingImageCoverView = F2(
 	function (loader_url, status) {
 		switch (status.$) {
 			case 'Waiting':
-				return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+				return A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'id', 'image-loading-cover')
+						]),
+					_List_Nil);
 			case 'Uploading':
 				return A2(
 					$elm$html$Html$div,
@@ -7174,7 +7267,8 @@ var $author$project$ImageUpload$uploadingImageCoverView = F2(
 							A2($elm$html$Html$Attributes$style, 'height', 'inherit'),
 							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
 							A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
-							A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+							A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+							A2($elm$html$Html$Attributes$style, 'id', 'image-loading-cover')
 						]),
 					_List_fromArray(
 						[
@@ -7183,12 +7277,19 @@ var $author$project$ImageUpload$uploadingImageCoverView = F2(
 							_List_fromArray(
 								[
 									$elm$html$Html$Attributes$src(loader_url),
-									A2($elm$html$Html$Attributes$style, 'height', '32px')
+									A2($elm$html$Html$Attributes$style, 'height', '32px'),
+									A2($elm$html$Html$Attributes$style, 'z-index', '3')
 								]),
 							_List_Nil)
 						]));
 			case 'Done':
-				return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+				return A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'id', 'image-loading-cover')
+						]),
+					_List_Nil);
 			default:
 				return A2(
 					$elm$html$Html$div,
@@ -7201,13 +7302,18 @@ var $author$project$ImageUpload$uploadingImageCoverView = F2(
 							A2($elm$html$Html$Attributes$style, 'height', 'inherit'),
 							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
 							A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
-							A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+							A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+							A2($elm$html$Html$Attributes$style, 'id', 'image-loading-cover')
 						]),
 					_List_fromArray(
 						[
 							A2(
 							$elm$html$Html$div,
-							_List_Nil,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'z-index', '3'),
+									A2($elm$html$Html$Attributes$style, 'color', 'white')
+								]),
 							_List_fromArray(
 								[
 									$elm$html$Html$text('Upload Failed. Please try again')

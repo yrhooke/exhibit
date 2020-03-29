@@ -15,6 +15,7 @@ from catalogue.forms import ArtworkDetailForm, SeriesDetailForm, LocationDetailF
 from catalogue.forms import ArtworkSearchForm, LocationSearchForm, ExhibitionSearchForm
 from catalogue.forms import WorkInExhibitionForm
 from catalogue.forms import ArtworkImageUploadForm
+from catalogue.forms import SaleDataUpdateForm
 
 
 def order_artwork_list(queryset):
@@ -266,18 +267,21 @@ def artworkimage(request, pk):
 
 
 def artworkimage_upload(request):
-    if request.method == 'POST':
-        form = ArtworkImageUploadForm(request.POST, request.FILES)
-        if form.is_valid():
-            artworkimage = form.save()
-            return JsonResponse({
-                'image_id': artworkimage.pk,
-                'image_url': artworkimage.image.url,
-            })
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = ArtworkImageUploadForm(request.POST, request.FILES)
+            if form.is_valid():
+                artworkimage = form.save()
+                return JsonResponse({
+                    'image_id': artworkimage.pk,
+                    'image_url': artworkimage.image.url,
+                })
+            else:
+                return HttpResponseBadRequest()
         else:
-            return HttpResponseBadRequest()
+            return HttpResponseNotAllowed(['POST'])
     else:
-        return HttpResponseNotAllowed(['POST'])
+        return HttpResponseNotAuthorized()
 
 
 class ArtworkDelete(LoginRequiredMixin, DeleteView):
@@ -421,5 +425,37 @@ class ExhibitionsForArtwork(ListView):
         return queryset
 
 
-class SaleDataCreate(CreateView, LoginRequiredMixin):
-    model = SaleData
+class HttpResponseUnauthorized(HttpResponse):
+    def __init__(self):
+        self.status_code = 401
+
+
+def saleData_update(request):
+    if request.user.is_authenticated:
+        if request.method == 'POST':
+            form = SaleDataUpdateForm(request.POST)
+            print(form)
+            if form.is_valid():
+                saledata = form.save()
+                json_response = {
+                    "saledata_id": saledata.pk,
+                    "artwork": saledata.artwork.pk,
+                    "notes": saledata.notes,
+                    "saleCurrency": saledata.sale_currency,
+                    "salePrice": saledata.sale_price,
+                    "discount": saledata.discount,
+                    "agentFee": saledata.agent_fee,
+                    "amountToArtist": saledata.amount_to_artist,
+                    "saleDate": saledata.sale_date
+                }
+                return JsonResponse(json_response)
+            else:
+                return HttpResponseBadRequest()
+        else:
+            return HttpResponseNotAllowed(['POST'])
+    else:
+        return HttpResponseNotAuthorized()
+
+
+def saledata_test_view(request):
+    return render(request, "saledata.html")

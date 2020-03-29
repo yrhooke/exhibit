@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div id="elm-flags">
+    {% csrf_token %}
+</div>
+<div id="elm-app"></div>
+<script src="{% static 'js/elm.js' %}"></script>
+<script>
+    function elm_flags() {
+        let csrftoken = document.getElementById('elm-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
+        let elm_flags = {
+            'csrftoken': csrftoken
+        };
+        return elm_flags
+    }
+    console.log(elm_flags())
+    var app = Elm.SalesData.init({
+        node: document.getElementById('elm-app'),
+        flags: elm_flags()
+    });        
+</script>
+
+{% endblock %}

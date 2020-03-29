@@ -106,7 +106,7 @@ class SaleData(models.Model):
     notes = models.TextField("Notes", blank=True)
 
     # Sale Fields
-    agent = models.ForeignKey('Location', related_name='agent', on_delete=models.SET_NULL, null=True, help_text="The agent's name")
+    agent = models.ForeignKey('Location', related_name='agent', on_delete=models.SET_NULL, null=True, blank=True, help_text="The agent's name")
     sale_currency = models.CharField("Sale currency", max_length=10, blank=True)
     sale_price = models.DecimalField("Sale Price",
                                      max_digits=10,
