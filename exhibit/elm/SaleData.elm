@@ -7,7 +7,7 @@ import Html.Events exposing (..)
 import Http
 import Json.Decode as D
 import Json.Decode.Pipeline as Pipeline
-import Json.Encode as E
+-- import Json.Encode as E
 import Validate exposing (validate)
 
 
@@ -31,7 +31,7 @@ main =
 type alias Model =
     { saleData : SaleData
     , updated : SyncStatus
-    , errors : List ( Field, String )
+    , errors : List ValidationError
     , csrftoken : String
     }
 
@@ -51,30 +51,21 @@ type alias SaleData =
     }
 
 
-type Field
-    = Artwork
-    | Buyer
-    | Notes
-    | SaleCurrency
-    | SalePrice
-    | Discount
-    | AgentFee
-    | AmountToArtist
-    | SaleDate
-newSaleData: SaleData
+newSaleData : SaleData
 newSaleData =
     { id = Nothing
-                    , artwork = Nothing
-                    , buyer = Nothing
-                    , agent = Nothing
-                    , notes = ""
-                    , saleCurrency = ""
-                    , salePrice = ""
-                    , discount = ""
-                    , agentFee = ""
-                    , amountToArtist = ""
-                    , saleDate = ""
-                    }
+    , artwork = Nothing
+    , buyer = Nothing
+    , agent = Nothing
+    , notes = ""
+    , saleCurrency = ""
+    , salePrice = ""
+    , discount = ""
+    , agentFee = ""
+    , amountToArtist = ""
+    , saleDate = ""
+    }
+
 
 decodeSaleData : D.Decoder SaleData
 decodeSaleData =
@@ -169,6 +160,22 @@ saleDataToForm record =
            ]
 
 
+type Field
+    = Artwork
+    | Buyer
+    | Notes
+    | SaleCurrency
+    | SalePrice
+    | Discount
+    | AgentFee
+    | AmountToArtist
+    | SaleDate
+
+
+type alias ValidationError =
+    ( Field, String )
+
+
 setNotes : String -> SaleData -> SaleData
 setNotes newNotes saleData =
     { saleData | notes = newNotes }
@@ -244,7 +251,6 @@ init flags =
 
         Err _ ->
             ( { saleData = newSaleData
-                    
               , csrftoken = decodeFieldtoString "csrftoken" flags
               , updated = Updated
               , errors = []
@@ -377,7 +383,7 @@ ifNotBlankOrFloat subjectToString error =
         error
 
 
-saleDataValidator : Validate.Validator ( Field, String ) SaleData
+saleDataValidator : Validate.Validator ValidationError SaleData
 saleDataValidator =
     Validate.all
         [ ifNotBlankOrFloat .salePrice ( SalePrice, "Price must be a number" )
@@ -386,7 +392,7 @@ saleDataValidator =
         ]
 
 
-findErrors : Field -> List ( Field, String ) -> List String
+findErrors : Field -> List ValidationError -> List String
 findErrors field errors =
     let
         fieldMatch error =
@@ -396,6 +402,7 @@ findErrors field errors =
 
 
 {-| Update error property only if you have existing errors
+Used during input to clear validation errors on change but not add until onBlur
 -}
 clearErrors : Model -> Model
 clearErrors model =
@@ -485,12 +492,10 @@ view model =
             (findErrors SaleDate model.errors)
             UpdateSaleDate
             model.saleData.saleDate
-        , div
-            []
-            [ text (Debug.toString <| validate saleDataValidator model.saleData) ]
         ]
 
 
+inputView : String -> String -> List String -> (String -> Msg) -> String -> Html Msg
 inputView label_name id_ errors updateMsg val =
     div []
         ([ label [ for id_ ] [ text label_name ]
@@ -501,7 +506,6 @@ inputView label_name id_ errors updateMsg val =
             , value val
             ]
             []
-         , div [] [ text val ]
          ]
             ++ List.map errorView errors
         )

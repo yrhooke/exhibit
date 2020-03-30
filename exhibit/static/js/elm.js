@@ -6954,14 +6954,7 @@ var $author$project$SaleData$inputView = F5(
 								$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm),
 								$elm$html$Html$Attributes$value(val)
 							]),
-						_List_Nil),
-						A2(
-						$elm$html$Html$div,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text(val)
-							]))
+						_List_Nil)
 					]),
 				A2($elm$core$List$map, $author$project$SaleData$errorView, errors)));
 	});
@@ -7070,16 +7063,7 @@ var $author$project$SaleData$view = function (model) {
 				'id_sale_date',
 				A2($author$project$SaleData$findErrors, $author$project$SaleData$SaleDate, model.errors),
 				$author$project$SaleData$UpdateSaleDate,
-				model.saleData.saleDate),
-				A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						$elm$core$Debug$toString(
-							A2($rtfeldman$elm_validate$Validate$validate, $author$project$SaleData$saleDataValidator, model.saleData)))
-					]))
+				model.saleData.saleDate)
 			]));
 };
 var $author$project$SaleData$main = $elm$browser$Browser$element(
