@@ -5518,14 +5518,16 @@ var $author$project$SaleData$decodeFieldtoString = F2(
 var $author$project$SaleData$SaleData = function (id) {
 	return function (artwork) {
 		return function (buyer) {
-			return function (notes) {
-				return function (saleCurrency) {
-					return function (salePrice) {
-						return function (discount) {
-							return function (agentFee) {
-								return function (amountToArtist) {
-									return function (saleDate) {
-										return {agentFee: agentFee, amountToArtist: amountToArtist, artwork: artwork, buyer: buyer, discount: discount, id: id, notes: notes, saleCurrency: saleCurrency, saleDate: saleDate, salePrice: salePrice};
+			return function (agent) {
+				return function (notes) {
+					return function (saleCurrency) {
+						return function (salePrice) {
+							return function (discount) {
+								return function (agentFee) {
+									return function (amountToArtist) {
+										return function (saleDate) {
+											return {agent: agent, agentFee: agentFee, amountToArtist: amountToArtist, artwork: artwork, buyer: buyer, discount: discount, id: id, notes: notes, saleCurrency: saleCurrency, saleDate: saleDate, salePrice: salePrice};
+										};
 									};
 								};
 							};
@@ -5597,17 +5599,22 @@ var $author$project$SaleData$decodeSaleData = A3(
 							$author$project$SaleData$nullableStringDecoder,
 							A3(
 								$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-								'buyer',
-								$elm$json$Json$Decode$int,
+								'agent',
+								$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int),
 								A3(
 									$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-									'artwork',
-									$elm$json$Json$Decode$int,
+									'buyer',
+									$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int),
 									A3(
 										$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-										'id',
+										'artwork',
 										$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int),
-										$elm$json$Json$Decode$succeed($author$project$SaleData$SaleData)))))))))));
+										A3(
+											$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+											'id',
+											$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int),
+											$elm$json$Json$Decode$succeed($author$project$SaleData$SaleData))))))))))));
+var $author$project$SaleData$newSaleData = {agent: $elm$core$Maybe$Nothing, agentFee: '', amountToArtist: '', artwork: $elm$core$Maybe$Nothing, buyer: $elm$core$Maybe$Nothing, discount: '', id: $elm$core$Maybe$Nothing, notes: '', saleCurrency: '', saleDate: '', salePrice: ''};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$SaleData$init = function (flags) {
@@ -5627,7 +5634,7 @@ var $author$project$SaleData$init = function (flags) {
 			{
 				csrftoken: A2($author$project$SaleData$decodeFieldtoString, 'csrftoken', flags),
 				errors: _List_Nil,
-				saleData: {agentFee: '', amountToArtist: '', artwork: 2, buyer: 2, discount: '', id: $elm$core$Maybe$Nothing, notes: '', saleCurrency: '', saleDate: '', salePrice: ''},
+				saleData: $author$project$SaleData$newSaleData,
 				updated: $author$project$SaleData$Updated
 			},
 			$elm$core$Platform$Cmd$none);
@@ -6571,6 +6578,21 @@ var $elm$http$Http$request = function (r) {
 };
 var $elm$http$Http$stringPart = _Http_pair;
 var $author$project$SaleData$saleDataToForm = function (record) {
+	var includeJustIntField = F2(
+		function (fieldName, value) {
+			if (value.$ === 'Just') {
+				var v = value.a;
+				return _List_fromArray(
+					[
+						A2(
+						$elm$http$Http$stringPart,
+						fieldName,
+						$elm$core$String$fromInt(v))
+					]);
+			} else {
+				return _List_Nil;
+			}
+		});
 	var encodeIDField = function (idField) {
 		if (idField.$ === 'Just') {
 			var id = idField.a;
@@ -6587,24 +6609,22 @@ var $author$project$SaleData$saleDataToForm = function (record) {
 	};
 	return _Utils_ap(
 		encodeIDField(record.id),
-		_List_fromArray(
-			[
-				A2(
-				$elm$http$Http$stringPart,
-				'artwork',
-				$elm$core$String$fromInt(record.artwork)),
-				A2(
-				$elm$http$Http$stringPart,
-				'buyer',
-				$elm$core$String$fromInt(record.buyer)),
-				A2($elm$http$Http$stringPart, 'notes', record.notes),
-				A2($elm$http$Http$stringPart, 'sale_currency', record.saleCurrency),
-				A2($elm$http$Http$stringPart, 'sale_price', record.salePrice),
-				A2($elm$http$Http$stringPart, 'discount', record.discount),
-				A2($elm$http$Http$stringPart, 'agent_fee', record.agentFee),
-				A2($elm$http$Http$stringPart, 'amount_to_artist', record.amountToArtist),
-				A2($elm$http$Http$stringPart, 'sale_date', record.saleDate)
-			]));
+		_Utils_ap(
+			A2(includeJustIntField, 'artwork', record.artwork),
+			_Utils_ap(
+				A2(includeJustIntField, 'buyer', record.buyer),
+				_Utils_ap(
+					A2(includeJustIntField, 'agent', record.agent),
+					_List_fromArray(
+						[
+							A2($elm$http$Http$stringPart, 'notes', record.notes),
+							A2($elm$http$Http$stringPart, 'sale_currency', record.saleCurrency),
+							A2($elm$http$Http$stringPart, 'sale_price', record.salePrice),
+							A2($elm$http$Http$stringPart, 'discount', record.discount),
+							A2($elm$http$Http$stringPart, 'agent_fee', record.agentFee),
+							A2($elm$http$Http$stringPart, 'amount_to_artist', record.amountToArtist),
+							A2($elm$http$Http$stringPart, 'sale_date', record.saleDate)
+						])))));
 };
 var $author$project$SaleData$setAgentFee = F2(
 	function (newAgentFee, saleData) {
@@ -6728,12 +6748,12 @@ var $author$project$SaleData$update = F2(
 							})),
 					$elm$core$Platform$Cmd$none);
 			case 'AttemptSubmitForm':
+				var log_submit = A2(
+					$elm$core$Debug$log,
+					'Submitting: ' + $elm$core$Debug$toString(model),
+					'');
 				var _v1 = A2($rtfeldman$elm_validate$Validate$validate, $author$project$SaleData$saleDataValidator, model.saleData);
 				if (_v1.$ === 'Ok') {
-					var debug = A2(
-						$elm$core$Debug$log,
-						'Submitting: ' + $elm$core$Debug$toString(model.saleData),
-						'');
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -6762,7 +6782,7 @@ var $author$project$SaleData$update = F2(
 				}
 			default:
 				var response = msg.a;
-				var debug = A2(
+				var log_response = A2(
 					$elm$core$Debug$log,
 					'Response: ' + $elm$core$Debug$toString(response),
 					'');

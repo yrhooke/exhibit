@@ -9,7 +9,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.expressions import F
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import redirect, render
-from django.core.exceptions import ObjectDoesNotExist 
+from django.core.exceptions import ObjectDoesNotExist
+from django.core.serializers.json import DjangoJSONEncoder
 
 from catalogue.models import Artwork, Series, Exhibition, Location, ArtworkImage, SaleData
 from catalogue.forms import ArtworkDetailForm, SeriesDetailForm, LocationDetailForm, ExhibitionDetailForm
@@ -194,6 +195,10 @@ class ArtworkCreate(LoginRequiredMixin, genericCreateView):
         artwork_image.artwork = self.object
         artwork_image.save()
 
+        sale_data = form.cleaned_data['sale_data']
+        sale_data.artwork = self.object
+        sale_data.save()
+
         return HttpResponseRedirect(self.get_success_url())
 
 
@@ -209,6 +214,12 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
         context['exhibitionForm'] = WorkInExhibitionForm()
         context['prev_artwork'] = self.prev_artwork()
         context['next_artwork'] = self.next_artwork()
+
+        sale_data_instance = SaleData.objects.filter(artwork=self.object).last()
+        if sale_data_instance:
+            context['sale_data_info'] = json.dumps(export_sale_data(sale_data_instance), cls=DjangoJSONEncoder)
+        else:
+            context['sale_data_info'] = json.dumps({})
         return context
 
     def get_form(self, form_class=None):
@@ -431,7 +442,25 @@ class HttpResponseUnauthorized(HttpResponse):
         self.status_code = 401
 
 
+def export_sale_data(saledata):
+    """returns dict of relevant fields from SaleData object"""
+    return {
+        "id": saledata.pk,
+        "artwork": saledata.artwork.pk if saledata.artwork else None,
+        "buyer": saledata.buyer.pk if saledata.buyer else None,
+        "agent": saledata.agent.pk if saledata.agent else None,
+        "notes": saledata.notes,
+        "saleCurrency": saledata.sale_currency,
+        "salePrice": saledata.sale_price,
+        "discount": saledata.discount,
+        "agentFee": saledata.agent_fee,
+        "amountToArtist": saledata.amount_to_artist,
+        "saleDate": saledata.sale_date
+    }
+
+
 def saleData_update(request):
+    """path to create or update SaleData object"""
     if request.user.is_authenticated:
         if request.method == 'POST':
             try:
@@ -441,18 +470,7 @@ def saleData_update(request):
                 form = SaleDataUpdateForm(request.POST)
             if form.is_valid():
                 saledata = form.save()
-                json_response = {
-                    "id": saledata.pk,
-                    "artwork": saledata.artwork.pk,
-                    "buyer": saledata.buyer.pk,
-                    "notes": saledata.notes,
-                    "saleCurrency": saledata.sale_currency,
-                    "salePrice": saledata.sale_price,
-                    "discount": saledata.discount,
-                    "agentFee": saledata.agent_fee,
-                    "amountToArtist": saledata.amount_to_artist,
-                    "saleDate": saledata.sale_date
-                }
+                json_response = export_sale_data(saledata)
                 return JsonResponse(json_response)
             else:
                 return HttpResponseBadRequest()

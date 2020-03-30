@@ -38,8 +38,9 @@ type alias Model =
 
 type alias SaleData =
     { id : Maybe Int
-    , artwork : Int
-    , buyer : Int
+    , artwork : Maybe Int
+    , buyer : Maybe Int
+    , agent : Maybe Int
     , notes : String
     , saleCurrency : String
     , salePrice : String
@@ -60,14 +61,28 @@ type Field
     | AgentFee
     | AmountToArtist
     | SaleDate
-
+newSaleData: SaleData
+newSaleData =
+    { id = Nothing
+                    , artwork = Nothing
+                    , buyer = Nothing
+                    , agent = Nothing
+                    , notes = ""
+                    , saleCurrency = ""
+                    , salePrice = ""
+                    , discount = ""
+                    , agentFee = ""
+                    , amountToArtist = ""
+                    , saleDate = ""
+                    }
 
 decodeSaleData : D.Decoder SaleData
 decodeSaleData =
     D.succeed SaleData
         |> Pipeline.required "id" (D.int |> D.maybe)
-        |> Pipeline.required "artwork" D.int
-        |> Pipeline.required "buyer" D.int
+        |> Pipeline.required "artwork" (D.int |> D.maybe)
+        |> Pipeline.required "buyer" (D.int |> D.maybe)
+        |> Pipeline.required "agent" (D.int |> D.maybe)
         |> Pipeline.required "notes" nullableStringDecoder
         |> Pipeline.required "saleCurrency" nullableStringDecoder
         |> Pipeline.required "salePrice" nullableStringDecoder
@@ -94,30 +109,30 @@ stringDefault str =
             ""
 
 
-encodeSaleData : SaleData -> E.Value
-encodeSaleData record =
-    let
-        encodeIDField idField =
-            case idField of
-                Just id ->
-                    [ ( "id", E.int <| id ) ]
 
-                Nothing ->
-                    []
-    in
-    E.object
-        (encodeIDField record.id
-            ++ [ ( "artwork", E.int <| record.artwork )
-               , ( "buyer", E.int <| record.buyer )
-               , ( "notes", E.string <| record.notes )
-               , ( "saleCurrency", E.string <| record.saleCurrency )
-               , ( "salePrice", E.string <| record.salePrice )
-               , ( "discount", E.string <| record.discount )
-               , ( "agentFee", E.string <| record.agentFee )
-               , ( "amountToArtist", E.string <| record.amountToArtist )
-               , ( "saleDate", E.string <| record.saleDate )
-               ]
-        )
+-- encodeSaleData : SaleData -> E.Value
+-- encodeSaleData record =
+--     let
+--         encodeIDField idField =
+--             case idField of
+--                 Just id ->
+--                     [ ( "id", E.int <| id ) ]
+--                 Nothing ->
+--                     []
+--     in
+--     E.object
+--         (encodeIDField record.id
+--             ++ [ ( "artwork", E.int <| record.artwork )
+--                , ( "buyer", E.int <| record.buyer )
+--                , ( "notes", E.string <| record.notes )
+--                , ( "saleCurrency", E.string <| record.saleCurrency )
+--                , ( "salePrice", E.string <| record.salePrice )
+--                , ( "discount", E.string <| record.discount )
+--                , ( "agentFee", E.string <| record.agentFee )
+--                , ( "amountToArtist", E.string <| record.amountToArtist )
+--                , ( "saleDate", E.string <| record.saleDate )
+--                ]
+--         )
 
 
 saleDataToForm : SaleData -> List Http.Part
@@ -130,11 +145,21 @@ saleDataToForm record =
 
                 Nothing ->
                     []
+
+        includeJustIntField : String -> Maybe Int -> List Http.Part
+        includeJustIntField fieldName value =
+            case value of
+                Just v ->
+                    [ Http.stringPart fieldName (String.fromInt v) ]
+
+                Nothing ->
+                    []
     in
     encodeIDField record.id
-        ++ [ Http.stringPart "artwork" (String.fromInt record.artwork)
-           , Http.stringPart "buyer" (String.fromInt record.buyer)
-           , Http.stringPart "notes" record.notes
+        ++ includeJustIntField "artwork" record.artwork
+        ++ includeJustIntField "buyer" record.buyer
+        ++ includeJustIntField "agent" record.agent
+        ++ [ Http.stringPart "notes" record.notes
            , Http.stringPart "sale_currency" record.saleCurrency
            , Http.stringPart "sale_price" record.salePrice
            , Http.stringPart "discount" record.discount
@@ -218,18 +243,8 @@ init flags =
             )
 
         Err _ ->
-            ( { saleData =
-                    { id = Nothing
-                    , artwork = 2
-                    , buyer = 2
-                    , notes = ""
-                    , saleCurrency = ""
-                    , salePrice = ""
-                    , discount = ""
-                    , agentFee = ""
-                    , amountToArtist = ""
-                    , saleDate = ""
-                    }
+            ( { saleData = newSaleData
+                    
               , csrftoken = decodeFieldtoString "csrftoken" flags
               , updated = Updated
               , errors = []
@@ -305,12 +320,12 @@ update msg model =
             )
 
         AttemptSubmitForm ->
+            let
+                log_submit =
+                    Debug.log ("Submitting: " ++ Debug.toString model) ""
+            in
             case validate saleDataValidator model.saleData of
                 Ok _ ->
-                    let
-                        debug =
-                            Debug.log ("Submitting: " ++ Debug.toString model.saleData) ""
-                    in
                     ( { model | updated = Updating, errors = [] }
                     , Http.request
                         { method = "POST"
@@ -334,7 +349,7 @@ update msg model =
 
         ServerResponse response ->
             let
-                debug =
+                log_response =
                     Debug.log ("Response: " ++ Debug.toString response) ""
             in
             case response of
@@ -470,8 +485,6 @@ view model =
             (findErrors SaleDate model.errors)
             UpdateSaleDate
             model.saleData.saleDate
-
-        -- , div [] [text (Debug.toString model)]
         , div
             []
             [ text (Debug.toString <| validate saleDataValidator model.saleData) ]
