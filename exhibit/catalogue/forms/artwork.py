@@ -1,7 +1,7 @@
 from django import forms
 from tempus_dominus.widgets import DatePicker
 
-from ..models import Artwork, Series, Location, Exhibition, WorkInExhibition, ArtworkImage
+from ..models import Artwork, Series, Location, Exhibition, WorkInExhibition, ArtworkImage, SaleData
 from .utils import PlaceholderMixin
 
 
@@ -9,6 +9,7 @@ from .utils import PlaceholderMixin
 class ArtworkDetailForm(PlaceholderMixin, forms.ModelForm):
 
     artwork_image = forms.ModelChoiceField(queryset=ArtworkImage.objects.all(), required=True)
+    sale_data = forms.ModelChoiceField(queryset=SaleData.objects.all())
 
     class Meta():
         model = Artwork

@@ -1,5 +1,7 @@
 module SaleData exposing (..)
 
+-- import Json.Encode as E
+
 import Browser
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -7,7 +9,6 @@ import Html.Events exposing (..)
 import Http
 import Json.Decode as D
 import Json.Decode.Pipeline as Pipeline
--- import Json.Encode as E
 import Validate exposing (validate)
 
 
@@ -492,6 +493,7 @@ view model =
             (findErrors SaleDate model.errors)
             UpdateSaleDate
             model.saleData.saleDate
+        , hiddenInputView model.saleData.id
         ]
 
 
@@ -513,6 +515,32 @@ inputView label_name id_ errors updateMsg val =
 
 errorView error =
     div [] [ text error ]
+
+
+hiddenInputView saleDataID =
+    select
+        [ name "sale_data"
+        , id "id_sale_data"
+        , style "display" "none"
+        ]
+        [ saleDataIdSelectionView saleDataID ]
+
+
+saleDataIdSelectionView : Maybe Int -> Html msg
+saleDataIdSelectionView saleDataID =
+    case saleDataID of
+        Just id ->
+            option
+                [ attribute "selected" ""
+                , value (String.fromInt id)
+                ]
+                []
+
+        Nothing ->
+            option
+                [ value ""
+                ]
+                []
 
 
 inputNumberView label_name id_ updateMsg val =

@@ -101,8 +101,8 @@ class WorkInExhibition(models.Model):
 class SaleData(models.Model):
     """Class representing a sale"""
 
-    artwork = models.ForeignKey('Artwork', on_delete=models.CASCADE)
-    buyer = models.ForeignKey('Location', related_name='buyer', on_delete=models.SET_NULL, null=True)
+    artwork = models.ForeignKey('Artwork', on_delete=models.CASCADE, null=True, blank=True)
+    buyer = models.ForeignKey('Location', related_name='buyer', on_delete=models.SET_NULL, null=True, blank=True)
     notes = models.TextField("Notes", blank=True)
 
     # Sale Fields

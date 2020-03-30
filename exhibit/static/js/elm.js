@@ -6863,6 +6863,56 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
+var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
+var $elm$virtual_dom$VirtualDom$attribute = F2(
+	function (key, value) {
+		return A2(
+			_VirtualDom_attribute,
+			_VirtualDom_noOnOrFormAction(key),
+			_VirtualDom_noJavaScriptOrHtmlUri(value));
+	});
+var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
+var $elm$html$Html$option = _VirtualDom_node('option');
+var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
+var $author$project$SaleData$saleDataIdSelectionView = function (saleDataID) {
+	if (saleDataID.$ === 'Just') {
+		var id = saleDataID.a;
+		return A2(
+			$elm$html$Html$option,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$attribute, 'selected', ''),
+					$elm$html$Html$Attributes$value(
+					$elm$core$String$fromInt(id))
+				]),
+			_List_Nil);
+	} else {
+		return A2(
+			$elm$html$Html$option,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$value('')
+				]),
+			_List_Nil);
+	}
+};
+var $elm$html$Html$select = _VirtualDom_node('select');
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $author$project$SaleData$hiddenInputView = function (saleDataID) {
+	return A2(
+		$elm$html$Html$select,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$name('sale_data'),
+				$elm$html$Html$Attributes$id('id_sale_data'),
+				A2($elm$html$Html$Attributes$style, 'display', 'none')
+			]),
+		_List_fromArray(
+			[
+				$author$project$SaleData$saleDataIdSelectionView(saleDataID)
+			]));
+};
 var $author$project$SaleData$AttemptSubmitForm = {$: 'AttemptSubmitForm'};
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
@@ -6926,7 +6976,6 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
-var $elm$html$Html$Attributes$value = $elm$html$Html$Attributes$stringProperty('value');
 var $author$project$SaleData$inputView = F5(
 	function (label_name, id_, errors, updateMsg, val) {
 		return A2(
@@ -6968,8 +7017,6 @@ var $author$project$SaleData$printSyncStatus = function (status) {
 			return 'Behind';
 	}
 };
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$SaleData$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -7063,7 +7110,8 @@ var $author$project$SaleData$view = function (model) {
 				'id_sale_date',
 				A2($author$project$SaleData$findErrors, $author$project$SaleData$SaleDate, model.errors),
 				$author$project$SaleData$UpdateSaleDate,
-				model.saleData.saleDate)
+				model.saleData.saleDate),
+				$author$project$SaleData$hiddenInputView(model.saleData.id)
 			]));
 };
 var $author$project$SaleData$main = $elm$browser$Browser$element(
@@ -7256,15 +7304,6 @@ var $author$project$ImageUpload$update = F2(
 				}
 		}
 	});
-var $elm$virtual_dom$VirtualDom$attribute = F2(
-	function (key, value) {
-		return A2(
-			_VirtualDom_attribute,
-			_VirtualDom_noOnOrFormAction(key),
-			_VirtualDom_noJavaScriptOrHtmlUri(value));
-	});
-var $elm$html$Html$Attributes$attribute = $elm$virtual_dom$VirtualDom$attribute;
-var $elm$html$Html$option = _VirtualDom_node('option');
 var $author$project$ImageUpload$imageIdSelectionView = function (image_id) {
 	if (image_id.$ === 'Just') {
 		var id = image_id.a;
@@ -7287,7 +7326,6 @@ var $author$project$ImageUpload$imageIdSelectionView = function (image_id) {
 			_List_Nil);
 	}
 };
-var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
 var $elm$json$Json$Encode$bool = _Json_wrap;
 var $elm$html$Html$Attributes$boolProperty = F2(
 	function (key, bool) {
@@ -7297,7 +7335,6 @@ var $elm$html$Html$Attributes$boolProperty = F2(
 			$elm$json$Json$Encode$bool(bool));
 	});
 var $elm$html$Html$Attributes$required = $elm$html$Html$Attributes$boolProperty('required');
-var $elm$html$Html$select = _VirtualDom_node('select');
 var $author$project$ImageUpload$hiddenInputView = function (image_id) {
 	return A2(
 		$elm$html$Html$select,
