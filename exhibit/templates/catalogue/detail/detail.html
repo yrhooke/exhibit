@@ -8,7 +8,7 @@
         let field_id;
         let placeholder;
         {% for field in form %}
-        {% if field.name != "artwork_image" %}
+        {% if field.name != "artwork_image" and field.name != "sale_data" %}
         {% if field.field.widget.input_type == "select" %}
 
         field_id = "{{ field.auto_id }}";

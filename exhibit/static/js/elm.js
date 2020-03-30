@@ -6828,6 +6828,15 @@ var $author$project$SaleData$UpdateSaleDate = function (a) {
 var $author$project$SaleData$UpdateSalePrice = function (a) {
 	return {$: 'UpdateSalePrice', a: a};
 };
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
@@ -6854,14 +6863,7 @@ var $author$project$SaleData$findErrors = F2(
 			$elm$core$Tuple$second,
 			A2($elm$core$List$filter, fieldMatch, errors));
 	});
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
+var $elm$html$Html$h4 = _VirtualDom_node('h4');
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
 var $elm$virtual_dom$VirtualDom$attribute = F2(
@@ -6914,12 +6916,27 @@ var $author$project$SaleData$hiddenInputView = function (saleDataID) {
 			]));
 };
 var $author$project$SaleData$AttemptSubmitForm = {$: 'AttemptSubmitForm'};
+var $elm$html$Html$Attributes$classList = function (classes) {
+	return $elm$html$Html$Attributes$class(
+		A2(
+			$elm$core$String$join,
+			' ',
+			A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$first,
+				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
+};
+var $elm$html$Html$small = _VirtualDom_node('small');
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$SaleData$errorView = function (error) {
 	return A2(
-		$elm$html$Html$div,
-		_List_Nil,
+		$elm$html$Html$small,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('form-test'),
+				$elm$html$Html$Attributes$class('text-muted')
+			]),
 		_List_fromArray(
 			[
 				$elm$html$Html$text(error)
@@ -6976,11 +6993,16 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
-var $author$project$SaleData$inputView = F5(
-	function (label_name, id_, errors, updateMsg, val) {
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
+var $author$project$SaleData$inputView = F6(
+	function (label_name, id_, placeholder_, errors, updateMsg, val) {
 		return A2(
 			$elm$html$Html$div,
-			_List_Nil,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					$elm$html$Html$Attributes$class('form-group')
+				]),
 			_Utils_ap(
 				_List_fromArray(
 					[
@@ -7001,6 +7023,14 @@ var $author$project$SaleData$inputView = F5(
 								$elm$html$Html$Attributes$id(id_),
 								$elm$html$Html$Events$onInput(updateMsg),
 								$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm),
+								$elm$html$Html$Attributes$classList(
+								_List_fromArray(
+									[
+										_Utils_Tuple2('edit-field', true),
+										_Utils_Tuple2('form-control', true),
+										_Utils_Tuple2('form-control-sm', true)
+									])),
+								$elm$html$Html$Attributes$placeholder(placeholder_),
 								$elm$html$Html$Attributes$value(val)
 							]),
 						_List_Nil)
@@ -7020,7 +7050,11 @@ var $author$project$SaleData$printSyncStatus = function (status) {
 var $author$project$SaleData$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
-		_List_Nil,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('details-list'),
+				$elm$html$Html$Attributes$class('form-inline')
+			]),
 		_List_fromArray(
 			[
 				A2(
@@ -7030,10 +7064,21 @@ var $author$project$SaleData$view = function (model) {
 						$elm$html$Html$Attributes$id('headers'),
 						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
 						A2($elm$html$Html$Attributes$style, 'justify-content', 'space-between'),
-						A2($elm$html$Html$Attributes$style, 'width', '100%')
+						A2($elm$html$Html$Attributes$style, 'width', '100%'),
+						$elm$html$Html$Attributes$class('form-group')
 					]),
 				_List_fromArray(
 					[
+						A2(
+						$elm$html$Html$h4,
+						_List_fromArray(
+							[
+								A2($elm$html$Html$Attributes$style, 'font-size', '18px')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text('Sale Details')
+							])),
 						A2(
 						$elm$html$Html$div,
 						_List_fromArray(
@@ -7044,70 +7089,61 @@ var $author$project$SaleData$view = function (model) {
 							[
 								$elm$html$Html$text(
 								$author$project$SaleData$printSyncStatus(model.updated))
-							])),
-						A2(
-						$elm$html$Html$div,
-						_List_Nil,
-						_List_fromArray(
-							[
-								$elm$html$Html$text(
-								function () {
-									var _v0 = model.saleData.id;
-									if (_v0.$ === 'Just') {
-										var id = _v0.a;
-										return 'Exists: ' + $elm$core$String$fromInt(id);
-									} else {
-										return 'Draft';
-									}
-								}())
 							]))
 					])),
-				A5(
+				A6(
 				$author$project$SaleData$inputView,
 				'Notes:',
 				'id_notes',
+				'Notes',
 				A2($author$project$SaleData$findErrors, $author$project$SaleData$Notes, model.errors),
 				$author$project$SaleData$UpdateNotes,
 				model.saleData.notes),
-				A5(
+				A6(
 				$author$project$SaleData$inputView,
-				'SaleCurrency:',
+				'Sale Currency:',
 				'id_sale_currency',
+				'Sale Currency',
 				A2($author$project$SaleData$findErrors, $author$project$SaleData$SaleCurrency, model.errors),
 				$author$project$SaleData$UpdateSaleCurrency,
 				model.saleData.saleCurrency),
-				A5(
+				A6(
 				$author$project$SaleData$inputView,
-				'SalePrice:',
+				'Sale Price:',
 				'id_sale_price',
+				'Sale Prince',
 				A2($author$project$SaleData$findErrors, $author$project$SaleData$SalePrice, model.errors),
 				$author$project$SaleData$UpdateSalePrice,
 				model.saleData.salePrice),
-				A5(
+				A6(
 				$author$project$SaleData$inputView,
 				'Discount:',
 				'id_discount',
+				'(Number or Percentage)',
 				A2($author$project$SaleData$findErrors, $author$project$SaleData$Discount, model.errors),
 				$author$project$SaleData$UpdateDiscount,
 				model.saleData.discount),
-				A5(
+				A6(
 				$author$project$SaleData$inputView,
-				'AgentFee:',
+				'Agent Fee:',
 				'id_agent_fee',
+				'Amount to Agent',
 				A2($author$project$SaleData$findErrors, $author$project$SaleData$AgentFee, model.errors),
 				$author$project$SaleData$UpdateAgentFee,
 				model.saleData.agentFee),
-				A5(
+				A6(
 				$author$project$SaleData$inputView,
-				'AmountToArtist:',
+				'Amount to Artist:',
 				'id_amount_to_artist',
+				'Amount to Artist',
 				A2($author$project$SaleData$findErrors, $author$project$SaleData$AmountToArtist, model.errors),
 				$author$project$SaleData$UpdateAmountToArtist,
 				model.saleData.amountToArtist),
-				A5(
+				A6(
 				$author$project$SaleData$inputView,
-				'SaleDate:',
+				'Sale Date:',
 				'id_sale_date',
+				'Date',
 				A2($author$project$SaleData$findErrors, $author$project$SaleData$SaleDate, model.errors),
 				$author$project$SaleData$UpdateSaleDate,
 				model.saleData.saleDate),
@@ -7350,7 +7386,6 @@ var $author$project$ImageUpload$hiddenInputView = function (image_id) {
 				$author$project$ImageUpload$imageIdSelectionView(image_id)
 			]));
 };
-var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $author$project$ImageUpload$imageView = function (model) {
 	var style_image_background = function () {
 		var _v1 = model.image_data.image_url;

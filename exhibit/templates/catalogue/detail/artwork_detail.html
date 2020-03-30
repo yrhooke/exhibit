@@ -282,18 +282,22 @@
             <div id="sales-info" class="card">
                 <div class="card-body sale-form">
                     <h3 class='card-title'>Sale Info</h3>
-
+                    <h4 style="font-size:18px">Pricing</h4>
+                    <div class="details-list form-inline" style="margin-bottom:1rem;">
+                    {% include "catalogue/utils/field.html" with field=form.price_nis %}
+                    {% include "catalogue/utils/field.html" with field=form.price_usd %}
+                    </div>
                     <div id="elm-sale-data-flags">
                         {% csrf_token %}
                     </div>
                     <div id="elm-sale-data-app"></div>
                     <script>
                         function elm_sale_data_flags() {
-                            let elm_flags = JSON.parse("{{sale_data_info|escapejs}}");
+                            let elm_flags = JSON.parse("{{sale_data_info|escapejs|default:'{}'}}");
                             console.log(elm_flags);
                             let csrftoken = document.getElementById('elm-sale-data-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
                             elm_flags['csrftoken'] = csrftoken;
-                            elm_flags['artwork'] = {{object.pk}};
+                            elm_flags['artwork'] = {{object.pk|default:"null"}};
                             return elm_flags
                         }
                         console.log(elm_flags())
@@ -302,15 +306,6 @@
                             flags: elm_sale_data_flags()
                         });        
                     </script>
-                    <div class="details-list form-inline">
-                        {% include "catalogue/utils/field.html" with field=form.owner %}
-                        {% include "catalogue/utils/field.html" with field=form.sold_by %}
-                        {% include "catalogue/utils/field.html" with field=form.price_nis %}
-                        {% include "catalogue/utils/field.html" with field=form.price_usd %}
-                        {% include "catalogue/utils/field.html" with field=form.sale_currency %}
-                        {% include "catalogue/utils/field.html" with field=form.sale_price %}
-                        {% include "catalogue/utils/field.html" with field=form.discount %}
-                        {% include "catalogue/utils/field.html" with field=form.sale_date %}
                     </div>
                 </div>
             </div>

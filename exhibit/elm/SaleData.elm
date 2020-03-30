@@ -439,57 +439,58 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     div
-        []
+        [ class "details-list"
+        , class "form-inline"
+        ]
         [ div
             [ id "headers"
             , style "display" "flex"
             , style "justify-content" "space-between"
             , style "width" "100%"
+            , class "form-group"
             ]
-            [ div [ style "color" "blue" ] [ text (printSyncStatus model.updated) ]
-            , div []
-                [ text
-                    (case model.saleData.id of
-                        Just id ->
-                            "Exists: " ++ String.fromInt id
-
-                        Nothing ->
-                            "Draft"
-                    )
-                ]
+            [ h4 [style "font-size" "18px"] [text "Sale Details"]
+            , div [ style "color" "blue" ] [ text (printSyncStatus model.updated) ]
             ]
         , inputView "Notes:"
             "id_notes"
+            "Notes"
             (findErrors Notes model.errors)
             UpdateNotes
             model.saleData.notes
-        , inputView "SaleCurrency:"
+        , inputView "Sale Currency:"
             "id_sale_currency"
+            "Sale Currency"
             (findErrors SaleCurrency model.errors)
             UpdateSaleCurrency
             model.saleData.saleCurrency
-        , inputView "SalePrice:"
+        , inputView "Sale Price:"
             "id_sale_price"
+            "Sale Prince"
             (findErrors SalePrice model.errors)
             UpdateSalePrice
             model.saleData.salePrice
         , inputView "Discount:"
             "id_discount"
+            "(Number or Percentage)"
             (findErrors Discount model.errors)
             UpdateDiscount
             model.saleData.discount
-        , inputView "AgentFee:"
+        , inputView "Agent Fee:"
             "id_agent_fee"
+            "Amount to Agent"
             (findErrors AgentFee model.errors)
             UpdateAgentFee
             model.saleData.agentFee
-        , inputView "AmountToArtist:"
+        , inputView "Amount to Artist:"
             "id_amount_to_artist"
+            "Amount to Artist"
             (findErrors AmountToArtist model.errors)
             UpdateAmountToArtist
             model.saleData.amountToArtist
-        , inputView "SaleDate:"
+        , inputView "Sale Date:"
             "id_sale_date"
+            "Date"
             (findErrors SaleDate model.errors)
             UpdateSaleDate
             model.saleData.saleDate
@@ -497,14 +498,23 @@ view model =
         ]
 
 
-inputView : String -> String -> List String -> (String -> Msg) -> String -> Html Msg
-inputView label_name id_ errors updateMsg val =
-    div []
+inputView : String -> String -> String -> List String -> (String -> Msg) -> String -> Html Msg
+inputView label_name id_ placeholder_ errors updateMsg val =
+    div
+        [ style "display" "flex"
+        , class "form-group"
+        ]
         ([ label [ for id_ ] [ text label_name ]
          , input
             [ id id_
             , onInput updateMsg
             , onBlur AttemptSubmitForm
+            , classList
+                [ ( "edit-field", True )
+                , ( "form-control", True )
+                , ( "form-control-sm", True )
+                ]
+            , placeholder placeholder_
             , value val
             ]
             []
@@ -514,7 +524,7 @@ inputView label_name id_ errors updateMsg val =
 
 
 errorView error =
-    div [] [ text error ]
+    small [ class "form-test", class "text-muted" ] [ text error ]
 
 
 hiddenInputView saleDataID =
