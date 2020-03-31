@@ -8,7 +8,11 @@ import Html.Events exposing (..)
 import Random
 import Task exposing (Task)
 
-
+{-- Issues:
+1. if I have newline as end character it doesn't recognize it
+2. if I have multiple newlines it doesn't leave blank lines
+3. text autofocuses on last char in field, not on 
+--} 
 
 -- MAIN
 
@@ -30,7 +34,7 @@ type alias Model =
     { content : String
     , height : Float
     , divID : String
-    , isTesting : Bool
+    , measuringHeight : Bool
     }
 
 
@@ -57,7 +61,7 @@ init _ =
     ( { content = ""
       , height = toFloat 20
       , divID = "text_area_"
-      , isTesting = False
+      , measuringHeight = False
       }
     , Random.generate NewID (Random.int 1000 10000)
     )
@@ -85,12 +89,12 @@ update msg model =
             ( { model | divID = "text_area_" ++ String.fromInt id }, Cmd.none )
 
         NewContent content ->
-            ( { model | content = content, isTesting = True }, Task.attempt GotSize (Browser.Dom.getViewportOf model.divID) )
+            ( { model | content = content, measuringHeight = True }, Task.attempt GotSize (Browser.Dom.getViewportOf model.divID) )
 
         GotSize result ->
             case result of
                 Ok viewport ->
-                    ( { model | height = calcHeight viewport, isTesting = False }
+                    ( { model | height = calcHeight viewport, measuringHeight = False }
                     , Task.attempt (\_ -> NoOp) (Browser.Dom.focus model.divID)
                     )
 
@@ -124,7 +128,7 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    if model.isTesting then
+    if model.measuringHeight then
         div [ style "display" "flex" ]
             [ hiddenDivView model.divID (attributeList model) model.content
 
