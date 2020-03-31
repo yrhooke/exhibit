@@ -9,6 +9,7 @@ import Html.Events exposing (..)
 import Http
 import Json.Decode as D
 import Task
+import Url.Builder as Url
 
 
 
@@ -140,10 +141,17 @@ update msg model =
             )
 
         GotFile file ->
+            let
+                gotfile_debug =
+                    Debug.toString (File.name file)
+                        |> Debug.log "got file"
+            in
             ( { model | status = Uploading }
             , Cmd.batch
                 [ Http.get
-                    { url = "c/api/imageuploadauth"
+                    { url =
+                        Url.toQuery [ Url.string "file_name" (File.name file) ]
+                            |> (++) "/c/api/imageuploadauth"
                     , expect = Http.expectJson (GotCredentials file) uploadCredentialsDecoder
                     }
                 , Task.perform GotPreview <| File.toUrl file
@@ -169,10 +177,11 @@ update msg model =
                                 , Http.stringPart "AWSAccessKeyId" credentials.awsAccessKeyID
                                 , Http.stringPart "policy" credentials.policy
                                 , Http.stringPart "signature" credentials.signature
+                                , Http.stringPart "acl" credentials.acl
                                 , Http.filePart "file" file
                                 ]
                         , expect = Http.expectString (FileUploaded credentials.save_key)
-                        , timeout = Just 120000
+                        , timeout = Just 180000
                         , tracker = Just "upload"
                         }
                     )
@@ -180,7 +189,8 @@ update msg model =
                 Err e ->
                     let
                         cred_log =
-                            Debug.log "Error getting credentials" e
+                            Debug.toString e
+                                |> Debug.log "Error getting credentials"
                     in
                     ( { model | status = Fail }, Cmd.none )
 
@@ -189,7 +199,8 @@ update msg model =
                 Ok a ->
                     let
                         upload_log =
-                            Debug.log "successful upload" a
+                            Debug.toString a
+                                |> Debug.log "successful upload"
                     in
                     ( model
                     , Http.request
@@ -211,9 +222,10 @@ update msg model =
                 Err e ->
                     let
                         upload_log =
-                            Debug.log "error uploading image" e
+                            Debug.toString e
+                                |> Debug.log "error uploading image"
                     in
-                    ( model, Cmd.none )
+                    ( { model | status = Fail }, Cmd.none )
 
         ImageSaved result ->
             case result of
@@ -223,7 +235,8 @@ update msg model =
                 Err e ->
                     let
                         save_log =
-                            Debug.log "Error saving to db" e
+                            Debug.toString e
+                                |> Debug.log "Error saving to db"
                     in
                     ( { model | status = Fail }, Cmd.none )
 
@@ -256,18 +269,21 @@ type alias UploadCredentials =
     , awsAccessKeyID : String
     , policy : String
     , signature : String
+    , acl : String
     , save_key : String
     }
 
 
 uploadCredentialsDecoder : D.Decoder UploadCredentials
 uploadCredentialsDecoder =
-    D.map6 UploadCredentials
+    -- D.map6 UploadCredentials
+    D.map7 UploadCredentials
         (D.field "url" D.string)
         (D.at [ "fields", "key" ] D.string)
         (D.at [ "fields", "AWSAccessKeyId" ] D.string)
         (D.at [ "fields", "policy" ] D.string)
         (D.at [ "fields", "signature" ] D.string)
+        (D.at [ "fields", "acl" ] D.string)
         (D.field "save_key" D.string)
 
 

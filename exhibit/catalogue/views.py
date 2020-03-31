@@ -439,6 +439,8 @@ class S3AuthAPIView(View):
             s3_post_params = self.create_presigned_post(
                 settings.AWS_MEDIA_BUCKET_NAME,
                 file_key,
+                fields = {'acl': 'public-read'},
+                conditions = [{'acl' : 'public-read'}],
                 expiration=120)
             s3_post_params['save_key'] = save_key
             return JsonResponse(s3_post_params)

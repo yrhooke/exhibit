@@ -4708,7 +4708,24 @@ function _File_toUrl(blob)
 	});
 }
 
-var $elm$core$Basics$EQ = {$: 'EQ'};
+
+
+function _Url_percentEncode(string)
+{
+	return encodeURIComponent(string);
+}
+
+function _Url_percentDecode(string)
+{
+	try
+	{
+		return $elm$core$Maybe$Just(decodeURIComponent(string));
+	}
+	catch (e)
+	{
+		return $elm$core$Maybe$Nothing;
+	}
+}var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
 var $elm$core$Basics$LT = {$: 'LT'};
 var $elm$core$List$cons = _List_cons;
@@ -6398,6 +6415,7 @@ var $elm$http$Http$multipartBody = function (parts) {
 		'',
 		_Http_toFormData(parts));
 };
+var $elm$file$File$name = _File_name;
 var $author$project$ImageUpload$ImageData = F2(
 	function (image_id, image_url) {
 		return {image_id: image_id, image_url: image_url};
@@ -6418,6 +6436,18 @@ var $author$project$ImageUpload$saveImageResultDecoder = A3(
 		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int)),
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
+var $elm$url$Url$Builder$QueryParameter = F2(
+	function (a, b) {
+		return {$: 'QueryParameter', a: a, b: b};
+	});
+var $elm$url$Url$percentEncode = _Url_percentEncode;
+var $elm$url$Url$Builder$string = F2(
+	function (key, value) {
+		return A2(
+			$elm$url$Url$Builder$QueryParameter,
+			$elm$url$Url$percentEncode(key),
+			$elm$url$Url$percentEncode(value));
+	});
 var $elm$http$Http$stringPart = _Http_pair;
 var $author$project$ImageUpload$stringifyArtworkID = function (artwork_id) {
 	if (artwork_id.$ === 'Just') {
@@ -6425,6 +6455,21 @@ var $author$project$ImageUpload$stringifyArtworkID = function (artwork_id) {
 		return $elm$core$String$fromInt(pk);
 	} else {
 		return '';
+	}
+};
+var $elm$url$Url$Builder$toQueryPair = function (_v0) {
+	var key = _v0.a;
+	var value = _v0.b;
+	return key + ('=' + value);
+};
+var $elm$url$Url$Builder$toQuery = function (parameters) {
+	if (!parameters.b) {
+		return '';
+	} else {
+		return '?' + A2(
+			$elm$core$String$join,
+			'&',
+			A2($elm$core$List$map, $elm$url$Url$Builder$toQueryPair, parameters));
 	}
 };
 var $elm$core$Debug$toString = _Debug_toString;
@@ -6437,17 +6482,17 @@ var $author$project$ImageUpload$updateImageURL = F2(
 				image_url: $elm$core$Maybe$Just(url)
 			});
 	});
-var $author$project$ImageUpload$UploadCredentials = F6(
-	function (url, key, awsAccessKeyID, policy, signature, save_key) {
-		return {awsAccessKeyID: awsAccessKeyID, key: key, policy: policy, save_key: save_key, signature: signature, url: url};
+var $author$project$ImageUpload$UploadCredentials = F7(
+	function (url, key, awsAccessKeyID, policy, signature, acl, save_key) {
+		return {acl: acl, awsAccessKeyID: awsAccessKeyID, key: key, policy: policy, save_key: save_key, signature: signature, url: url};
 	});
 var $elm$json$Json$Decode$at = F2(
 	function (fields, decoder) {
 		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
 	});
-var $elm$json$Json$Decode$map6 = _Json_map6;
-var $author$project$ImageUpload$uploadCredentialsDecoder = A7(
-	$elm$json$Json$Decode$map6,
+var $elm$json$Json$Decode$map7 = _Json_map7;
+var $author$project$ImageUpload$uploadCredentialsDecoder = A8(
+	$elm$json$Json$Decode$map7,
 	$author$project$ImageUpload$UploadCredentials,
 	A2($elm$json$Json$Decode$field, 'url', $elm$json$Json$Decode$string),
 	A2(
@@ -6470,6 +6515,11 @@ var $author$project$ImageUpload$uploadCredentialsDecoder = A7(
 		_List_fromArray(
 			['fields', 'signature']),
 		$elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$at,
+		_List_fromArray(
+			['fields', 'acl']),
+		$elm$json$Json$Decode$string),
 	A2($elm$json$Json$Decode$field, 'save_key', $elm$json$Json$Decode$string));
 var $author$project$ImageUpload$update = F2(
 	function (msg, model) {
@@ -6485,6 +6535,11 @@ var $author$project$ImageUpload$update = F2(
 						$author$project$ImageUpload$GotFile));
 			case 'GotFile':
 				var file = msg.a;
+				var gotfile_debug = A2(
+					$elm$core$Debug$log,
+					'got file',
+					$elm$core$Debug$toString(
+						$elm$file$File$name(file)));
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -6498,7 +6553,14 @@ var $author$project$ImageUpload$update = F2(
 										$elm$http$Http$expectJson,
 										$author$project$ImageUpload$GotCredentials(file),
 										$author$project$ImageUpload$uploadCredentialsDecoder),
-									url: 'c/api/imageuploadauth'
+									url: '/c/api/imageuploadauth' + $elm$url$Url$Builder$toQuery(
+										_List_fromArray(
+											[
+												A2(
+												$elm$url$Url$Builder$string,
+												'file_name',
+												$elm$file$File$name(file))
+											]))
 								}),
 								A2(
 								$elm$core$Task$perform,
@@ -6530,19 +6592,23 @@ var $author$project$ImageUpload$update = F2(
 											A2($elm$http$Http$stringPart, 'AWSAccessKeyId', credentials.awsAccessKeyID),
 											A2($elm$http$Http$stringPart, 'policy', credentials.policy),
 											A2($elm$http$Http$stringPart, 'signature', credentials.signature),
+											A2($elm$http$Http$stringPart, 'acl', credentials.acl),
 											A2($elm$http$Http$filePart, 'file', file)
 										])),
 								expect: $elm$http$Http$expectString(
 									$author$project$ImageUpload$FileUploaded(credentials.save_key)),
 								headers: _List_Nil,
 								method: 'POST',
-								timeout: $elm$core$Maybe$Just(120000),
+								timeout: $elm$core$Maybe$Just(180000),
 								tracker: $elm$core$Maybe$Just('upload'),
 								url: credentials.url
 							}));
 				} else {
 					var e = result.a;
-					var cred_log = A2($elm$core$Debug$log, 'Error getting credentials', e);
+					var cred_log = A2(
+						$elm$core$Debug$log,
+						'Error getting credentials',
+						$elm$core$Debug$toString(e));
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -6554,7 +6620,10 @@ var $author$project$ImageUpload$update = F2(
 				var result = msg.b;
 				if (result.$ === 'Ok') {
 					var a = result.a;
-					var upload_log = A2($elm$core$Debug$log, 'successful upload', a);
+					var upload_log = A2(
+						$elm$core$Debug$log,
+						'successful upload',
+						$elm$core$Debug$toString(a));
 					return _Utils_Tuple2(
 						model,
 						$elm$http$Http$request(
@@ -6578,8 +6647,15 @@ var $author$project$ImageUpload$update = F2(
 							}));
 				} else {
 					var e = result.a;
-					var upload_log = A2($elm$core$Debug$log, 'error uploading image', e);
-					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+					var upload_log = A2(
+						$elm$core$Debug$log,
+						'error uploading image',
+						$elm$core$Debug$toString(e));
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{status: $author$project$ImageUpload$Fail}),
+						$elm$core$Platform$Cmd$none);
 				}
 			default:
 				var result = msg.a;
@@ -6592,7 +6668,10 @@ var $author$project$ImageUpload$update = F2(
 						$elm$core$Platform$Cmd$none);
 				} else {
 					var e = result.a;
-					var save_log = A2($elm$core$Debug$log, 'Error saving to db', e);
+					var save_log = A2(
+						$elm$core$Debug$log,
+						'Error saving to db',
+						$elm$core$Debug$toString(e));
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,

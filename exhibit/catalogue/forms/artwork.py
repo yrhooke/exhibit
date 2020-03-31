@@ -86,5 +86,5 @@ class ArtworkImageUploadForm(forms.ModelForm):
         # if uploaded_image_url is set with the path of the image it was uploaded by
         # the frontend
         elif not image and uploaded_image_url:
-            self.cleaned_data['image'] = file_name
+            self.cleaned_data['image'] = uploaded_image_url
         return super(ArtworkImageUploadForm, self).clean()
