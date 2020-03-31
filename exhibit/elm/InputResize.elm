@@ -39,6 +39,8 @@ type alias Model =
     , height : Float
     , divID : String
     , measuringHeight : Bool
+    , customizeInner : List (Attribute Msg)
+    , customizeOuter : List (Attribute Msg)
     }
 
 
@@ -52,6 +54,8 @@ init _ =
       , height = toFloat 20
       , divID = "text_area_"
       , measuringHeight = False
+      , customizeInner = []
+      , customizeOuter = []
       }
     , Random.generate NewID (Random.int 1000 10000)
     )
@@ -122,17 +126,19 @@ view model =
     let
         innerView =
             if model.measuringHeight then
-                hiddenDivView model.divID model.content
+                hiddenDivView model.customizeInner model.divID model.content
 
             else
-                textAreaView model.divID model.content model.height
+                textAreaView model.customizeInner model.divID model.content model.height
     in
     div
-        [ style "display" "flex"
-        , style "border" "1px solid darkgray"
-        ]
-        [ innerView
-        ]
+        (model.customizeOuter
+            ++ [ style "display" "flex"
+               , style "justify-content" "start"
+               , style "align-items" "start"
+               ]
+        )
+        [ innerView ]
 
 
 type alias Settings =
@@ -151,8 +157,8 @@ settings =
     }
 
 
-attributeList : List (Attribute Msg)
-attributeList =
+innerAttributes : List (Attribute Msg)
+innerAttributes =
     [ style "resize" "none"
     , style "overflow" "hidden"
     , style "width" settings.width
@@ -160,33 +166,34 @@ attributeList =
     , style "font-size" settings.font_size
     , style "font-family" settings.font_family
     , style "border" "none"
-    , style "margin" "0px"
     , style "padding" "0px"
-    , style "margin" "10px"
+    , style "margin" "0px"
     ]
 
 
-textAreaView : String -> String -> Float -> Html Msg
-textAreaView id_ content height =
+textAreaView : List (Attribute Msg) -> String -> String -> Float -> Html Msg
+textAreaView customAttr id_ content height =
     textarea
-        ([ id id_
-         , value content
-         , onInput NewContent
-         , style "height" <| String.fromFloat height ++ "px"
-         ]
-            ++ attributeList
+        (customAttr
+            ++ [ id id_
+               , value content
+               , onInput NewContent
+               , style "height" <| String.fromFloat height ++ "px"
+               ]
+            ++ innerAttributes
         )
         [ text content ]
 
 
-hiddenDivView : String -> String -> Html Msg
-hiddenDivView id_ content =
+hiddenDivView : List (Attribute Msg) -> String -> String -> Html Msg
+hiddenDivView customAttr id_ content =
     div
-        ([ id id_
-         , value content
-         , style "height" "min-content"
-         ]
-            ++ attributeList
+        (customAttr
+            ++ [ id id_
+               , value content
+               , style "height" "min-content"
+               ]
+            ++ innerAttributes
         )
         (hiddenDivContentsView content)
 
