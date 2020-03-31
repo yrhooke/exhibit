@@ -5,15 +5,19 @@ import Browser.Dom
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Json.Decode as Json
+import Json.Encode as Encode
 import Random
 import Task exposing (Task)
 
-{-- Issues:
-1. if I have newline as end character it doesn't recognize it
-2. if I have multiple newlines it doesn't leave blank lines
-3. text autofocuses on last char in field, not on 
---} 
 
+
+{--Issues:
+1. text autofocuses on last char in field, not after last char entered
+2. can add any amount of whitespace at the end of the line, won't change line until newline
+3. doesn't deal well with whitespace at the start of the line
+4. hidden div contents add 1px per newline. should remove
+--}
 -- MAIN
 
 
@@ -35,20 +39,6 @@ type alias Model =
     , height : Float
     , divID : String
     , measuringHeight : Bool
-    }
-
-
-type alias Settings =
-    { font_size : Int
-    , line_sep : Float
-    , width : Int
-    }
-
-
-settings =
-    { font_size = 17
-    , line_height = 1.2
-    , width = 120
     }
 
 
@@ -89,12 +79,21 @@ update msg model =
             ( { model | divID = "text_area_" ++ String.fromInt id }, Cmd.none )
 
         NewContent content ->
-            ( { model | content = content, measuringHeight = True }, Task.attempt GotSize (Browser.Dom.getViewportOf model.divID) )
+            ( { model
+                | content = content
+                , measuringHeight = True
+              }
+            , Task.attempt GotSize (Browser.Dom.getViewportOf model.divID)
+            )
 
         GotSize result ->
             case result of
                 Ok viewport ->
-                    ( { model | height = calcHeight viewport, measuringHeight = False }
+                    let
+                        log_size =
+                            Debug.log "viewport" <| Debug.toString viewport
+                    in
+                    ( { model | height = viewport.scene.height, measuringHeight = False }
                     , Task.attempt (\_ -> NoOp) (Browser.Dom.focus model.divID)
                     )
 
@@ -103,14 +102,6 @@ update msg model =
 
         NoOp ->
             ( model, Cmd.none )
-
-
-
--- calcHeight : Browser.Dom.Viewport -> com
-
-
-calcHeight viewport =
-    viewport.scene.height * settings.line_height
 
 
 
@@ -128,78 +119,90 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    if model.measuringHeight then
-        div [ style "display" "flex" ]
-            [ hiddenDivView model.divID (attributeList model) model.content
+    let
+        innerView =
+            if model.measuringHeight then
+                hiddenDivView model.divID model.content
 
-            -- , div [ id "element_node" ] [ text (Debug.toString model) ]
-            , hiddenDivView "tester" (attributeList model) model.content
-            ]
-
-    else
-        div [ style "display" "flex" ]
-            [ textAreaView model.divID (attributeList model) model.content model.height
-
-            -- , div [ id "element_node" ] [ text (Debug.toString model) ]
-            , hiddenDivView "tester" (attributeList model) model.content
-            ]
+            else
+                textAreaView model.divID model.content model.height
+    in
+    div
+        [ style "display" "flex"
+        , style "border" "1px solid darkgray"
+        ]
+        [ innerView
+        ]
 
 
-attributeList : Model -> List (Attribute Msg)
-attributeList model =
-    [ value model.content
-    , style "resize" "none"
+type alias Settings =
+    { fontSize : String
+    , fontFamily : String
+    , line_height : String
+    , width : String
+    }
+
+
+settings =
+    { font_size = "17px"
+    , font_family = "Arial"
+    , line_height = "1.2"
+    , width = "300px"
+    }
+
+
+attributeList : List (Attribute Msg)
+attributeList =
+    [ style "resize" "none"
     , style "overflow" "hidden"
-    , style "width" "300px"
-    , style "line-height" (String.fromFloat settings.line_height)
-    , style "font-size" (String.fromInt settings.font_size ++ "px")
-    , style "font-family" "Arial"
+    , style "width" settings.width
+    , style "line-height" settings.line_height
+    , style "font-size" settings.font_size
+    , style "font-family" settings.font_family
     , style "border" "none"
     , style "margin" "0px"
     , style "padding" "0px"
-
-    -- , style "height" "min-content"
+    , style "margin" "10px"
     ]
 
 
-textAreaView : String -> List (Attribute Msg) -> String -> Float -> Html Msg
-textAreaView id_ attributes content height =
+textAreaView : String -> String -> Float -> Html Msg
+textAreaView id_ content height =
     textarea
-        (id id_
-            :: [ onInput NewContent
-               , style "height" <| String.fromFloat height ++ "px"
-               ]
-            ++ attributes
+        ([ id id_
+         , value content
+         , onInput NewContent
+         , style "height" <| String.fromFloat height ++ "px"
+         ]
+            ++ attributeList
         )
         [ text content ]
 
 
-hiddenDivView : String -> List (Attribute Msg) -> String -> Html Msg
-hiddenDivView id_ attributes content =
+hiddenDivView : String -> String -> Html Msg
+hiddenDivView id_ content =
     div
         ([ id id_
+         , value content
          , style "height" "min-content"
          ]
-            ++ attributes
+            ++ attributeList
         )
-        (hiddenDivContents content)
+        (hiddenDivContentsView content)
 
 
-hiddenDivContents : String -> List (Html Msg)
-hiddenDivContents contentString =
+hiddenDivContentsView : String -> List (Html Msg)
+hiddenDivContentsView contentString =
     let
         lines =
-            String.lines contentString
+            String.split "\n" contentString
+
+        htmlMapper line =
+            if line == "" then
+                br [ style "line-height" "1px" ] []
+
+            else
+                div [] [ text line ]
     in
-    List.map (\l -> div [] [ text l ]) lines
-
-
-
--- textAreaStyles height =
---     [ style "resize" "none"
---     , style "overflow" "hidden"
---     , style "width" (String.fromInt settings.width ++ "px")
---     -- , style "line-height" (String.fromFloat settings.line_height)
---     -- , style "font-size" ((String.fromInt settings.font_size) ++ "px")
---     -- , style "height" ((String.fromFloat height) ++ "px")
---     ]
+    List.map htmlMapper lines
+--}

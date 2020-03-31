@@ -7406,7 +7406,7 @@ var $elm$random$Random$int = F2(
 	});
 var $author$project$InputResize$init = function (_v0) {
 	return _Utils_Tuple2(
-		{content: '', divID: 'text_area_', height: 20, isTesting: false},
+		{content: '', divID: 'text_area_', height: 20, measuringHeight: false},
 		A2(
 			$elm$random$Random$generate,
 			$author$project$InputResize$NewID,
@@ -7443,10 +7443,6 @@ var $elm$core$Task$attempt = F2(
 							$elm$core$Result$Ok),
 						task))));
 	});
-var $author$project$InputResize$settings = {font_size: 17, line_height: 1.2, width: 120};
-var $author$project$InputResize$calcHeight = function (viewport) {
-	return viewport.scene.height * $author$project$InputResize$settings.line_height;
-};
 var $elm$browser$Browser$Dom$focus = _Browser_call('focus');
 var $elm$browser$Browser$Dom$getViewportOf = _Browser_getViewportOf;
 var $author$project$InputResize$update = F2(
@@ -7470,7 +7466,7 @@ var $author$project$InputResize$update = F2(
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
-						{content: content, isTesting: true}),
+						{content: content, measuringHeight: true}),
 					A2(
 						$elm$core$Task$attempt,
 						$author$project$InputResize$GotSize,
@@ -7479,13 +7475,14 @@ var $author$project$InputResize$update = F2(
 				var result = msg.a;
 				if (result.$ === 'Ok') {
 					var viewport = result.a;
+					var log_size = A2(
+						$elm$core$Debug$log,
+						'viewport',
+						$elm$core$Debug$toString(viewport));
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{
-								height: $author$project$InputResize$calcHeight(viewport),
-								isTesting: false
-							}),
+							{height: viewport.scene.height, measuringHeight: false}),
 						A2(
 							$elm$core$Task$attempt,
 							function (_v2) {
@@ -7499,122 +7496,91 @@ var $author$project$InputResize$update = F2(
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
-var $elm$core$String$fromFloat = _String_fromNumber;
-var $author$project$InputResize$attributeList = function (model) {
-	return _List_fromArray(
-		[
-			$elm$html$Html$Attributes$value(model.content),
-			A2($elm$html$Html$Attributes$style, 'resize', 'none'),
-			A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
-			A2($elm$html$Html$Attributes$style, 'width', '300px'),
-			A2(
-			$elm$html$Html$Attributes$style,
-			'line-height',
-			$elm$core$String$fromFloat($author$project$InputResize$settings.line_height)),
-			A2(
-			$elm$html$Html$Attributes$style,
-			'font-size',
-			$elm$core$String$fromInt($author$project$InputResize$settings.font_size) + 'px'),
-			A2($elm$html$Html$Attributes$style, 'font-family', 'Arial'),
-			A2($elm$html$Html$Attributes$style, 'border', 'none'),
-			A2($elm$html$Html$Attributes$style, 'margin', '0px'),
-			A2($elm$html$Html$Attributes$style, 'padding', '0px')
-		]);
+var $author$project$InputResize$settings = {font_family: 'Arial', font_size: '17px', line_height: '1.2', width: '300px'};
+var $author$project$InputResize$attributeList = _List_fromArray(
+	[
+		A2($elm$html$Html$Attributes$style, 'resize', 'none'),
+		A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
+		A2($elm$html$Html$Attributes$style, 'width', $author$project$InputResize$settings.width),
+		A2($elm$html$Html$Attributes$style, 'line-height', $author$project$InputResize$settings.line_height),
+		A2($elm$html$Html$Attributes$style, 'font-size', $author$project$InputResize$settings.font_size),
+		A2($elm$html$Html$Attributes$style, 'font-family', $author$project$InputResize$settings.font_family),
+		A2($elm$html$Html$Attributes$style, 'border', 'none'),
+		A2($elm$html$Html$Attributes$style, 'margin', '0px'),
+		A2($elm$html$Html$Attributes$style, 'padding', '0px'),
+		A2($elm$html$Html$Attributes$style, 'margin', '10px')
+	]);
+var $elm$html$Html$br = _VirtualDom_node('br');
+var $author$project$InputResize$hiddenDivContentsView = function (contentString) {
+	var lines = A2($elm$core$String$split, '\n', contentString);
+	var htmlMapper = function (line) {
+		return (line === '') ? A2(
+			$elm$html$Html$br,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'line-height', '1px')
+				]),
+			_List_Nil) : A2(
+			$elm$html$Html$div,
+			_List_Nil,
+			_List_fromArray(
+				[
+					$elm$html$Html$text(line)
+				]));
+	};
+	return A2($elm$core$List$map, htmlMapper, lines);
 };
-var $elm$core$String$lines = _String_lines;
-var $author$project$InputResize$hiddenDivContents = function (contentString) {
-	var lines = $elm$core$String$lines(contentString);
-	return A2(
-		$elm$core$List$map,
-		function (l) {
-			return A2(
-				$elm$html$Html$div,
-				_List_Nil,
-				_List_fromArray(
-					[
-						$elm$html$Html$text(l)
-					]));
-		},
-		lines);
-};
-var $author$project$InputResize$hiddenDivView = F3(
-	function (id_, attributes, content) {
+var $author$project$InputResize$hiddenDivView = F2(
+	function (id_, content) {
 		return A2(
 			$elm$html$Html$div,
 			_Utils_ap(
 				_List_fromArray(
 					[
 						$elm$html$Html$Attributes$id(id_),
+						$elm$html$Html$Attributes$value(content),
 						A2($elm$html$Html$Attributes$style, 'height', 'min-content')
 					]),
-				attributes),
-			$author$project$InputResize$hiddenDivContents(content));
+				$author$project$InputResize$attributeList),
+			$author$project$InputResize$hiddenDivContentsView(content));
 	});
 var $author$project$InputResize$NewContent = function (a) {
 	return {$: 'NewContent', a: a};
 };
+var $elm$core$String$fromFloat = _String_fromNumber;
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
-var $author$project$InputResize$textAreaView = F4(
-	function (id_, attributes, content, height) {
+var $author$project$InputResize$textAreaView = F3(
+	function (id_, content, height) {
 		return A2(
 			$elm$html$Html$textarea,
-			A2(
-				$elm$core$List$cons,
-				$elm$html$Html$Attributes$id(id_),
-				_Utils_ap(
-					_List_fromArray(
-						[
-							$elm$html$Html$Events$onInput($author$project$InputResize$NewContent),
-							A2(
-							$elm$html$Html$Attributes$style,
-							'height',
-							$elm$core$String$fromFloat(height) + 'px')
-						]),
-					attributes)),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id(id_),
+						$elm$html$Html$Attributes$value(content),
+						$elm$html$Html$Events$onInput($author$project$InputResize$NewContent),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'height',
+						$elm$core$String$fromFloat(height) + 'px')
+					]),
+				$author$project$InputResize$attributeList),
 			_List_fromArray(
 				[
 					$elm$html$Html$text(content)
 				]));
 	});
 var $author$project$InputResize$view = function (model) {
-	return model.isTesting ? A2(
+	var innerView = model.measuringHeight ? A2($author$project$InputResize$hiddenDivView, model.divID, model.content) : A3($author$project$InputResize$textAreaView, model.divID, model.content, model.height);
+	return A2(
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				A2($elm$html$Html$Attributes$style, 'display', 'flex')
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				A2($elm$html$Html$Attributes$style, 'border', '1px solid darkgray')
 			]),
 		_List_fromArray(
-			[
-				A3(
-				$author$project$InputResize$hiddenDivView,
-				model.divID,
-				$author$project$InputResize$attributeList(model),
-				model.content),
-				A3(
-				$author$project$InputResize$hiddenDivView,
-				'tester',
-				$author$project$InputResize$attributeList(model),
-				model.content)
-			])) : A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				A2($elm$html$Html$Attributes$style, 'display', 'flex')
-			]),
-		_List_fromArray(
-			[
-				A4(
-				$author$project$InputResize$textAreaView,
-				model.divID,
-				$author$project$InputResize$attributeList(model),
-				model.content,
-				model.height),
-				A3(
-				$author$project$InputResize$hiddenDivView,
-				'tester',
-				$author$project$InputResize$attributeList(model),
-				model.content)
-			]));
+			[innerView]));
 };
 var $author$project$InputResize$main = $elm$browser$Browser$element(
 	{init: $author$project$InputResize$init, subscriptions: $author$project$InputResize$subscriptions, update: $author$project$InputResize$update, view: $author$project$InputResize$view});
