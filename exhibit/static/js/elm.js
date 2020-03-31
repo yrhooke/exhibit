@@ -4791,7 +4791,24 @@ function _File_toUrl(blob)
 	});
 }
 
-var $elm$core$Basics$EQ = {$: 'EQ'};
+
+
+function _Url_percentEncode(string)
+{
+	return encodeURIComponent(string);
+}
+
+function _Url_percentDecode(string)
+{
+	try
+	{
+		return $elm$core$Maybe$Just(decodeURIComponent(string));
+	}
+	catch (e)
+	{
+		return $elm$core$Maybe$Nothing;
+	}
+}var $elm$core$Basics$EQ = {$: 'EQ'};
 var $elm$core$Basics$GT = {$: 'GT'};
 var $elm$core$Basics$LT = {$: 'LT'};
 var $elm$core$List$cons = _List_cons;
@@ -7389,7 +7406,7 @@ var $elm$random$Random$int = F2(
 	});
 var $author$project$InputResize$init = function (_v0) {
 	return _Utils_Tuple2(
-		{content: '', divID: 'text_area_', element: '', height: 20, hiddenDivHeight: 20},
+		{content: '', divID: 'text_area_', height: 20, isTesting: false},
 		A2(
 			$elm$random$Random$generate,
 			$author$project$InputResize$NewID,
@@ -7398,12 +7415,10 @@ var $author$project$InputResize$init = function (_v0) {
 var $author$project$InputResize$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
 };
-var $author$project$InputResize$GotHiddenDivSize = function (a) {
-	return {$: 'GotHiddenDivSize', a: a};
-};
 var $author$project$InputResize$GotSize = function (a) {
 	return {$: 'GotSize', a: a};
 };
+var $author$project$InputResize$NoOp = {$: 'NoOp'};
 var $elm$core$Basics$composeL = F3(
 	function (g, f, x) {
 		return g(
@@ -7432,20 +7447,15 @@ var $author$project$InputResize$settings = {font_size: 17, line_height: 1.2, wid
 var $author$project$InputResize$calcHeight = function (viewport) {
 	return viewport.scene.height * $author$project$InputResize$settings.line_height;
 };
+var $elm$browser$Browser$Dom$focus = _Browser_call('focus');
 var $elm$browser$Browser$Dom$getViewportOf = _Browser_getViewportOf;
 var $author$project$InputResize$update = F2(
 	function (msg, model) {
+		var logging = A2(
+			$elm$core$Debug$log,
+			'model',
+			$elm$core$Debug$toString(model));
 		switch (msg.$) {
-			case 'NewContent':
-				var content = msg.a;
-				return _Utils_Tuple2(
-					_Utils_update(
-						model,
-						{content: content}),
-					A2(
-						$elm$core$Task$attempt,
-						$author$project$InputResize$GotSize,
-						$elm$browser$Browser$Dom$getViewportOf(model.divID)));
 			case 'NewID':
 				var id = msg.a;
 				return _Utils_Tuple2(
@@ -7455,101 +7465,135 @@ var $author$project$InputResize$update = F2(
 							divID: 'text_area_' + $elm$core$String$fromInt(id)
 						}),
 					$elm$core$Platform$Cmd$none);
+			case 'NewContent':
+				var content = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{content: content, isTesting: true}),
+					A2(
+						$elm$core$Task$attempt,
+						$author$project$InputResize$GotSize,
+						$elm$browser$Browser$Dom$getViewportOf(model.divID)));
 			case 'GotSize':
 				var result = msg.a;
 				if (result.$ === 'Ok') {
-					var element = result.a;
+					var viewport = result.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
 							{
-								element: A2(
-									$elm$core$Debug$log,
-									'element',
-									$elm$core$Debug$toString(element)),
-								hiddenDivHeight: $author$project$InputResize$calcHeight(element)
+								height: $author$project$InputResize$calcHeight(viewport),
+								isTesting: false
 							}),
 						A2(
 							$elm$core$Task$attempt,
-							$author$project$InputResize$GotHiddenDivSize,
-							$elm$browser$Browser$Dom$getViewportOf(model.divID + 'hidden-div')));
+							function (_v2) {
+								return $author$project$InputResize$NoOp;
+							},
+							$elm$browser$Browser$Dom$focus(model.divID)));
 				} else {
 					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 				}
 			default:
-				var result = msg.a;
-				if (result.$ === 'Ok') {
-					var element = result.a;
-					return _Utils_Tuple2(
-						_Utils_update(
-							model,
-							{
-								height: $author$project$InputResize$calcHeight(element)
-							}),
-						$elm$core$Platform$Cmd$none);
-				} else {
-					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
-				}
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
+	});
+var $elm$core$String$fromFloat = _String_fromNumber;
+var $author$project$InputResize$attributeList = function (model) {
+	return _List_fromArray(
+		[
+			$elm$html$Html$Attributes$id(model.divID),
+			$elm$html$Html$Attributes$value(model.content),
+			A2($elm$html$Html$Attributes$style, 'resize', 'none'),
+			A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
+			A2($elm$html$Html$Attributes$style, 'width', '300px'),
+			A2(
+			$elm$html$Html$Attributes$style,
+			'line-height',
+			$elm$core$String$fromFloat($author$project$InputResize$settings.line_height)),
+			A2(
+			$elm$html$Html$Attributes$style,
+			'font-size',
+			$elm$core$String$fromInt($author$project$InputResize$settings.font_size) + 'px'),
+			A2($elm$html$Html$Attributes$style, 'font-family', 'Arial')
+		]);
+};
+var $elm$core$String$lines = _String_lines;
+var $author$project$InputResize$hiddenDivContents = function (contentString) {
+	var lines = $elm$core$String$lines(contentString);
+	return A2(
+		$elm$core$List$map,
+		function (l) {
+			return A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(l)
+					]));
+		},
+		lines);
+};
+var $author$project$InputResize$hiddenDivView = F2(
+	function (attributes, content) {
+		return A2(
+			$elm$html$Html$div,
+			A2(
+				$elm$core$List$cons,
+				A2($elm$html$Html$Attributes$style, 'height', 'min-content'),
+				attributes),
+			$author$project$InputResize$hiddenDivContents(content));
 	});
 var $author$project$InputResize$NewContent = function (a) {
 	return {$: 'NewContent', a: a};
 };
-var $author$project$InputResize$textAreaStyles = function (height) {
-	return _List_fromArray(
-		[
-			A2($elm$html$Html$Attributes$style, 'resize', 'none'),
-			A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
-			A2(
-			$elm$html$Html$Attributes$style,
-			'width',
-			$elm$core$String$fromInt($author$project$InputResize$settings.width) + 'px')
-		]);
-};
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
+var $author$project$InputResize$textAreaView = F3(
+	function (attributes, content, height) {
+		return A2(
+			$elm$html$Html$textarea,
+			_Utils_ap(
+				_List_fromArray(
+					[
+						$elm$html$Html$Events$onInput($author$project$InputResize$NewContent),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'height',
+						$elm$core$String$fromFloat(height) + 'px')
+					]),
+				attributes),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(content)
+				]));
+	});
 var $author$project$InputResize$view = function (model) {
-	return A2(
+	return model.isTesting ? A2(
 		$elm$html$Html$div,
-		_List_Nil,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex')
+			]),
 		_List_fromArray(
 			[
 				A2(
-				$elm$html$Html$textarea,
-				_Utils_ap(
-					_List_fromArray(
-						[
-							$elm$html$Html$Attributes$id(model.divID),
-							$elm$html$Html$Events$onInput($author$project$InputResize$NewContent),
-							$elm$html$Html$Attributes$value(model.content)
-						]),
-					$author$project$InputResize$textAreaStyles(model.height)),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(model.content)
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$id(model.divID + 'hidden-div'),
-						A2($elm$html$Html$Attributes$style, 'display', 'block'),
-						A2($elm$html$Html$Attributes$style, 'wordWrap', 'break-word')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(model.content)
-					])),
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$id('element_node')
-					]),
-				_List_fromArray(
-					[
-						$elm$html$Html$text(
-						$elm$core$Debug$toString(model))
-					]))
+				$author$project$InputResize$hiddenDivView,
+				$author$project$InputResize$attributeList(model),
+				model.content)
+			])) : A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex')
+			]),
+		_List_fromArray(
+			[
+				A3(
+				$author$project$InputResize$textAreaView,
+				$author$project$InputResize$attributeList(model),
+				model.content,
+				model.height)
 			]));
 };
 var $author$project$InputResize$main = $elm$browser$Browser$element(
@@ -7617,27 +7661,30 @@ var $author$project$ImageUpload$subscriptions = function (model) {
 };
 var $author$project$ImageUpload$Done = {$: 'Done'};
 var $author$project$ImageUpload$Fail = {$: 'Fail'};
+var $author$project$ImageUpload$FileUploaded = F2(
+	function (a, b) {
+		return {$: 'FileUploaded', a: a, b: b};
+	});
+var $author$project$ImageUpload$GotCredentials = F2(
+	function (a, b) {
+		return {$: 'GotCredentials', a: a, b: b};
+	});
 var $author$project$ImageUpload$GotFile = function (a) {
 	return {$: 'GotFile', a: a};
 };
 var $author$project$ImageUpload$GotPreview = function (a) {
 	return {$: 'GotPreview', a: a};
 };
-var $author$project$ImageUpload$Uploaded = function (a) {
-	return {$: 'Uploaded', a: a};
+var $author$project$ImageUpload$ImageSaved = function (a) {
+	return {$: 'ImageSaved', a: a};
 };
 var $author$project$ImageUpload$Uploading = {$: 'Uploading'};
-var $author$project$ImageUpload$ImageData = F2(
-	function (image_id, image_url) {
-		return {image_id: image_id, image_url: image_url};
-	});
-var $author$project$ImageUpload$decodeUploadResult = A3(
-	$elm$json$Json$Decode$map2,
-	$author$project$ImageUpload$ImageData,
-	$elm$json$Json$Decode$maybe(
-		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int)),
-	$elm$json$Json$Decode$maybe(
-		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
+var $elm$http$Http$expectString = function (toMsg) {
+	return A2(
+		$elm$http$Http$expectStringResponse,
+		toMsg,
+		$elm$http$Http$resolve($elm$core$Result$Ok));
+};
 var $elm$file$File$Select$file = F2(
 	function (mimes, toMsg) {
 		return A2(
@@ -7646,12 +7693,56 @@ var $elm$file$File$Select$file = F2(
 			_File_uploadOne(mimes));
 	});
 var $elm$http$Http$filePart = _Http_pair;
+var $elm$http$Http$emptyBody = _Http_emptyBody;
+var $elm$http$Http$get = function (r) {
+	return $elm$http$Http$request(
+		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
+};
+var $elm$file$File$name = _File_name;
+var $author$project$ImageUpload$ImageData = F2(
+	function (image_id, image_url) {
+		return {image_id: image_id, image_url: image_url};
+	});
+var $author$project$ImageUpload$saveImageResultDecoder = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$ImageUpload$ImageData,
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int)),
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
+var $elm$url$Url$Builder$QueryParameter = F2(
+	function (a, b) {
+		return {$: 'QueryParameter', a: a, b: b};
+	});
+var $elm$url$Url$percentEncode = _Url_percentEncode;
+var $elm$url$Url$Builder$string = F2(
+	function (key, value) {
+		return A2(
+			$elm$url$Url$Builder$QueryParameter,
+			$elm$url$Url$percentEncode(key),
+			$elm$url$Url$percentEncode(value));
+	});
 var $author$project$ImageUpload$stringifyArtworkID = function (artwork_id) {
 	if (artwork_id.$ === 'Just') {
 		var pk = artwork_id.a;
 		return $elm$core$String$fromInt(pk);
 	} else {
 		return '';
+	}
+};
+var $elm$url$Url$Builder$toQueryPair = function (_v0) {
+	var key = _v0.a;
+	var value = _v0.b;
+	return key + ('=' + value);
+};
+var $elm$url$Url$Builder$toQuery = function (parameters) {
+	if (!parameters.b) {
+		return '';
+	} else {
+		return '?' + A2(
+			$elm$core$String$join,
+			'&',
+			A2($elm$core$List$map, $elm$url$Url$Builder$toQueryPair, parameters));
 	}
 };
 var $elm$file$File$toUrl = _File_toUrl;
@@ -7663,12 +7754,44 @@ var $author$project$ImageUpload$updateImageURL = F2(
 				image_url: $elm$core$Maybe$Just(url)
 			});
 	});
+var $author$project$ImageUpload$UploadCredentials = F7(
+	function (url, key, awsAccessKeyID, policy, signature, acl, save_key) {
+		return {acl: acl, awsAccessKeyID: awsAccessKeyID, key: key, policy: policy, save_key: save_key, signature: signature, url: url};
+	});
+var $elm$json$Json$Decode$map7 = _Json_map7;
+var $author$project$ImageUpload$uploadCredentialsDecoder = A8(
+	$elm$json$Json$Decode$map7,
+	$author$project$ImageUpload$UploadCredentials,
+	A2($elm$json$Json$Decode$field, 'url', $elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$at,
+		_List_fromArray(
+			['fields', 'key']),
+		$elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$at,
+		_List_fromArray(
+			['fields', 'AWSAccessKeyId']),
+		$elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$at,
+		_List_fromArray(
+			['fields', 'policy']),
+		$elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$at,
+		_List_fromArray(
+			['fields', 'signature']),
+		$elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$at,
+		_List_fromArray(
+			['fields', 'acl']),
+		$elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'save_key', $elm$json$Json$Decode$string));
 var $author$project$ImageUpload$update = F2(
 	function (msg, model) {
-		var debug = A2(
-			$elm$core$Debug$log,
-			'State: ' + $elm$core$Debug$toString(model.status),
-			1);
+		var debug = A3($elm$core$Debug$log, 'State', $elm$core$Debug$toString, model.status);
 		switch (msg.$) {
 			case 'Pick':
 				return _Utils_Tuple2(
@@ -7680,6 +7803,11 @@ var $author$project$ImageUpload$update = F2(
 						$author$project$ImageUpload$GotFile));
 			case 'GotFile':
 				var file = msg.a;
+				var gotfile_debug = A2(
+					$elm$core$Debug$log,
+					'got file',
+					$elm$core$Debug$toString(
+						$elm$file$File$name(file)));
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
@@ -7687,24 +7815,20 @@ var $author$project$ImageUpload$update = F2(
 					$elm$core$Platform$Cmd$batch(
 						_List_fromArray(
 							[
-								$elm$http$Http$request(
+								$elm$http$Http$get(
 								{
-									body: $elm$http$Http$multipartBody(
+									expect: A2(
+										$elm$http$Http$expectJson,
+										$author$project$ImageUpload$GotCredentials(file),
+										$author$project$ImageUpload$uploadCredentialsDecoder),
+									url: '/c/api/imageuploadauth' + $elm$url$Url$Builder$toQuery(
 										_List_fromArray(
 											[
-												A2($elm$http$Http$stringPart, 'csrfmiddlewaretoken', model.csrftoken),
 												A2(
-												$elm$http$Http$stringPart,
-												'artwork',
-												$author$project$ImageUpload$stringifyArtworkID(model.artwork_id)),
-												A2($elm$http$Http$filePart, 'image', file)
-											])),
-									expect: A2($elm$http$Http$expectJson, $author$project$ImageUpload$Uploaded, $author$project$ImageUpload$decodeUploadResult),
-									headers: _List_Nil,
-									method: 'POST',
-									timeout: $elm$core$Maybe$Just(60000),
-									tracker: $elm$core$Maybe$Just('upload'),
-									url: '/c/artwork/image/new'
+												$elm$url$Url$Builder$string,
+												'file_name',
+												$elm$file$File$name(file))
+											]))
 								}),
 								A2(
 								$elm$core$Task$perform,
@@ -7720,6 +7844,87 @@ var $author$project$ImageUpload$update = F2(
 							image_data: A2($author$project$ImageUpload$updateImageURL, url, model.image_data)
 						}),
 					$elm$core$Platform$Cmd$none);
+			case 'GotCredentials':
+				var file = msg.a;
+				var result = msg.b;
+				if (result.$ === 'Ok') {
+					var credentials = result.a;
+					return _Utils_Tuple2(
+						model,
+						$elm$http$Http$request(
+							{
+								body: $elm$http$Http$multipartBody(
+									_List_fromArray(
+										[
+											A2($elm$http$Http$stringPart, 'key', credentials.key),
+											A2($elm$http$Http$stringPart, 'AWSAccessKeyId', credentials.awsAccessKeyID),
+											A2($elm$http$Http$stringPart, 'policy', credentials.policy),
+											A2($elm$http$Http$stringPart, 'signature', credentials.signature),
+											A2($elm$http$Http$stringPart, 'acl', credentials.acl),
+											A2($elm$http$Http$filePart, 'file', file)
+										])),
+								expect: $elm$http$Http$expectString(
+									$author$project$ImageUpload$FileUploaded(credentials.save_key)),
+								headers: _List_Nil,
+								method: 'POST',
+								timeout: $elm$core$Maybe$Just(180000),
+								tracker: $elm$core$Maybe$Just('upload'),
+								url: credentials.url
+							}));
+				} else {
+					var e = result.a;
+					var cred_log = A2(
+						$elm$core$Debug$log,
+						'Error getting credentials',
+						$elm$core$Debug$toString(e));
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{status: $author$project$ImageUpload$Fail}),
+						$elm$core$Platform$Cmd$none);
+				}
+			case 'FileUploaded':
+				var file_url = msg.a;
+				var result = msg.b;
+				if (result.$ === 'Ok') {
+					var a = result.a;
+					var upload_log = A2(
+						$elm$core$Debug$log,
+						'successful upload',
+						$elm$core$Debug$toString(a));
+					return _Utils_Tuple2(
+						model,
+						$elm$http$Http$request(
+							{
+								body: $elm$http$Http$multipartBody(
+									_List_fromArray(
+										[
+											A2($elm$http$Http$stringPart, 'csrfmiddlewaretoken', model.csrftoken),
+											A2(
+											$elm$http$Http$stringPart,
+											'artwork',
+											$author$project$ImageUpload$stringifyArtworkID(model.artwork_id)),
+											A2($elm$http$Http$stringPart, 'uploaded_image_url', file_url)
+										])),
+								expect: A2($elm$http$Http$expectJson, $author$project$ImageUpload$ImageSaved, $author$project$ImageUpload$saveImageResultDecoder),
+								headers: _List_Nil,
+								method: 'POST',
+								timeout: $elm$core$Maybe$Just(60000),
+								tracker: $elm$core$Maybe$Just('save'),
+								url: '/c/artwork/image/new'
+							}));
+				} else {
+					var e = result.a;
+					var upload_log = A2(
+						$elm$core$Debug$log,
+						'error uploading image',
+						$elm$core$Debug$toString(e));
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{status: $author$project$ImageUpload$Fail}),
+						$elm$core$Platform$Cmd$none);
+				}
 			default:
 				var result = msg.a;
 				if (result.$ === 'Ok') {
@@ -7730,6 +7935,11 @@ var $author$project$ImageUpload$update = F2(
 							{image_data: image_data, status: $author$project$ImageUpload$Done}),
 						$elm$core$Platform$Cmd$none);
 				} else {
+					var e = result.a;
+					var save_log = A2(
+						$elm$core$Debug$log,
+						'Error saving to db',
+						$elm$core$Debug$toString(e));
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,

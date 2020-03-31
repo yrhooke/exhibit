@@ -284,30 +284,6 @@ def artworkimage(request, pk):
     return render(request, 'catalogue/utils/artworkimage.html', {'image': image})
 
 
-<< << << < HEAD
-
-
-def artworkimage_upload(request):
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            form = ArtworkImageUploadForm(request.POST, request.FILES)
-            if form.is_valid():
-                artworkimage = form.save()
-                return JsonResponse({
-                    'image_id': artworkimage.pk,
-                    'image_url': artworkimage.image.url,
-                })
-            else:
-                return HttpResponseBadRequest()
-        else:
-            return HttpResponseNotAllowed(['POST'])
-    else:
-        return HttpResponseNotAuthorized()
-
-
-== == == =
-
-
 class ArtworkImageUpload(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         form = ArtworkImageUploadForm(request.POST, request.FILES)
@@ -319,9 +295,6 @@ class ArtworkImageUpload(LoginRequiredMixin, View):
             })
         else:
             return HttpResponseBadRequest()
-
-
->>>>>> > develop
 
 
 class ArtworkDelete(LoginRequiredMixin, DeleteView):
@@ -465,9 +438,6 @@ class ExhibitionsForArtwork(ListView):
         return queryset
 
 
-<< << << < HEAD
-
-
 class HttpResponseUnauthorized(HttpResponse):
     def __init__(self):
         self.status_code = 401
@@ -513,9 +483,6 @@ def saleData_update(request):
 
 def saledata_test_view(request):
     return render(request, "saledata.html")
-
-
-== == == =
 
 
 class S3AuthAPIView(LoginRequiredMixin, View):
@@ -569,6 +536,3 @@ class S3AuthAPIView(LoginRequiredMixin, View):
 
         # The response contains the presigned URL and required fields
         return response
-
-
->>>>>> > develop

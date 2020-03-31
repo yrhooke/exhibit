@@ -29,9 +29,8 @@ main =
 type alias Model =
     { content : String
     , height : Float
-    , hiddenDivHeight : Float
     , divID : String
-    , element : String
+    , isTesting : Bool
     }
 
 
@@ -57,9 +56,8 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     ( { content = ""
       , height = toFloat 20
-      , hiddenDivHeight = toFloat 20
       , divID = "text_area_"
-      , element = ""
+      , isTesting = False
       }
     , Random.generate NewID (Random.int 1000 10000)
     )
@@ -70,50 +68,37 @@ init _ =
 
 
 type Msg
-    = NewContent String
-    | NewID Int
+    = NewID Int
+    | NewContent String
     | GotSize (Result Browser.Dom.Error Browser.Dom.Viewport)
-    | GotHiddenDivSize (Result Browser.Dom.Error Browser.Dom.Viewport)
+    | NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
+    let
+        logging =
+            Debug.log "model" <| Debug.toString model
+    in
     case msg of
-        NewContent content ->
-            ( { model | content = content }, Task.attempt GotSize (Browser.Dom.getViewportOf model.divID) )
-
         NewID id ->
             ( { model | divID = "text_area_" ++ String.fromInt id }, Cmd.none )
 
+        NewContent content ->
+            ( { model | content = content, isTesting = True }, Task.attempt GotSize (Browser.Dom.getViewportOf model.divID) )
+
         GotSize result ->
             case result of
-                Ok element ->
-                    ( { model
-                        | element = Debug.log "element" (Debug.toString element)
-                        , hiddenDivHeight = calcHeight element
-                      }
-                    , Task.attempt GotHiddenDivSize (Browser.Dom.getViewportOf (model.divID ++ "hidden-div"))
+                Ok viewport ->
+                    ( { model | height = calcHeight viewport, isTesting = False }
+                    , Task.attempt (\_ -> NoOp) (Browser.Dom.focus model.divID)
                     )
 
                 Err _ ->
                     ( model, Cmd.none )
-        
-        GotHiddenDivSize result ->
-             case result of
-                Ok element ->
-                    ( { model|
-                        -- | element = Debug.log "element" (Debug.toString element)
-                         height = calcHeight element
-                      }
-                    , Cmd.none)
 
-                Err _ ->
-                    ( model, Cmd.none )       
-
-
-calcRows : String -> Int
-calcRows content =
-    1
+        NoOp ->
+            ( model, Cmd.none )
 
 
 
@@ -139,36 +124,73 @@ subscriptions model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ textarea
-            ([ id model.divID
-             , onInput NewContent
-             , value model.content
-             ]
-                ++ textAreaStyles model.height
-            )
-            [ text model.content ]
-        , div
-            [ id (model.divID ++ "hidden-div")
-            , style "display" "block"
-            , style "wordWrap" "break-word"
+    if model.isTesting then
+        div [ style "display" "flex" ]
+            [ hiddenDivView (attributeList model) model.content
+
+            -- , div [ id "element_node" ] [ text (Debug.toString model) ]
+            -- , hiddenDivView (attributeList model) model.content
             ]
-            [text model.content]
 
-        , div [ id "element_node" ] [ text (Debug.toString model) ]
-        ]
+    else
+        div [ style "display" "flex" ]
+            [ textAreaView (attributeList model) model.content model.height
+
+            -- , div [ id "element_node" ] [ text (Debug.toString model) ]
+            -- , hiddenDivView (attributeList model) model.content
+            ]
 
 
-
--- textAreaStyles : Int -> Int -> List Html.te
-
-
-textAreaStyles height =
-    [ style "resize" "none"
+attributeList : Model -> List (Attribute Msg)
+attributeList model =
+    [ id model.divID
+    , value model.content
+    , style "resize" "none"
     , style "overflow" "hidden"
-    , style "width" (String.fromInt settings.width ++ "px")
+    , style "width" "300px"
+    , style "line-height" (String.fromFloat settings.line_height)
+    , style "font-size" (String.fromInt settings.font_size ++ "px")
+    , style "font-family" "Arial"
 
-    -- , style "line-height" (String.fromFloat settings.line_height)
-    -- , style "font-size" ((String.fromInt settings.font_size) ++ "px")
-    -- , style "height" ((String.fromFloat height) ++ "px")
+    -- , style "height" "min-content"
     ]
+
+
+textAreaView : List (Attribute Msg) -> String -> Float -> Html Msg
+textAreaView attributes content height =
+    textarea
+        ([ onInput NewContent
+         , style "height" <| String.fromFloat height ++ "px"
+         ]
+            ++ attributes
+        )
+        [ text content ]
+
+
+hiddenDivView : List (Attribute Msg) -> String -> Html Msg
+hiddenDivView attributes content =
+    div
+        (style "height" "min-content"
+            :: attributes
+        )
+        (hiddenDivContents content)
+
+
+hiddenDivContents : String -> List (Html Msg)
+hiddenDivContents contentString =
+    let
+        lines =
+            String.lines contentString
+    in
+    List.map (\l -> div [] [ text l ]) lines
+
+
+
+-- textAreaStyles height =
+--     [ style "resize" "none"
+--     , style "overflow" "hidden"
+--     , style "width" (String.fromInt settings.width ++ "px")
+--     -- , style "line-height" (String.fromFloat settings.line_height)
+--     -- , style "font-size" ((String.fromInt settings.font_size) ++ "px")
+--     -- , style "height" ((String.fromFloat height) ++ "px")
+--     ]
