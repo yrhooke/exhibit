@@ -1,5 +1,8 @@
 import json
 
+from django.conf import settings
+from django.views.generic import View
+
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.http import HttpResponseNotAllowed, HttpResponseBadRequest
 from django.urls import reverse_lazy, reverse, NoReverseMatch
@@ -9,6 +12,10 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models.expressions import F
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import redirect, render
+
+
+import boto3
+from botocore.exceptions import ClientError
 
 from catalogue.models import Artwork, Series, Exhibition, Location, ArtworkImage
 from catalogue.forms import ArtworkDetailForm, SeriesDetailForm, LocationDetailForm, ExhibitionDetailForm
@@ -419,3 +426,53 @@ class ExhibitionsForArtwork(ListView):
         artwork = Artwork.objects.get(pk=self.kwargs.get('pk'))
         queryset = [s.exhibition for s in artwork.workinexhibition_set.all().order_by('-pk')]
         return queryset
+
+
+class S3AuthAPIView(View):
+
+    def get(self, request, *args, **kwargs):
+        # if request.user.is_authenticated()
+        file_name = request.GET.get('file_name')
+        if file_name:
+            s3_post_params = self.create_presigned_post(
+                settings.AWS_MEDIA_BUCKET_NAME,
+                file_name,
+                expiration=120)
+            return JsonResponse(s3_post_params)
+        else:
+            return HttpResponseBadRequest()
+
+    def create_presigned_post(self, bucket_name, object_name,
+                              fields=None, conditions=None, expiration=3600):
+        """Generate a presigned URL S3 POST request to upload a file
+
+        :param bucket_name: string
+        :param object_name: string
+        :param fields: Dictionary of prefilled form fields
+        :param conditions: List of conditions to include in the policy
+        :param expiration: Time in seconds for the presigned URL to remain valid
+        :return: Dictionary with the following keys:
+            url: URL to post to
+            fields: Dictionary of form fields and values to submit with the POST
+        :return: None if error.
+        """
+
+        # Generate a presigned S3 POST URL
+        s3_client = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                 aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                                 endpoint_url=settings.AWS_S3_ENDPOINT_URL
+                                #  I think maybe endpoint_url=AWS_S3_MEDIA_CUSTOM_DOMAIN
+                                #  is more accurate. we'll have to test and see
+                                 )
+        try:
+            response = s3_client.generate_presigned_post(bucket_name,
+                                                         object_name,
+                                                         Fields=fields,
+                                                         Conditions=conditions,
+                                                         ExpiresIn=expiration)
+        except ClientError as e:
+            print(e)
+            return None
+
+        # The response contains the presigned URL and required fields
+        return response
