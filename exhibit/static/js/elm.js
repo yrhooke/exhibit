@@ -4533,6 +4533,89 @@ function _Http_track(router, xhr, tracker)
 }
 
 
+var _Bitwise_and = F2(function(a, b)
+{
+	return a & b;
+});
+
+var _Bitwise_or = F2(function(a, b)
+{
+	return a | b;
+});
+
+var _Bitwise_xor = F2(function(a, b)
+{
+	return a ^ b;
+});
+
+function _Bitwise_complement(a)
+{
+	return ~a;
+};
+
+var _Bitwise_shiftLeftBy = F2(function(offset, a)
+{
+	return a << offset;
+});
+
+var _Bitwise_shiftRightBy = F2(function(offset, a)
+{
+	return a >> offset;
+});
+
+var _Bitwise_shiftRightZfBy = F2(function(offset, a)
+{
+	return a >>> offset;
+});
+
+
+
+function _Time_now(millisToPosix)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		callback(_Scheduler_succeed(millisToPosix(Date.now())));
+	});
+}
+
+var _Time_setInterval = F2(function(interval, task)
+{
+	return _Scheduler_binding(function(callback)
+	{
+		var id = setInterval(function() { _Scheduler_rawSpawn(task); }, interval);
+		return function() { clearInterval(id); };
+	});
+});
+
+function _Time_here()
+{
+	return _Scheduler_binding(function(callback)
+	{
+		callback(_Scheduler_succeed(
+			A2($elm$time$Time$customZone, -(new Date().getTimezoneOffset()), _List_Nil)
+		));
+	});
+}
+
+
+function _Time_getZoneName()
+{
+	return _Scheduler_binding(function(callback)
+	{
+		try
+		{
+			var name = $elm$time$Time$Name(Intl.DateTimeFormat().resolvedOptions().timeZone);
+		}
+		catch (e)
+		{
+			var name = $elm$time$Time$Offset(new Date().getTimezoneOffset());
+		}
+		callback(_Scheduler_succeed(name));
+	});
+}
+
+
+
 // DECODER
 
 var _File_decoder = _Json_decodePrim(function(value) {
@@ -7152,6 +7235,325 @@ var $author$project$SaleData$view = function (model) {
 };
 var $author$project$SaleData$main = $elm$browser$Browser$element(
 	{init: $author$project$SaleData$init, subscriptions: $author$project$SaleData$subscriptions, update: $author$project$SaleData$update, view: $author$project$SaleData$view});
+var $author$project$InputResize$NewID = function (a) {
+	return {$: 'NewID', a: a};
+};
+var $elm$random$Random$Generate = function (a) {
+	return {$: 'Generate', a: a};
+};
+var $elm$random$Random$Seed = F2(
+	function (a, b) {
+		return {$: 'Seed', a: a, b: b};
+	});
+var $elm$core$Bitwise$shiftRightZfBy = _Bitwise_shiftRightZfBy;
+var $elm$random$Random$next = function (_v0) {
+	var state0 = _v0.a;
+	var incr = _v0.b;
+	return A2($elm$random$Random$Seed, ((state0 * 1664525) + incr) >>> 0, incr);
+};
+var $elm$random$Random$initialSeed = function (x) {
+	var _v0 = $elm$random$Random$next(
+		A2($elm$random$Random$Seed, 0, 1013904223));
+	var state1 = _v0.a;
+	var incr = _v0.b;
+	var state2 = (state1 + x) >>> 0;
+	return $elm$random$Random$next(
+		A2($elm$random$Random$Seed, state2, incr));
+};
+var $elm$time$Time$Name = function (a) {
+	return {$: 'Name', a: a};
+};
+var $elm$time$Time$Offset = function (a) {
+	return {$: 'Offset', a: a};
+};
+var $elm$time$Time$Zone = F2(
+	function (a, b) {
+		return {$: 'Zone', a: a, b: b};
+	});
+var $elm$time$Time$customZone = $elm$time$Time$Zone;
+var $elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+var $elm$time$Time$now = _Time_now($elm$time$Time$millisToPosix);
+var $elm$time$Time$posixToMillis = function (_v0) {
+	var millis = _v0.a;
+	return millis;
+};
+var $elm$random$Random$init = A2(
+	$elm$core$Task$andThen,
+	function (time) {
+		return $elm$core$Task$succeed(
+			$elm$random$Random$initialSeed(
+				$elm$time$Time$posixToMillis(time)));
+	},
+	$elm$time$Time$now);
+var $elm$random$Random$step = F2(
+	function (_v0, seed) {
+		var generator = _v0.a;
+		return generator(seed);
+	});
+var $elm$random$Random$onEffects = F3(
+	function (router, commands, seed) {
+		if (!commands.b) {
+			return $elm$core$Task$succeed(seed);
+		} else {
+			var generator = commands.a.a;
+			var rest = commands.b;
+			var _v1 = A2($elm$random$Random$step, generator, seed);
+			var value = _v1.a;
+			var newSeed = _v1.b;
+			return A2(
+				$elm$core$Task$andThen,
+				function (_v2) {
+					return A3($elm$random$Random$onEffects, router, rest, newSeed);
+				},
+				A2($elm$core$Platform$sendToApp, router, value));
+		}
+	});
+var $elm$random$Random$onSelfMsg = F3(
+	function (_v0, _v1, seed) {
+		return $elm$core$Task$succeed(seed);
+	});
+var $elm$random$Random$Generator = function (a) {
+	return {$: 'Generator', a: a};
+};
+var $elm$random$Random$map = F2(
+	function (func, _v0) {
+		var genA = _v0.a;
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v1 = genA(seed0);
+				var a = _v1.a;
+				var seed1 = _v1.b;
+				return _Utils_Tuple2(
+					func(a),
+					seed1);
+			});
+	});
+var $elm$random$Random$cmdMap = F2(
+	function (func, _v0) {
+		var generator = _v0.a;
+		return $elm$random$Random$Generate(
+			A2($elm$random$Random$map, func, generator));
+	});
+_Platform_effectManagers['Random'] = _Platform_createManager($elm$random$Random$init, $elm$random$Random$onEffects, $elm$random$Random$onSelfMsg, $elm$random$Random$cmdMap);
+var $elm$random$Random$command = _Platform_leaf('Random');
+var $elm$random$Random$generate = F2(
+	function (tagger, generator) {
+		return $elm$random$Random$command(
+			$elm$random$Random$Generate(
+				A2($elm$random$Random$map, tagger, generator)));
+	});
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$Basics$negate = function (n) {
+	return -n;
+};
+var $elm$core$Bitwise$xor = _Bitwise_xor;
+var $elm$random$Random$peel = function (_v0) {
+	var state = _v0.a;
+	var word = (state ^ (state >>> ((state >>> 28) + 4))) * 277803737;
+	return ((word >>> 22) ^ word) >>> 0;
+};
+var $elm$random$Random$int = F2(
+	function (a, b) {
+		return $elm$random$Random$Generator(
+			function (seed0) {
+				var _v0 = (_Utils_cmp(a, b) < 0) ? _Utils_Tuple2(a, b) : _Utils_Tuple2(b, a);
+				var lo = _v0.a;
+				var hi = _v0.b;
+				var range = (hi - lo) + 1;
+				if (!((range - 1) & range)) {
+					return _Utils_Tuple2(
+						(((range - 1) & $elm$random$Random$peel(seed0)) >>> 0) + lo,
+						$elm$random$Random$next(seed0));
+				} else {
+					var threshhold = (((-range) >>> 0) % range) >>> 0;
+					var accountForBias = function (seed) {
+						accountForBias:
+						while (true) {
+							var x = $elm$random$Random$peel(seed);
+							var seedN = $elm$random$Random$next(seed);
+							if (_Utils_cmp(x, threshhold) < 0) {
+								var $temp$seed = seedN;
+								seed = $temp$seed;
+								continue accountForBias;
+							} else {
+								return _Utils_Tuple2((x % range) + lo, seedN);
+							}
+						}
+					};
+					return accountForBias(seed0);
+				}
+			});
+	});
+var $author$project$InputResize$init = function (_v0) {
+	return _Utils_Tuple2(
+		{content: '', divID: 'text_area_', element: '', height: 20, hiddenDivHeight: 20},
+		A2(
+			$elm$random$Random$generate,
+			$author$project$InputResize$NewID,
+			A2($elm$random$Random$int, 1000, 10000)));
+};
+var $author$project$InputResize$subscriptions = function (model) {
+	return $elm$core$Platform$Sub$none;
+};
+var $author$project$InputResize$GotHiddenDivSize = function (a) {
+	return {$: 'GotHiddenDivSize', a: a};
+};
+var $author$project$InputResize$GotSize = function (a) {
+	return {$: 'GotSize', a: a};
+};
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
+var $elm$core$Task$onError = _Scheduler_onError;
+var $elm$core$Task$attempt = F2(
+	function (resultToMessage, task) {
+		return $elm$core$Task$command(
+			$elm$core$Task$Perform(
+				A2(
+					$elm$core$Task$onError,
+					A2(
+						$elm$core$Basics$composeL,
+						A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+						$elm$core$Result$Err),
+					A2(
+						$elm$core$Task$andThen,
+						A2(
+							$elm$core$Basics$composeL,
+							A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+							$elm$core$Result$Ok),
+						task))));
+	});
+var $author$project$InputResize$settings = {font_size: 17, line_height: 1.2, width: 120};
+var $author$project$InputResize$calcHeight = function (viewport) {
+	return viewport.scene.height * $author$project$InputResize$settings.line_height;
+};
+var $elm$browser$Browser$Dom$getViewportOf = _Browser_getViewportOf;
+var $author$project$InputResize$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'NewContent':
+				var content = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{content: content}),
+					A2(
+						$elm$core$Task$attempt,
+						$author$project$InputResize$GotSize,
+						$elm$browser$Browser$Dom$getViewportOf(model.divID)));
+			case 'NewID':
+				var id = msg.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{
+							divID: 'text_area_' + $elm$core$String$fromInt(id)
+						}),
+					$elm$core$Platform$Cmd$none);
+			case 'GotSize':
+				var result = msg.a;
+				if (result.$ === 'Ok') {
+					var element = result.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								element: A2(
+									$elm$core$Debug$log,
+									'element',
+									$elm$core$Debug$toString(element)),
+								hiddenDivHeight: $author$project$InputResize$calcHeight(element)
+							}),
+						A2(
+							$elm$core$Task$attempt,
+							$author$project$InputResize$GotHiddenDivSize,
+							$elm$browser$Browser$Dom$getViewportOf(model.divID + 'hidden-div')));
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+			default:
+				var result = msg.a;
+				if (result.$ === 'Ok') {
+					var element = result.a;
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{
+								height: $author$project$InputResize$calcHeight(element)
+							}),
+						$elm$core$Platform$Cmd$none);
+				} else {
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
+		}
+	});
+var $author$project$InputResize$NewContent = function (a) {
+	return {$: 'NewContent', a: a};
+};
+var $author$project$InputResize$textAreaStyles = function (height) {
+	return _List_fromArray(
+		[
+			A2($elm$html$Html$Attributes$style, 'resize', 'none'),
+			A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
+			A2(
+			$elm$html$Html$Attributes$style,
+			'width',
+			$elm$core$String$fromInt($author$project$InputResize$settings.width) + 'px')
+		]);
+};
+var $elm$html$Html$textarea = _VirtualDom_node('textarea');
+var $author$project$InputResize$view = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$textarea,
+				_Utils_ap(
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$id(model.divID),
+							$elm$html$Html$Events$onInput($author$project$InputResize$NewContent),
+							$elm$html$Html$Attributes$value(model.content)
+						]),
+					$author$project$InputResize$textAreaStyles(model.height)),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(model.content)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id(model.divID + 'hidden-div'),
+						A2($elm$html$Html$Attributes$style, 'display', 'block'),
+						A2($elm$html$Html$Attributes$style, 'wordWrap', 'break-word')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(model.content)
+					])),
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id('element_node')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(
+						$elm$core$Debug$toString(model))
+					]))
+			]));
+};
+var $author$project$InputResize$main = $elm$browser$Browser$element(
+	{init: $author$project$InputResize$init, subscriptions: $author$project$InputResize$subscriptions, update: $author$project$InputResize$update, view: $author$project$InputResize$view});
 var $author$project$ImageUpload$Waiting = {$: 'Waiting'};
 var $author$project$ImageUpload$decodeFieldtoMaybeInt = F2(
 	function (field, flags) {
@@ -7236,10 +7638,6 @@ var $author$project$ImageUpload$decodeUploadResult = A3(
 		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int)),
 	$elm$json$Json$Decode$maybe(
 		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
-var $elm$time$Time$Posix = function (a) {
-	return {$: 'Posix', a: a};
-};
-var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
 var $elm$file$File$Select$file = F2(
 	function (mimes, toMsg) {
 		return A2(
@@ -7658,4 +8056,5 @@ var $author$project$ImageUpload$view = function (model) {
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(
 	{init: $author$project$ImageUpload$init, subscriptions: $author$project$ImageUpload$subscriptions, update: $author$project$ImageUpload$update, view: $author$project$ImageUpload$view});
-_Platform_export({'ImageUpload':{'init':$author$project$ImageUpload$main($elm$json$Json$Decode$value)(0)},'SaleData':{'init':$author$project$SaleData$main($elm$json$Json$Decode$value)(0)}});}(this));
+_Platform_export({'ImageUpload':{'init':$author$project$ImageUpload$main($elm$json$Json$Decode$value)(0)},'SaleData':{'init':$author$project$SaleData$main($elm$json$Json$Decode$value)(0)},'InputResize':{'init':$author$project$InputResize$main(
+	$elm$json$Json$Decode$succeed(_Utils_Tuple0))(0)}});}(this));
