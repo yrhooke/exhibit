@@ -1,4 +1,5 @@
 from django import forms
+from django.forms import ValidationError
 from tempus_dominus.widgets import DatePicker
 
 from ..models import Artwork, Series, Location, Exhibition, WorkInExhibition, ArtworkImage, SaleData
@@ -61,6 +62,30 @@ class SeriesDetailForm(PlaceholderMixin, forms.ModelForm):
 class ArtworkImageUploadForm(forms.ModelForm):
     """upload an ArtworkImage"""
 
+    uploaded_image_url = forms.CharField(required=False)
     class Meta:
         model = ArtworkImage
         fields = ['image', 'artwork']
+    
+    def __init__(self, *args, **kwargs):
+
+        super(ArtworkImageUploadForm, self).__init__(*args, **kwargs)
+        self.fields['image'].required = False
+    
+    def clean(self):
+        """validaton for form as a whole
+        partly adapted from https://www.vinta.com.br/blog/2015/uploading-files-from-the-frontend-to-S3/
+        """
+        image = self.cleaned_data.get('image')
+        uploaded_image_url = self.cleaned_data.get('uploaded_image_url')
+        # if have neither field we are missing the file
+        if not image and not uploaded_image_url:
+            self.add_error(
+                'image',
+                ValidationError(self.fields['image'].error_messages['required'],
+                                code='required'))
+        # if uploaded_image_url is set with the path of the image it was uploaded by
+        # the frontend
+        elif not image and uploaded_image_url:
+            self.cleaned_data['image'] = uploaded_image_url
+        return super(ArtworkImageUploadForm, self).clean()

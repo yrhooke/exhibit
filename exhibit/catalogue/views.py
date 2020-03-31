@@ -1,5 +1,8 @@
 import json
 
+from django.conf import settings
+from django.views.generic import View
+
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.http import HttpResponseNotAllowed, HttpResponseBadRequest
 from django.urls import reverse_lazy, reverse, NoReverseMatch
@@ -11,6 +14,9 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.shortcuts import redirect, render
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
+
+import boto3
+from botocore.exceptions import ClientError
 
 from catalogue.models import Artwork, Series, Exhibition, Location, ArtworkImage, SaleData
 from catalogue.forms import ArtworkDetailForm, SeriesDetailForm, LocationDetailForm, ExhibitionDetailForm
@@ -278,6 +284,9 @@ def artworkimage(request, pk):
     return render(request, 'catalogue/utils/artworkimage.html', {'image': image})
 
 
+<< << << < HEAD
+
+
 def artworkimage_upload(request):
     if request.user.is_authenticated:
         if request.method == 'POST':
@@ -294,6 +303,25 @@ def artworkimage_upload(request):
             return HttpResponseNotAllowed(['POST'])
     else:
         return HttpResponseNotAuthorized()
+
+
+== == == =
+
+
+class ArtworkImageUpload(LoginRequiredMixin, View):
+    def post(self, request, *args, **kwargs):
+        form = ArtworkImageUploadForm(request.POST, request.FILES)
+        if form.is_valid():
+            artworkimage = form.save()
+            return JsonResponse({
+                'image_id': artworkimage.pk,
+                'image_url': artworkimage.image.url,
+            })
+        else:
+            return HttpResponseBadRequest()
+
+
+>>>>>> > develop
 
 
 class ArtworkDelete(LoginRequiredMixin, DeleteView):
@@ -437,6 +465,9 @@ class ExhibitionsForArtwork(ListView):
         return queryset
 
 
+<< << << < HEAD
+
+
 class HttpResponseUnauthorized(HttpResponse):
     def __init__(self):
         self.status_code = 401
@@ -482,3 +513,62 @@ def saleData_update(request):
 
 def saledata_test_view(request):
     return render(request, "saledata.html")
+
+
+== == == =
+
+
+class S3AuthAPIView(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        # if request.user.is_authenticated()
+        file_name = request.GET.get('file_name')
+        if file_name:
+            file_key = f"media/artworks/{file_name}"
+            save_key = f"artworks/{file_name}"  # string to create ImageField object later
+            s3_post_params = self.create_presigned_post(
+                settings.AWS_MEDIA_BUCKET_NAME,
+                file_key,
+                fields={'acl': 'public-read'},
+                conditions=[{'acl': 'public-read'}],
+                expiration=120)
+            s3_post_params['save_key'] = save_key
+            return JsonResponse(s3_post_params)
+        else:
+            return HttpResponseBadRequest()
+
+    def create_presigned_post(self, bucket_name, object_name,
+                              fields=None, conditions=None, expiration=3600):
+        """Generate a presigned URL S3 POST request to upload a file
+
+        :param bucket_name: string
+        :param object_name: string
+        :param fields: Dictionary of prefilled form fields
+        :param conditions: List of conditions to include in the policy
+        :param expiration: Time in seconds for the presigned URL to remain valid
+        :return: Dictionary with the following keys:
+            url: URL to post to
+            fields: Dictionary of form fields and values to submit with the POST
+        :return: None if error.
+        """
+
+        # Generate a presigned S3 POST URL
+        s3_client = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
+                                 aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
+                                 endpoint_url=settings.AWS_S3_ENDPOINT_URL
+                                 )
+        try:
+            response = s3_client.generate_presigned_post(bucket_name,
+                                                         object_name,
+                                                         Fields=fields,
+                                                         Conditions=conditions,
+                                                         ExpiresIn=expiration)
+        except ClientError as e:
+            print(e)
+            return None
+
+        # The response contains the presigned URL and required fields
+        return response
+
+
+>>>>>> > develop

@@ -9,6 +9,7 @@ import Html.Events exposing (..)
 import Http
 import Json.Decode as D
 import Task
+import Url.Builder as Url
 
 
 
@@ -122,15 +123,16 @@ type Msg
     = Pick
     | GotFile File
     | GotPreview String
-      -- | GotProgress Http.Progress
-    | Uploaded (Result Http.Error ImageData)
+    | GotCredentials File (Result Http.Error UploadCredentials) -- Credentials to upload
+    | FileUploaded String (Result Http.Error String)
+    | ImageSaved (Result Http.Error ImageData)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
         debug =
-            Debug.log ("State: " ++ Debug.toString model.status) 1
+            Debug.log "State" Debug.toString model.status
     in
     case msg of
         Pick ->
@@ -139,54 +141,109 @@ update msg model =
             )
 
         GotFile file ->
+            let
+                gotfile_debug =
+                    Debug.toString (File.name file)
+                        |> Debug.log "got file"
+            in
             ( { model | status = Uploading }
             , Cmd.batch
-                [ Http.request
-                    { method = "POST"
-                    , url = "/c/artwork/image/new"
-                    , headers = []
-                    , body =
-                        Http.multipartBody
-                            [ Http.stringPart "csrfmiddlewaretoken" model.csrftoken
-                            , Http.stringPart "artwork" (stringifyArtworkID model.artwork_id)
-                            , Http.filePart "image" file
-                            ]
-                    , expect = Http.expectJson Uploaded decodeUploadResult
-                    , timeout = Just 60000
-                    , tracker = Just "upload"
+                [ Http.get
+                    { url =
+                        Url.toQuery [ Url.string "file_name" (File.name file) ]
+                            |> (++) "/c/api/imageuploadauth"
+                    , expect = Http.expectJson (GotCredentials file) uploadCredentialsDecoder
                     }
                 , Task.perform GotPreview <| File.toUrl file
                 ]
             )
 
         GotPreview url ->
-            ( { model | image_data = updateImageURL url model.image_data }, Cmd.none )
+            ( { model | image_data = updateImageURL url model.image_data }
+            , Cmd.none
+            )
 
-        -- GotProgress progress ->
-        --     case progress of
-        --         Http.Sending p ->
-        --             ( { model | status = Uploading (Http.fractionSent p) }, Cmd.none )
-        --         Http.Receiving _ ->
-        --             ( model, Cmd.none )
-        Uploaded result ->
+        GotCredentials file result ->
+            case result of
+                Ok credentials ->
+                    ( model
+                    , Http.request
+                        { method = "POST"
+                        , url = credentials.url
+                        , headers = []
+                        , body =
+                            Http.multipartBody
+                                [ Http.stringPart "key" credentials.key
+                                , Http.stringPart "AWSAccessKeyId" credentials.awsAccessKeyID
+                                , Http.stringPart "policy" credentials.policy
+                                , Http.stringPart "signature" credentials.signature
+                                , Http.stringPart "acl" credentials.acl
+                                , Http.filePart "file" file
+                                ]
+                        , expect = Http.expectString (FileUploaded credentials.save_key)
+                        , timeout = Just 180000
+                        , tracker = Just "upload"
+                        }
+                    )
+
+                Err e ->
+                    let
+                        cred_log =
+                            Debug.toString e
+                                |> Debug.log "Error getting credentials"
+                    in
+                    ( { model | status = Fail }, Cmd.none )
+
+        FileUploaded file_url result ->
+            case result of
+                Ok a ->
+                    let
+                        upload_log =
+                            Debug.toString a
+                                |> Debug.log "successful upload"
+                    in
+                    ( model
+                    , Http.request
+                        { method = "POST"
+                        , url = "/c/artwork/image/new"
+                        , headers = []
+                        , body =
+                            Http.multipartBody
+                                [ Http.stringPart "csrfmiddlewaretoken" model.csrftoken
+                                , Http.stringPart "artwork" (stringifyArtworkID model.artwork_id)
+                                , Http.stringPart "uploaded_image_url" file_url
+                                ]
+                        , expect = Http.expectJson ImageSaved saveImageResultDecoder
+                        , timeout = Just 60000
+                        , tracker = Just "save"
+                        }
+                    )
+
+                Err e ->
+                    let
+                        upload_log =
+                            Debug.toString e
+                                |> Debug.log "error uploading image"
+                    in
+                    ( { model | status = Fail }, Cmd.none )
+
+        ImageSaved result ->
             case result of
                 Ok image_data ->
                     ( { model | status = Done, image_data = image_data }, Cmd.none )
 
-                Err _ ->
+                Err e ->
+                    let
+                        save_log =
+                            Debug.toString e
+                                |> Debug.log "Error saving to db"
+                    in
                     ( { model | status = Fail }, Cmd.none )
 
 
 updateImageURL : String -> ImageData -> ImageData
 updateImageURL url data =
     { data | image_url = Just url }
-
-
-decodeUploadResult : D.Decoder ImageData
-decodeUploadResult =
-    D.map2 ImageData
-        (D.maybe (D.field "image_id" D.int))
-        (D.maybe (D.field "image_url" D.string))
 
 
 stringifyArtworkID : Maybe Int -> String
@@ -199,13 +256,43 @@ stringifyArtworkID artwork_id =
             ""
 
 
+saveImageResultDecoder : D.Decoder ImageData
+saveImageResultDecoder =
+    D.map2 ImageData
+        (D.maybe (D.field "image_id" D.int))
+        (D.maybe (D.field "image_url" D.string))
+
+
+type alias UploadCredentials =
+    { url : String
+    , key : String
+    , awsAccessKeyID : String
+    , policy : String
+    , signature : String
+    , acl : String
+    , save_key : String
+    }
+
+
+uploadCredentialsDecoder : D.Decoder UploadCredentials
+uploadCredentialsDecoder =
+    -- D.map6 UploadCredentials
+    D.map7 UploadCredentials
+        (D.field "url" D.string)
+        (D.at [ "fields", "key" ] D.string)
+        (D.at [ "fields", "AWSAccessKeyId" ] D.string)
+        (D.at [ "fields", "policy" ] D.string)
+        (D.at [ "fields", "signature" ] D.string)
+        (D.at [ "fields", "acl" ] D.string)
+        (D.field "save_key" D.string)
+
+
 
 -- SUBSCRIPTIONS
 
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    -- Http.track "upload" GotProgress
     Sub.none
 
 
@@ -225,8 +312,6 @@ view model =
             ]
         , hiddenInputView model.image_data.image_id
         , uploaderView model.checkmark_url model.status
-
-        -- , div [] [ text (Debug.toString model) ]
         ]
 
 
@@ -269,36 +354,6 @@ imageView model =
             ++ show_blurring
         )
         []
-
-
-
--- case image_url of
---     Just url ->
---         div
---             [ class "bounding-box"
---             , id
---                 "id_image"
---             , style
---                 "background-image"
---                 ("url('"
---                     ++ url
---                     ++ "')"
---                 )
---             , style "filter" "blur(2px)"
---             , style "-webkit-filter" "blur(2px)"
---             , style "z-index" "-1"
---             ]
---             []
---     Nothing ->
---         div
---             [ class "bounding-box"
---             , id
---                 "id_image"
---             , style
---                 "background-color"
---                 "darkgrey"
---             ]
---             []
 
 
 uploadingImageCoverView : String -> Status -> Html Msg
@@ -356,25 +411,6 @@ uploadingImageCoverView loader_url status =
                 ]
 
 
-
--- div
---     [ style "margin-top" "-405px"
---     , style "background" "rgba(256, 256, 256, 0.4)"
---     , style "z-index" "2"
---     , style "width" "inherit"
---     , style "height" "inherit"
---     ]
---     []
--- <div style="height:405px;">
---     {% if object.get_image %}
---     <div class="bounding-box" id="id_image"
---         style="background-image:url('{{ object.get_image.url }}')"></div>
---     {% else %}
---     <div class="bounding-box" id="id_image" style="background-color:darkgrey;"></div>
---     {% endif %}
--- </div>
-
-
 uploaderView : String -> Status -> Html Msg
 uploaderView checkmark_url status =
     case status of
@@ -391,12 +427,6 @@ uploaderView checkmark_url status =
 
         Uploading ->
             div
-                -- [ style "display"
-                --     "flex"
-                -- , style
-                --     "align-items"
-                --     "center"
-                -- ]
                 []
                 [ div
                     [ class "btn"
@@ -406,9 +436,6 @@ uploaderView checkmark_url status =
                     , style "color" "white"
                     ]
                     [ text "Upload Image" ]
-
-                -- , span [ style "width" "10px" ] []
-                -- , span [] [ text (String.fromInt (round (100 * fraction)) ++ "%") ]
                 ]
 
         Done ->
@@ -476,39 +503,6 @@ imageIdSelectionView image_id =
                 []
 
 
-
--- <select name="artwork_image" placeholder="None" required="" id="id_artwork_image" data-select2-id="id_artwork_image" tabindex="-1" class="select2-hidden-accessible" aria-hidden="true">
-
-
 filesDecoder : D.Decoder (List File)
 filesDecoder =
     D.at [ "target", "files" ] (D.list File.decoder)
-
-
-
--- <div class="gallery-bounding-box" style="background-image:url('https://exhibit-prod-artworks.nyc3.digitaloceanspaces.com/media/artworks/Rotem_Reshef_Arcadia__2019_Katonah_Museum_of_Art_NY.jpg')"></div>
--- <div class="gallery-item-hover">
---     <ul class="gallery-item-text">
---         <li>
---             <div class="gallery-item-title">
---                 <span>Arcadia</span>
---             </div>
---         </li>
---         <li>
---             <!-- <label for="artwork_series_116">Series:</label> -->
---             <span id="artwork_series_116">Installations</span>
---             <span class="separator"> | </span>
---             <!-- <label for="artwork_year_116">Year:</label> -->
---             <span id="artwork_year_116">2019</span>
---         </li>
---         <li>
---             <!-- <label for="artwork_location_116">Location:</label> -->
---             <span id="artwork_location_116">Studio, New York</span>
---         </li>
---         <li>
---             21.9x2.0cm
---             <span class="separator"> | </span>
---             0.0x0.0in
---         </li>
---     </ul>
--- </div>
