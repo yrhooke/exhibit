@@ -126,52 +126,57 @@ view : Model -> Html Msg
 view model =
     if model.isTesting then
         div [ style "display" "flex" ]
-            [ hiddenDivView (attributeList model) model.content
+            [ hiddenDivView model.divID (attributeList model) model.content
 
             -- , div [ id "element_node" ] [ text (Debug.toString model) ]
-            -- , hiddenDivView (attributeList model) model.content
+            , hiddenDivView "tester" (attributeList model) model.content
             ]
 
     else
         div [ style "display" "flex" ]
-            [ textAreaView (attributeList model) model.content model.height
+            [ textAreaView model.divID (attributeList model) model.content model.height
 
             -- , div [ id "element_node" ] [ text (Debug.toString model) ]
-            -- , hiddenDivView (attributeList model) model.content
+            , hiddenDivView "tester" (attributeList model) model.content
             ]
 
 
 attributeList : Model -> List (Attribute Msg)
 attributeList model =
-    [ id model.divID
-    , value model.content
+    [ value model.content
     , style "resize" "none"
     , style "overflow" "hidden"
     , style "width" "300px"
     , style "line-height" (String.fromFloat settings.line_height)
     , style "font-size" (String.fromInt settings.font_size ++ "px")
     , style "font-family" "Arial"
+    , style "border" "none"
+    , style "margin" "0px"
+    , style "padding" "0px"
 
     -- , style "height" "min-content"
     ]
 
 
-textAreaView : List (Attribute Msg) -> String -> Float -> Html Msg
-textAreaView attributes content height =
+textAreaView : String -> List (Attribute Msg) -> String -> Float -> Html Msg
+textAreaView id_ attributes content height =
     textarea
-        ([ onInput NewContent
-         , style "height" <| String.fromFloat height ++ "px"
-         ]
+        (id id_
+            :: [ onInput NewContent
+               , style "height" <| String.fromFloat height ++ "px"
+               ]
             ++ attributes
         )
         [ text content ]
 
 
-hiddenDivView : List (Attribute Msg) -> String -> Html Msg
-hiddenDivView attributes content =
+hiddenDivView : String -> List (Attribute Msg) -> String -> Html Msg
+hiddenDivView id_ attributes content =
     div
-        (style "height" "min-content"
-            :: attributes
+        ([ id id_
+         , style "height" "min-content"
+         ]
+            ++ attributes
         )
         (hiddenDivContents content)
 

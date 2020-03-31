@@ -7503,7 +7503,6 @@ var $elm$core$String$fromFloat = _String_fromNumber;
 var $author$project$InputResize$attributeList = function (model) {
 	return _List_fromArray(
 		[
-			$elm$html$Html$Attributes$id(model.divID),
 			$elm$html$Html$Attributes$value(model.content),
 			A2($elm$html$Html$Attributes$style, 'resize', 'none'),
 			A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
@@ -7516,7 +7515,10 @@ var $author$project$InputResize$attributeList = function (model) {
 			$elm$html$Html$Attributes$style,
 			'font-size',
 			$elm$core$String$fromInt($author$project$InputResize$settings.font_size) + 'px'),
-			A2($elm$html$Html$Attributes$style, 'font-family', 'Arial')
+			A2($elm$html$Html$Attributes$style, 'font-family', 'Arial'),
+			A2($elm$html$Html$Attributes$style, 'border', 'none'),
+			A2($elm$html$Html$Attributes$style, 'margin', '0px'),
+			A2($elm$html$Html$Attributes$style, 'padding', '0px')
 		]);
 };
 var $elm$core$String$lines = _String_lines;
@@ -7535,13 +7537,16 @@ var $author$project$InputResize$hiddenDivContents = function (contentString) {
 		},
 		lines);
 };
-var $author$project$InputResize$hiddenDivView = F2(
-	function (attributes, content) {
+var $author$project$InputResize$hiddenDivView = F3(
+	function (id_, attributes, content) {
 		return A2(
 			$elm$html$Html$div,
-			A2(
-				$elm$core$List$cons,
-				A2($elm$html$Html$Attributes$style, 'height', 'min-content'),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id(id_),
+						A2($elm$html$Html$Attributes$style, 'height', 'min-content')
+					]),
 				attributes),
 			$author$project$InputResize$hiddenDivContents(content));
 	});
@@ -7549,20 +7554,23 @@ var $author$project$InputResize$NewContent = function (a) {
 	return {$: 'NewContent', a: a};
 };
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
-var $author$project$InputResize$textAreaView = F3(
-	function (attributes, content, height) {
+var $author$project$InputResize$textAreaView = F4(
+	function (id_, attributes, content, height) {
 		return A2(
 			$elm$html$Html$textarea,
-			_Utils_ap(
-				_List_fromArray(
-					[
-						$elm$html$Html$Events$onInput($author$project$InputResize$NewContent),
-						A2(
-						$elm$html$Html$Attributes$style,
-						'height',
-						$elm$core$String$fromFloat(height) + 'px')
-					]),
-				attributes),
+			A2(
+				$elm$core$List$cons,
+				$elm$html$Html$Attributes$id(id_),
+				_Utils_ap(
+					_List_fromArray(
+						[
+							$elm$html$Html$Events$onInput($author$project$InputResize$NewContent),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'height',
+							$elm$core$String$fromFloat(height) + 'px')
+						]),
+					attributes)),
 			_List_fromArray(
 				[
 					$elm$html$Html$text(content)
@@ -7577,8 +7585,14 @@ var $author$project$InputResize$view = function (model) {
 			]),
 		_List_fromArray(
 			[
-				A2(
+				A3(
 				$author$project$InputResize$hiddenDivView,
+				model.divID,
+				$author$project$InputResize$attributeList(model),
+				model.content),
+				A3(
+				$author$project$InputResize$hiddenDivView,
+				'tester',
 				$author$project$InputResize$attributeList(model),
 				model.content)
 			])) : A2(
@@ -7589,11 +7603,17 @@ var $author$project$InputResize$view = function (model) {
 			]),
 		_List_fromArray(
 			[
-				A3(
+				A4(
 				$author$project$InputResize$textAreaView,
+				model.divID,
 				$author$project$InputResize$attributeList(model),
 				model.content,
-				model.height)
+				model.height),
+				A3(
+				$author$project$InputResize$hiddenDivView,
+				'tester',
+				$author$project$InputResize$attributeList(model),
+				model.content)
 			]));
 };
 var $author$project$InputResize$main = $elm$browser$Browser$element(
