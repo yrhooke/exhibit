@@ -7497,8 +7497,8 @@ var $author$project$InputResize$update = F2(
 		}
 	});
 var $elm$html$Html$br = _VirtualDom_node('br');
-var $author$project$InputResize$hiddenDivContentsView = function (contentString) {
-	var lines = A2($elm$core$String$split, '\n', contentString);
+var $author$project$InputResize$htmlEncodeString = function (someString) {
+	var lines = A2($elm$core$String$split, '\n', someString);
 	var htmlMapper = function (line) {
 		return (line === '') ? A2(
 			$elm$html$Html$br,
@@ -7521,6 +7521,8 @@ var $author$project$InputResize$innerAttributes = _List_fromArray(
 	[
 		A2($elm$html$Html$Attributes$style, 'resize', 'none'),
 		A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
+		A2($elm$html$Html$Attributes$style, 'white-space', 'pre-wrap'),
+		A2($elm$html$Html$Attributes$style, 'wordWrap', 'break-word'),
 		A2($elm$html$Html$Attributes$style, 'width', $author$project$InputResize$settings.width),
 		A2($elm$html$Html$Attributes$style, 'line-height', $author$project$InputResize$settings.line_height),
 		A2($elm$html$Html$Attributes$style, 'font-size', $author$project$InputResize$settings.font_size),
@@ -7543,7 +7545,7 @@ var $author$project$InputResize$hiddenDivView = F3(
 							A2($elm$html$Html$Attributes$style, 'height', 'min-content')
 						]),
 					$author$project$InputResize$innerAttributes)),
-			$author$project$InputResize$hiddenDivContentsView(content));
+			$author$project$InputResize$htmlEncodeString(content));
 	});
 var $author$project$InputResize$NewContent = function (a) {
 	return {$: 'NewContent', a: a};
@@ -7586,7 +7588,10 @@ var $author$project$InputResize$view = function (model) {
 					A2($elm$html$Html$Attributes$style, 'align-items', 'start')
 				])),
 		_List_fromArray(
-			[innerView]));
+			[
+				innerView,
+				A3($author$project$InputResize$hiddenDivView, model.customizeInner, model.divID, model.content)
+			]));
 };
 var $author$project$InputResize$main = $elm$browser$Browser$element(
 	{init: $author$project$InputResize$init, subscriptions: $author$project$InputResize$subscriptions, update: $author$project$InputResize$update, view: $author$project$InputResize$view});

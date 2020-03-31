@@ -14,8 +14,6 @@ import Task exposing (Task)
 
 {--Issues:
 1. text autofocuses on last char in field, not after last char entered
-2. can add any amount of whitespace at the end of the line, won't change line until newline
-3. doesn't deal well with whitespace at the start of the line
 4. hidden div contents add 1px per newline. should remove
 --}
 -- MAIN
@@ -161,6 +159,8 @@ innerAttributes : List (Attribute Msg)
 innerAttributes =
     [ style "resize" "none"
     , style "overflow" "hidden"
+    , style "white-space" "pre-wrap"
+    , style "wordWrap" "break-word"
     , style "width" settings.width
     , style "line-height" settings.line_height
     , style "font-size" settings.font_size
@@ -195,14 +195,14 @@ hiddenDivView customAttr id_ content =
                ]
             ++ innerAttributes
         )
-        (hiddenDivContentsView content)
+        (htmlEncodeString content)
 
 
-hiddenDivContentsView : String -> List (Html Msg)
-hiddenDivContentsView contentString =
+htmlEncodeString : String -> List (Html Msg)
+htmlEncodeString someString =
     let
         lines =
-            String.split "\n" contentString
+            String.split "\n" someString
 
         htmlMapper line =
             if line == "" then
