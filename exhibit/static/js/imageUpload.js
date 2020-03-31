@@ -5568,36 +5568,24 @@ var $author$project$ImageUpload$subscriptions = function (model) {
 };
 var $author$project$ImageUpload$Done = {$: 'Done'};
 var $author$project$ImageUpload$Fail = {$: 'Fail'};
+var $author$project$ImageUpload$FileUploaded = F2(
+	function (a, b) {
+		return {$: 'FileUploaded', a: a, b: b};
+	});
+var $author$project$ImageUpload$GotCredentials = F2(
+	function (a, b) {
+		return {$: 'GotCredentials', a: a, b: b};
+	});
 var $author$project$ImageUpload$GotFile = function (a) {
 	return {$: 'GotFile', a: a};
 };
 var $author$project$ImageUpload$GotPreview = function (a) {
 	return {$: 'GotPreview', a: a};
 };
-var $author$project$ImageUpload$Uploaded = function (a) {
-	return {$: 'Uploaded', a: a};
+var $author$project$ImageUpload$ImageSaved = function (a) {
+	return {$: 'ImageSaved', a: a};
 };
 var $author$project$ImageUpload$Uploading = {$: 'Uploading'};
-var $author$project$ImageUpload$ImageData = F2(
-	function (image_id, image_url) {
-		return {image_id: image_id, image_url: image_url};
-	});
-var $elm$json$Json$Decode$oneOf = _Json_oneOf;
-var $elm$json$Json$Decode$maybe = function (decoder) {
-	return $elm$json$Json$Decode$oneOf(
-		_List_fromArray(
-			[
-				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder),
-				$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing)
-			]));
-};
-var $author$project$ImageUpload$decodeUploadResult = A3(
-	$elm$json$Json$Decode$map2,
-	$author$project$ImageUpload$ImageData,
-	$elm$json$Json$Decode$maybe(
-		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int)),
-	$elm$json$Json$Decode$maybe(
-		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
 var $elm$json$Json$Decode$decodeString = _Json_runOnString;
 var $elm$http$Http$BadStatus_ = F2(
 	function (a, b) {
@@ -6212,6 +6200,12 @@ var $elm$http$Http$expectJson = F2(
 						A2($elm$json$Json$Decode$decodeString, decoder, string));
 				}));
 	});
+var $elm$http$Http$expectString = function (toMsg) {
+	return A2(
+		$elm$http$Http$expectStringResponse,
+		toMsg,
+		$elm$http$Http$resolve($elm$core$Result$Ok));
+};
 var $elm$time$Time$Posix = function (a) {
 	return {$: 'Posix', a: a};
 };
@@ -6224,13 +6218,7 @@ var $elm$file$File$Select$file = F2(
 			_File_uploadOne(mimes));
 	});
 var $elm$http$Http$filePart = _Http_pair;
-var $elm$core$Debug$log = _Debug_log;
-var $elm$http$Http$multipartBody = function (parts) {
-	return A2(
-		_Http_pair,
-		'',
-		_Http_toFormData(parts));
-};
+var $elm$http$Http$emptyBody = _Http_emptyBody;
 var $elm$http$Http$Request = function (a) {
 	return {$: 'Request', a: a};
 };
@@ -6399,6 +6387,37 @@ var $elm$http$Http$request = function (r) {
 		$elm$http$Http$Request(
 			{allowCookiesFromOtherDomains: false, body: r.body, expect: r.expect, headers: r.headers, method: r.method, timeout: r.timeout, tracker: r.tracker, url: r.url}));
 };
+var $elm$http$Http$get = function (r) {
+	return $elm$http$Http$request(
+		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
+};
+var $elm$core$Debug$log = _Debug_log;
+var $elm$http$Http$multipartBody = function (parts) {
+	return A2(
+		_Http_pair,
+		'',
+		_Http_toFormData(parts));
+};
+var $author$project$ImageUpload$ImageData = F2(
+	function (image_id, image_url) {
+		return {image_id: image_id, image_url: image_url};
+	});
+var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+var $elm$json$Json$Decode$maybe = function (decoder) {
+	return $elm$json$Json$Decode$oneOf(
+		_List_fromArray(
+			[
+				A2($elm$json$Json$Decode$map, $elm$core$Maybe$Just, decoder),
+				$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing)
+			]));
+};
+var $author$project$ImageUpload$saveImageResultDecoder = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$ImageUpload$ImageData,
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int)),
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
 var $elm$http$Http$stringPart = _Http_pair;
 var $author$project$ImageUpload$stringifyArtworkID = function (artwork_id) {
 	if (artwork_id.$ === 'Just') {
@@ -6418,12 +6437,43 @@ var $author$project$ImageUpload$updateImageURL = F2(
 				image_url: $elm$core$Maybe$Just(url)
 			});
 	});
+var $author$project$ImageUpload$UploadCredentials = F6(
+	function (url, key, awsAccessKeyID, policy, signature, save_key) {
+		return {awsAccessKeyID: awsAccessKeyID, key: key, policy: policy, save_key: save_key, signature: signature, url: url};
+	});
+var $elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3($elm$core$List$foldr, $elm$json$Json$Decode$field, decoder, fields);
+	});
+var $elm$json$Json$Decode$map6 = _Json_map6;
+var $author$project$ImageUpload$uploadCredentialsDecoder = A7(
+	$elm$json$Json$Decode$map6,
+	$author$project$ImageUpload$UploadCredentials,
+	A2($elm$json$Json$Decode$field, 'url', $elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$at,
+		_List_fromArray(
+			['fields', 'key']),
+		$elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$at,
+		_List_fromArray(
+			['fields', 'AWSAccessKeyId']),
+		$elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$at,
+		_List_fromArray(
+			['fields', 'policy']),
+		$elm$json$Json$Decode$string),
+	A2(
+		$elm$json$Json$Decode$at,
+		_List_fromArray(
+			['fields', 'signature']),
+		$elm$json$Json$Decode$string),
+	A2($elm$json$Json$Decode$field, 'save_key', $elm$json$Json$Decode$string));
 var $author$project$ImageUpload$update = F2(
 	function (msg, model) {
-		var debug = A2(
-			$elm$core$Debug$log,
-			'State: ' + $elm$core$Debug$toString(model.status),
-			1);
+		var debug = A3($elm$core$Debug$log, 'State', $elm$core$Debug$toString, model.status);
 		switch (msg.$) {
 			case 'Pick':
 				return _Utils_Tuple2(
@@ -6442,24 +6492,13 @@ var $author$project$ImageUpload$update = F2(
 					$elm$core$Platform$Cmd$batch(
 						_List_fromArray(
 							[
-								$elm$http$Http$request(
+								$elm$http$Http$get(
 								{
-									body: $elm$http$Http$multipartBody(
-										_List_fromArray(
-											[
-												A2($elm$http$Http$stringPart, 'csrfmiddlewaretoken', model.csrftoken),
-												A2(
-												$elm$http$Http$stringPart,
-												'artwork',
-												$author$project$ImageUpload$stringifyArtworkID(model.artwork_id)),
-												A2($elm$http$Http$filePart, 'image', file)
-											])),
-									expect: A2($elm$http$Http$expectJson, $author$project$ImageUpload$Uploaded, $author$project$ImageUpload$decodeUploadResult),
-									headers: _List_Nil,
-									method: 'POST',
-									timeout: $elm$core$Maybe$Just(60000),
-									tracker: $elm$core$Maybe$Just('upload'),
-									url: '/c/artwork/image/new'
+									expect: A2(
+										$elm$http$Http$expectJson,
+										$author$project$ImageUpload$GotCredentials(file),
+										$author$project$ImageUpload$uploadCredentialsDecoder),
+									url: 'c/api/imageuploadauth'
 								}),
 								A2(
 								$elm$core$Task$perform,
@@ -6475,6 +6514,73 @@ var $author$project$ImageUpload$update = F2(
 							image_data: A2($author$project$ImageUpload$updateImageURL, url, model.image_data)
 						}),
 					$elm$core$Platform$Cmd$none);
+			case 'GotCredentials':
+				var file = msg.a;
+				var result = msg.b;
+				if (result.$ === 'Ok') {
+					var credentials = result.a;
+					return _Utils_Tuple2(
+						model,
+						$elm$http$Http$request(
+							{
+								body: $elm$http$Http$multipartBody(
+									_List_fromArray(
+										[
+											A2($elm$http$Http$stringPart, 'key', credentials.key),
+											A2($elm$http$Http$stringPart, 'AWSAccessKeyId', credentials.awsAccessKeyID),
+											A2($elm$http$Http$stringPart, 'policy', credentials.policy),
+											A2($elm$http$Http$stringPart, 'signature', credentials.signature),
+											A2($elm$http$Http$filePart, 'file', file)
+										])),
+								expect: $elm$http$Http$expectString(
+									$author$project$ImageUpload$FileUploaded(credentials.save_key)),
+								headers: _List_Nil,
+								method: 'POST',
+								timeout: $elm$core$Maybe$Just(120000),
+								tracker: $elm$core$Maybe$Just('upload'),
+								url: credentials.url
+							}));
+				} else {
+					var e = result.a;
+					var cred_log = A2($elm$core$Debug$log, 'Error getting credentials', e);
+					return _Utils_Tuple2(
+						_Utils_update(
+							model,
+							{status: $author$project$ImageUpload$Fail}),
+						$elm$core$Platform$Cmd$none);
+				}
+			case 'FileUploaded':
+				var file_url = msg.a;
+				var result = msg.b;
+				if (result.$ === 'Ok') {
+					var a = result.a;
+					var upload_log = A2($elm$core$Debug$log, 'successful upload', a);
+					return _Utils_Tuple2(
+						model,
+						$elm$http$Http$request(
+							{
+								body: $elm$http$Http$multipartBody(
+									_List_fromArray(
+										[
+											A2($elm$http$Http$stringPart, 'csrfmiddlewaretoken', model.csrftoken),
+											A2(
+											$elm$http$Http$stringPart,
+											'artwork',
+											$author$project$ImageUpload$stringifyArtworkID(model.artwork_id)),
+											A2($elm$http$Http$stringPart, 'uploaded_image_url', file_url)
+										])),
+								expect: A2($elm$http$Http$expectJson, $author$project$ImageUpload$ImageSaved, $author$project$ImageUpload$saveImageResultDecoder),
+								headers: _List_Nil,
+								method: 'POST',
+								timeout: $elm$core$Maybe$Just(60000),
+								tracker: $elm$core$Maybe$Just('save'),
+								url: '/c/artwork/image/new'
+							}));
+				} else {
+					var e = result.a;
+					var upload_log = A2($elm$core$Debug$log, 'error uploading image', e);
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
 			default:
 				var result = msg.a;
 				if (result.$ === 'Ok') {
@@ -6485,6 +6591,8 @@ var $author$project$ImageUpload$update = F2(
 							{image_data: image_data, status: $author$project$ImageUpload$Done}),
 						$elm$core$Platform$Cmd$none);
 				} else {
+					var e = result.a;
+					var save_log = A2($elm$core$Debug$log, 'Error saving to db', e);
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,

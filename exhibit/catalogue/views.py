@@ -434,10 +434,13 @@ class S3AuthAPIView(View):
         # if request.user.is_authenticated()
         file_name = request.GET.get('file_name')
         if file_name:
+            file_key = f"media/artworks/{file_name}"
+            save_key = f"artworks/{file_name}" #string to create ImageField object later
             s3_post_params = self.create_presigned_post(
                 settings.AWS_MEDIA_BUCKET_NAME,
-                file_name,
+                file_key,
                 expiration=120)
+            s3_post_params['save_key'] = save_key
             return JsonResponse(s3_post_params)
         else:
             return HttpResponseBadRequest()
@@ -461,8 +464,6 @@ class S3AuthAPIView(View):
         s3_client = boto3.client('s3', aws_access_key_id=settings.AWS_ACCESS_KEY_ID,
                                  aws_secret_access_key=settings.AWS_SECRET_ACCESS_KEY,
                                  endpoint_url=settings.AWS_S3_ENDPOINT_URL
-                                #  I think maybe endpoint_url=AWS_S3_MEDIA_CUSTOM_DOMAIN
-                                #  is more accurate. we'll have to test and see
                                  )
         try:
             response = s3_client.generate_presigned_post(bucket_name,
