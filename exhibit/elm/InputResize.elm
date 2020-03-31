@@ -22,6 +22,8 @@ I have a few options for how to implkement this:
 6. user setSelection to recreate node but get to where we were in it before. not great, need a port for that 
 
 5 looks promising rn, failing that probably 4 is easiest
+
+Decision: We're doing 4
 --}
 -- MAIN
 
@@ -131,6 +133,27 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     let
+        {-
+        measureHidden = [
+            style "display" "block"
+            ,style "visibility" "hidden"
+        ]
+        dontMeasureHidden = [
+            style "display" "none"
+            ,style "visibility" "visible"
+            ]
+            --
+        innerView =
+            if model.measuringHeight then
+                [ textAreaView model.customizeInner "text_area_" model.content model.height
+                , hiddenDivView (model.customizeInner ++ measureHidden) model.divID model.content
+                ]
+
+            else
+                [ textAreaView model.customizeInner model.divID model.content model.height
+                , hiddenDivView (model.customizeInner ++ dontMeasureHidden) "text_area_measure" model.content
+                ]
+            --}
         innerView =
             if model.measuringHeight then
                 [ textAreaView model.customizeInner "text_area_" model.content model.height
@@ -211,9 +234,13 @@ textAreaView customAttr id_ content nodeHeight =
             ++ [ id id_
                , value content
                , onInput NewContent
-               , rows <| calcRows settings.columns content
-            --    , rows (List.length (String.split "\n" content))
-            --    ,  height (round nodeHeight)
+
+               --    , style "height"
+               , style "height" <| String.fromFloat nodeHeight ++ "px"
+
+               --    , rows <| calcRows settings.columns content
+               --    , rows (List.length (String.split "\n" content))
+               --    ,  height (round nodeHeight)
                , style "z-index" "3"
                ]
             ++ innerAttributes
@@ -251,21 +278,25 @@ htmlEncodeString someString =
     in
     List.map htmlMapper lines
 --}
-{-- Calculate number of rows some string will fit into
+
+
+
+{--Calculate number of rows some string will fit into
 --}
+
+
 calcRows : Int -> String -> Int
 calcRows columns someString =
     let
-        lines = String.split "\n" someString
+        lines =
+            String.split "\n" someString
 
         rowsInLine line =
             String.length line
-            |> toFloat
-            |> (/) (toFloat columns)
-            |> ceiling
-            |> Basics.max 1 
+                |> toFloat
+                |> (/) (toFloat columns)
+                |> ceiling
+                |> Basics.max 1
     in
-        List.map rowsInLine lines
+    List.map rowsInLine lines
         |> List.sum
-
-    

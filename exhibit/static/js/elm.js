@@ -7015,7 +7015,6 @@ var $author$project$SaleData$hiddenInputView = function (saleDataID) {
 				$author$project$SaleData$saleDataIdSelectionView(saleDataID)
 			]));
 };
-var $author$project$SaleData$AttemptSubmitForm = {$: 'AttemptSubmitForm'};
 var $elm$html$Html$Attributes$classList = function (classes) {
 	return $elm$html$Html$Attributes$class(
 		A2(
@@ -7045,29 +7044,13 @@ var $author$project$SaleData$errorView = function (error) {
 var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
 var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$label = _VirtualDom_node('label');
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var $elm$html$Html$Events$onBlur = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'blur',
-		$elm$json$Json$Decode$succeed(msg));
-};
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
 var $elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
 	return {$: 'MayStopPropagation', a: a};
 };
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
 var $elm$html$Html$Events$stopPropagationOn = F2(
 	function (event, decoder) {
 		return A2(
@@ -7122,7 +7105,6 @@ var $author$project$SaleData$inputView = F6(
 							[
 								$elm$html$Html$Attributes$id(id_),
 								$elm$html$Html$Events$onInput(updateMsg),
-								$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm),
 								$elm$html$Html$Attributes$classList(
 								_List_fromArray(
 									[
@@ -7559,28 +7541,7 @@ var $author$project$InputResize$hiddenDivView = F3(
 var $author$project$InputResize$NewContent = function (a) {
 	return {$: 'NewContent', a: a};
 };
-var $elm$core$List$sum = function (numbers) {
-	return A3($elm$core$List$foldl, $elm$core$Basics$add, 0, numbers);
-};
-var $author$project$InputResize$calcRows = F2(
-	function (columns, someString) {
-		var rowsInLine = function (line) {
-			return A2(
-				$elm$core$Basics$max,
-				1,
-				$elm$core$Basics$ceiling(
-					columns / $elm$core$String$length(line)));
-		};
-		var lines = A2($elm$core$String$split, '\n', someString);
-		return $elm$core$List$sum(
-			A2($elm$core$List$map, rowsInLine, lines));
-	});
-var $elm$html$Html$Attributes$rows = function (n) {
-	return A2(
-		_VirtualDom_attribute,
-		'rows',
-		$elm$core$String$fromInt(n));
-};
+var $elm$core$String$fromFloat = _String_fromNumber;
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
 var $author$project$InputResize$textAreaView = F4(
 	function (customAttr, id_, content, nodeHeight) {
@@ -7594,8 +7555,10 @@ var $author$project$InputResize$textAreaView = F4(
 							$elm$html$Html$Attributes$id(id_),
 							$elm$html$Html$Attributes$value(content),
 							$elm$html$Html$Events$onInput($author$project$InputResize$NewContent),
-							$elm$html$Html$Attributes$rows(
-							A2($author$project$InputResize$calcRows, $author$project$InputResize$settings.columns, content)),
+							A2(
+							$elm$html$Html$Attributes$style,
+							'height',
+							$elm$core$String$fromFloat(nodeHeight) + 'px'),
 							A2($elm$html$Html$Attributes$style, 'z-index', '3')
 						]),
 					$author$project$InputResize$innerAttributes)),
@@ -8076,6 +8039,16 @@ var $author$project$ImageUpload$imageView = function (model) {
 var $author$project$ImageUpload$Pick = {$: 'Pick'};
 var $elm$html$Html$button = _VirtualDom_node('button');
 var $elm$html$Html$img = _VirtualDom_node('img');
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
 var $elm$html$Html$Events$onClick = function (msg) {
 	return A2(
 		$elm$html$Html$Events$on,
