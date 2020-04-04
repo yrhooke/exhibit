@@ -1,6 +1,6 @@
-# tests
+# Tests
 
-## Image Upload 
+## Image Upload
 
 - New screen add image
 - new screen add image an save
@@ -10,11 +10,12 @@
 
 ## Sale Data feature
 
-- add date for sale, don't create - data saved, not remembered next time
-- add data for sale, save - work created, has sale data
+- New screen, add date for sale, don't create - data saved, not remembered next time
+- create artwork with saledata - have saledata
+- create artwork with no saledata - no saledata
 - work without sale data, data not shown initially
 - work without sale data, add sale data (saved)
-- work with sale data, change sale data 
+- work with sale data, change sale data
   - change text field
   - change numeric field
   - change date field
