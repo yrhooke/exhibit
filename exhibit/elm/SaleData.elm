@@ -242,6 +242,10 @@ init : D.Value -> ( Model, Cmd Msg )
 init flags =
     case D.decodeValue decodeSaleData flags of
         Ok data ->
+            let
+                log_init =
+                    Debug.log "initial saleData:" data
+            in
             ( { saleData = data
               , updated = Updated
               , csrftoken = decodeFieldtoString "csrftoken" flags
@@ -251,6 +255,10 @@ init flags =
             )
 
         Err _ ->
+            let
+                log_init =
+                    Debug.log "error reading flags" 1
+            in
             ( { saleData = newSaleData
               , csrftoken = decodeFieldtoString "csrftoken" flags
               , updated = Updated
@@ -449,10 +457,10 @@ view model =
             , style "width" "100%"
             , class "form-group"
             ]
-            [ h4 [style "font-size" "18px"] [text "Sale Details"]
+            [ h4 [ style "font-size" "18px" ] [ text "Sale Details" ]
             , div [ style "color" "blue" ] [ text (printSyncStatus model.updated) ]
             ]
-        , inputView "Notes:"
+        , inputNotesView "Notes:"
             "id_notes"
             "Notes"
             (findErrors Notes model.errors)
@@ -496,6 +504,37 @@ view model =
             model.saleData.saleDate
         , hiddenInputView model.saleData.id
         ]
+
+
+inputNotesView : String -> String -> String -> List String -> (String -> Msg) -> String -> Html Msg
+inputNotesView label_name id_ placeholder_ errors updateMsg val =
+    div
+        [ style "display" "flex"
+        , class "ungroup"
+        , class "form-group"
+        ]
+        ([ label
+            [ for id_
+            , style "align-self" "start"
+            ]
+            [ text label_name ]
+         , textarea
+            [ id id_
+            , onInput updateMsg
+            , onBlur AttemptSubmitForm
+            , classList
+                [ ( "edit-field", True )
+                , ( "form-control", True )
+                , ( "form-control-sm", True )
+                ]
+            , style "width" "270px"
+            , placeholder placeholder_
+            , value val
+            ]
+            []
+         ]
+            ++ List.map errorView errors
+        )
 
 
 inputView : String -> String -> String -> List String -> (String -> Msg) -> String -> Html Msg
