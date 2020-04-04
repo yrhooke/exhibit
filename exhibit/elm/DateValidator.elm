@@ -1,4 +1,31 @@
-module DateValidator exposing (Date, fromString, toString)
+module DateValidator exposing
+    ( Date
+    , fromString
+    , toString
+    )
+
+{--for testing 
+    ( Date(..)
+    , Day
+    , Month
+    , Year
+    , dayFromInt
+    , findDay
+    , findMatches
+    , findMonth
+    , findYear
+    , fromString
+    , getUniqueMatch
+    , isValidDate
+    , isValidDayMonth
+    , maybeDate
+    , monthFromInt
+    , monthFromName
+    , toString
+    , tokenize
+    , yearFromInt
+    )
+    --}
 
 import Dict exposing (Dict)
 
@@ -39,7 +66,7 @@ monthFromInt number =
 
 yearFromInt : Int -> Maybe Year
 yearFromInt number =
-    if number /= 0 then
+    if number > 999 then
         Just (Year number)
 
     else
@@ -54,30 +81,32 @@ isValidDayMonth day month =
                 Just maxDays ->
                     case day of
                         Day d ->
-                            d < maxDays
+                            d <= maxDays
 
                 Nothing ->
                     False
 
 
-isValidDate : Day -> Month -> Year -> Bool
-isValidDate day month year =
+isValidDate : Year -> Month -> Day -> Bool
+isValidDate year month day =
     if isValidDayMonth day month then
         case year of
             Year y ->
-                if modBy y 4 == 0 && modBy y 200 /= 0 then
+                if (modBy 4 y == 0 && modBy 100 y /= 0) || modBy 400 y == 0 then
+                    {--if should be a leap year --}
+                    True
+
+                else
+                    {--if should not be a leap year --}
                     case month of
                         Month m ->
                             if m == 2 then
                                 case day of
                                     Day d ->
-                                        not (d == 29)
+                                        d < 29
 
                             else
                                 True
-
-                else
-                    True
 
     else
         False
@@ -114,7 +143,7 @@ tokenize datestamp =
 
 monthFromName : String -> Maybe Month
 monthFromName name =
-    Dict.get name monthNames
+    Dict.get (String.toLower name) monthNames
         |> Maybe.andThen monthFromInt
 
 
@@ -166,12 +195,11 @@ getUniqueMatch stringParser potentialMatches =
         matches =
             findMatches stringParser potentialMatches
     in
-    case List.tail matches of
-        Nothing ->
-            List.head matches
+    if List.tail matches == Just [] then
+        List.head matches
 
-        Just _ ->
-            Nothing
+    else
+        Nothing
 
 
 findDay : List String -> Maybe ( Int, Day )
@@ -217,31 +245,7 @@ fromString datestamp =
 
 
 
-{-
-       case potentialDay of
-           Just ( dayIndex, Day d ) ->
-               case potentialMonth of
-                   Just ( monthIndex, Month m ) ->
-                       case potentialYear of
-                           Just ( yearIndex, Year y ) ->
-                               if mutuallyExclusive dayIndex monthIndex yearIndex then
-                                   Just (Date (Year y) (Month m) (Day d))
 
-                               else
-                                   Nothing
-
-                           Nothing ->
-                               Nothing
-
-                   Nothing ->
-                       Nothing
-
-           Nothing ->
-               Nothing
-
-   else
-       Nothing
--}
 
 
 maybeDate : ( Int, Year ) -> ( Int, Month ) -> ( Int, Day ) -> Maybe Date
@@ -255,6 +259,10 @@ maybeDate yearPair monthPair dayPair =
             (Tuple.first yearPair)
             (Tuple.first monthPair)
             (Tuple.first dayPair)
+            && isValidDate
+                (Tuple.second yearPair)
+                (Tuple.second monthPair)
+                (Tuple.second dayPair)
     then
         Just
             (Date
@@ -270,9 +278,13 @@ maybeDate yearPair monthPair dayPair =
 toString : Date -> String
 toString date =
     let
+        formatInt size int =
+            String.fromInt int
+                |> String.padLeft size '0'
+
         format : Int -> Int -> Int -> String
         format y m d =
-            String.fromInt y ++ "-" ++ String.fromInt m ++ "-" ++ String.fromInt d
+            formatInt 4 y ++ "-" ++ formatInt 2 m ++ "-" ++ formatInt 2 d
     in
     case date of
         Date year month day ->
