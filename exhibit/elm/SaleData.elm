@@ -35,6 +35,33 @@ type alias Model =
     , updated : SyncStatus
     , errors : List ValidationError
     , csrftoken : String
+    , icons : Icons
+    }
+
+
+type SyncStatus
+    = Behind
+    | Updating
+    | Updated
+    | Failed
+
+
+
+-- printSyncStatus : SyncStatus -> String
+-- printSyncStatus status =
+--     case status of
+--         Updated ->
+--             "Updated"
+--         Updating ->
+--             "Updating"
+--         Behind ->
+--             "Behind"
+
+
+type alias Icons =
+    { loaderIconURL : String
+    , successIconURL : String
+    , failIconURL : String
     }
 
 
@@ -221,34 +248,19 @@ setSaleDate newSaleDate saleData =
     { saleData | saleDate = newSaleDate }
 
 
-type SyncStatus
-    = Updated
-    | Updating
-    | Behind
 
-
-printSyncStatus : SyncStatus -> String
-printSyncStatus status =
-    case status of
-        Updated ->
-            "Updated"
-
-        Updating ->
-            "Updating"
-
-        Behind ->
-            "Behind"
-
-
-
--- floatValidator : String -> Maybe Float
--- floatValidator str =
---     String.toFloat (String.trim str)
 -- INIT
 
 
 init : D.Value -> ( Model, Cmd Msg )
 init flags =
+    let
+        icons =
+            { loaderIconURL = decodeFieldtoString "loader_icon" flags
+            , successIconURL = decodeFieldtoString "success_icon" flags
+            , failIconURL = decodeFieldtoString "fail_icon" flags
+            }
+    in
     case D.decodeValue decodeSaleData flags of
         Ok data ->
             let
@@ -256,22 +268,24 @@ init flags =
                     Debug.log "initial saleData:" data
             in
             ( { saleData = data
-              , updated = Updated
+              , updated = Behind
               , csrftoken = decodeFieldtoString "csrftoken" flags
+              , icons = icons
               , errors = []
               }
             , Cmd.none
             )
 
-        Err _ ->
+        Err e ->
             let
                 log_init =
-                    Debug.log "error reading flags" 1
+                    Debug.log "error reading flags" e
             in
             ( { saleData = newSaleData
               , csrftoken = decodeFieldtoString "csrftoken" flags
-              , updated = Updated
+              , updated = Behind
               , errors = []
+              , icons = icons
               }
             , Cmd.none
             )
@@ -369,7 +383,7 @@ update msg model =
                     )
 
                 Err errors ->
-                    ( { model | errors = errors }, Cmd.none )
+                    ( { model | errors = errors, updated=Failed}, Cmd.none )
 
         ServerResponse response ->
             let
@@ -381,7 +395,7 @@ update msg model =
                     ( { model | saleData = data, updated = Updated }, Cmd.none )
 
                 Err _ ->
-                    ( { model | updated = Behind }, Cmd.none )
+                    ( { model | updated = Failed }, Cmd.none )
 
 
 {-| I'm using a bug in Validate.ifNotFloat where it shows errors iff the string is in fact a float
@@ -419,6 +433,7 @@ saleDataValidator =
         , ifNotBlankOrFloat .agentFee ( AgentFee, "we need a number here" )
         , ifNotBlankOrFloat .amountToArtist ( AmountToArtist, "we need a number here" )
         , ifNotBlankOrDate .saleDate ( SaleDate, "we couldn't figure out this date" )
+        , Validate.ifTrue (.saleCurrency >> (\a -> String.length a > 10)) ( SaleCurrency, "this field is too long" )
         ]
 
 
@@ -478,8 +493,10 @@ view model =
             , style "width" "100%"
             , class "form-group"
             ]
-            [ h4 [ style "font-size" "18px" ] [ text "Sale Details" ]
-            , div [ style "color" "blue" ] [ text (printSyncStatus model.updated) ]
+            [ div [ style "font-size" "18px" ] [ text "Sale Details" ]
+            , syncStatusView model.updated model.icons
+
+            -- , div [ style "color" "blue" ] [ text (printSyncStatus model.updated) ]
             ]
         , inputNotesView "Notes:"
             "id_notes"
@@ -584,7 +601,7 @@ inputView label_name id_ placeholder_ errors updateMsg val =
 
 
 errorView error =
-    small [ class "form-test", class "text-muted" ] [ text error ]
+    small [ class "form-test", class "text-muted", style "width" "86px" ] [ text error ]
 
 
 hiddenInputView saleDataID =
@@ -632,4 +649,43 @@ inputNumberView label_name id_ updateMsg val =
             , value presented_value
             ]
             []
+        ]
+
+
+syncStatusView : SyncStatus -> Icons -> Html Msg
+syncStatusView status icons =
+    let
+        icon =
+            case status of
+                Behind ->
+                    div [] []
+
+                Updating ->
+                    img
+                        [ src icons.loaderIconURL
+                        , style "height" "25px"
+                        ]
+                        []
+
+                Updated ->
+                    img
+                        [ src icons.successIconURL
+                        , style "height" "25px"
+                        ]
+                        []
+
+                Failed ->
+                    img
+                        [ src icons.failIconURL
+                        , style "height" "25px"
+                        ]
+                        []
+    in
+    span
+        [ style "display" "flex"
+        , style "justify-content" "center"
+        , style "align-items" "center"
+        , style "width" "40px"
+        ]
+        [ icon
         ]

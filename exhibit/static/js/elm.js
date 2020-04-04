@@ -5551,7 +5551,7 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$SaleData$Updated = {$: 'Updated'};
+var $author$project$SaleData$Behind = {$: 'Behind'};
 var $elm$json$Json$Decode$decodeValue = _Json_run;
 var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$string = _Json_decodeString;
@@ -5673,6 +5673,11 @@ var $author$project$SaleData$newSaleData = {agent: $elm$core$Maybe$Nothing, agen
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$SaleData$init = function (flags) {
+	var icons = {
+		failIconURL: A2($author$project$SaleData$decodeFieldtoString, 'fail_icon', flags),
+		loaderIconURL: A2($author$project$SaleData$decodeFieldtoString, 'loader_icon', flags),
+		successIconURL: A2($author$project$SaleData$decodeFieldtoString, 'success_icon', flags)
+	};
 	var _v0 = A2($elm$json$Json$Decode$decodeValue, $author$project$SaleData$decodeSaleData, flags);
 	if (_v0.$ === 'Ok') {
 		var data = _v0.a;
@@ -5681,18 +5686,21 @@ var $author$project$SaleData$init = function (flags) {
 			{
 				csrftoken: A2($author$project$SaleData$decodeFieldtoString, 'csrftoken', flags),
 				errors: _List_Nil,
+				icons: icons,
 				saleData: data,
-				updated: $author$project$SaleData$Updated
+				updated: $author$project$SaleData$Behind
 			},
 			$elm$core$Platform$Cmd$none);
 	} else {
-		var log_init = A2($elm$core$Debug$log, 'error reading flags', 1);
+		var e = _v0.a;
+		var log_init = A2($elm$core$Debug$log, 'error reading flags', e);
 		return _Utils_Tuple2(
 			{
 				csrftoken: A2($author$project$SaleData$decodeFieldtoString, 'csrftoken', flags),
 				errors: _List_Nil,
+				icons: icons,
 				saleData: $author$project$SaleData$newSaleData,
-				updated: $author$project$SaleData$Updated
+				updated: $author$project$SaleData$Behind
 			},
 			$elm$core$Platform$Cmd$none);
 	}
@@ -5702,13 +5710,15 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$SaleData$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
 };
-var $author$project$SaleData$Behind = {$: 'Behind'};
+var $author$project$SaleData$Failed = {$: 'Failed'};
 var $author$project$SaleData$ServerResponse = function (a) {
 	return {$: 'ServerResponse', a: a};
 };
+var $author$project$SaleData$Updated = {$: 'Updated'};
 var $author$project$SaleData$Updating = {$: 'Updating'};
 var $author$project$SaleData$AgentFee = {$: 'AgentFee'};
 var $author$project$SaleData$AmountToArtist = {$: 'AmountToArtist'};
+var $author$project$SaleData$SaleCurrency = {$: 'SaleCurrency'};
 var $author$project$SaleData$SaleDate = {$: 'SaleDate'};
 var $author$project$SaleData$SalePrice = {$: 'SalePrice'};
 var $rtfeldman$elm_validate$Validate$Validator = function (a) {
@@ -5727,6 +5737,11 @@ var $rtfeldman$elm_validate$Validate$all = function (validators) {
 	};
 	return $rtfeldman$elm_validate$Validate$Validator(newGetErrors);
 };
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
 var $rtfeldman$elm_validate$Validate$any = F2(
 	function (validators, subject) {
 		any:
@@ -5749,11 +5764,6 @@ var $rtfeldman$elm_validate$Validate$any = F2(
 				}
 			}
 		}
-	});
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
 	});
 var $rtfeldman$elm_validate$Validate$ifTrue = F2(
 	function (test, error) {
@@ -6304,7 +6314,18 @@ var $author$project$SaleData$saleDataValidator = $rtfeldman$elm_validate$Validat
 			function ($) {
 				return $.saleDate;
 			},
-			_Utils_Tuple2($author$project$SaleData$SaleDate, 'we couldn\'t figure out this date'))
+			_Utils_Tuple2($author$project$SaleData$SaleDate, 'we couldn\'t figure out this date')),
+			A2(
+			$rtfeldman$elm_validate$Validate$ifTrue,
+			A2(
+				$elm$core$Basics$composeR,
+				function ($) {
+					return $.saleCurrency;
+				},
+				function (a) {
+					return $elm$core$String$length(a) > 10;
+				}),
+			_Utils_Tuple2($author$project$SaleData$SaleCurrency, 'this field is too long'))
 		]));
 var $rtfeldman$elm_validate$Validate$Valid = function (a) {
 	return {$: 'Valid', a: a};
@@ -7225,7 +7246,7 @@ var $author$project$SaleData$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{errors: errors}),
+							{errors: errors, updated: $author$project$SaleData$Failed}),
 						$elm$core$Platform$Cmd$none);
 				}
 			default:
@@ -7245,7 +7266,7 @@ var $author$project$SaleData$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{updated: $author$project$SaleData$Behind}),
+							{updated: $author$project$SaleData$Failed}),
 						$elm$core$Platform$Cmd$none);
 				}
 		}
@@ -7253,7 +7274,6 @@ var $author$project$SaleData$update = F2(
 var $elm$json$Json$Decode$value = _Json_decodeValue;
 var $author$project$SaleData$Discount = {$: 'Discount'};
 var $author$project$SaleData$Notes = {$: 'Notes'};
-var $author$project$SaleData$SaleCurrency = {$: 'SaleCurrency'};
 var $author$project$SaleData$UpdateAgentFee = function (a) {
 	return {$: 'UpdateAgentFee', a: a};
 };
@@ -7306,7 +7326,6 @@ var $author$project$SaleData$findErrors = F2(
 			$elm$core$Tuple$second,
 			A2($elm$core$List$filter, fieldMatch, errors));
 	});
-var $elm$html$Html$h4 = _VirtualDom_node('h4');
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
 var $elm$virtual_dom$VirtualDom$attribute = F2(
@@ -7378,7 +7397,8 @@ var $author$project$SaleData$errorView = function (error) {
 		_List_fromArray(
 			[
 				$elm$html$Html$Attributes$class('form-test'),
-				$elm$html$Html$Attributes$class('text-muted')
+				$elm$html$Html$Attributes$class('text-muted'),
+				A2($elm$html$Html$Attributes$style, 'width', '86px')
 			]),
 		_List_fromArray(
 			[
@@ -7527,16 +7547,61 @@ var $author$project$SaleData$inputView = F6(
 					]),
 				A2($elm$core$List$map, $author$project$SaleData$errorView, errors)));
 	});
-var $author$project$SaleData$printSyncStatus = function (status) {
-	switch (status.$) {
-		case 'Updated':
-			return 'Updated';
-		case 'Updating':
-			return 'Updating';
-		default:
-			return 'Behind';
-	}
+var $elm$html$Html$img = _VirtualDom_node('img');
+var $elm$html$Html$span = _VirtualDom_node('span');
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
+var $author$project$SaleData$syncStatusView = F2(
+	function (status, icons) {
+		var icon = function () {
+			switch (status.$) {
+				case 'Behind':
+					return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+				case 'Updating':
+					return A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(icons.loaderIconURL),
+								A2($elm$html$Html$Attributes$style, 'height', '25px')
+							]),
+						_List_Nil);
+				case 'Updated':
+					return A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(icons.successIconURL),
+								A2($elm$html$Html$Attributes$style, 'height', '25px')
+							]),
+						_List_Nil);
+				default:
+					return A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(icons.failIconURL),
+								A2($elm$html$Html$Attributes$style, 'height', '25px')
+							]),
+						_List_Nil);
+			}
+		}();
+		return A2(
+			$elm$html$Html$span,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+					A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+					A2($elm$html$Html$Attributes$style, 'width', '40px')
+				]),
+			_List_fromArray(
+				[icon]));
+	});
 var $author$project$SaleData$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -7560,7 +7625,7 @@ var $author$project$SaleData$view = function (model) {
 				_List_fromArray(
 					[
 						A2(
-						$elm$html$Html$h4,
+						$elm$html$Html$div,
 						_List_fromArray(
 							[
 								A2($elm$html$Html$Attributes$style, 'font-size', '18px')
@@ -7569,17 +7634,7 @@ var $author$project$SaleData$view = function (model) {
 							[
 								$elm$html$Html$text('Sale Details')
 							])),
-						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								A2($elm$html$Html$Attributes$style, 'color', 'blue')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(
-								$author$project$SaleData$printSyncStatus(model.updated))
-							]))
+						A2($author$project$SaleData$syncStatusView, model.updated, model.icons)
 					])),
 				A6(
 				$author$project$SaleData$inputNotesView,
@@ -7688,14 +7743,15 @@ var $author$project$ImageUpload$init = function (flags) {
 	return _Utils_Tuple2(
 		{
 			artwork_id: A2($author$project$ImageUpload$decodeFieldtoMaybeInt, 'artwork_id', flags),
-			checkmark_url: A2($author$project$ImageUpload$decodeFieldtoString, 'checkmark_url', flags),
 			csrftoken: A2($author$project$ImageUpload$decodeFieldtoString, 'csrftoken', flags),
+			failIconURL: A2($author$project$ImageUpload$decodeFieldtoString, 'fail_icon', flags),
 			image_data: {
 				image_id: A2($author$project$ImageUpload$decodeFieldtoMaybeInt, 'image_id', flags),
 				image_url: $author$project$ImageUpload$decodeImageURL(flags)
 			},
-			loader_url: A2($author$project$ImageUpload$decodeFieldtoString, 'loader_url', flags),
-			status: $author$project$ImageUpload$Waiting
+			loaderURL: A2($author$project$ImageUpload$decodeFieldtoString, 'loader_icon', flags),
+			status: $author$project$ImageUpload$Waiting,
+			successIconURL: A2($author$project$ImageUpload$decodeFieldtoString, 'success_icon', flags)
 		},
 		$elm$core$Platform$Cmd$none);
 };
@@ -8088,23 +8144,15 @@ var $author$project$ImageUpload$imageView = function (model) {
 };
 var $author$project$ImageUpload$Pick = {$: 'Pick'};
 var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$html$Html$img = _VirtualDom_node('img');
 var $elm$html$Html$Events$onClick = function (msg) {
 	return A2(
 		$elm$html$Html$Events$on,
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$html$Html$span = _VirtualDom_node('span');
-var $elm$html$Html$Attributes$src = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'src',
-		_VirtualDom_noJavaScriptOrHtmlUri(url));
-};
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $author$project$ImageUpload$uploaderView = F2(
-	function (checkmark_url, status) {
+var $author$project$ImageUpload$uploaderView = F3(
+	function (successIconURL, failIconURL, status) {
 		switch (status.$) {
 			case 'Waiting':
 				return A2(
@@ -8185,7 +8233,7 @@ var $author$project$ImageUpload$uploaderView = F2(
 									$elm$html$Html$img,
 									_List_fromArray(
 										[
-											$elm$html$Html$Attributes$src(checkmark_url),
+											$elm$html$Html$Attributes$src(successIconURL),
 											A2($elm$html$Html$Attributes$style, 'height', '25px')
 										]),
 									_List_Nil)
@@ -8194,7 +8242,11 @@ var $author$project$ImageUpload$uploaderView = F2(
 			default:
 				return A2(
 					$elm$html$Html$div,
-					_List_Nil,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+							A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+						]),
 					_List_fromArray(
 						[
 							A2(
@@ -8209,6 +8261,26 @@ var $author$project$ImageUpload$uploaderView = F2(
 							_List_fromArray(
 								[
 									$elm$html$Html$text('Upload Image')
+								])),
+							A2(
+							$elm$html$Html$span,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+									A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+									A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+									A2($elm$html$Html$Attributes$style, 'width', '40px')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src(failIconURL),
+											A2($elm$html$Html$Attributes$style, 'height', '25px')
+										]),
+									_List_Nil)
 								]))
 						]));
 		}
@@ -8305,10 +8377,10 @@ var $author$project$ImageUpload$view = function (model) {
 				_List_fromArray(
 					[
 						$author$project$ImageUpload$imageView(model),
-						A2($author$project$ImageUpload$uploadingImageCoverView, model.loader_url, model.status)
+						A2($author$project$ImageUpload$uploadingImageCoverView, model.loaderURL, model.status)
 					])),
 				$author$project$ImageUpload$hiddenInputView(model.image_data.image_id),
-				A2($author$project$ImageUpload$uploaderView, model.checkmark_url, model.status)
+				A3($author$project$ImageUpload$uploaderView, model.successIconURL, model.failIconURL, model.status)
 			]));
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(

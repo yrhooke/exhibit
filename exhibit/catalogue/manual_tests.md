@@ -11,6 +11,7 @@
   - change numeric field
   - change date field
   - in all cases saved
+- update in bad network connection - see fail icon
 
 ## Migration tests
 

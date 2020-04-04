@@ -33,8 +33,9 @@ type alias Model =
     { csrftoken : String
     , artwork_id : Maybe Int
     , image_data : ImageData
-    , loader_url : String
-    , checkmark_url : String
+    , loaderURL : String
+    , successIconURL : String
+    , failIconURL : String
     , status : Status
     }
 
@@ -64,8 +65,9 @@ init flags =
             { image_id = decodeFieldtoMaybeInt "image_id" flags
             , image_url = decodeImageURL flags
             }
-      , loader_url = decodeFieldtoString "loader_url" flags
-      , checkmark_url = decodeFieldtoString "checkmark_url" flags
+      , loaderURL = decodeFieldtoString "loader_icon" flags
+      , successIconURL = decodeFieldtoString "success_icon" flags
+      , failIconURL = decodeFieldtoString "fail_icon" flags
       , status = Waiting
       }
     , Cmd.none
@@ -308,10 +310,10 @@ view model =
             [ style "height" "405px"
             ]
             [ imageView model
-            , uploadingImageCoverView model.loader_url model.status
+            , uploadingImageCoverView model.loaderURL model.status
             ]
         , hiddenInputView model.image_data.image_id
-        , uploaderView model.checkmark_url model.status
+        , uploaderView model.successIconURL model.failIconURL model.status
         ]
 
 
@@ -411,8 +413,8 @@ uploadingImageCoverView loader_url status =
                 ]
 
 
-uploaderView : String -> Status -> Html Msg
-uploaderView checkmark_url status =
+uploaderView : String -> String -> Status -> Html Msg
+uploaderView successIconURL failIconURL status =
     case status of
         Waiting ->
             div []
@@ -457,7 +459,7 @@ uploaderView checkmark_url status =
                     , style "width" "40px"
                     ]
                     [ img
-                        [ src checkmark_url
+                        [ src successIconURL
                         , style "height" "25px"
                         ]
                         []
@@ -465,7 +467,10 @@ uploaderView checkmark_url status =
                 ]
 
         Fail ->
-            div []
+            div
+                [ style "display" "flex"
+                , style "align-items" "center"
+                ]
                 [ button
                     [ type_ "button"
                     , class "btn"
@@ -473,6 +478,18 @@ uploaderView checkmark_url status =
                     , onClick Pick
                     ]
                     [ text "Upload Image" ]
+                , span
+                    [ style "display" "flex"
+                    , style "justify-content" "center"
+                    , style "align-items" "center"
+                    , style "width" "40px"
+                    ]
+                    [ img
+                        [ src failIconURL
+                        , style "height" "25px"
+                        ]
+                        []
+                    ]
                 ]
 
 
