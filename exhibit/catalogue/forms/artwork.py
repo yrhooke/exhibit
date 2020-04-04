@@ -10,7 +10,7 @@ from .utils import PlaceholderMixin
 class ArtworkDetailForm(PlaceholderMixin, forms.ModelForm):
 
     artwork_image = forms.ModelChoiceField(queryset=ArtworkImage.objects.all(), required=True)
-    sale_data = forms.ModelChoiceField(queryset=SaleData.objects.all())
+    sale_data = forms.ModelChoiceField(queryset=SaleData.objects.all(), required=False)
 
     class Meta():
         model = Artwork

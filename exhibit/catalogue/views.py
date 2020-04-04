@@ -203,8 +203,9 @@ class ArtworkCreate(LoginRequiredMixin, genericCreateView):
         artwork_image.save()
 
         sale_data = form.cleaned_data['sale_data']
-        sale_data.artwork = self.object
-        sale_data.save()
+        if sale_data:
+            sale_data.artwork = self.object
+            sale_data.save()
 
         return HttpResponseRedirect(self.get_success_url())
 
@@ -261,6 +262,7 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
                 break
             prev = work
         return prev
+
 
 class CloneArtwork(LoginRequiredMixin, View):
     """creates a copy of an existing Artwork"""
@@ -469,7 +471,7 @@ def export_sale_data(saledata):
 
 class SaleDataUpdate(LoginRequiredMixin, View):
     """path to create or update SaleData object"""
-    
+
     def post(self, request, *args, **kwargs):
         try:
             saledata = SaleData.objects.get(id=request.POST.get("id"))
@@ -482,7 +484,6 @@ class SaleDataUpdate(LoginRequiredMixin, View):
             return JsonResponse(json_response)
         else:
             return HttpResponseBadRequest()
-
 
 
 def saledata_test_view(request):
