@@ -233,7 +233,7 @@
                         <div id="elm-image-upload"></div>
                         <!-- <script src="{% static 'js/imageUpload.js' %}"></script> -->
                         <script>
-                            function elm_flags() {
+                            function elm_image_upload_flags() {
                                 let csrftoken = document.getElementById('elm-image-upload-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
                                 let artwork_id = {{ object.pk |default:"null" }};
                             let image_url = "{{ object.get_image.url }}";
@@ -250,10 +250,11 @@
                             };
                             return elm_flags
                             }
-                            console.log(elm_flags())
+                            console.log('image upload flags:')
+                            console.log(elm_image_upload_flags())
                             var app = Elm.ImageUpload.init({
                                 node: document.getElementById('elm-image-upload'),
-                                flags: elm_flags()
+                                flags: elm_image_upload_flags()
                             });        
                         </script>
                     </div>
@@ -294,13 +295,13 @@
                     <script>
                         function elm_sale_data_flags() {
                             let elm_flags = JSON.parse("{{sale_data_info|escapejs|default:'{}'}}");
-                            console.log(elm_flags);
+                            console.log('downloaded saledata info:')
+                            console.log(elm_flags)
                             let csrftoken = document.getElementById('elm-sale-data-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
                             elm_flags['csrftoken'] = csrftoken;
                             elm_flags['artwork'] = {{ object.pk |default:"null" }};
                         return elm_flags
                         }
-                        console.log(elm_flags())
                         var app = Elm.SaleData.init({
                             node: document.getElementById('elm-sale-data-app'),
                             flags: elm_sale_data_flags()

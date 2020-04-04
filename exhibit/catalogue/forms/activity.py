@@ -9,8 +9,9 @@ class WorkInExhibitionForm(forms.ModelForm):
     class Meta():
         model = WorkInExhibition
         fields = '__all__'
-    
+
     use_required_attribute = False
+
 
 class LocationDetailForm(PlaceholderMixin, forms.ModelForm):
 
@@ -47,7 +48,10 @@ class ExhibitionDetailForm(PlaceholderMixin, forms.ModelForm):
             'end_date': DatePicker,
         }
 
+
 class SaleDataUpdateForm(forms.ModelForm):
+
+    sale_date = forms.DateField(input_formats='%d %B %Y')
 
     class Meta():
         model = SaleData
