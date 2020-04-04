@@ -3,6 +3,7 @@ module SaleData exposing (..)
 -- import Json.Encode as E
 
 import Browser
+import DateValidator
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -146,6 +147,14 @@ saleDataToForm record =
 
                 Nothing ->
                     []
+
+        encodeSaleDateField saledate =
+            case DateValidator.fromString saledate of
+                Just date ->
+                    [ Http.stringPart "sale_date" (DateValidator.toString date) ]
+
+                Nothing ->
+                    []
     in
     encodeIDField record.id
         ++ includeJustIntField "artwork" record.artwork
@@ -157,8 +166,8 @@ saleDataToForm record =
            , Http.stringPart "discount" record.discount
            , Http.stringPart "agent_fee" record.agentFee
            , Http.stringPart "amount_to_artist" record.amountToArtist
-           , Http.stringPart "sale_date" record.saleDate
            ]
+        ++ encodeSaleDateField record.saleDate
 
 
 type Field
@@ -392,12 +401,24 @@ ifNotBlankOrFloat subjectToString error =
         error
 
 
+ifNotBlankOrDate : (subject -> String) -> error -> Validate.Validator error subject
+ifNotBlankOrDate subjectToString error =
+    Validate.ifTrue
+        (Validate.any
+            [ Validate.ifTrue (subjectToString >> String.isEmpty) error
+            , DateValidator.isNotDate subjectToString error
+            ]
+        )
+        error
+
+
 saleDataValidator : Validate.Validator ValidationError SaleData
 saleDataValidator =
     Validate.all
         [ ifNotBlankOrFloat .salePrice ( SalePrice, "Price must be a number" )
         , ifNotBlankOrFloat .agentFee ( AgentFee, "we need a number here" )
         , ifNotBlankOrFloat .amountToArtist ( AmountToArtist, "we need a number here" )
+        , ifNotBlankOrDate .saleDate ( SaleDate, "we couldn't figure out this date" )
         ]
 
 

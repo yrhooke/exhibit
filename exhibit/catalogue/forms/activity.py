@@ -51,7 +51,7 @@ class ExhibitionDetailForm(PlaceholderMixin, forms.ModelForm):
 
 class SaleDataUpdateForm(forms.ModelForm):
 
-    sale_date = forms.DateField(input_formats='%d %B %Y')
+    sale_date = forms.DateField(required=False)
 
     class Meta():
         model = SaleData

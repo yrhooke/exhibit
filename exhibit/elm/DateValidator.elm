@@ -1,6 +1,9 @@
 module DateValidator exposing
     ( Date
+    , dateDecoder
     , fromString
+    , isDate
+    , isNotDate
     , toString
     )
 
@@ -28,6 +31,8 @@ module DateValidator exposing
     --}
 
 import Dict exposing (Dict)
+import Json.Decode exposing (Decoder)
+import Validate exposing (Validator)
 
 
 type Date
@@ -244,10 +249,6 @@ fromString datestamp =
         Nothing
 
 
-
-
-
-
 maybeDate : ( Int, Year ) -> ( Int, Month ) -> ( Int, Day ) -> Maybe Date
 maybeDate yearPair monthPair dayPair =
     let
@@ -295,3 +296,19 @@ toString date =
                             case day of
                                 Day d ->
                                     format y m d
+
+
+dateDecoder : Decoder (Maybe Date)
+dateDecoder =
+    Json.Decode.string
+        |> Json.Decode.map fromString
+
+
+isDate : (subject -> String) -> error -> Validator error subject
+isDate map error =
+    Validate.ifNothing (map >> fromString) error
+
+
+isNotDate : (subject -> String) -> error -> Validator error subject
+isNotDate map error =
+    Validate.ifFalse (map >> fromString >> (\a -> a == Nothing)) error

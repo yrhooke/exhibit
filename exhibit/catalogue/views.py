@@ -265,8 +265,7 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
 class CloneArtwork(LoginRequiredMixin, View):
     """creates a copy of an existing Artwork"""
 
-    def get(self, request, *args, **kwargs):
-        artwork_pk = request.GET.get('artwork_pk')
+    def get(self, request, artwork_pk, *args, **kwargs):
         artwork = Artwork.objects.get(pk=artwork_pk)
 
         new_artwork_image = ArtworkImage()
@@ -449,6 +448,10 @@ class HttpResponseUnauthorized(HttpResponse):
 
 def export_sale_data(saledata):
     """returns dict of relevant fields from SaleData object"""
+    if saledata.sale_date:
+        sale_date = saledata.sale_date.strftime('%d %B %Y')
+    else:
+        sale_date = ""
     return {
         "id": saledata.pk,
         "artwork": saledata.artwork.pk if saledata.artwork else None,
@@ -460,7 +463,7 @@ def export_sale_data(saledata):
         "discount": saledata.discount,
         "agentFee": saledata.agent_fee,
         "amountToArtist": saledata.amount_to_artist,
-        "saleDate": saledata.sale_date.strftime('%d %B %Y')
+        "saleDate": sale_date
     }
 
 
