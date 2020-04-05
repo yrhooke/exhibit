@@ -1,11 +1,15 @@
+import json
+
 from django.urls import reverse_lazy
 from django.views.generic import ListView
 from django.views.generic.edit import DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core.serializers.json import DjangoJSONEncoder
 
 from catalogue.models import Location
 from catalogue.forms import LocationDetailForm
 from catalogue.views.utils import SearchMixin, genericCreateView, genericUpdateView
+from catalogue.views.utils import artwork_sale_gallery_details
 
 
 class LocationList(LoginRequiredMixin, ListView):
@@ -39,6 +43,8 @@ class LocationUpdate(LoginRequiredMixin, SearchMixin, genericUpdateView):
         context = super(LocationUpdate, self).get_context_data(location=self.object, **kwargs)
 
         context['hasLocation'] = True
+        sale_gallery_info =  [artwork_sale_gallery_details(a) for a in context['search_results']]
+        context['sales_gallery_info'] =json.dumps(sale_gallery_info, cls=DjangoJSONEncoder)
         return context
 
 

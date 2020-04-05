@@ -63,16 +63,16 @@ artworkDecoder : D.Decoder Artwork
 artworkDecoder =
     D.succeed Artwork
         |> Pipeline.required "id" D.int
-        |> Pipeline.required "artwork_url" D.string
-        |> Pipeline.required "image_url" D.string
+        |> Pipeline.required "url" D.string
+        |> Pipeline.required "image" D.string
         |> Pipeline.required "title" D.string
         |> Pipeline.required "series" D.string
-        |> Pipeline.required "year" D.string
-        |> Pipeline.required "price_nis" (D.string |> D.maybe)
-        |> Pipeline.required "price_usd" (D.string |> D.maybe)
+        |> Pipeline.required "year" (D.map String.fromInt D.int)
+        |> Pipeline.required "price_nis" (D.map String.fromFloat D.float|> D.maybe)
+        |> Pipeline.required "price_usd" (D.map String.fromFloat D.float|> D.maybe)
         |> Pipeline.custom (sizeDecoder "cm")
         |> Pipeline.custom (sizeDecoder "in")
-        |> Pipeline.custom SaleData.decode
+        |> Pipeline.custom (D.field "sale_data" SaleData.decode)
 
 
 sizeDecoder : String -> D.Decoder Size
@@ -85,8 +85,8 @@ sizeDecoder unit =
             "height_" ++ unit
     in
     D.succeed Size
-        |> Pipeline.required width D.string
-        |> Pipeline.required height D.string
+        |> Pipeline.required width (D.map String.fromFloat D.float)
+        |> Pipeline.required height (D.map String.fromFloat D.float)
         |> Pipeline.hardcoded unit
 
 

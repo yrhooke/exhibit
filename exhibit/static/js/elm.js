@@ -5766,6 +5766,8 @@ var $author$project$SaleData$decode = A2(
 					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
 					$author$project$SaleData$saleDataDecoder,
 					$elm$json$Json$Decode$succeed($author$project$SaleData$Model))))));
+var $elm$json$Json$Decode$float = _Json_decodeFloat;
+var $elm$core$String$fromFloat = _String_fromNumber;
 var $author$project$SalesGallery$Size = F3(
 	function (width, height, unit) {
 		return {height: height, unit: unit, width: width};
@@ -5779,16 +5781,16 @@ var $author$project$SalesGallery$sizeDecoder = function (unit) {
 		A3(
 			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 			height,
-			$elm$json$Json$Decode$string,
+			A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float),
 			A3(
 				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 				width,
-				$elm$json$Json$Decode$string,
+				A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float),
 				$elm$json$Json$Decode$succeed($author$project$SalesGallery$Size))));
 };
 var $author$project$SalesGallery$artworkDecoder = A2(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
-	$author$project$SaleData$decode,
+	A2($elm$json$Json$Decode$field, 'sale_data', $author$project$SaleData$decode),
 	A2(
 		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
 		$author$project$SalesGallery$sizeDecoder('in'),
@@ -5798,15 +5800,17 @@ var $author$project$SalesGallery$artworkDecoder = A2(
 			A3(
 				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 				'price_usd',
-				$elm$json$Json$Decode$maybe($elm$json$Json$Decode$string),
+				$elm$json$Json$Decode$maybe(
+					A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float)),
 				A3(
 					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 					'price_nis',
-					$elm$json$Json$Decode$maybe($elm$json$Json$Decode$string),
+					$elm$json$Json$Decode$maybe(
+						A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float)),
 					A3(
 						$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 						'year',
-						$elm$json$Json$Decode$string,
+						A2($elm$json$Json$Decode$map, $elm$core$String$fromInt, $elm$json$Json$Decode$int),
 						A3(
 							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 							'series',
@@ -5817,11 +5821,11 @@ var $author$project$SalesGallery$artworkDecoder = A2(
 								$elm$json$Json$Decode$string,
 								A3(
 									$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-									'image_url',
+									'image',
 									$elm$json$Json$Decode$string,
 									A3(
 										$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-										'artwork_url',
+										'url',
 										$elm$json$Json$Decode$string,
 										A3(
 											$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,

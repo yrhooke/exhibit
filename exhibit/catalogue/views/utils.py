@@ -3,10 +3,11 @@ import json
 from django.conf import settings
 from django.http import HttpResponse
 from django.views.generic.edit import CreateView, UpdateView
+from django.shortcuts import reverse
 from django.db.models.expressions import F
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
-from catalogue.models import Artwork 
+from catalogue.models import Artwork, SaleData
 from catalogue.forms import ArtworkSearchForm, LocationSearchForm, ExhibitionSearchForm
 
 
@@ -130,8 +131,6 @@ class SearchMixin(object):
         return context
 
 
-
-
 class genericCreateView(CreateView):
     template_name = 'catalogue/detail/detail.html'
 
@@ -154,9 +153,11 @@ class genericUpdateView(UpdateView):
         context['edit_mode'] = True
         return context
 
+
 class HttpResponseUnauthorized(HttpResponse):
     def __init__(self):
         self.status_code = 401
+
 
 def export_sale_data(saledata):
     """returns dict of relevant fields from SaleData object"""
@@ -176,4 +177,28 @@ def export_sale_data(saledata):
         "agentFee": saledata.agent_fee,
         "amountToArtist": saledata.amount_to_artist,
         "saleDate": sale_date
+    }
+
+
+def artwork_sale_gallery_details(artwork):
+    """The details from the artwork relevant for sale galleryview"""
+    if artwork.sale_data:
+        exported_sale_data = export_sale_data(artwork.sale_data)
+    else:
+        exported_sale_data = export_sale_data(SaleData())
+    return {
+        "id": artwork.id,
+        "title": artwork.title,
+        'series': artwork.series.name,
+        'year': artwork.year,
+        'location': artwork.location.name,
+        'width_in': artwork.width_in,
+        'height_in': artwork.height_in,
+        'width_cm': artwork.width_cm,
+        'height_cm': artwork.height_cm,
+        'url': reverse('catalogue:artwork_detail', args=[artwork.id]),
+        'image': artwork.get_image.url,
+        'price_nis': artwork.price_nis,
+        'price_usd': artwork.price_usd,
+        'sale_data': exported_sale_data,
     }
