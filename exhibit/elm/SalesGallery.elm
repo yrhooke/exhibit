@@ -238,8 +238,8 @@ artworkView artwork =
         imageBox =
             if artwork.image /= "" then
                 div
-                    [ class "gallery-bounding box"
-                    , style "background-image" ("url(" ++ artwork.image ++ ")")
+                    [ class "gallery-bounding-box"
+                    , style "background-image" ("url('" ++ artwork.image ++ "')")
                     ]
                     []
 

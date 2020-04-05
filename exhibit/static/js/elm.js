@@ -7577,8 +7577,8 @@ var $author$project$SalesGallery$artworkView = function (artwork) {
 		$elm$html$Html$div,
 		_List_fromArray(
 			[
-				$elm$html$Html$Attributes$class('gallery-bounding box'),
-				A2($elm$html$Html$Attributes$style, 'background-image', 'url(' + (artwork.image + ')'))
+				$elm$html$Html$Attributes$class('gallery-bounding-box'),
+				A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'' + (artwork.image + '\')'))
 			]),
 		_List_Nil) : A2(
 		$elm$html$Html$div,
