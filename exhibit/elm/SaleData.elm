@@ -46,18 +46,6 @@ type SyncStatus
     | Failed
 
 
-
--- printSyncStatus : SyncStatus -> String
--- printSyncStatus status =
---     case status of
---         Updated ->
---             "Updated"
---         Updating ->
---             "Updating"
---         Behind ->
---             "Behind"
-
-
 type alias Icons =
     { loaderIconURL : String
     , successIconURL : String
@@ -96,37 +84,46 @@ newSaleData =
     }
 
 
-decodeSaleData : D.Decoder SaleData
-decodeSaleData =
+saleDataDecoder : D.Decoder SaleData
+saleDataDecoder =
     D.succeed SaleData
         |> Pipeline.required "id" (D.int |> D.maybe)
         |> Pipeline.required "artwork" (D.int |> D.maybe)
         |> Pipeline.required "buyer" (D.int |> D.maybe)
         |> Pipeline.required "agent" (D.int |> D.maybe)
-        |> Pipeline.required "notes" nullableStringDecoder
-        |> Pipeline.required "saleCurrency" nullableStringDecoder
-        |> Pipeline.required "salePrice" nullableStringDecoder
-        |> Pipeline.required "discount" nullableStringDecoder
-        |> Pipeline.required "agentFee" nullableStringDecoder
-        |> Pipeline.required "amountToArtist" nullableStringDecoder
-        |> Pipeline.required "saleDate" nullableStringDecoder
+        |> Pipeline.optional "notes" D.string ""
+        |> Pipeline.optional "saleCurrency" D.string ""
+        |> Pipeline.optional "salePrice" D.string ""
+        |> Pipeline.optional "discount" D.string ""
+        |> Pipeline.optional "agentFee" D.string ""
+        |> Pipeline.optional "amountToArtist" D.string ""
+        |> Pipeline.optional "saleDate" D.string ""
 
 
-nullableStringDecoder : D.Decoder String
-nullableStringDecoder =
-    D.string
-        |> D.maybe
-        |> D.map (Maybe.withDefault "")
+
+-- nullableStringDecoder : D.Decoder String
+-- nullableStringDecoder =
+--     D.string
+--         |> D.maybe
+--         |> D.map (Maybe.withDefault "")
 
 
-stringDefault : Maybe String -> String
-stringDefault str =
-    case str of
-        Just s ->
-            s
+iconsDecoder : D.Decoder Icons
+iconsDecoder =
+    D.succeed Icons
+        |> Pipeline.optional "loader_icon" D.string ""
+        |> Pipeline.optional "success_icon" D.string ""
+        |> Pipeline.optional "fail_icon" D.string ""
 
-        Nothing ->
-            ""
+
+decode : D.Decoder Model
+decode =
+    D.succeed Model
+        |> Pipeline.custom saleDataDecoder
+        |> Pipeline.hardcoded Behind
+        |> Pipeline.hardcoded []
+        |> Pipeline.optional "csrftoken" D.string ""
+        |> Pipeline.custom iconsDecoder
 
 
 
@@ -261,18 +258,13 @@ init flags =
             , failIconURL = decodeFieldtoString "fail_icon" flags
             }
     in
-    case D.decodeValue decodeSaleData flags of
+    case D.decodeValue decode flags of
         Ok data ->
             let
                 log_init =
                     Debug.log "initial saleData:" data
             in
-            ( { saleData = data
-              , updated = Behind
-              , csrftoken = decodeFieldtoString "csrftoken" flags
-              , icons = icons
-              , errors = []
-              }
+            ( data
             , Cmd.none
             )
 
@@ -375,7 +367,7 @@ update msg model =
                                 (Http.stringPart "csrfmiddlewaretoken" model.csrftoken
                                     :: saleDataToForm model.saleData
                                 )
-                        , expect = Http.expectJson ServerResponse decodeSaleData
+                        , expect = Http.expectJson ServerResponse saleDataDecoder
                         , timeout = Nothing
                         , tracker = Just "upload"
                         }
@@ -383,7 +375,7 @@ update msg model =
                     )
 
                 Err errors ->
-                    ( { model | errors = errors, updated=Failed}, Cmd.none )
+                    ( { model | errors = errors, updated = Failed }, Cmd.none )
 
         ServerResponse response ->
             let

@@ -5551,24 +5551,110 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
+var $author$project$SalesGallery$Artwork = function (id) {
+	return function (url) {
+		return function (title) {
+			return function (series) {
+				return function (year) {
+					return function (priceUSD) {
+						return function (priceNIS) {
+							return function (sizeCm) {
+								return function (sizeIn) {
+									return function (saleData) {
+										return {id: id, priceNIS: priceNIS, priceUSD: priceUSD, saleData: saleData, series: series, sizeCm: sizeCm, sizeIn: sizeIn, title: title, url: url, year: year};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
 var $author$project$SaleData$Behind = {$: 'Behind'};
-var $elm$json$Json$Decode$decodeValue = _Json_run;
-var $elm$json$Json$Decode$field = _Json_decodeField;
-var $elm$json$Json$Decode$string = _Json_decodeString;
-var $author$project$SaleData$decodeFieldtoString = F2(
-	function (field, flags) {
-		var _v0 = A2(
-			$elm$json$Json$Decode$decodeValue,
-			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$string),
-			flags);
-		if (_v0.$ === 'Ok') {
-			var str = _v0.a;
-			return str;
-		} else {
-			var message = _v0.a;
-			return '';
-		}
+var $author$project$SaleData$Model = F5(
+	function (saleData, updated, errors, csrftoken, icons) {
+		return {csrftoken: csrftoken, errors: errors, icons: icons, saleData: saleData, updated: updated};
 	});
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$hardcoded = A2($elm$core$Basics$composeR, $elm$json$Json$Decode$succeed, $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom);
+var $author$project$SaleData$Icons = F3(
+	function (loaderIconURL, successIconURL, failIconURL) {
+		return {failIconURL: failIconURL, loaderIconURL: loaderIconURL, successIconURL: successIconURL};
+	});
+var $elm$json$Json$Decode$field = _Json_decodeField;
+var $elm$json$Json$Decode$andThen = _Json_andThen;
+var $elm$json$Json$Decode$decodeValue = _Json_run;
+var $elm$json$Json$Decode$fail = _Json_fail;
+var $elm$json$Json$Decode$null = _Json_decodeNull;
+var $elm$json$Json$Decode$oneOf = _Json_oneOf;
+var $elm$json$Json$Decode$value = _Json_decodeValue;
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder = F3(
+	function (pathDecoder, valDecoder, fallback) {
+		var nullOr = function (decoder) {
+			return $elm$json$Json$Decode$oneOf(
+				_List_fromArray(
+					[
+						decoder,
+						$elm$json$Json$Decode$null(fallback)
+					]));
+		};
+		var handleResult = function (input) {
+			var _v0 = A2($elm$json$Json$Decode$decodeValue, pathDecoder, input);
+			if (_v0.$ === 'Ok') {
+				var rawValue = _v0.a;
+				var _v1 = A2(
+					$elm$json$Json$Decode$decodeValue,
+					nullOr(valDecoder),
+					rawValue);
+				if (_v1.$ === 'Ok') {
+					var finalResult = _v1.a;
+					return $elm$json$Json$Decode$succeed(finalResult);
+				} else {
+					var finalErr = _v1.a;
+					return $elm$json$Json$Decode$fail(
+						$elm$json$Json$Decode$errorToString(finalErr));
+				}
+			} else {
+				return $elm$json$Json$Decode$succeed(fallback);
+			}
+		};
+		return A2($elm$json$Json$Decode$andThen, handleResult, $elm$json$Json$Decode$value);
+	});
+var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional = F4(
+	function (key, valDecoder, fallback, decoder) {
+		return A2(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+			A3(
+				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optionalDecoder,
+				A2($elm$json$Json$Decode$field, key, $elm$json$Json$Decode$value),
+				valDecoder,
+				fallback),
+			decoder);
+	});
+var $elm$json$Json$Decode$string = _Json_decodeString;
+var $author$project$SaleData$iconsDecoder = A4(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+	'fail_icon',
+	$elm$json$Json$Decode$string,
+	'',
+	A4(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+		'success_icon',
+		$elm$json$Json$Decode$string,
+		'',
+		A4(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+			'loader_icon',
+			$elm$json$Json$Decode$string,
+			'',
+			$elm$json$Json$Decode$succeed($author$project$SaleData$Icons))));
 var $author$project$SaleData$SaleData = function (id) {
 	return function (artwork) {
 		return function (buyer) {
@@ -5593,7 +5679,6 @@ var $author$project$SaleData$SaleData = function (id) {
 	};
 };
 var $elm$json$Json$Decode$int = _Json_decodeInt;
-var $elm$json$Json$Decode$oneOf = _Json_oneOf;
 var $elm$json$Json$Decode$maybe = function (decoder) {
 	return $elm$json$Json$Decode$oneOf(
 		_List_fromArray(
@@ -5602,20 +5687,6 @@ var $elm$json$Json$Decode$maybe = function (decoder) {
 				$elm$json$Json$Decode$succeed($elm$core$Maybe$Nothing)
 			]));
 };
-var $elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
-var $author$project$SaleData$nullableStringDecoder = A2(
-	$elm$json$Json$Decode$map,
-	$elm$core$Maybe$withDefault(''),
-	$elm$json$Json$Decode$maybe($elm$json$Json$Decode$string));
-var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom = $elm$json$Json$Decode$map2($elm$core$Basics$apR);
 var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 	function (key, valDecoder, decoder) {
 		return A2(
@@ -5623,34 +5694,41 @@ var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 			A2($elm$json$Json$Decode$field, key, valDecoder),
 			decoder);
 	});
-var $author$project$SaleData$decodeSaleData = A3(
-	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+var $author$project$SaleData$saleDataDecoder = A4(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 	'saleDate',
-	$author$project$SaleData$nullableStringDecoder,
-	A3(
-		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+	$elm$json$Json$Decode$string,
+	'',
+	A4(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 		'amountToArtist',
-		$author$project$SaleData$nullableStringDecoder,
-		A3(
-			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+		$elm$json$Json$Decode$string,
+		'',
+		A4(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 			'agentFee',
-			$author$project$SaleData$nullableStringDecoder,
-			A3(
-				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+			$elm$json$Json$Decode$string,
+			'',
+			A4(
+				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 				'discount',
-				$author$project$SaleData$nullableStringDecoder,
-				A3(
-					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+				$elm$json$Json$Decode$string,
+				'',
+				A4(
+					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 					'salePrice',
-					$author$project$SaleData$nullableStringDecoder,
-					A3(
-						$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+					$elm$json$Json$Decode$string,
+					'',
+					A4(
+						$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 						'saleCurrency',
-						$author$project$SaleData$nullableStringDecoder,
-						A3(
-							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+						$elm$json$Json$Decode$string,
+						'',
+						A4(
+							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 							'notes',
-							$author$project$SaleData$nullableStringDecoder,
+							$elm$json$Json$Decode$string,
+							'',
 							A3(
 								$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 								'agent',
@@ -5668,47 +5746,202 @@ var $author$project$SaleData$decodeSaleData = A3(
 											'id',
 											$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int),
 											$elm$json$Json$Decode$succeed($author$project$SaleData$SaleData))))))))))));
+var $author$project$SaleData$decode = A2(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+	$author$project$SaleData$iconsDecoder,
+	A4(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+		'csrftoken',
+		$elm$json$Json$Decode$string,
+		'',
+		A2(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$hardcoded,
+			_List_Nil,
+			A2(
+				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$hardcoded,
+				$author$project$SaleData$Behind,
+				A2(
+					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+					$author$project$SaleData$saleDataDecoder,
+					$elm$json$Json$Decode$succeed($author$project$SaleData$Model))))));
+var $author$project$SalesGallery$Size = F3(
+	function (width, height, unit) {
+		return {height: height, unit: unit, width: width};
+	});
+var $author$project$SalesGallery$sizeDecoder = function (unit) {
+	var width = 'width_' + unit;
+	var height = 'height_' + unit;
+	return A2(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$hardcoded,
+		unit,
+		A3(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+			height,
+			$elm$json$Json$Decode$string,
+			A3(
+				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+				width,
+				$elm$json$Json$Decode$string,
+				$elm$json$Json$Decode$succeed($author$project$SalesGallery$Size))));
+};
+var $author$project$SalesGallery$artworkDecoder = A2(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+	$author$project$SaleData$decode,
+	A2(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+		$author$project$SalesGallery$sizeDecoder('in'),
+		A2(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+			$author$project$SalesGallery$sizeDecoder('cm'),
+			A3(
+				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+				'price_usd',
+				$elm$json$Json$Decode$maybe($elm$json$Json$Decode$string),
+				A3(
+					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+					'price_nis',
+					$elm$json$Json$Decode$maybe($elm$json$Json$Decode$string),
+					A3(
+						$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+						'year',
+						$elm$json$Json$Decode$string,
+						A3(
+							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+							'series',
+							$elm$json$Json$Decode$string,
+							A3(
+								$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+								'title',
+								$elm$json$Json$Decode$string,
+								A3(
+									$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+									'artwork_url',
+									$elm$json$Json$Decode$string,
+									A3(
+										$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+										'id',
+										$elm$json$Json$Decode$int,
+										$elm$json$Json$Decode$succeed($author$project$SalesGallery$Artwork)))))))))));
+var $NoRedInk$list_selection$List$Selection$Selection = F2(
+	function (a, b) {
+		return {$: 'Selection', a: a, b: b};
+	});
+var $NoRedInk$list_selection$List$Selection$fromList = function (items) {
+	return A2($NoRedInk$list_selection$List$Selection$Selection, $elm$core$Maybe$Nothing, items);
+};
+var $elm$json$Json$Decode$list = _Json_decodeList;
 var $elm$core$Debug$log = _Debug_log;
-var $author$project$SaleData$newSaleData = {agent: $elm$core$Maybe$Nothing, agentFee: '', amountToArtist: '', artwork: $elm$core$Maybe$Nothing, buyer: $elm$core$Maybe$Nothing, discount: '', id: $elm$core$Maybe$Nothing, notes: '', saleCurrency: '', saleDate: '', salePrice: ''};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
-var $author$project$SaleData$init = function (flags) {
-	var icons = {
-		failIconURL: A2($author$project$SaleData$decodeFieldtoString, 'fail_icon', flags),
-		loaderIconURL: A2($author$project$SaleData$decodeFieldtoString, 'loader_icon', flags),
-		successIconURL: A2($author$project$SaleData$decodeFieldtoString, 'success_icon', flags)
-	};
-	var _v0 = A2($elm$json$Json$Decode$decodeValue, $author$project$SaleData$decodeSaleData, flags);
+var $author$project$SalesGallery$init = function (flags) {
+	var _v0 = A2(
+		$elm$json$Json$Decode$decodeValue,
+		$elm$json$Json$Decode$list($author$project$SalesGallery$artworkDecoder),
+		flags);
 	if (_v0.$ === 'Ok') {
-		var data = _v0.a;
-		var log_init = A2($elm$core$Debug$log, 'initial saleData:', data);
+		var artworkList = _v0.a;
 		return _Utils_Tuple2(
-			{
-				csrftoken: A2($author$project$SaleData$decodeFieldtoString, 'csrftoken', flags),
-				errors: _List_Nil,
-				icons: icons,
-				saleData: data,
-				updated: $author$project$SaleData$Behind
-			},
+			$NoRedInk$list_selection$List$Selection$fromList(artworkList),
 			$elm$core$Platform$Cmd$none);
 	} else {
 		var e = _v0.a;
-		var log_init = A2($elm$core$Debug$log, 'error reading flags', e);
+		var debug_init = A2($elm$core$Debug$log, 'error initializing list:', e);
 		return _Utils_Tuple2(
-			{
-				csrftoken: A2($author$project$SaleData$decodeFieldtoString, 'csrftoken', flags),
-				errors: _List_Nil,
-				icons: icons,
-				saleData: $author$project$SaleData$newSaleData,
-				updated: $author$project$SaleData$Behind
-			},
+			$NoRedInk$list_selection$List$Selection$fromList(_List_Nil),
 			$elm$core$Platform$Cmd$none);
 	}
 };
 var $elm$core$Platform$Sub$batch = _Platform_batch;
 var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
-var $author$project$SaleData$subscriptions = function (model) {
+var $author$project$SalesGallery$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
+};
+var $NoRedInk$list_selection$List$Selection$deselect = function (_v0) {
+	var items = _v0.b;
+	return A2($NoRedInk$list_selection$List$Selection$Selection, $elm$core$Maybe$Nothing, items);
+};
+var $elm$core$List$filter = F2(
+	function (isGood, list) {
+		return A3(
+			$elm$core$List$foldr,
+			F2(
+				function (x, xs) {
+					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
+				}),
+			_List_Nil,
+			list);
+	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
+		}
+	});
+var $NoRedInk$list_selection$List$Selection$selectBy = F2(
+	function (query, _v0) {
+		var original = _v0.a;
+		var items = _v0.b;
+		return A2(
+			$NoRedInk$list_selection$List$Selection$Selection,
+			A2(
+				$elm$core$Maybe$withDefault,
+				original,
+				A2(
+					$elm$core$Maybe$map,
+					$elm$core$Maybe$Just,
+					$elm$core$List$head(
+						A2($elm$core$List$filter, query, items)))),
+			items);
+	});
+var $author$project$SalesGallery$SaleDataUpdated = function (a) {
+	return {$: 'SaleDataUpdated', a: a};
+};
+var $elm$core$Platform$Cmd$map = _Platform_map;
+var $NoRedInk$list_selection$List$Selection$mapSelected = F2(
+	function (mappers, _v0) {
+		var selectedItem = _v0.a;
+		var items = _v0.b;
+		return A2(
+			$NoRedInk$list_selection$List$Selection$Selection,
+			A2($elm$core$Maybe$map, mappers.selected, selectedItem),
+			A2(
+				$elm$core$List$map,
+				function (item) {
+					return _Utils_eq(
+						$elm$core$Maybe$Just(item),
+						selectedItem) ? mappers.selected(item) : mappers.rest(item);
+				},
+				items));
+	});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
+};
+var $NoRedInk$list_selection$List$Selection$selected = function (_v0) {
+	var selectedItem = _v0.a;
+	return selectedItem;
 };
 var $author$project$SaleData$Failed = {$: 'Failed'};
 var $author$project$SaleData$ServerResponse = function (a) {
@@ -5737,11 +5970,6 @@ var $rtfeldman$elm_validate$Validate$all = function (validators) {
 	};
 	return $rtfeldman$elm_validate$Validate$Validator(newGetErrors);
 };
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
-	});
 var $rtfeldman$elm_validate$Validate$any = F2(
 	function (validators, subject) {
 		any:
@@ -5807,20 +6035,6 @@ var $elm$core$List$filterMap = F2(
 			_List_Nil,
 			xs);
 	});
-var $elm$core$Maybe$map = F2(
-	function (f, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return $elm$core$Maybe$Just(
-				f(value));
-		} else {
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
 var $author$project$DateValidator$joinIndices = function (element) {
 	return A2(
 		$elm$core$Maybe$map,
@@ -5843,15 +6057,6 @@ var $author$project$DateValidator$findMatches = F2(
 				$elm$core$Tuple$pair,
 				A2($elm$core$List$map, stringParser, potentialMatches)));
 	});
-var $elm$core$List$head = function (list) {
-	if (list.b) {
-		var x = list.a;
-		var xs = list.b;
-		return $elm$core$Maybe$Just(x);
-	} else {
-		return $elm$core$Maybe$Nothing;
-	}
-};
 var $elm$core$List$tail = function (list) {
 	if (list.b) {
 		var x = list.a;
@@ -7234,7 +7439,7 @@ var $author$project$SaleData$update = F2(
 										$elm$core$List$cons,
 										A2($elm$http$Http$stringPart, 'csrfmiddlewaretoken', model.csrftoken),
 										$author$project$SaleData$saleDataToForm(model.saleData))),
-								expect: A2($elm$http$Http$expectJson, $author$project$SaleData$ServerResponse, $author$project$SaleData$decodeSaleData),
+								expect: A2($elm$http$Http$expectJson, $author$project$SaleData$ServerResponse, $author$project$SaleData$saleDataDecoder),
 								headers: _List_Nil,
 								method: 'POST',
 								timeout: $elm$core$Maybe$Nothing,
@@ -7271,7 +7476,122 @@ var $author$project$SaleData$update = F2(
 				}
 		}
 	});
-var $elm$json$Json$Decode$value = _Json_decodeValue;
+var $author$project$SalesGallery$updateSaleData = F2(
+	function (saleDataMsg, model) {
+		var newSubMsg = function (oldSaleData) {
+			return A2($author$project$SaleData$update, saleDataMsg, oldSaleData).b;
+		};
+		var subCmd = function () {
+			var _v0 = $NoRedInk$list_selection$List$Selection$selected(model);
+			if (_v0.$ === 'Just') {
+				var artwork = _v0.a;
+				return newSubMsg(artwork.saleData);
+			} else {
+				return $elm$core$Platform$Cmd$none;
+			}
+		}();
+		var newSaleData = function (oldSaleData) {
+			return A2($author$project$SaleData$update, saleDataMsg, oldSaleData).a;
+		};
+		var newArtwork = function (oldArtwork) {
+			return _Utils_update(
+				oldArtwork,
+				{
+					saleData: newSaleData(oldArtwork.saleData)
+				});
+		};
+		return _Utils_Tuple2(
+			A2(
+				$NoRedInk$list_selection$List$Selection$mapSelected,
+				{
+					rest: $elm$core$Basics$identity,
+					selected: function (a) {
+						return newArtwork(a);
+					}
+				},
+				model),
+			A2($elm$core$Platform$Cmd$map, $author$project$SalesGallery$SaleDataUpdated, subCmd));
+	});
+var $author$project$SalesGallery$update = F2(
+	function (msg, model) {
+		switch (msg.$) {
+			case 'Select':
+				var artworkID = msg.a;
+				return _Utils_Tuple2(
+					A2(
+						$NoRedInk$list_selection$List$Selection$selectBy,
+						function (a) {
+							return _Utils_eq(a.id, artworkID);
+						},
+						model),
+					$elm$core$Platform$Cmd$none);
+			case 'Deselect':
+				return _Utils_Tuple2(
+					$NoRedInk$list_selection$List$Selection$deselect(model),
+					$elm$core$Platform$Cmd$none);
+			default:
+				var saleDataMsg = msg.a;
+				return A2($author$project$SalesGallery$updateSaleData, saleDataMsg, model);
+		}
+	});
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $author$project$SalesGallery$view = function (model) {
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				$elm$html$Html$text(
+				$elm$core$Debug$toString(model))
+			]));
+};
+var $author$project$SalesGallery$main = $elm$browser$Browser$element(
+	{init: $author$project$SalesGallery$init, subscriptions: $author$project$SalesGallery$subscriptions, update: $author$project$SalesGallery$update, view: $author$project$SalesGallery$view});
+var $author$project$SaleData$decodeFieldtoString = F2(
+	function (field, flags) {
+		var _v0 = A2(
+			$elm$json$Json$Decode$decodeValue,
+			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$string),
+			flags);
+		if (_v0.$ === 'Ok') {
+			var str = _v0.a;
+			return str;
+		} else {
+			var message = _v0.a;
+			return '';
+		}
+	});
+var $author$project$SaleData$newSaleData = {agent: $elm$core$Maybe$Nothing, agentFee: '', amountToArtist: '', artwork: $elm$core$Maybe$Nothing, buyer: $elm$core$Maybe$Nothing, discount: '', id: $elm$core$Maybe$Nothing, notes: '', saleCurrency: '', saleDate: '', salePrice: ''};
+var $author$project$SaleData$init = function (flags) {
+	var icons = {
+		failIconURL: A2($author$project$SaleData$decodeFieldtoString, 'fail_icon', flags),
+		loaderIconURL: A2($author$project$SaleData$decodeFieldtoString, 'loader_icon', flags),
+		successIconURL: A2($author$project$SaleData$decodeFieldtoString, 'success_icon', flags)
+	};
+	var _v0 = A2($elm$json$Json$Decode$decodeValue, $author$project$SaleData$decode, flags);
+	if (_v0.$ === 'Ok') {
+		var data = _v0.a;
+		var log_init = A2($elm$core$Debug$log, 'initial saleData:', data);
+		return _Utils_Tuple2(data, $elm$core$Platform$Cmd$none);
+	} else {
+		var e = _v0.a;
+		var log_init = A2($elm$core$Debug$log, 'error reading flags', e);
+		return _Utils_Tuple2(
+			{
+				csrftoken: A2($author$project$SaleData$decodeFieldtoString, 'csrftoken', flags),
+				errors: _List_Nil,
+				icons: icons,
+				saleData: $author$project$SaleData$newSaleData,
+				updated: $author$project$SaleData$Behind
+			},
+			$elm$core$Platform$Cmd$none);
+	}
+};
+var $author$project$SaleData$subscriptions = function (model) {
+	return $elm$core$Platform$Sub$none;
+};
 var $author$project$SaleData$Discount = {$: 'Discount'};
 var $author$project$SaleData$Notes = {$: 'Notes'};
 var $author$project$SaleData$UpdateAgentFee = function (a) {
@@ -7304,18 +7624,6 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
-var $elm$html$Html$div = _VirtualDom_node('div');
-var $elm$core$List$filter = F2(
-	function (isGood, list) {
-		return A3(
-			$elm$core$List$foldr,
-			F2(
-				function (x, xs) {
-					return isGood(x) ? A2($elm$core$List$cons, x, xs) : xs;
-				}),
-			_List_Nil,
-			list);
-	});
 var $author$project$SaleData$findErrors = F2(
 	function (field, errors) {
 		var fieldMatch = function (error) {
@@ -7389,8 +7697,6 @@ var $elm$html$Html$Attributes$classList = function (classes) {
 				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
 };
 var $elm$html$Html$small = _VirtualDom_node('small');
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $author$project$SaleData$errorView = function (error) {
 	return A2(
 		$elm$html$Html$small,
@@ -8385,4 +8691,4 @@ var $author$project$ImageUpload$view = function (model) {
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(
 	{init: $author$project$ImageUpload$init, subscriptions: $author$project$ImageUpload$subscriptions, update: $author$project$ImageUpload$update, view: $author$project$ImageUpload$view});
-_Platform_export({'ImageUpload':{'init':$author$project$ImageUpload$main($elm$json$Json$Decode$value)(0)},'SaleData':{'init':$author$project$SaleData$main($elm$json$Json$Decode$value)(0)}});}(this));
+_Platform_export({'ImageUpload':{'init':$author$project$ImageUpload$main($elm$json$Json$Decode$value)(0)},'SalesGallery':{'init':$author$project$SalesGallery$main($elm$json$Json$Decode$value)(0)},'SaleData':{'init':$author$project$SaleData$main($elm$json$Json$Decode$value)(0)}});}(this));
