@@ -5553,15 +5553,17 @@ var $elm$core$Task$perform = F2(
 var $elm$browser$Browser$element = _Browser_element;
 var $author$project$SalesGallery$Artwork = function (id) {
 	return function (url) {
-		return function (title) {
-			return function (series) {
-				return function (year) {
-					return function (priceUSD) {
-						return function (priceNIS) {
-							return function (sizeCm) {
-								return function (sizeIn) {
-									return function (saleData) {
-										return {id: id, priceNIS: priceNIS, priceUSD: priceUSD, saleData: saleData, series: series, sizeCm: sizeCm, sizeIn: sizeIn, title: title, url: url, year: year};
+		return function (image) {
+			return function (title) {
+				return function (series) {
+					return function (year) {
+						return function (priceUSD) {
+							return function (priceNIS) {
+								return function (sizeCm) {
+									return function (sizeIn) {
+										return function (saleData) {
+											return {id: id, image: image, priceNIS: priceNIS, priceUSD: priceUSD, saleData: saleData, series: series, sizeCm: sizeCm, sizeIn: sizeIn, title: title, url: url, year: year};
+										};
 									};
 								};
 							};
@@ -5815,13 +5817,17 @@ var $author$project$SalesGallery$artworkDecoder = A2(
 								$elm$json$Json$Decode$string,
 								A3(
 									$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-									'artwork_url',
+									'image_url',
 									$elm$json$Json$Decode$string,
 									A3(
 										$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-										'id',
-										$elm$json$Json$Decode$int,
-										$elm$json$Json$Decode$succeed($author$project$SalesGallery$Artwork)))))))))));
+										'artwork_url',
+										$elm$json$Json$Decode$string,
+										A3(
+											$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+											'id',
+											$elm$json$Json$Decode$int,
+											$elm$json$Json$Decode$succeed($author$project$SalesGallery$Artwork))))))))))));
 var $NoRedInk$list_selection$List$Selection$Selection = F2(
 	function (a, b) {
 		return {$: 'Selection', a: a, b: b};
@@ -7534,17 +7540,215 @@ var $author$project$SalesGallery$update = F2(
 				return A2($author$project$SalesGallery$updateSaleData, saleDataMsg, model);
 		}
 	});
+var $elm$html$Html$a = _VirtualDom_node('a');
+var $elm$json$Json$Encode$string = _Json_wrap;
+var $elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			$elm$json$Json$Encode$string(string));
+	});
+var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$html$Html$Attributes$href = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
+};
+var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
+var $elm$html$Html$li = _VirtualDom_node('li');
+var $author$project$SalesGallery$sizeText = function (size) {
+	return size.width + ('x' + (size.height + size.unit));
+};
+var $elm$html$Html$span = _VirtualDom_node('span');
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $author$project$SalesGallery$view = function (model) {
-	return A2(
+var $elm$html$Html$ul = _VirtualDom_node('ul');
+var $author$project$SalesGallery$artworkView = function (artwork) {
+	var imageBox = (artwork.image !== '') ? A2(
 		$elm$html$Html$div,
-		_List_Nil,
 		_List_fromArray(
 			[
-				$elm$html$Html$text(
-				$elm$core$Debug$toString(model))
+				$elm$html$Html$Attributes$class('gallery-bounding box'),
+				A2($elm$html$Html$Attributes$style, 'background-image', 'url(' + (artwork.image + ')'))
+			]),
+		_List_Nil) : A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('gallery-item-image'),
+				A2($elm$html$Html$Attributes$style, 'background', 'darkgrey')
+			]),
+		_List_Nil);
+	return A2(
+		$elm$html$Html$a,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('gallery-item-wrapper'),
+				$elm$html$Html$Attributes$href(artwork.url)
+			]),
+		_List_fromArray(
+			[
+				imageBox,
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('gallery-item-hover')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$ul,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('gallery-item-text')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$div,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('gallery-item-title')
+											]),
+										_List_fromArray(
+											[
+												A2(
+												$elm$html$Html$span,
+												_List_Nil,
+												_List_fromArray(
+													[
+														$elm$html$Html$text(artwork.title)
+													]))
+											]))
+									])),
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$span,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$id(
+												'artwork_series_' + $elm$core$String$fromInt(artwork.id))
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text(artwork.series)
+											])),
+										A2(
+										$elm$html$Html$span,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('separator')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text(' | ')
+											])),
+										A2(
+										$elm$html$Html$span,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$id(
+												'artwork_year_' + $elm$core$String$fromInt(artwork.id))
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text(artwork.year)
+											]))
+									])),
+								A2(
+								$elm$html$Html$li,
+								_List_Nil,
+								_List_fromArray(
+									[
+										A2(
+										$elm$html$Html$span,
+										_List_Nil,
+										_List_fromArray(
+											[
+												$elm$html$Html$text(
+												$author$project$SalesGallery$sizeText(artwork.sizeCm))
+											])),
+										A2(
+										$elm$html$Html$span,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('separator')
+											]),
+										_List_fromArray(
+											[
+												$elm$html$Html$text(' | ')
+											])),
+										A2(
+										$elm$html$Html$span,
+										_List_Nil,
+										_List_fromArray(
+											[
+												$elm$html$Html$text(
+												$author$project$SalesGallery$sizeText(artwork.sizeIn))
+											]))
+									]))
+							]))
+					]))
+			]));
+};
+var $elm$html$Html$Attributes$classList = function (classes) {
+	return $elm$html$Html$Attributes$class(
+		A2(
+			$elm$core$String$join,
+			' ',
+			A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$first,
+				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
+};
+var $NoRedInk$list_selection$List$Selection$toList = function (_v0) {
+	var items = _v0.b;
+	return items;
+};
+var $author$project$SalesGallery$view = function (model) {
+	var log_model = A2(
+		$elm$core$Debug$log,
+		'view updated',
+		$elm$core$Debug$toString(model));
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$id('search-results-wrapper')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id('searchResults'),
+						$elm$html$Html$Attributes$classList(
+						_List_fromArray(
+							[
+								_Utils_Tuple2('gallery-list', true),
+								_Utils_Tuple2('center-block', true)
+							]))
+					]),
+				A2(
+					$elm$core$List$map,
+					$author$project$SalesGallery$artworkView,
+					$NoRedInk$list_selection$List$Selection$toList(model)))
 			]));
 };
 var $author$project$SalesGallery$main = $elm$browser$Browser$element(
@@ -7615,15 +7819,6 @@ var $author$project$SaleData$UpdateSaleDate = function (a) {
 var $author$project$SaleData$UpdateSalePrice = function (a) {
 	return {$: 'UpdateSalePrice', a: a};
 };
-var $elm$json$Json$Encode$string = _Json_wrap;
-var $elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			$elm$json$Json$Encode$string(string));
-	});
-var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
 var $author$project$SaleData$findErrors = F2(
 	function (field, errors) {
 		var fieldMatch = function (error) {
@@ -7634,7 +7829,6 @@ var $author$project$SaleData$findErrors = F2(
 			$elm$core$Tuple$second,
 			A2($elm$core$List$filter, fieldMatch, errors));
 	});
-var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
 var $elm$virtual_dom$VirtualDom$attribute = F2(
 	function (key, value) {
@@ -7669,8 +7863,6 @@ var $author$project$SaleData$saleDataIdSelectionView = function (saleDataID) {
 	}
 };
 var $elm$html$Html$select = _VirtualDom_node('select');
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
 var $author$project$SaleData$hiddenInputView = function (saleDataID) {
 	return A2(
 		$elm$html$Html$select,
@@ -7686,16 +7878,6 @@ var $author$project$SaleData$hiddenInputView = function (saleDataID) {
 			]));
 };
 var $author$project$SaleData$AttemptSubmitForm = {$: 'AttemptSubmitForm'};
-var $elm$html$Html$Attributes$classList = function (classes) {
-	return $elm$html$Html$Attributes$class(
-		A2(
-			$elm$core$String$join,
-			' ',
-			A2(
-				$elm$core$List$map,
-				$elm$core$Tuple$first,
-				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
-};
 var $elm$html$Html$small = _VirtualDom_node('small');
 var $author$project$SaleData$errorView = function (error) {
 	return A2(
@@ -7854,7 +8036,6 @@ var $author$project$SaleData$inputView = F6(
 				A2($elm$core$List$map, $author$project$SaleData$errorView, errors)));
 	});
 var $elm$html$Html$img = _VirtualDom_node('img');
-var $elm$html$Html$span = _VirtualDom_node('span');
 var $elm$html$Html$Attributes$src = function (url) {
 	return A2(
 		$elm$html$Html$Attributes$stringProperty,
