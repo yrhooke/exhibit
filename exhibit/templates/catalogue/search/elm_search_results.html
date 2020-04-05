@@ -42,7 +42,11 @@
             element["sale_data"]['success_icon'] = "{% static 'images/upload_success.svg' %}";
             element["sale_data"]['fail_icon'] = "{% static 'images/upload_fail.svg' %}";
         });
-        return artwork_data
+        close_icon = "{% static 'images/gallery_close.svg' %}";
+        return {
+            "data" : artwork_data,
+            "closeIconURL" : close_icon
+        }
     }
     var app = Elm.SalesGallery.init({
         node: document.getElementById("elm-sales-gallery-app"),

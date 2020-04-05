@@ -3,6 +3,7 @@ module SalesGallery exposing (..)
 -- import Http
 
 import Browser
+import Browser.Navigation as Navigation
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -30,7 +31,9 @@ main =
 
 
 type alias Model =
-    Selection Artwork
+    { data : Selection Artwork
+    , closeIconURL : String
+    }
 
 
 type alias Artwork =
@@ -68,8 +71,8 @@ artworkDecoder =
         |> Pipeline.required "title" D.string
         |> Pipeline.required "series" D.string
         |> Pipeline.required "year" (D.map String.fromInt D.int)
-        |> Pipeline.required "price_nis" (D.map String.fromFloat D.float|> D.maybe)
-        |> Pipeline.required "price_usd" (D.map String.fromFloat D.float|> D.maybe)
+        |> Pipeline.required "price_nis" (D.map String.fromFloat D.float |> D.maybe)
+        |> Pipeline.required "price_usd" (D.map String.fromFloat D.float |> D.maybe)
         |> Pipeline.custom (sizeDecoder "cm")
         |> Pipeline.custom (sizeDecoder "in")
         |> Pipeline.custom (D.field "sale_data" SaleData.decode)
@@ -96,18 +99,29 @@ sizeDecoder unit =
 
 init : D.Value -> ( Model, Cmd Msg )
 init flags =
-    case D.decodeValue (D.list artworkDecoder) flags of
-        Ok artworkList ->
-            ( List.Selection.fromList artworkList
-            , Cmd.none
-            )
+    let
+        modelDecoder =
+            D.succeed Model
+                |> Pipeline.optional "data"
+                    (D.map
+                        (\a -> List.Selection.fromList a)
+                        (D.list artworkDecoder)
+                    )
+                    (List.Selection.fromList [])
+                |> Pipeline.optional "closeIconURL" D.string ""
+    in
+    case D.decodeValue modelDecoder flags of
+        Ok model ->
+            ( model, Cmd.none )
 
         Err e ->
             let
                 debug_init =
                     Debug.log "error initializing list:" e
             in
-            ( List.Selection.fromList []
+            ( { data = List.Selection.fromList []
+              , closeIconURL = ""
+              }
             , Cmd.none
             )
 
@@ -119,6 +133,7 @@ init flags =
 type Msg
     = Select Int
     | Deselect
+    | GoTo String
     | SaleDataUpdated SaleData.Msg
 
 
@@ -126,12 +141,25 @@ update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Select artworkID ->
-            ( List.Selection.selectBy (\a -> a.id == artworkID) model
+            let
+                log_selected =
+                    Debug.log "artwork selected" artworkID
+            in
+            ( { model
+                | data = List.Selection.selectBy (\a -> a.id == artworkID) model.data
+              }
             , Cmd.none
             )
 
         Deselect ->
-            ( List.Selection.deselect model, Cmd.none )
+            let
+                log_deselect =
+                    Debug.log "artwork deselected"
+            in
+            ( { model | data = List.Selection.deselect model.data }, Cmd.none )
+
+        GoTo url ->
+            ( model, Navigation.load url )
 
         SaleDataUpdated saleDataMsg ->
             updateSaleData saleDataMsg model
@@ -153,18 +181,21 @@ updateSaleData saleDataMsg model =
             { oldArtwork | saleData = newSaleData oldArtwork.saleData }
 
         subCmd =
-            case List.Selection.selected model of
+            case List.Selection.selected model.data of
                 Just artwork ->
                     newSubMsg artwork.saleData
 
                 Nothing ->
                     Cmd.none
     in
-    ( List.Selection.mapSelected
-        { selected = \a -> newArtwork a
-        , rest = identity
-        }
-        model
+    ( { model
+        | data =
+            List.Selection.mapSelected
+                { selected = \a -> newArtwork a
+                , rest = identity
+                }
+                model.data
+      }
     , Cmd.map SaleDataUpdated subCmd
     )
 
@@ -187,6 +218,14 @@ view model =
     let
         log_model =
             Debug.log "view updated" (Debug.toString model)
+
+        hasSelected =
+            case List.Selection.selected model.data of
+                Just _ ->
+                    True
+
+                Nothing ->
+                    False
     in
     div
         [ id "search-results-wrapper" ]
@@ -197,8 +236,15 @@ view model =
                 , ( "center-block", True )
                 ]
             ]
-            (List.map artworkView (List.Selection.toList model))
+            (List.Selection.mapSelected
+                { selected = \artwork -> selectedArtworkView model.closeIconURL artwork
+                , rest = \artwork -> artworkView False artwork
+                }
+                model.data
+                |> List.Selection.toList
+            )
 
+        -- (List.map (artworkView hasSelected) (List.Selection.toList model))
         -- {% empty %}
         -- <div>
         --     No Results Found
@@ -207,34 +253,26 @@ view model =
 
 
 
--- {% if search_results.has_other_pages %}
--- <div id="pagination-wrapper">
---         <ul class="pagination mx-auto">
---           {% if search_results.has_previous %}
---           <li><a href="?{% url_replace page=search_results.previous_page_number %}">&laquo;</a></li>
---           {% else %}
---           <li class="disabled"><span>&laquo;</span></li>
---           {% endif %}
---           {% for i in search_results.paginator.page_range %}
---           {% if search_results.number == i %}
---           <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
---           {% else %}
---           <li><a href="?{% url_replace page=i %}">{{ i }}</a></li>
---           {% endif %}
---           {% endfor %}
---           {% if search_results.has_next %}
---           <li><a href="?{% url_replace page=search_results.next_page_number %}">&raquo;</a></li>
---           {% else %}
---             <li class="disabled"><span>&raquo;</span></li>
---           {% endif %}
---         </ul>
--- </div>
--- {% endif %}
 
 
-artworkView : Artwork -> Html Msg
-artworkView artwork =
+
+artworkView : Bool -> Artwork -> Html Msg
+artworkView linkExposed artwork =
     let
+        wrapper =
+            if linkExposed then
+                a
+                    [ class "gallery-item-wrapper"
+                    , href artwork.url
+                    ]
+
+            else
+                div
+                    [ class "gallery-item-wrapper"
+                    , onClick (Select artwork.id)
+                    , onDoubleClick (GoTo artwork.url)
+                    ]
+
         imageBox =
             if artwork.image /= "" then
                 div
@@ -250,10 +288,7 @@ artworkView artwork =
                     ]
                     []
     in
-    a
-        [ class "gallery-item-wrapper"
-        , href artwork.url
-        ]
+    wrapper
         [ imageBox
         , div [ class "gallery-item-hover" ]
             [ ul [ class "gallery-item-text" ]
@@ -272,6 +307,57 @@ artworkView artwork =
                     , span [ class "separator" ] [ text " | " ]
                     , span [] [ text (sizeText artwork.sizeIn) ]
                     ]
+                ]
+            ]
+        ]
+
+
+selectedArtworkView : String -> Artwork -> Html Msg
+selectedArtworkView closeIconURL artwork =
+    div
+        [ style "width" "100%"
+        , style "display" "flex"
+        , style "justify-content" "center"
+        , style "align-items" "center"
+        , onBlur Deselect
+        ]
+        [ div
+            [ style "display" "flex"
+            , style "align-self" "center"
+            , style "background-color" "rgb(222, 222, 212)"
+            , style "width" "min-content"
+            , style "border-radius" "5px"
+            , tabindex 1
+            ]
+            [ artworkView True artwork
+            , div
+                [ id "sales-info"
+                , class "card"
+                , style "width" "400px"
+                , style "margin" "20px"
+                ]
+                [ div
+                    [ class "card-body"
+                    , class "sale-form"
+                    ]
+                    [ Html.map SaleDataUpdated (SaleData.view artwork.saleData)
+                    ]
+                ]
+            , button
+                [ onClick Deselect
+                , style "background-color" "inherit"
+                , style "align-self" "start"
+                , style "margin" "10px 10px 0 0"
+                , style "padding" "0"
+                ]
+                [ img
+                    [ src closeIconURL
+                    , style "height" "25px"
+                    , alt "x"
+                    , style "font-size" "34px"
+                    , style "color" "rgba(0,0,0,0.125)"
+                    ]
+                    []
                 ]
             ]
         ]
