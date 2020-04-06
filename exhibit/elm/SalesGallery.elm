@@ -3,6 +3,7 @@ module SalesGallery exposing (..)
 -- import Http
 
 import Browser
+import Browser.Dom
 import Browser.Navigation as Navigation
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -11,6 +12,7 @@ import Json.Decode as D
 import Json.Decode.Pipeline as Pipeline
 import List.Selection exposing (Selection)
 import SaleData
+import Task
 
 
 
@@ -132,9 +134,11 @@ init flags =
 
 type Msg
     = Select Int
+    | GotViewPort (Result Browser.Dom.Error Browser.Dom.Element)
     | Deselect
     | GoTo String
     | SaleDataUpdated SaleData.Msg
+    | NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -148,8 +152,43 @@ update msg model =
             ( { model
                 | data = List.Selection.selectBy (\a -> a.id == artworkID) model.data
               }
-            , Cmd.none
+            , getArtworkPosition artworkID
             )
+
+        GotViewPort result ->
+            case result of
+                Ok element ->
+                    let
+                        height =
+                            element.viewport.height
+
+                        oldOffset =
+                            element.viewport.y
+
+                        elementOffset =
+                            element.element.y
+
+                        elementHeight =
+                            element.element.height
+
+                        newOffset =
+                            if height <= elementHeight then
+                                elementOffset
+
+                            else
+                                elementOffset - (height - elementHeight) / 2
+                    in
+                    ( model
+                    , Browser.Dom.setViewport element.viewport.x newOffset
+                        |> Task.perform (\_ -> NoOp)
+                    )
+
+                Err e ->
+                    let
+                        viewport_log =
+                            Debug.log "error getting height" e
+                    in
+                    ( model, Cmd.none )
 
         Deselect ->
             let
@@ -163,6 +202,9 @@ update msg model =
 
         SaleDataUpdated saleDataMsg ->
             updateSaleData saleDataMsg model
+
+        NoOp ->
+            ( model, Cmd.none )
 
 
 updateSaleData : SaleData.Msg -> Model -> ( Model, Cmd Msg )
@@ -198,6 +240,12 @@ updateSaleData saleDataMsg model =
       }
     , Cmd.map SaleDataUpdated subCmd
     )
+
+
+getArtworkPosition : Int -> Cmd Msg
+getArtworkPosition artworkID =
+    Browser.Dom.getElement ("artwork_wrapper" ++ String.fromInt artworkID)
+        |> Task.attempt GotViewPort
 
 
 
@@ -252,10 +300,6 @@ view model =
         ]
 
 
-
-
-
-
 artworkView : Bool -> Artwork -> Html Msg
 artworkView linkExposed artwork =
     let
@@ -263,6 +307,7 @@ artworkView linkExposed artwork =
             if linkExposed then
                 a
                     [ class "gallery-item-wrapper"
+                    , id <| "artwork_wrapper" ++ String.fromInt artwork.id
                     , href artwork.url
                     ]
 
@@ -320,6 +365,7 @@ selectedArtworkView closeIconURL artwork =
         , style "justify-content" "center"
         , style "align-items" "center"
         , onBlur Deselect
+        , id <| "artwork_wrapper" ++ String.fromInt artwork.id
         ]
         [ div
             [ style "display" "flex"

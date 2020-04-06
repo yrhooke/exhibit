@@ -5864,18 +5864,6 @@ var $author$project$SalesGallery$init = function (flags) {
 				$elm$json$Json$Decode$list($author$project$SalesGallery$artworkDecoder)),
 			$NoRedInk$list_selection$List$Selection$fromList(_List_Nil),
 			$elm$json$Json$Decode$succeed($author$project$SalesGallery$Model)));
-	var closeIconURL = function () {
-		var _v1 = A2(
-			$elm$json$Json$Decode$decodeValue,
-			A2($elm$json$Json$Decode$field, 'closeIconURL', $elm$json$Json$Decode$string),
-			flags);
-		if (_v1.$ === 'Ok') {
-			var url = _v1.a;
-			return url;
-		} else {
-			return '';
-		}
-	}();
 	var _v0 = A2($elm$json$Json$Decode$decodeValue, modelDecoder, flags);
 	if (_v0.$ === 'Ok') {
 		var model = _v0.a;
@@ -5896,9 +5884,45 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$SalesGallery$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
+var $author$project$SalesGallery$NoOp = {$: 'NoOp'};
 var $NoRedInk$list_selection$List$Selection$deselect = function (_v0) {
 	var items = _v0.b;
 	return A2($NoRedInk$list_selection$List$Selection$Selection, $elm$core$Maybe$Nothing, items);
+};
+var $author$project$SalesGallery$GotViewPort = function (a) {
+	return {$: 'GotViewPort', a: a};
+};
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
+var $elm$core$Task$onError = _Scheduler_onError;
+var $elm$core$Task$attempt = F2(
+	function (resultToMessage, task) {
+		return $elm$core$Task$command(
+			$elm$core$Task$Perform(
+				A2(
+					$elm$core$Task$onError,
+					A2(
+						$elm$core$Basics$composeL,
+						A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+						$elm$core$Result$Err),
+					A2(
+						$elm$core$Task$andThen,
+						A2(
+							$elm$core$Basics$composeL,
+							A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+							$elm$core$Result$Ok),
+						task))));
+	});
+var $elm$browser$Browser$Dom$getElement = _Browser_getElement;
+var $author$project$SalesGallery$getArtworkPosition = function (artworkID) {
+	return A2(
+		$elm$core$Task$attempt,
+		$author$project$SalesGallery$GotViewPort,
+		$elm$browser$Browser$Dom$getElement(
+			'artwork_wrapper' + $elm$core$String$fromInt(artworkID)));
 };
 var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$core$List$filter = F2(
@@ -5956,6 +5980,7 @@ var $NoRedInk$list_selection$List$Selection$selectBy = F2(
 						A2($elm$core$List$filter, query, items)))),
 			items);
 	});
+var $elm$browser$Browser$Dom$setViewport = _Browser_setViewport;
 var $author$project$SalesGallery$SaleDataUpdated = function (a) {
 	return {$: 'SaleDataUpdated', a: a};
 };
@@ -7574,7 +7599,29 @@ var $author$project$SalesGallery$update = F2(
 								},
 								model.data)
 						}),
-					$elm$core$Platform$Cmd$none);
+					$author$project$SalesGallery$getArtworkPosition(artworkID));
+			case 'GotViewPort':
+				var result = msg.a;
+				if (result.$ === 'Ok') {
+					var element = result.a;
+					var oldOffset = element.viewport.y;
+					var height = element.viewport.height;
+					var elementOffset = element.element.y;
+					var elementHeight = element.element.height;
+					var newOffset = (_Utils_cmp(height, elementHeight) < 1) ? elementOffset : (elementOffset - ((height - elementHeight) / 2));
+					return _Utils_Tuple2(
+						model,
+						A2(
+							$elm$core$Task$perform,
+							function (_v2) {
+								return $author$project$SalesGallery$NoOp;
+							},
+							A2($elm$browser$Browser$Dom$setViewport, element.viewport.x, newOffset)));
+				} else {
+					var e = result.a;
+					var viewport_log = A2($elm$core$Debug$log, 'error getting height', e);
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
 			case 'Deselect':
 				var log_deselect = $elm$core$Debug$log('artwork deselected');
 				return _Utils_Tuple2(
@@ -7589,9 +7636,11 @@ var $author$project$SalesGallery$update = F2(
 				return _Utils_Tuple2(
 					model,
 					$elm$browser$Browser$Navigation$load(url));
-			default:
+			case 'SaleDataUpdated':
 				var saleDataMsg = msg.a;
 				return A2($author$project$SalesGallery$updateSaleData, saleDataMsg, model);
+			default:
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
 var $author$project$SalesGallery$GoTo = function (a) {
@@ -7657,6 +7706,8 @@ var $author$project$SalesGallery$artworkView = F2(
 			_List_fromArray(
 				[
 					$elm$html$Html$Attributes$class('gallery-item-wrapper'),
+					$elm$html$Html$Attributes$id(
+					'artwork_wrapper' + $elm$core$String$fromInt(artwork.id)),
 					$elm$html$Html$Attributes$href(artwork.url)
 				])) : $elm$html$Html$div(
 			_List_fromArray(
@@ -8204,7 +8255,9 @@ var $author$project$SalesGallery$selectedArtworkView = F2(
 					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
 					A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
 					A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
-					$elm$html$Html$Events$onBlur($author$project$SalesGallery$Deselect)
+					$elm$html$Html$Events$onBlur($author$project$SalesGallery$Deselect),
+					$elm$html$Html$Attributes$id(
+					'artwork_wrapper' + $elm$core$String$fromInt(artwork.id))
 				]),
 			_List_fromArray(
 				[
