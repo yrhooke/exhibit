@@ -6,6 +6,23 @@ from django.urls import reverse
 from datetime import date
 from operator import itemgetter
 
+class Activity(models.Model):
+    """an event in the artwork's lifetime"""
+
+    artwork = models.ForeignKey('Artwork', on_delete=models.CASCADE)
+    location = models.ForeignKey('Location', on_delete=models.SET_NULL, null=True)
+    start_date = models.DateField("From", default=date.today, null=True, blank=True)
+    end_date = models.DateField("To", null=True, blank=True)
+
+    ACTIVITY_TYPES = (
+        ('M', 'Moved'),
+        ('S', 'Sold'),
+    )
+
+    type = models.CharField('Activity type', max_length=1, choices=ACTIVITY_TYPES, default='M')
+
+
+
 
 class Exhibition(models.Model):
     """A model representing an exhibition"""
