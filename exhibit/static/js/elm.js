@@ -5597,7 +5597,7 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
-var $author$project$SaleData$Updated = {$: 'Updated'};
+var $author$project$SaleData$Behind = {$: 'Behind'};
 var $elm$json$Json$Decode$decodeValue = _Json_run;
 var $elm$json$Json$Decode$field = _Json_decodeField;
 var $elm$json$Json$Decode$string = _Json_decodeString;
@@ -5714,28 +5714,39 @@ var $author$project$SaleData$decodeSaleData = A3(
 											'id',
 											$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int),
 											$elm$json$Json$Decode$succeed($author$project$SaleData$SaleData))))))))))));
+var $elm$core$Debug$log = _Debug_log;
 var $author$project$SaleData$newSaleData = {agent: $elm$core$Maybe$Nothing, agentFee: '', amountToArtist: '', artwork: $elm$core$Maybe$Nothing, buyer: $elm$core$Maybe$Nothing, discount: '', id: $elm$core$Maybe$Nothing, notes: '', saleCurrency: '', saleDate: '', salePrice: ''};
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$SaleData$init = function (flags) {
+	var icons = {
+		failIconURL: A2($author$project$SaleData$decodeFieldtoString, 'fail_icon', flags),
+		loaderIconURL: A2($author$project$SaleData$decodeFieldtoString, 'loader_icon', flags),
+		successIconURL: A2($author$project$SaleData$decodeFieldtoString, 'success_icon', flags)
+	};
 	var _v0 = A2($elm$json$Json$Decode$decodeValue, $author$project$SaleData$decodeSaleData, flags);
 	if (_v0.$ === 'Ok') {
 		var data = _v0.a;
+		var log_init = A2($elm$core$Debug$log, 'initial saleData:', data);
 		return _Utils_Tuple2(
 			{
 				csrftoken: A2($author$project$SaleData$decodeFieldtoString, 'csrftoken', flags),
 				errors: _List_Nil,
+				icons: icons,
 				saleData: data,
-				updated: $author$project$SaleData$Updated
+				updated: $author$project$SaleData$Behind
 			},
 			$elm$core$Platform$Cmd$none);
 	} else {
+		var e = _v0.a;
+		var log_init = A2($elm$core$Debug$log, 'error reading flags', e);
 		return _Utils_Tuple2(
 			{
 				csrftoken: A2($author$project$SaleData$decodeFieldtoString, 'csrftoken', flags),
 				errors: _List_Nil,
+				icons: icons,
 				saleData: $author$project$SaleData$newSaleData,
-				updated: $author$project$SaleData$Updated
+				updated: $author$project$SaleData$Behind
 			},
 			$elm$core$Platform$Cmd$none);
 	}
@@ -5745,13 +5756,16 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$SaleData$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
 };
-var $author$project$SaleData$Behind = {$: 'Behind'};
+var $author$project$SaleData$Failed = {$: 'Failed'};
 var $author$project$SaleData$ServerResponse = function (a) {
 	return {$: 'ServerResponse', a: a};
 };
+var $author$project$SaleData$Updated = {$: 'Updated'};
 var $author$project$SaleData$Updating = {$: 'Updating'};
 var $author$project$SaleData$AgentFee = {$: 'AgentFee'};
 var $author$project$SaleData$AmountToArtist = {$: 'AmountToArtist'};
+var $author$project$SaleData$SaleCurrency = {$: 'SaleCurrency'};
+var $author$project$SaleData$SaleDate = {$: 'SaleDate'};
 var $author$project$SaleData$SalePrice = {$: 'SalePrice'};
 var $rtfeldman$elm_validate$Validate$Validator = function (a) {
 	return {$: 'Validator', a: a};
@@ -5769,6 +5783,11 @@ var $rtfeldman$elm_validate$Validate$all = function (validators) {
 	};
 	return $rtfeldman$elm_validate$Validate$Validator(newGetErrors);
 };
+var $elm$core$Basics$composeR = F3(
+	function (f, g, x) {
+		return g(
+			f(x));
+	});
 var $rtfeldman$elm_validate$Validate$any = F2(
 	function (validators, subject) {
 		any:
@@ -5792,11 +5811,6 @@ var $rtfeldman$elm_validate$Validate$any = F2(
 			}
 		}
 	});
-var $elm$core$Basics$composeR = F3(
-	function (f, g, x) {
-		return g(
-			f(x));
-	});
 var $rtfeldman$elm_validate$Validate$ifTrue = F2(
 	function (test, error) {
 		var getErrors = function (subject) {
@@ -5805,123 +5819,106 @@ var $rtfeldman$elm_validate$Validate$ifTrue = F2(
 		};
 		return $rtfeldman$elm_validate$Validate$Validator(getErrors);
 	});
-var $elm$core$String$toFloat = _String_toFloat;
-var $rtfeldman$elm_validate$Validate$isFloat = function (str) {
-	var _v0 = $elm$core$String$toFloat(str);
-	if (_v0.$ === 'Just') {
-		return true;
-	} else {
-		return false;
-	}
-};
-var $rtfeldman$elm_validate$Validate$ifNotFloat = F2(
-	function (subjectToString, error) {
-		return A2(
-			$rtfeldman$elm_validate$Validate$ifTrue,
-			function (subject) {
-				return $rtfeldman$elm_validate$Validate$isFloat(
-					subjectToString(subject));
-			},
-			error);
-	});
-var $author$project$SaleData$ifNotBlankOrFloat = F2(
-	function (subjectToString, error) {
-		return A2(
-			$rtfeldman$elm_validate$Validate$ifTrue,
-			$rtfeldman$elm_validate$Validate$any(
-				_List_fromArray(
-					[
-						A2(
-						$rtfeldman$elm_validate$Validate$ifTrue,
-						A2($elm$core$Basics$composeR, subjectToString, $elm$core$String$isEmpty),
-						error),
-						A2($rtfeldman$elm_validate$Validate$ifNotFloat, subjectToString, error)
-					])),
-			error);
-	});
-var $author$project$SaleData$saleDataValidator = $rtfeldman$elm_validate$Validate$all(
-	_List_fromArray(
-		[
-			A2(
-			$author$project$SaleData$ifNotBlankOrFloat,
-			function ($) {
-				return $.salePrice;
-			},
-			_Utils_Tuple2($author$project$SaleData$SalePrice, 'Price must be a number')),
-			A2(
-			$author$project$SaleData$ifNotBlankOrFloat,
-			function ($) {
-				return $.agentFee;
-			},
-			_Utils_Tuple2($author$project$SaleData$AgentFee, 'we need a number here')),
-			A2(
-			$author$project$SaleData$ifNotBlankOrFloat,
-			function ($) {
-				return $.amountToArtist;
-			},
-			_Utils_Tuple2($author$project$SaleData$AmountToArtist, 'we need a number here'))
-		]));
-var $rtfeldman$elm_validate$Validate$Valid = function (a) {
-	return {$: 'Valid', a: a};
-};
-var $rtfeldman$elm_validate$Validate$validate = F2(
-	function (_v0, subject) {
-		var getErrors = _v0.a;
-		var _v1 = getErrors(subject);
-		if (!_v1.b) {
-			return $elm$core$Result$Ok(
-				$rtfeldman$elm_validate$Validate$Valid(subject));
+var $elm$core$Maybe$andThen = F2(
+	function (callback, maybeValue) {
+		if (maybeValue.$ === 'Just') {
+			var value = maybeValue.a;
+			return callback(value);
 		} else {
-			var errors = _v1;
-			return $elm$core$Result$Err(errors);
+			return $elm$core$Maybe$Nothing;
 		}
 	});
-var $author$project$SaleData$clearErrors = function (model) {
-	var new_errors = function (saledata) {
-		var _v0 = A2($rtfeldman$elm_validate$Validate$validate, $author$project$SaleData$saleDataValidator, saledata);
-		if (_v0.$ === 'Ok') {
-			return _List_Nil;
+var $author$project$DateValidator$Day = function (a) {
+	return {$: 'Day', a: a};
+};
+var $author$project$DateValidator$dayFromInt = function (number) {
+	return ((number > 0) && (number <= 31)) ? $elm$core$Maybe$Just(
+		$author$project$DateValidator$Day(number)) : $elm$core$Maybe$Nothing;
+};
+var $elm$core$List$maybeCons = F3(
+	function (f, mx, xs) {
+		var _v0 = f(mx);
+		if (_v0.$ === 'Just') {
+			var x = _v0.a;
+			return A2($elm$core$List$cons, x, xs);
 		} else {
-			var errors = _v0.a;
-			return errors;
+			return xs;
 		}
-	};
-	return _Utils_eq(model.errors, _List_Nil) ? model : _Utils_update(
-		model,
-		{
-			errors: new_errors(model.saleData)
-		});
-};
-var $elm$json$Json$Decode$decodeString = _Json_runOnString;
-var $elm$http$Http$BadStatus_ = F2(
-	function (a, b) {
-		return {$: 'BadStatus_', a: a, b: b};
 	});
-var $elm$http$Http$BadUrl_ = function (a) {
-	return {$: 'BadUrl_', a: a};
-};
-var $elm$http$Http$GoodStatus_ = F2(
-	function (a, b) {
-		return {$: 'GoodStatus_', a: a, b: b};
+var $elm$core$List$filterMap = F2(
+	function (f, xs) {
+		return A3(
+			$elm$core$List$foldr,
+			$elm$core$List$maybeCons(f),
+			_List_Nil,
+			xs);
 	});
-var $elm$http$Http$NetworkError_ = {$: 'NetworkError_'};
-var $elm$http$Http$Receiving = function (a) {
-	return {$: 'Receiving', a: a};
+var $elm$core$Maybe$map = F2(
+	function (f, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return $elm$core$Maybe$Just(
+				f(value));
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	});
+var $elm$core$Tuple$second = function (_v0) {
+	var y = _v0.b;
+	return y;
 };
-var $elm$http$Http$Sending = function (a) {
-	return {$: 'Sending', a: a};
+var $author$project$DateValidator$joinIndices = function (element) {
+	return A2(
+		$elm$core$Maybe$map,
+		function (v) {
+			return _Utils_Tuple2(element.a, v);
+		},
+		element.b);
 };
-var $elm$http$Http$Timeout_ = {$: 'Timeout_'};
-var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
-var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
-var $elm$core$Maybe$isJust = function (maybe) {
-	if (maybe.$ === 'Just') {
-		return true;
+var $elm$core$Tuple$pair = F2(
+	function (a, b) {
+		return _Utils_Tuple2(a, b);
+	});
+var $author$project$DateValidator$findMatches = F2(
+	function (stringParser, potentialMatches) {
+		return A2(
+			$elm$core$List$filterMap,
+			$author$project$DateValidator$joinIndices,
+			A2(
+				$elm$core$List$indexedMap,
+				$elm$core$Tuple$pair,
+				A2($elm$core$List$map, stringParser, potentialMatches)));
+	});
+var $elm$core$List$head = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(x);
 	} else {
-		return false;
+		return $elm$core$Maybe$Nothing;
 	}
 };
-var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
+var $elm$core$List$tail = function (list) {
+	if (list.b) {
+		var x = list.a;
+		var xs = list.b;
+		return $elm$core$Maybe$Just(xs);
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $author$project$DateValidator$getUniqueMatch = F2(
+	function (stringParser, potentialMatches) {
+		var matches = A2($author$project$DateValidator$findMatches, stringParser, potentialMatches);
+		return _Utils_eq(
+			$elm$core$List$tail(matches),
+			$elm$core$Maybe$Just(_List_Nil)) ? $elm$core$List$head(matches) : $elm$core$Maybe$Nothing;
+	});
+var $author$project$DateValidator$findDay = $author$project$DateValidator$getUniqueMatch(
+	A2(
+		$elm$core$Basics$composeR,
+		$elm$core$String$toInt,
+		$elm$core$Maybe$andThen($author$project$DateValidator$dayFromInt)));
 var $elm$core$Basics$compare = _Utils_compare;
 var $elm$core$Dict$get = F2(
 	function (targetKey, dict) {
@@ -5954,6 +5951,15 @@ var $elm$core$Dict$get = F2(
 			}
 		}
 	});
+var $author$project$DateValidator$Month = function (a) {
+	return {$: 'Month', a: a};
+};
+var $author$project$DateValidator$monthFromInt = function (number) {
+	return ((number > 0) && (number <= 12)) ? $elm$core$Maybe$Just(
+		$author$project$DateValidator$Month(number)) : $elm$core$Maybe$Nothing;
+};
+var $elm$core$Dict$RBEmpty_elm_builtin = {$: 'RBEmpty_elm_builtin'};
+var $elm$core$Dict$empty = $elm$core$Dict$RBEmpty_elm_builtin;
 var $elm$core$Dict$Black = {$: 'Black'};
 var $elm$core$Dict$RBNode_elm_builtin = F5(
 	function (a, b, c, d, e) {
@@ -6062,6 +6068,370 @@ var $elm$core$Dict$insert = F3(
 			return x;
 		}
 	});
+var $elm$core$Dict$fromList = function (assocs) {
+	return A3(
+		$elm$core$List$foldl,
+		F2(
+			function (_v0, dict) {
+				var key = _v0.a;
+				var value = _v0.b;
+				return A3($elm$core$Dict$insert, key, value, dict);
+			}),
+		$elm$core$Dict$empty,
+		assocs);
+};
+var $author$project$DateValidator$monthNames = $elm$core$Dict$fromList(
+	_List_fromArray(
+		[
+			_Utils_Tuple2('january', 1),
+			_Utils_Tuple2('jan', 1),
+			_Utils_Tuple2('february', 2),
+			_Utils_Tuple2('feb', 2),
+			_Utils_Tuple2('march', 3),
+			_Utils_Tuple2('mar', 3),
+			_Utils_Tuple2('april', 4),
+			_Utils_Tuple2('ap', 4),
+			_Utils_Tuple2('may', 5),
+			_Utils_Tuple2('june', 6),
+			_Utils_Tuple2('jun', 6),
+			_Utils_Tuple2('july', 7),
+			_Utils_Tuple2('jul', 7),
+			_Utils_Tuple2('august', 8),
+			_Utils_Tuple2('aug', 8),
+			_Utils_Tuple2('september', 9),
+			_Utils_Tuple2('sep', 9),
+			_Utils_Tuple2('october', 10),
+			_Utils_Tuple2('oct', 10),
+			_Utils_Tuple2('november', 11),
+			_Utils_Tuple2('nov', 11),
+			_Utils_Tuple2('december', 12),
+			_Utils_Tuple2('dec', 12)
+		]));
+var $elm$core$String$toLower = _String_toLower;
+var $author$project$DateValidator$monthFromName = function (name) {
+	return A2(
+		$elm$core$Maybe$andThen,
+		$author$project$DateValidator$monthFromInt,
+		A2(
+			$elm$core$Dict$get,
+			$elm$core$String$toLower(name),
+			$author$project$DateValidator$monthNames));
+};
+var $author$project$DateValidator$findMonth = $author$project$DateValidator$getUniqueMatch($author$project$DateValidator$monthFromName);
+var $author$project$DateValidator$Year = function (a) {
+	return {$: 'Year', a: a};
+};
+var $author$project$DateValidator$yearFromInt = function (number) {
+	return (number > 999) ? $elm$core$Maybe$Just(
+		$author$project$DateValidator$Year(number)) : $elm$core$Maybe$Nothing;
+};
+var $author$project$DateValidator$findYear = $author$project$DateValidator$getUniqueMatch(
+	A2(
+		$elm$core$Basics$composeR,
+		$elm$core$String$toInt,
+		$elm$core$Maybe$andThen($author$project$DateValidator$yearFromInt)));
+var $elm$core$Maybe$map3 = F4(
+	function (func, ma, mb, mc) {
+		if (ma.$ === 'Nothing') {
+			return $elm$core$Maybe$Nothing;
+		} else {
+			var a = ma.a;
+			if (mb.$ === 'Nothing') {
+				return $elm$core$Maybe$Nothing;
+			} else {
+				var b = mb.a;
+				if (mc.$ === 'Nothing') {
+					return $elm$core$Maybe$Nothing;
+				} else {
+					var c = mc.a;
+					return $elm$core$Maybe$Just(
+						A3(func, a, b, c));
+				}
+			}
+		}
+	});
+var $author$project$DateValidator$Date = F3(
+	function (a, b, c) {
+		return {$: 'Date', a: a, b: b, c: c};
+	});
+var $author$project$DateValidator$daysInMonth = $elm$core$Dict$fromList(
+	_List_fromArray(
+		[
+			_Utils_Tuple2(1, 31),
+			_Utils_Tuple2(2, 29),
+			_Utils_Tuple2(3, 31),
+			_Utils_Tuple2(4, 30),
+			_Utils_Tuple2(5, 31),
+			_Utils_Tuple2(6, 30),
+			_Utils_Tuple2(7, 31),
+			_Utils_Tuple2(8, 31),
+			_Utils_Tuple2(9, 30),
+			_Utils_Tuple2(10, 31),
+			_Utils_Tuple2(11, 30),
+			_Utils_Tuple2(12, 31)
+		]));
+var $author$project$DateValidator$isValidDayMonth = F2(
+	function (day, month) {
+		var m = month.a;
+		var _v1 = A2($elm$core$Dict$get, m, $author$project$DateValidator$daysInMonth);
+		if (_v1.$ === 'Just') {
+			var maxDays = _v1.a;
+			var d = day.a;
+			return _Utils_cmp(d, maxDays) < 1;
+		} else {
+			return false;
+		}
+	});
+var $elm$core$Basics$modBy = _Basics_modBy;
+var $elm$core$Basics$neq = _Utils_notEqual;
+var $author$project$DateValidator$isValidDate = F3(
+	function (year, month, day) {
+		if (A2($author$project$DateValidator$isValidDayMonth, day, month)) {
+			var y = year.a;
+			if (((!A2($elm$core$Basics$modBy, 4, y)) && (!(!A2($elm$core$Basics$modBy, 100, y)))) || (!A2($elm$core$Basics$modBy, 400, y))) {
+				return true;
+			} else {
+				var m = month.a;
+				if (m === 2) {
+					var d = day.a;
+					return d < 29;
+				} else {
+					return true;
+				}
+			}
+		} else {
+			return false;
+		}
+	});
+var $author$project$DateValidator$maybeDate = F3(
+	function (yearPair, monthPair, dayPair) {
+		var mutuallyExclusive = F3(
+			function (a, b, c) {
+				return (!_Utils_eq(a, b)) && ((!_Utils_eq(a, c)) && (!_Utils_eq(b, c)));
+			});
+		return (A3(mutuallyExclusive, yearPair.a, monthPair.a, dayPair.a) && A3($author$project$DateValidator$isValidDate, yearPair.b, monthPair.b, dayPair.b)) ? $elm$core$Maybe$Just(
+			A3($author$project$DateValidator$Date, yearPair.b, monthPair.b, dayPair.b)) : $elm$core$Maybe$Nothing;
+	});
+var $elm$core$String$replace = F3(
+	function (before, after, string) {
+		return A2(
+			$elm$core$String$join,
+			after,
+			A2($elm$core$String$split, before, string));
+	});
+var $elm$core$String$trim = _String_trim;
+var $elm$core$String$words = _String_words;
+var $author$project$DateValidator$tokenize = function (datestamp) {
+	return $elm$core$String$words(
+		A3(
+			$elm$core$String$replace,
+			'\\',
+			' ',
+			A3(
+				$elm$core$String$replace,
+				',',
+				' ',
+				A3(
+					$elm$core$String$replace,
+					'.',
+					' ',
+					A3(
+						$elm$core$String$replace,
+						'/',
+						' ',
+						A3(
+							$elm$core$String$replace,
+							'-',
+							' ',
+							$elm$core$String$trim(datestamp)))))));
+};
+var $author$project$DateValidator$fromString = function (datestamp) {
+	var tokens = $author$project$DateValidator$tokenize(datestamp);
+	var potentialYear = $author$project$DateValidator$findYear(tokens);
+	var potentialMonth = $author$project$DateValidator$findMonth(tokens);
+	var potentialDay = $author$project$DateValidator$findDay(tokens);
+	if ($elm$core$List$length(tokens) === 3) {
+		var _v0 = A4($elm$core$Maybe$map3, $author$project$DateValidator$maybeDate, potentialYear, potentialMonth, potentialDay);
+		if (_v0.$ === 'Just') {
+			var maybedate = _v0.a;
+			return maybedate;
+		} else {
+			return $elm$core$Maybe$Nothing;
+		}
+	} else {
+		return $elm$core$Maybe$Nothing;
+	}
+};
+var $rtfeldman$elm_validate$Validate$ifFalse = F2(
+	function (test, error) {
+		var getErrors = function (subject) {
+			return test(subject) ? _List_Nil : _List_fromArray(
+				[error]);
+		};
+		return $rtfeldman$elm_validate$Validate$Validator(getErrors);
+	});
+var $author$project$DateValidator$isNotDate = F2(
+	function (map, error) {
+		return A2(
+			$rtfeldman$elm_validate$Validate$ifFalse,
+			A2(
+				$elm$core$Basics$composeR,
+				map,
+				A2(
+					$elm$core$Basics$composeR,
+					$author$project$DateValidator$fromString,
+					function (a) {
+						return _Utils_eq(a, $elm$core$Maybe$Nothing);
+					})),
+			error);
+	});
+var $author$project$SaleData$ifNotBlankOrDate = F2(
+	function (subjectToString, error) {
+		return A2(
+			$rtfeldman$elm_validate$Validate$ifTrue,
+			$rtfeldman$elm_validate$Validate$any(
+				_List_fromArray(
+					[
+						A2(
+						$rtfeldman$elm_validate$Validate$ifTrue,
+						A2($elm$core$Basics$composeR, subjectToString, $elm$core$String$isEmpty),
+						error),
+						A2($author$project$DateValidator$isNotDate, subjectToString, error)
+					])),
+			error);
+	});
+var $elm$core$String$toFloat = _String_toFloat;
+var $rtfeldman$elm_validate$Validate$isFloat = function (str) {
+	var _v0 = $elm$core$String$toFloat(str);
+	if (_v0.$ === 'Just') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $rtfeldman$elm_validate$Validate$ifNotFloat = F2(
+	function (subjectToString, error) {
+		return A2(
+			$rtfeldman$elm_validate$Validate$ifTrue,
+			function (subject) {
+				return $rtfeldman$elm_validate$Validate$isFloat(
+					subjectToString(subject));
+			},
+			error);
+	});
+var $author$project$SaleData$ifNotBlankOrFloat = F2(
+	function (subjectToString, error) {
+		return A2(
+			$rtfeldman$elm_validate$Validate$ifTrue,
+			$rtfeldman$elm_validate$Validate$any(
+				_List_fromArray(
+					[
+						A2(
+						$rtfeldman$elm_validate$Validate$ifTrue,
+						A2($elm$core$Basics$composeR, subjectToString, $elm$core$String$isEmpty),
+						error),
+						A2($rtfeldman$elm_validate$Validate$ifNotFloat, subjectToString, error)
+					])),
+			error);
+	});
+var $author$project$SaleData$saleDataValidator = $rtfeldman$elm_validate$Validate$all(
+	_List_fromArray(
+		[
+			A2(
+			$author$project$SaleData$ifNotBlankOrFloat,
+			function ($) {
+				return $.salePrice;
+			},
+			_Utils_Tuple2($author$project$SaleData$SalePrice, 'Price must be a number')),
+			A2(
+			$author$project$SaleData$ifNotBlankOrFloat,
+			function ($) {
+				return $.agentFee;
+			},
+			_Utils_Tuple2($author$project$SaleData$AgentFee, 'we need a number here')),
+			A2(
+			$author$project$SaleData$ifNotBlankOrFloat,
+			function ($) {
+				return $.amountToArtist;
+			},
+			_Utils_Tuple2($author$project$SaleData$AmountToArtist, 'we need a number here')),
+			A2(
+			$author$project$SaleData$ifNotBlankOrDate,
+			function ($) {
+				return $.saleDate;
+			},
+			_Utils_Tuple2($author$project$SaleData$SaleDate, 'we couldn\'t figure out this date')),
+			A2(
+			$rtfeldman$elm_validate$Validate$ifTrue,
+			A2(
+				$elm$core$Basics$composeR,
+				function ($) {
+					return $.saleCurrency;
+				},
+				function (a) {
+					return $elm$core$String$length(a) > 10;
+				}),
+			_Utils_Tuple2($author$project$SaleData$SaleCurrency, 'this field is too long'))
+		]));
+var $rtfeldman$elm_validate$Validate$Valid = function (a) {
+	return {$: 'Valid', a: a};
+};
+var $rtfeldman$elm_validate$Validate$validate = F2(
+	function (_v0, subject) {
+		var getErrors = _v0.a;
+		var _v1 = getErrors(subject);
+		if (!_v1.b) {
+			return $elm$core$Result$Ok(
+				$rtfeldman$elm_validate$Validate$Valid(subject));
+		} else {
+			var errors = _v1;
+			return $elm$core$Result$Err(errors);
+		}
+	});
+var $author$project$SaleData$clearErrors = function (model) {
+	var new_errors = function (saledata) {
+		var _v0 = A2($rtfeldman$elm_validate$Validate$validate, $author$project$SaleData$saleDataValidator, saledata);
+		if (_v0.$ === 'Ok') {
+			return _List_Nil;
+		} else {
+			var errors = _v0.a;
+			return errors;
+		}
+	};
+	return _Utils_eq(model.errors, _List_Nil) ? model : _Utils_update(
+		model,
+		{
+			errors: new_errors(model.saleData)
+		});
+};
+var $elm$json$Json$Decode$decodeString = _Json_runOnString;
+var $elm$http$Http$BadStatus_ = F2(
+	function (a, b) {
+		return {$: 'BadStatus_', a: a, b: b};
+	});
+var $elm$http$Http$BadUrl_ = function (a) {
+	return {$: 'BadUrl_', a: a};
+};
+var $elm$http$Http$GoodStatus_ = F2(
+	function (a, b) {
+		return {$: 'GoodStatus_', a: a, b: b};
+	});
+var $elm$http$Http$NetworkError_ = {$: 'NetworkError_'};
+var $elm$http$Http$Receiving = function (a) {
+	return {$: 'Receiving', a: a};
+};
+var $elm$http$Http$Sending = function (a) {
+	return {$: 'Sending', a: a};
+};
+var $elm$http$Http$Timeout_ = {$: 'Timeout_'};
+var $elm$core$Maybe$isJust = function (maybe) {
+	if (maybe.$ === 'Just') {
+		return true;
+	} else {
+		return false;
+	}
+};
+var $elm$core$Platform$sendToSelf = _Platform_sendToSelf;
 var $elm$core$Dict$getMin = function (dict) {
 	getMin:
 	while (true) {
@@ -6501,7 +6871,6 @@ var $elm$http$Http$expectJson = F2(
 						A2($elm$json$Json$Decode$decodeString, decoder, string));
 				}));
 	});
-var $elm$core$Debug$log = _Debug_log;
 var $elm$http$Http$multipartBody = function (parts) {
 	return A2(
 		_Http_pair,
@@ -6589,24 +6958,6 @@ var $elm$http$Http$onEffects = F4(
 			},
 			A3($elm$http$Http$updateReqs, router, cmds, state.reqs));
 	});
-var $elm$core$List$maybeCons = F3(
-	function (f, mx, xs) {
-		var _v0 = f(mx);
-		if (_v0.$ === 'Just') {
-			var x = _v0.a;
-			return A2($elm$core$List$cons, x, xs);
-		} else {
-			return xs;
-		}
-	});
-var $elm$core$List$filterMap = F2(
-	function (f, xs) {
-		return A3(
-			$elm$core$List$foldr,
-			$elm$core$List$maybeCons(f),
-			_List_Nil,
-			xs);
-	});
 var $elm$http$Http$maybeSend = F4(
 	function (router, desiredTracker, progress, _v0) {
 		var actualTracker = _v0.a;
@@ -6677,6 +7028,54 @@ var $elm$http$Http$request = function (r) {
 			{allowCookiesFromOtherDomains: false, body: r.body, expect: r.expect, headers: r.headers, method: r.method, timeout: r.timeout, tracker: r.tracker, url: r.url}));
 };
 var $elm$http$Http$stringPart = _Http_pair;
+var $elm$core$String$cons = _String_cons;
+var $elm$core$String$fromChar = function (_char) {
+	return A2($elm$core$String$cons, _char, '');
+};
+var $elm$core$Bitwise$and = _Bitwise_and;
+var $elm$core$Bitwise$shiftRightBy = _Bitwise_shiftRightBy;
+var $elm$core$String$repeatHelp = F3(
+	function (n, chunk, result) {
+		return (n <= 0) ? result : A3(
+			$elm$core$String$repeatHelp,
+			n >> 1,
+			_Utils_ap(chunk, chunk),
+			(!(n & 1)) ? result : _Utils_ap(result, chunk));
+	});
+var $elm$core$String$repeat = F2(
+	function (n, chunk) {
+		return A3($elm$core$String$repeatHelp, n, chunk, '');
+	});
+var $elm$core$String$padLeft = F3(
+	function (n, _char, string) {
+		return _Utils_ap(
+			A2(
+				$elm$core$String$repeat,
+				n - $elm$core$String$length(string),
+				$elm$core$String$fromChar(_char)),
+			string);
+	});
+var $author$project$DateValidator$toString = function (date) {
+	var formatInt = F2(
+		function (size, _int) {
+			return A3(
+				$elm$core$String$padLeft,
+				size,
+				_Utils_chr('0'),
+				$elm$core$String$fromInt(_int));
+		});
+	var format = F3(
+		function (y, m, d) {
+			return A2(formatInt, 4, y) + ('-' + (A2(formatInt, 2, m) + ('-' + A2(formatInt, 2, d))));
+		});
+	var year = date.a;
+	var month = date.b;
+	var day = date.c;
+	var y = year.a;
+	var m = month.a;
+	var d = day.a;
+	return A3(format, y, m, d);
+};
 var $author$project$SaleData$saleDataToForm = function (record) {
 	var includeJustIntField = F2(
 		function (fieldName, value) {
@@ -6693,6 +7092,21 @@ var $author$project$SaleData$saleDataToForm = function (record) {
 				return _List_Nil;
 			}
 		});
+	var encodeSaleDateField = function (saledate) {
+		var _v1 = $author$project$DateValidator$fromString(saledate);
+		if (_v1.$ === 'Just') {
+			var date = _v1.a;
+			return _List_fromArray(
+				[
+					A2(
+					$elm$http$Http$stringPart,
+					'sale_date',
+					$author$project$DateValidator$toString(date))
+				]);
+		} else {
+			return _List_Nil;
+		}
+	};
 	var encodeIDField = function (idField) {
 		if (idField.$ === 'Just') {
 			var id = idField.a;
@@ -6715,16 +7129,17 @@ var $author$project$SaleData$saleDataToForm = function (record) {
 				A2(includeJustIntField, 'buyer', record.buyer),
 				_Utils_ap(
 					A2(includeJustIntField, 'agent', record.agent),
-					_List_fromArray(
-						[
-							A2($elm$http$Http$stringPart, 'notes', record.notes),
-							A2($elm$http$Http$stringPart, 'sale_currency', record.saleCurrency),
-							A2($elm$http$Http$stringPart, 'sale_price', record.salePrice),
-							A2($elm$http$Http$stringPart, 'discount', record.discount),
-							A2($elm$http$Http$stringPart, 'agent_fee', record.agentFee),
-							A2($elm$http$Http$stringPart, 'amount_to_artist', record.amountToArtist),
-							A2($elm$http$Http$stringPart, 'sale_date', record.saleDate)
-						])))));
+					_Utils_ap(
+						_List_fromArray(
+							[
+								A2($elm$http$Http$stringPart, 'notes', record.notes),
+								A2($elm$http$Http$stringPart, 'sale_currency', record.saleCurrency),
+								A2($elm$http$Http$stringPart, 'sale_price', record.salePrice),
+								A2($elm$http$Http$stringPart, 'discount', record.discount),
+								A2($elm$http$Http$stringPart, 'agent_fee', record.agentFee),
+								A2($elm$http$Http$stringPart, 'amount_to_artist', record.amountToArtist)
+							]),
+						encodeSaleDateField(record.saleDate))))));
 };
 var $author$project$SaleData$setAgentFee = F2(
 	function (newAgentFee, saleData) {
@@ -6877,7 +7292,7 @@ var $author$project$SaleData$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{errors: errors}),
+							{errors: errors, updated: $author$project$SaleData$Failed}),
 						$elm$core$Platform$Cmd$none);
 				}
 			default:
@@ -6897,7 +7312,7 @@ var $author$project$SaleData$update = F2(
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
-							{updated: $author$project$SaleData$Behind}),
+							{updated: $author$project$SaleData$Failed}),
 						$elm$core$Platform$Cmd$none);
 				}
 		}
@@ -6905,8 +7320,6 @@ var $author$project$SaleData$update = F2(
 var $elm$json$Json$Decode$value = _Json_decodeValue;
 var $author$project$SaleData$Discount = {$: 'Discount'};
 var $author$project$SaleData$Notes = {$: 'Notes'};
-var $author$project$SaleData$SaleCurrency = {$: 'SaleCurrency'};
-var $author$project$SaleData$SaleDate = {$: 'SaleDate'};
 var $author$project$SaleData$UpdateAgentFee = function (a) {
 	return {$: 'UpdateAgentFee', a: a};
 };
@@ -6949,10 +7362,6 @@ var $elm$core$List$filter = F2(
 			_List_Nil,
 			list);
 	});
-var $elm$core$Tuple$second = function (_v0) {
-	var y = _v0.b;
-	return y;
-};
 var $author$project$SaleData$findErrors = F2(
 	function (field, errors) {
 		var fieldMatch = function (error) {
@@ -6963,7 +7372,6 @@ var $author$project$SaleData$findErrors = F2(
 			$elm$core$Tuple$second,
 			A2($elm$core$List$filter, fieldMatch, errors));
 	});
-var $elm$html$Html$h4 = _VirtualDom_node('h4');
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$html$Html$Attributes$name = $elm$html$Html$Attributes$stringProperty('name');
 var $elm$virtual_dom$VirtualDom$attribute = F2(
@@ -7034,7 +7442,8 @@ var $author$project$SaleData$errorView = function (error) {
 		_List_fromArray(
 			[
 				$elm$html$Html$Attributes$class('form-test'),
-				$elm$html$Html$Attributes$class('text-muted')
+				$elm$html$Html$Attributes$class('text-muted'),
+				A2($elm$html$Html$Attributes$style, 'width', '86px')
 			]),
 		_List_fromArray(
 			[
@@ -7042,7 +7451,6 @@ var $author$project$SaleData$errorView = function (error) {
 			]));
 };
 var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
-var $elm$html$Html$input = _VirtualDom_node('input');
 var $elm$html$Html$label = _VirtualDom_node('label');
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
@@ -7077,6 +7485,54 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
 var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
+var $elm$html$Html$textarea = _VirtualDom_node('textarea');
+var $author$project$SaleData$inputNotesView = F6(
+	function (label_name, id_, placeholder_, errors, updateMsg, val) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					$elm$html$Html$Attributes$class('ungroup'),
+					$elm$html$Html$Attributes$class('form-group')
+				]),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$label,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$for(id_),
+								A2($elm$html$Html$Attributes$style, 'align-self', 'start')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(label_name)
+							])),
+						A2(
+						$elm$html$Html$textarea,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$id(id_),
+								$elm$html$Html$Events$onInput(updateMsg),
+								$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm),
+								$elm$html$Html$Attributes$classList(
+								_List_fromArray(
+									[
+										_Utils_Tuple2('edit-field', true),
+										_Utils_Tuple2('form-control', true),
+										_Utils_Tuple2('form-control-sm', true)
+									])),
+								A2($elm$html$Html$Attributes$style, 'width', '270px'),
+								$elm$html$Html$Attributes$placeholder(placeholder_),
+								$elm$html$Html$Attributes$value(val)
+							]),
+						_List_Nil)
+					]),
+				A2($elm$core$List$map, $author$project$SaleData$errorView, errors)));
+	});
+var $elm$html$Html$input = _VirtualDom_node('input');
 var $author$project$SaleData$inputView = F6(
 	function (label_name, id_, placeholder_, errors, updateMsg, val) {
 		return A2(
@@ -7119,16 +7575,61 @@ var $author$project$SaleData$inputView = F6(
 					]),
 				A2($elm$core$List$map, $author$project$SaleData$errorView, errors)));
 	});
-var $author$project$SaleData$printSyncStatus = function (status) {
-	switch (status.$) {
-		case 'Updated':
-			return 'Updated';
-		case 'Updating':
-			return 'Updating';
-		default:
-			return 'Behind';
-	}
+var $elm$html$Html$img = _VirtualDom_node('img');
+var $elm$html$Html$span = _VirtualDom_node('span');
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
+var $author$project$SaleData$syncStatusView = F2(
+	function (status, icons) {
+		var icon = function () {
+			switch (status.$) {
+				case 'Behind':
+					return A2($elm$html$Html$div, _List_Nil, _List_Nil);
+				case 'Updating':
+					return A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(icons.loaderIconURL),
+								A2($elm$html$Html$Attributes$style, 'height', '25px')
+							]),
+						_List_Nil);
+				case 'Updated':
+					return A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(icons.successIconURL),
+								A2($elm$html$Html$Attributes$style, 'height', '25px')
+							]),
+						_List_Nil);
+				default:
+					return A2(
+						$elm$html$Html$img,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$src(icons.failIconURL),
+								A2($elm$html$Html$Attributes$style, 'height', '25px')
+							]),
+						_List_Nil);
+			}
+		}();
+		return A2(
+			$elm$html$Html$span,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+					A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+					A2($elm$html$Html$Attributes$style, 'width', '40px')
+				]),
+			_List_fromArray(
+				[icon]));
+	});
 var $author$project$SaleData$view = function (model) {
 	return A2(
 		$elm$html$Html$div,
@@ -7152,7 +7653,7 @@ var $author$project$SaleData$view = function (model) {
 				_List_fromArray(
 					[
 						A2(
-						$elm$html$Html$h4,
+						$elm$html$Html$div,
 						_List_fromArray(
 							[
 								A2($elm$html$Html$Attributes$style, 'font-size', '18px')
@@ -7161,20 +7662,10 @@ var $author$project$SaleData$view = function (model) {
 							[
 								$elm$html$Html$text('Sale Details')
 							])),
-						A2(
-						$elm$html$Html$div,
-						_List_fromArray(
-							[
-								A2($elm$html$Html$Attributes$style, 'color', 'blue')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(
-								$author$project$SaleData$printSyncStatus(model.updated))
-							]))
+						A2($author$project$SaleData$syncStatusView, model.updated, model.icons)
 					])),
 				A6(
-				$author$project$SaleData$inputView,
+				$author$project$SaleData$inputNotesView,
 				'Notes:',
 				'id_notes',
 				'Notes',
@@ -7624,7 +8115,6 @@ var $author$project$ImageUpload$decodeFieldtoString = F2(
 			return '';
 		}
 	});
-var $elm$core$Basics$neq = _Utils_notEqual;
 var $author$project$ImageUpload$decodeImageURL = function (flags) {
 	var _v0 = A2(
 		$elm$json$Json$Decode$decodeValue,
@@ -7642,14 +8132,15 @@ var $author$project$ImageUpload$init = function (flags) {
 	return _Utils_Tuple2(
 		{
 			artwork_id: A2($author$project$ImageUpload$decodeFieldtoMaybeInt, 'artwork_id', flags),
-			checkmark_url: A2($author$project$ImageUpload$decodeFieldtoString, 'checkmark_url', flags),
 			csrftoken: A2($author$project$ImageUpload$decodeFieldtoString, 'csrftoken', flags),
+			failIconURL: A2($author$project$ImageUpload$decodeFieldtoString, 'fail_icon', flags),
 			image_data: {
 				image_id: A2($author$project$ImageUpload$decodeFieldtoMaybeInt, 'image_id', flags),
 				image_url: $author$project$ImageUpload$decodeImageURL(flags)
 			},
-			loader_url: A2($author$project$ImageUpload$decodeFieldtoString, 'loader_url', flags),
-			status: $author$project$ImageUpload$Waiting
+			loaderURL: A2($author$project$ImageUpload$decodeFieldtoString, 'loader_icon', flags),
+			status: $author$project$ImageUpload$Waiting,
+			successIconURL: A2($author$project$ImageUpload$decodeFieldtoString, 'success_icon', flags)
 		},
 		$elm$core$Platform$Cmd$none);
 };
@@ -7688,6 +8179,42 @@ var $elm$file$File$Select$file = F2(
 			$elm$core$Task$perform,
 			toMsg,
 			_File_uploadOne(mimes));
+	});
+var $elm$http$Http$filePart = _Http_pair;
+var $elm$http$Http$emptyBody = _Http_emptyBody;
+var $elm$http$Http$get = function (r) {
+	return $elm$http$Http$request(
+		{body: $elm$http$Http$emptyBody, expect: r.expect, headers: _List_Nil, method: 'GET', timeout: $elm$core$Maybe$Nothing, tracker: $elm$core$Maybe$Nothing, url: r.url});
+};
+var $elm$file$File$name = _File_name;
+var $author$project$ImageUpload$ImageData = F2(
+	function (image_id, image_url) {
+		return {image_id: image_id, image_url: image_url};
+	});
+var $author$project$ImageUpload$saveImageResultDecoder = A3(
+	$elm$json$Json$Decode$map2,
+	$author$project$ImageUpload$ImageData,
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'image_id', $elm$json$Json$Decode$int)),
+	$elm$json$Json$Decode$maybe(
+		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string)));
+var $elm$url$Url$Builder$QueryParameter = F2(
+	function (a, b) {
+		return {$: 'QueryParameter', a: a, b: b};
+	});
+var $elm$url$Url$percentEncode = _Url_percentEncode;
+var $elm$url$Url$Builder$string = F2(
+	function (key, value) {
+var $elm$time$Time$Posix = function (a) {
+	return {$: 'Posix', a: a};
+};
+var $elm$time$Time$millisToPosix = $elm$time$Time$Posix;
+var $elm$file$File$Select$file = F2(
+	function (mimes, toMsg) {
+		return A2(
+			$elm$url$Url$Builder$QueryParameter,
+			$elm$url$Url$percentEncode(key),
+			$elm$url$Url$percentEncode(value));
 	});
 var $elm$http$Http$filePart = _Http_pair;
 var $elm$http$Http$emptyBody = _Http_emptyBody;
@@ -8055,16 +8582,9 @@ var $elm$html$Html$Events$onClick = function (msg) {
 		'click',
 		$elm$json$Json$Decode$succeed(msg));
 };
-var $elm$html$Html$span = _VirtualDom_node('span');
-var $elm$html$Html$Attributes$src = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'src',
-		_VirtualDom_noJavaScriptOrHtmlUri(url));
-};
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
-var $author$project$ImageUpload$uploaderView = F2(
-	function (checkmark_url, status) {
+var $author$project$ImageUpload$uploaderView = F3(
+	function (successIconURL, failIconURL, status) {
 		switch (status.$) {
 			case 'Waiting':
 				return A2(
@@ -8145,7 +8665,7 @@ var $author$project$ImageUpload$uploaderView = F2(
 									$elm$html$Html$img,
 									_List_fromArray(
 										[
-											$elm$html$Html$Attributes$src(checkmark_url),
+											$elm$html$Html$Attributes$src(successIconURL),
 											A2($elm$html$Html$Attributes$style, 'height', '25px')
 										]),
 									_List_Nil)
@@ -8154,7 +8674,11 @@ var $author$project$ImageUpload$uploaderView = F2(
 			default:
 				return A2(
 					$elm$html$Html$div,
-					_List_Nil,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+							A2($elm$html$Html$Attributes$style, 'align-items', 'center')
+						]),
 					_List_fromArray(
 						[
 							A2(
@@ -8169,6 +8693,26 @@ var $author$project$ImageUpload$uploaderView = F2(
 							_List_fromArray(
 								[
 									$elm$html$Html$text('Upload Image')
+								])),
+							A2(
+							$elm$html$Html$span,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+									A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+									A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+									A2($elm$html$Html$Attributes$style, 'width', '40px')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src(failIconURL),
+											A2($elm$html$Html$Attributes$style, 'height', '25px')
+										]),
+									_List_Nil)
 								]))
 						]));
 		}
@@ -8265,10 +8809,10 @@ var $author$project$ImageUpload$view = function (model) {
 				_List_fromArray(
 					[
 						$author$project$ImageUpload$imageView(model),
-						A2($author$project$ImageUpload$uploadingImageCoverView, model.loader_url, model.status)
+						A2($author$project$ImageUpload$uploadingImageCoverView, model.loaderURL, model.status)
 					])),
 				$author$project$ImageUpload$hiddenInputView(model.image_data.image_id),
-				A2($author$project$ImageUpload$uploaderView, model.checkmark_url, model.status)
+				A3($author$project$ImageUpload$uploaderView, model.successIconURL, model.failIconURL, model.status)
 			]));
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(

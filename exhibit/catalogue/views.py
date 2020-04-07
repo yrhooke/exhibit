@@ -15,6 +15,7 @@ from django.shortcuts import redirect, render
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.serializers.json import DjangoJSONEncoder
 
+
 import boto3
 from botocore.exceptions import ClientError
 
@@ -202,8 +203,9 @@ class ArtworkCreate(LoginRequiredMixin, genericCreateView):
         artwork_image.save()
 
         sale_data = form.cleaned_data['sale_data']
-        sale_data.artwork = self.object
-        sale_data.save()
+        if sale_data:
+            sale_data.artwork = self.object
+            sale_data.save()
 
         return HttpResponseRedirect(self.get_success_url())
 
@@ -222,10 +224,11 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
         context['next_artwork'] = self.next_artwork()
 
         sale_data_instance = SaleData.objects.filter(artwork=self.object).last()
-        if sale_data_instance:
-            context['sale_data_info'] = json.dumps(export_sale_data(sale_data_instance), cls=DjangoJSONEncoder)
-        else:
-            context['sale_data_info'] = json.dumps({})
+        if not sale_data_instance:
+            sale_data_instance = SaleData()
+
+        context['sale_data_info'] = json.dumps(export_sale_data(sale_data_instance), cls=DjangoJSONEncoder)
+        print(context['sale_data_info'])
         return context
 
     def get_form(self, form_class=None):
@@ -261,21 +264,23 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
         return prev
 
 
-def clone_artwork(request, artwork_pk):
+class CloneArtwork(LoginRequiredMixin, View):
     """creates a copy of an existing Artwork"""
-    artwork = Artwork.objects.get(pk=artwork_pk)
 
-    new_artwork_image = ArtworkImage()
-    new_artwork_image.image = artwork.get_image
+    def get(self, request, artwork_pk, *args, **kwargs):
+        artwork = Artwork.objects.get(pk=artwork_pk)
 
-    artwork.title = "Copy of " + artwork.title
-    artwork.pk = None
-    artwork.save()
+        new_artwork_image = ArtworkImage()
+        new_artwork_image.image = artwork.get_image
 
-    new_artwork_image.artwork = artwork
-    new_artwork_image.save()
+        artwork.title = "Copy of " + artwork.title
+        artwork.pk = None
+        artwork.save()
 
-    return redirect(artwork)
+        new_artwork_image.artwork = artwork
+        new_artwork_image.save()
+
+        return redirect(artwork)
 
 
 def artworkimage(request, pk):
@@ -445,6 +450,10 @@ class HttpResponseUnauthorized(HttpResponse):
 
 def export_sale_data(saledata):
     """returns dict of relevant fields from SaleData object"""
+    if saledata.sale_date:
+        sale_date = saledata.sale_date.strftime('%d %B %Y')
+    else:
+        sale_date = ""
     return {
         "id": saledata.pk,
         "artwork": saledata.artwork.pk if saledata.artwork else None,
@@ -456,29 +465,25 @@ def export_sale_data(saledata):
         "discount": saledata.discount,
         "agentFee": saledata.agent_fee,
         "amountToArtist": saledata.amount_to_artist,
-        "saleDate": saledata.sale_date
+        "saleDate": sale_date
     }
 
 
-def saleData_update(request):
+class SaleDataUpdate(LoginRequiredMixin, View):
     """path to create or update SaleData object"""
-    if request.user.is_authenticated:
-        if request.method == 'POST':
-            try:
-                saledata = SaleData.objects.get(id=request.POST.get("id"))
-                form = SaleDataUpdateForm(request.POST, instance=saledata)
-            except ObjectDoesNotExist:
-                form = SaleDataUpdateForm(request.POST)
-            if form.is_valid():
-                saledata = form.save()
-                json_response = export_sale_data(saledata)
-                return JsonResponse(json_response)
-            else:
-                return HttpResponseBadRequest()
+
+    def post(self, request, *args, **kwargs):
+        try:
+            saledata = SaleData.objects.get(id=request.POST.get("id"))
+            form = SaleDataUpdateForm(request.POST, instance=saledata)
+        except ObjectDoesNotExist:
+            form = SaleDataUpdateForm(request.POST)
+        if form.is_valid():
+            saledata = form.save()
+            json_response = export_sale_data(saledata)
+            return JsonResponse(json_response)
         else:
-            return HttpResponseNotAllowed(['POST'])
-    else:
-        return HttpResponseNotAuthorized()
+            return HttpResponseBadRequest()
 
 
 def saledata_test_view(request):

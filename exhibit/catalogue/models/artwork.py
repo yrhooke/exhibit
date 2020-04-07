@@ -119,7 +119,7 @@ class Artwork(models.Model):
     additional = models.TextField('Additional info', blank=True, help_text="Anything else of interest")
 
     # Sale fields
-    owner = models.CharField('Owner', max_length=200, default='Rotem Reshef', help_text="Current owner")
+    owner = models.CharField('Owner', max_length=200, default='Rotem Reshef', help_text="Current owner", blank=True)
     sold_by = models.CharField('Sold By', max_length=200, blank=True, help_text="The agent's name")
     price_nis = models.DecimalField("Price in NIS",
                                     max_digits=10,
