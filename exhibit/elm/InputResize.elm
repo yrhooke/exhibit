@@ -5,26 +5,11 @@ import Browser.Dom
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Json.Decode as Json
-import Json.Encode as Encode
 import Random
 import Task exposing (Task)
 
 
 
-{--Issues:
-I have a few options for how to implkement this:
-1. oninput switch between textarea and div - this can cause a flicker when doing newline
-2. always have a div set behind the textarea - this can also cause a flicker because node rewrites whole "style" field
-3, have div behind textarea, but don't set "height" style, set attribute - issue is behavior not expliclty defined and may be weird
-4. Have dib behind textarea, only set "height" style - move all other styles to a class and add some css - problem is reliance on external stylesheets
-5. don't have div at all, split string into lines, and use # lines and the textareas row/column parans to calculate the result
-6. user setSelection to recreate node but get to where we were in it before. not great, need a port for that 
-
-5 looks promising rn, failing that probably 4 is easiest
-
-Decision: We're doing 4
---}
 -- MAIN
 
 
@@ -81,10 +66,6 @@ type Msg
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
-    let
-        logging =
-            Debug.log "model" <| Debug.toString model
-    in
     case msg of
         NewID id ->
             ( { model | divID = "text_area_" ++ String.fromInt id }, Cmd.none )
@@ -100,10 +81,11 @@ update msg model =
         GotSize result ->
             case result of
                 Ok viewport ->
+                    {--
                     let
-                        log_size =
                             Debug.log "viewport" <| Debug.toString viewport
                     in
+                    --}
                     ( { model | height = viewport.scene.height, measuringHeight = False }
                     , Task.attempt (\_ -> NoOp) (Browser.Dom.focus model.divID)
                     )
@@ -133,27 +115,6 @@ subscriptions model =
 view : Model -> Html Msg
 view model =
     let
-        {-
-        measureHidden = [
-            style "display" "block"
-            ,style "visibility" "hidden"
-        ]
-        dontMeasureHidden = [
-            style "display" "none"
-            ,style "visibility" "visible"
-            ]
-            --
-        innerView =
-            if model.measuringHeight then
-                [ textAreaView model.customizeInner "text_area_" model.content model.height
-                , hiddenDivView (model.customizeInner ++ measureHidden) model.divID model.content
-                ]
-
-            else
-                [ textAreaView model.customizeInner model.divID model.content model.height
-                , hiddenDivView (model.customizeInner ++ dontMeasureHidden) "text_area_measure" model.content
-                ]
-            --}
         innerView =
             if model.measuringHeight then
                 [ textAreaView model.customizeInner "text_area_" model.content model.height
@@ -164,14 +125,6 @@ view model =
                 [ textAreaView model.customizeInner model.divID model.content model.height
                 , hiddenDivView model.customizeInner "text_area_measure" model.content
                 ]
-
-        hiddenDivs : List (Html Msg)
-        hiddenDivs =
-            if model.measuringHeight then
-                [ hiddenDivView model.customizeInner model.divID model.content ]
-
-            else
-                []
     in
     div
         (model.customizeOuter
@@ -181,15 +134,6 @@ view model =
                ]
         )
         innerView
-
-
-
-{-
-   (textAreaView model.customizeInner model.divID model.content model.height
-       :: hiddenDivs
-   )
-   -
--}
 
 
 type alias Settings =
@@ -234,13 +178,7 @@ textAreaView customAttr id_ content nodeHeight =
             ++ [ id id_
                , value content
                , onInput NewContent
-
-               --    , style "height"
                , style "height" <| String.fromFloat nodeHeight ++ "px"
-
-               --    , rows <| calcRows settings.columns content
-               --    , rows (List.length (String.split "\n" content))
-               --    ,  height (round nodeHeight)
                , style "z-index" "3"
                ]
             ++ innerAttributes
@@ -271,32 +209,10 @@ htmlEncodeString someString =
 
         htmlMapper line =
             if line == "" then
-                br [ style "line-height" "1px" ] []
+                br [ style "line-height" settings.lineHeight ] []
 
             else
                 div [] [ text line ]
     in
     List.map htmlMapper lines
---}
-
-
-
-{--Calculate number of rows some string will fit into
---}
-
-
-calcRows : Int -> String -> Int
-calcRows columns someString =
-    let
-        lines =
-            String.split "\n" someString
-
-        rowsInLine line =
-            String.length line
-                |> toFloat
-                |> (/) (toFloat columns)
-                |> ceiling
-                |> Basics.max 1
-    in
-    List.map rowsInLine lines
-        |> List.sum
+        ++ [ br [ style "line-height" "1px" ] [] ]
