@@ -1,65 +1,74 @@
 /* *** Font Definitions *** */
 
-
 @font-face {
     font-family: 'Brandon Grotesque Regular';
     font-display: swap;
-    src: local('Brandon Grotesque Regular'),url("/static/fonts/hvd_fonts_-_brandongrotesque-regular.otf") format("opentype");
+    src: local('Brandon Grotesque Regular'), url("/static/fonts/hvd_fonts_-_brandongrotesque-regular.otf") format("opentype");
 }
+
 @font-face {
     font-family: 'Brandon Grotesque Black';
     font-style: normal;
     font-weight: normal;
     src: local('Brandon Grotesque Black'), url('/static/fonts/brandon-grotesque-black-58a8a3e824392.woff') format('woff');
 }
+
 @font-face {
     font-family: 'Brandon Grotesque Bold';
     font-style: normal;
     font-weight: normal;
     src: local('Brandon Grotesque Bold'), url('/static/fonts/brandon-grotesque-bold-587bd6400afd0.woff') format('woff');
 }
+
 @font-face {
     font-family: 'Brandon Grotesque Bold Italic';
     font-style: normal;
     font-weight: normal;
     src: local('Brandon Grotesque Bold Italic'), url('/static/fonts/brandon-grotesque-bold-italic-58a8a48221563.woff') format('woff');
 }
+
 @font-face {
     font-family: 'Brandon Grotesque Light';
     font-style: normal;
     font-weight: normal;
     src: local('Brandon Grotesque Light'), url('/static/fonts/brandon-grotesque-light-58a8a4b38001d.woff') format('woff');
 }
+
 @font-face {
     font-family: 'Brandon Grotesque Light Italic';
     font-style: normal;
     font-weight: normal;
     src: local('Brandon Grotesque Light Italic'), url('/static/fonts/brandon-grotesque-light-italic-58a8a4ccb88be.woff') format('woff');
 }
+
 @font-face {
     font-family: 'Brandon Grotesque Medium';
     font-style: normal;
     font-weight: normal;
     src: local('Brandon Grotesque Medium'), url('/static/fonts/brandon-grotesque-medium-587bd623e472a.woff') format('woff');
 }
+
 @font-face {
     font-family: 'Brandon Grotesque Medium Italic';
     font-style: normal;
     font-weight: normal;
     src: local('Brandon Grotesque Medium Italic'), url('/static/fonts/brandon-grotesque-medium-italic-58a8a3c40866a.woff') format('woff');
 }
+
 @font-face {
     font-family: 'Brandon Grotesque Regular Italic';
     font-style: normal;
     font-weight: normal;
     src: local('Brandon Grotesque Regular Italic'), url('/static/fonts/brandon-grotesque-regular-italic-58a8a456c4724.woff') format('woff');
 }
+
 @font-face {
     font-family: 'Brandon Grotesque Thin';
     font-style: normal;
     font-weight: normal;
     src: local('Brandon Grotesque Thin'), url('/static/fonts/brandon-grotesque-thin-587bd5b76cfba.woff') format('woff');
 }
+
 @font-face {
     font-family: 'Brandon Grotesque Thin Italic';
     font-style: normal;
@@ -84,8 +93,8 @@ label {
 
 .form-control {
     color: #212529;
- 
 }
+
 /* pallete:
 rgb(227,117,70)
 rgb(113,114,110)
@@ -125,12 +134,13 @@ rgb(96, 124, 160) */
 /* Sidebar header */
 
 #sidebar-header {
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    align-items:center;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     margin-top: 11px;
 }
+
 #sidebar-header img {
     display: block;
     height: 40px;
@@ -149,6 +159,7 @@ rgb(96, 124, 160) */
     font-size: 17px;
     text-decoration: none;
 }
+
 /* Active/current link */
 
 .sidebar .sidebar-hover-highlight:hover:not(.active) {
@@ -167,9 +178,10 @@ rgb(96, 124, 160) */
 
 #main-page-body {
     width: 100%;
-    display:flex;
+    display: flex;
     justify-content: space-between;
 }
+
 /* -------------------------------------- */
 
 /*  *** UTILS - components reused across the project *** */
@@ -247,7 +259,7 @@ h3 {
     font-size: 2rem;
 }
 
-.page-title.header-item{
+.page-title.header-item {
     font-size: 32px;
 }
 
@@ -260,25 +272,27 @@ h3 {
 }
 
 #breadcrumb {
-    font-size:21px;
+    font-size: 21px;
 }
+
 #page-header label, #page-header .separator {
     color: darkgray;
 }
 
 /* for selects in object details header */
 
-
 #page-header .select2-container .select2-selection--single, #page-header .select2-container--default .select2-selection--single .select2-selection__rendered, #page-header .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 3rem;
     line-height: 3rem;
     font-size: 21px;
 }
+
 #series-select .select2-container .select2-selection--single, #series-select .select2-container--default .select2-selection--single .select2-selection__rendered, #series-select .select2-container--default .select2-selection--single .select2-selection__arrow {
     height: 3rem;
     line-height: 3rem;
     font-size: 2rem;
 }
+
 .object-name {
     padding-left: 0.3rem;
 }
@@ -286,6 +300,7 @@ h3 {
 .header-action {
     margin-left: 8rem;
 }
+
 /* -------------------------------------- */
 
 /* *** Search Bar CSS *** */
@@ -398,7 +413,7 @@ a.gallery-item-wrapper:link, a.gallery-item-wrapper:visited, a.gallery-item-wrap
     background-repeat: no-repeat;
     height: 100%;
     width: 100%;
-  }
+}
 
 .gallery-item-hover {
     visibility: hidden;
@@ -416,7 +431,7 @@ a.gallery-item-wrapper:link, a.gallery-item-wrapper:visited, a.gallery-item-wrap
 }
 
 .gallery-item-title {
-    font-size:29px;
+    font-size: 29px;
     line-height: 36px;
     text-align: center;
     /* font: normal normal normal 29px/36px "Brandon Grotesque Regular", sans-serif; */
@@ -436,15 +451,18 @@ ul.gallery-item-text {
 }
 
 /* -------------------------------------- */
+
 /* Pagination */
 
 .pagination {
     width: max-content;
 }
+
 .pagination li {
     padding-left: 0.5rem;
     padding-right: 0.5rem;
 }
+
 /* -------------------------------------- */
 
 /* ***  Object Details layout *** */
@@ -493,14 +511,13 @@ ul.gallery-item-text {
 }
 
 #related-search-wrapper {
-    border: 1px solid rgba(0,0,0,.125);
+    border: 1px solid rgba(0, 0, 0, .125);
     border-radius: 0.25rem;
     box-sizing: border-box;
     padding: 10px;
     width: 1019px;
     max-width: 2000px;
     margin-left: -10px;
-
 }
 
 /* -------------------------------------- */
@@ -529,7 +546,8 @@ ul.gallery-item-text {
     background-repeat: no-repeat;
     height: 100%;
     width: 100%;
-  }
+}
+
 /* #artwork-year {
     -webkit-appearance: textfield;
     width: 4.5rem;
@@ -547,7 +565,7 @@ ul.gallery-item-text {
 }
 
 .size-field-container {
-    padding-left:1.5rem;
+    padding-left: 1.5rem;
     /* color: gray;
     display: inline-flex;
     align-items: center;
@@ -602,29 +620,29 @@ ul.gallery-item-text {
 
 .swipe-action {
     cursor: pointer;
-    position:fixed;
+    position: fixed;
     top: 0;
-    min-width:50px;
+    min-width: 50px;
     max-width: 120px;
     width: 6%;
-    z-index:2;
+    z-index: 2;
     transition: 0.6s ease;
     height: 100vh;
-    display:flex;
+    display: flex;
     justify-content: center;
     align-items: center;
     color: #212529;
     user-select: none;
-    text-align:center;
-    font-size:32px;
+    text-align: center;
+    font-size: 32px;
     text-decoration: none;
 }
 
-.swipe-action:hover{
+.swipe-action:hover {
     background-color: rgba(112, 128, 144, 0.3);
-    color: rgb(240,240,240);
-    text-decoration:none;
-    font-size:34px;
+    color: rgb(240, 240, 240);
+    text-decoration: none;
+    font-size: 34px;
 }
 
 .swipe-action:active {
@@ -642,10 +660,9 @@ ul.gallery-item-text {
     right: 0;
 }
 
-
 .swipe-action-icon {
-    height:50px;
-    width:50px;
+    height: 50px;
+    width: 50px;
     /* z-index:2; */
 }
 
@@ -683,7 +700,6 @@ ul.gallery-item-text {
 /* -------------------------------------- */
 
 /*  *** Sizing *** */
-
 
 /* website-sizes{
     splash-header: 70px;
@@ -747,13 +763,12 @@ body {
 .gallery-item-hover-expanded {
     visibility: hidden;
     z-index: 20;
-        margin-top: -400px;
+    margin-top: -400px;
     background: rgba(256, 256, 256, 0.65);
     position: absolute;
     width: inherit;
     height: inherit;
 }
-
 
 .gallery-item-wrapper {
     height: 293px;
@@ -766,7 +781,6 @@ a.gallery-item-wrapper-expanded:link, a.gallery-item-wrapper-expanded:visited, a
     color: rgb(44, 45, 52);
 }
 
-
 .gallery-item-image-expanded {
     height: 400px;
     width: 400px;
@@ -775,9 +789,29 @@ a.gallery-item-wrapper-expanded:link, a.gallery-item-wrapper-expanded:visited, a
     z-index: 10;
 }
 
-
-
-
 .gallery-item-wrapper-expanded:hover .gallery-item-hover-expanded {
     visibility: visible;
+}
+
+.elm-resize-common {
+    resize: none;
+    overflow: hidden;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    width: 300px;
+    line-height: 1.2;
+    font-size: 17px;
+    font-family: Arial;
+    border: medium none;
+    padding: 0px;
+}
+.elm-resize-textarea {
+    z-index: 3;
+    /* height: 100% */
+}
+
+.elm-resize-hiddenDiv {
+    margin: 0px 0px 0px -300px;
+    height: min-content;
+    z-index: 1;
 }

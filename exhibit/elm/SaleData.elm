@@ -75,7 +75,7 @@ newSaleData =
     , artwork = Nothing
     , buyer = Nothing
     , agent = Nothing
-    , notes = InputResize.fromContent ""
+    , notes = InputResize.fromContent InputResize.defaultSettings ""
     , saleCurrency = ""
     , salePrice = ""
     , discount = ""
@@ -93,8 +93,8 @@ saleDataDecoder =
         |> Pipeline.required "buyer" (D.int |> D.maybe)
         |> Pipeline.required "agent" (D.int |> D.maybe)
         |> Pipeline.optional "notes"
-            (D.map InputResize.fromContent D.string)
-            (InputResize.fromContent "")
+            (D.map (InputResize.fromContent InputResize.defaultSettings) D.string)
+            (InputResize.fromContent InputResize.defaultSettings "")
         |> Pipeline.optional "saleCurrency" D.string ""
         |> Pipeline.optional "salePrice" D.string ""
         |> Pipeline.optional "discount" D.string ""
@@ -560,7 +560,8 @@ inputNotesView label_name id_ placeholder_ errors val =
                 , style "align-self" "start"
                 ]
                 [ text label_name ]
-             , InputResize.view settings id_ val
+             , (InputResize.setAttributes settings
+                 |> InputResize.view settings id_ val )
 
              --  , textarea
              --     [ id id_

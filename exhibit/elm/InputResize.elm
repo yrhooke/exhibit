@@ -2,9 +2,11 @@ module InputResize exposing
     ( InputResize
     , Msg
     , Settings
+    , addAttribute
     , defaultSettings
     , fromContent
     , getSize
+    , setAttributes
     , update
     , view
     )
@@ -26,19 +28,28 @@ main =
         { init = init
         , update = update
         , subscriptions = subscriptions
-        , view = view defaultSettings "myinput"
+        , view = testView
+
         }
 
 
 init : () -> ( InputResize, Cmd Msg )
 init _ =
-    (fromContent "something\ninvolving\nseveral\nnewlines"
-    , getSize "myinput")
+    ( fromContent defaultSettings "something\ninvolving\nseveral\nnewlines"
+    , getSize "myinput"
+    )
 
 
 subscriptions : InputResize -> Sub Msg
 subscriptions model =
     Sub.none
+
+
+
+
+
+testView model =
+    view defaultSettings "myinput" model (setAttributes defaultSettings)
 
 
 
@@ -75,13 +86,10 @@ defaultSettings =
 -- INIT
 
 
-
-
-
-fromContent : String -> InputResize
-fromContent content =
+fromContent : Settings -> String -> InputResize
+fromContent settings content =
     { content = content
-    , height = toFloat 20
+    , height = estimateRows settings content
     , isMeasuring = False
     }
 
@@ -111,7 +119,8 @@ update msg model =
                 Ok viewport ->
                     {--}
                     let
-                            log_height = Debug.log "viewport" <| Debug.toString viewport
+                        log_height =
+                            Debug.log "viewport" <| Debug.toString viewport
                     in
                     --}
                     ( { model | height = viewport.scene.height, isMeasuring = False }
@@ -131,30 +140,8 @@ getSize divID =
 -- VIEW
 
 
-view : Settings -> String -> InputResize -> Html Msg
-view settings divID model =
-    let
-        innerView =
-            if model.isMeasuring then
-                [ textAreaView settings "text_area_" model
-                , hiddenDivView settings divID model.content
-                ]
-
-            else
-                [ textAreaView settings divID model
-                , hiddenDivView settings "text_area_measure" model.content
-                ]
-    in
-    div
-        [ style "display" "flex"
-        , style "justify-content" "start"
-        , style "align-items" "start"
-        ]
-        innerView
-
-
-innerAttributes : Settings -> List (Attribute Msg)
-innerAttributes settings =
+setAttributes : Settings -> List (Attribute Msg)
+setAttributes settings =
     [ style "resize" "none"
     , style "overflow" "hidden"
     , style "white-space" "pre-wrap"
@@ -169,33 +156,71 @@ innerAttributes settings =
     ]
 
 
-textAreaView : Settings -> String -> InputResize -> Html Msg
-textAreaView settings divID model =
+addAttribute : Attribute Msg -> List (Attribute Msg) -> List (Attribute Msg)
+addAttribute newAttribute attributes =
+    attributes ++ [ newAttribute ]
+
+
+view : Settings -> String -> InputResize -> List (Attribute Msg) -> Html Msg
+view settings divID model attributes =
+    let
+        rowHeight =
+            settings.lineHeight * settings.fontSize
+
+        innerView =
+            if model.isMeasuring then
+                [ textAreaView "text_area_" model attributes
+                , hiddenDivView settings.width rowHeight divID model.content attributes
+                ]
+
+            else
+                [ textAreaView divID model attributes
+                , hiddenDivView settings.width rowHeight "text_area_measure" model.content attributes
+
+                ]
+    in
+    div
+        [ style "display" "flex"
+        , style "justify-content" "start"
+        , style "align-items" "start"
+        ]
+        innerView
+
+
+textAreaView : String -> InputResize -> List (Attribute Msg) -> Html Msg
+textAreaView divID model attributes =
     textarea
-        ([ id divID
-         , value model.content
-         , onInput (NewContent divID)
-         , style "height" (String.fromFloat model.height ++ "px")
-        --  , style "height" (String.fromFloat (model.height - 20) ++ "px")
-         , style "z-index" "3"
-         ]
-            ++ innerAttributes settings
+        (attributes
+            ++ [ id divID
+               , value model.content
+               , onInput (NewContent divID)
+               , style "height" (String.fromFloat model.height ++ "px")
+               , style "z-index" "3"
+            --    , class "elm-resize-common"
+            --    , class "elm-resize-textarea"
+               ]
         )
         [ text model.content ]
 
 
-hiddenDivView : Settings -> String -> String -> Html Msg
-hiddenDivView settings id_ content =
+hiddenDivView : String -> Float -> String -> String -> List (Attribute Msg) -> Html Msg
+hiddenDivView width rowHeight id_ content attributes =
     div
-        (innerAttributes settings
+        (attributes
             ++ [ id id_
                , value content
                , style "height" "min-content"
-               , style "margin-left" ("-" ++ settings.width)
+               , style "margin-left" ("-" ++ width)
                , style "z-index" "1"
+            --    , class "elm-resize-common"
+            --    , class "elm-resize-hiddenDiv"
                ]
         )
-        (htmlEncodeString (settings.lineHeight * settings.fontSize) content)
+        (htmlEncodeString rowHeight content)
+
+
+
+
 
 {--}
 htmlEncodeString : Float -> String -> List (Html Msg)
@@ -206,30 +231,33 @@ htmlEncodeString lineHeight someString =
 
         htmlMapper line =
             if line == "" then
-               div [style "height" (String.fromFloat lineHeight ++ "px")] []
+                div [ style "height" (String.fromFloat lineHeight ++ "px") ] []
 
             else
                 div [] [ text line ]
     in
     List.map htmlMapper lines
-        -- ++ [ div [style "height" "1px"] [] ]
-        ++ [ div [style "height" (String.fromFloat lineHeight ++"px")] [] ]
+        ++ [ div [ style "height" (String.fromFloat lineHeight ++ "px") ] [] ]
 --}
-{--
-htmlEncodeString : Float -> String -> List (Html Msg)
-htmlEncodeString lineHeight someString =
-    let
-        lines =
-            String.split "\n" someString
 
-        htmlMapper line =
-            [
-                text line
-                ,br [ style "line-height" "1px" ] []
-            ]
+
+estimateRows  : Settings -> String -> Float
+estimateRows settings content =
+    let
+        lines = String.split "\n" content
+    
+
+        numRows line = 
+            if line == "" then
+                1
+            else
+            toFloat (String.length line) / toFloat settings.columns
+            |> ceiling
+
     in
-    List.concatMap htmlMapper lines
-        -- ++ [ br [ style "line-height" "1px" ] []]
--- ++ [ div [style "height" "1px"] [] ]
--- ++ [ div [style "height" (String.fromFloat lineHeight ++"px")] [] 
---}
+    List.map numRows lines
+    |> List.foldl (+) 1
+    |> toFloat 
+    |> (*) settings.fontSize 
+    |> (*) settings.lineHeight
+
