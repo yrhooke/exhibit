@@ -8289,7 +8289,7 @@ var $author$project$SalesGallery$selectedArtworkView = F2(
 									$elm$html$Html$Attributes$id('sales-info'),
 									$elm$html$Html$Attributes$class('card'),
 									A2($elm$html$Html$Attributes$style, 'width', '400px'),
-									A2($elm$html$Html$Attributes$style, 'margin', '20px')
+									A2($elm$html$Html$Attributes$style, 'margin', '40px 15px 20px 10px')
 								]),
 							_List_fromArray(
 								[

@@ -390,7 +390,7 @@ selectedArtworkView closeIconURL artwork =
                 [ id "sales-info"
                 , class "card"
                 , style "width" "400px"
-                , style "margin" "20px"
+                , style "margin" "40px 15px 20px 10px"
                 ]
                 [ div
                     [ class "card-body"
