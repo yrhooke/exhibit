@@ -5684,6 +5684,9 @@ var $author$project$SaleData$SaleData = function (id) {
 		};
 	};
 };
+var $author$project$InputResize$fromContent = function (content) {
+	return {content: content, height: 20, isMeasuring: false};
+};
 var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$json$Json$Decode$maybe = function (decoder) {
 	return $elm$json$Json$Decode$oneOf(
@@ -5733,8 +5736,8 @@ var $author$project$SaleData$saleDataDecoder = A4(
 						A4(
 							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 							'notes',
-							$elm$json$Json$Decode$string,
-							'',
+							A2($elm$json$Json$Decode$map, $author$project$InputResize$fromContent, $elm$json$Json$Decode$string),
+							$author$project$InputResize$fromContent(''),
 							A3(
 								$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 								'agent',
@@ -6012,6 +6015,9 @@ var $NoRedInk$list_selection$List$Selection$selected = function (_v0) {
 var $author$project$SaleData$Failed = {$: 'Failed'};
 var $author$project$SaleData$ServerResponse = function (a) {
 	return {$: 'ServerResponse', a: a};
+};
+var $author$project$SaleData$UpdateNotes = function (a) {
+	return {$: 'UpdateNotes', a: a};
 };
 var $author$project$SaleData$Updated = {$: 'Updated'};
 var $author$project$SaleData$Updating = {$: 'Updating'};
@@ -7357,7 +7363,7 @@ var $author$project$SaleData$saleDataToForm = function (record) {
 					_Utils_ap(
 						_List_fromArray(
 							[
-								A2($elm$http$Http$stringPart, 'notes', record.notes),
+								A2($elm$http$Http$stringPart, 'notes', record.notes.content),
 								A2($elm$http$Http$stringPart, 'sale_currency', record.saleCurrency),
 								A2($elm$http$Http$stringPart, 'sale_price', record.salePrice),
 								A2($elm$http$Http$stringPart, 'discount', record.discount),
@@ -7409,19 +7415,53 @@ var $author$project$SaleData$setSalePrice = F2(
 			{salePrice: newSalePrice});
 	});
 var $elm$core$Debug$toString = _Debug_toString;
+var $author$project$InputResize$GotSize = function (a) {
+	return {$: 'GotSize', a: a};
+};
+var $elm$browser$Browser$Dom$getViewportOf = _Browser_getViewportOf;
+var $author$project$InputResize$update = F2(
+	function (msg, model) {
+		if (msg.$ === 'NewContent') {
+			var divID = msg.a;
+			var content = msg.b;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{content: content, isMeasuring: true}),
+				A2(
+					$elm$core$Task$attempt,
+					$author$project$InputResize$GotSize,
+					$elm$browser$Browser$Dom$getViewportOf(divID)));
+		} else {
+			var result = msg.a;
+			if (result.$ === 'Ok') {
+				var viewport = result.a;
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{height: viewport.scene.height, isMeasuring: false}),
+					$elm$core$Platform$Cmd$none);
+			} else {
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+			}
+		}
+	});
 var $author$project$SaleData$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'UpdateNotes':
-				var val = msg.a;
+				var resizeMsg = msg.a;
+				var _v1 = A2($author$project$InputResize$update, resizeMsg, model.saleData.notes);
+				var newNotes = _v1.a;
+				var newMsg = _v1.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							saleData: A2($author$project$SaleData$setNotes, val, model.saleData),
+							saleData: A2($author$project$SaleData$setNotes, newNotes, model.saleData),
 							updated: $author$project$SaleData$Behind
 						}),
-					$elm$core$Platform$Cmd$none);
+					A2($elm$core$Platform$Cmd$map, $author$project$SaleData$UpdateNotes, newMsg));
 			case 'UpdateSaleCurrency':
 				var val = msg.a;
 				return _Utils_Tuple2(
@@ -7492,8 +7532,8 @@ var $author$project$SaleData$update = F2(
 					$elm$core$Debug$log,
 					'Submitting: ' + $elm$core$Debug$toString(model),
 					'');
-				var _v1 = A2($rtfeldman$elm_validate$Validate$validate, $author$project$SaleData$saleDataValidator, model.saleData);
-				if (_v1.$ === 'Ok') {
+				var _v2 = A2($rtfeldman$elm_validate$Validate$validate, $author$project$SaleData$saleDataValidator, model.saleData);
+				if (_v2.$ === 'Ok') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -7513,7 +7553,7 @@ var $author$project$SaleData$update = F2(
 								url: '/c/api/saledata'
 							}));
 				} else {
-					var errors = _v1.a;
+					var errors = _v2.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -7901,9 +7941,6 @@ var $author$project$SaleData$UpdateAmountToArtist = function (a) {
 var $author$project$SaleData$UpdateDiscount = function (a) {
 	return {$: 'UpdateDiscount', a: a};
 };
-var $author$project$SaleData$UpdateNotes = function (a) {
-	return {$: 'UpdateNotes', a: a};
-};
 var $author$project$SaleData$UpdateSaleCurrency = function (a) {
 	return {$: 'UpdateSaleCurrency', a: a};
 };
@@ -7971,7 +8008,14 @@ var $author$project$SaleData$hiddenInputView = function (saleDataID) {
 				$author$project$SaleData$saleDataIdSelectionView(saleDataID)
 			]));
 };
-var $author$project$SaleData$AttemptSubmitForm = {$: 'AttemptSubmitForm'};
+var $elm$core$Basics$round = _Basics_round;
+var $author$project$InputResize$defaultSettings = {
+	columns: $elm$core$Basics$round(50),
+	fontFamily: 'Arial',
+	fontSize: '17px',
+	lineHeight: '1.2',
+	width: '300px'
+};
 var $elm$html$Html$small = _VirtualDom_node('small');
 var $author$project$SaleData$errorView = function (error) {
 	return A2(
@@ -7989,6 +8033,74 @@ var $author$project$SaleData$errorView = function (error) {
 };
 var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
 var $elm$html$Html$label = _VirtualDom_node('label');
+var $elm$html$Html$br = _VirtualDom_node('br');
+var $author$project$InputResize$htmlEncodeString = F2(
+	function (lineHeight, someString) {
+		var lines = A2($elm$core$String$split, '\n', someString);
+		var htmlMapper = function (line) {
+			return (line === '') ? A2(
+				$elm$html$Html$br,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'line-height', lineHeight)
+					]),
+				_List_Nil) : A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(line)
+					]));
+		};
+		return _Utils_ap(
+			A2($elm$core$List$map, htmlMapper, lines),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$br,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'line-height', '1px')
+						]),
+					_List_Nil)
+				]));
+	});
+var $author$project$InputResize$innerAttributes = function (settings) {
+	return _List_fromArray(
+		[
+			A2($elm$html$Html$Attributes$style, 'resize', 'none'),
+			A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
+			A2($elm$html$Html$Attributes$style, 'white-space', 'pre-wrap'),
+			A2($elm$html$Html$Attributes$style, 'wordWrap', 'break-word'),
+			A2($elm$html$Html$Attributes$style, 'width', settings.width),
+			A2($elm$html$Html$Attributes$style, 'line-height', settings.lineHeight),
+			A2($elm$html$Html$Attributes$style, 'font-size', settings.fontSize),
+			A2($elm$html$Html$Attributes$style, 'font-family', settings.fontFamily),
+			A2($elm$html$Html$Attributes$style, 'border', 'none'),
+			A2($elm$html$Html$Attributes$style, 'padding', '0px'),
+			A2($elm$html$Html$Attributes$style, 'margin', '0px')
+		]);
+};
+var $author$project$InputResize$hiddenDivView = F3(
+	function (settings, id_, content) {
+		return A2(
+			$elm$html$Html$div,
+			_Utils_ap(
+				$author$project$InputResize$innerAttributes(settings),
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id(id_),
+						$elm$html$Html$Attributes$value(content),
+						A2($elm$html$Html$Attributes$style, 'height', 'min-content'),
+						A2($elm$html$Html$Attributes$style, 'margin-left', '-' + settings.width),
+						A2($elm$html$Html$Attributes$style, 'z-index', '1')
+					])),
+			A2($author$project$InputResize$htmlEncodeString, settings.lineHeight, content));
+	});
+var $author$project$InputResize$NewContent = F2(
+	function (a, b) {
+		return {$: 'NewContent', a: a, b: b};
+	});
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
@@ -8020,55 +8132,86 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
-var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
-var $author$project$SaleData$inputNotesView = F6(
-	function (label_name, id_, placeholder_, errors, updateMsg, val) {
+var $author$project$InputResize$textAreaView = F4(
+	function (settings, divID, content, nodeHeight) {
+		return A2(
+			$elm$html$Html$textarea,
+			_Utils_ap(
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id(divID),
+						$elm$html$Html$Attributes$value(content),
+						$elm$html$Html$Events$onInput(
+						$author$project$InputResize$NewContent(divID)),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'height',
+						$elm$core$String$fromFloat(nodeHeight) + 'px'),
+						A2($elm$html$Html$Attributes$style, 'z-index', '3')
+					]),
+				$author$project$InputResize$innerAttributes(settings)),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(content)
+				]));
+	});
+var $author$project$InputResize$view = F3(
+	function (settings, divID, model) {
+		var innerView = model.isMeasuring ? _List_fromArray(
+			[
+				A4($author$project$InputResize$textAreaView, settings, 'text_area_', model.content, model.height),
+				A3($author$project$InputResize$hiddenDivView, settings, divID, model.content)
+			]) : _List_fromArray(
+			[
+				A4($author$project$InputResize$textAreaView, settings, divID, model.content, model.height),
+				A3($author$project$InputResize$hiddenDivView, settings, 'text_area_measure', model.content)
+			]);
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
 					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-					$elm$html$Html$Attributes$class('ungroup'),
-					$elm$html$Html$Attributes$class('form-group')
+					A2($elm$html$Html$Attributes$style, 'justify-content', 'start'),
+					A2($elm$html$Html$Attributes$style, 'align-items', 'start')
 				]),
-			_Utils_ap(
+			innerView);
+	});
+var $author$project$SaleData$inputNotesView = F5(
+	function (label_name, id_, placeholder_, errors, val) {
+		var settings = $author$project$InputResize$defaultSettings;
+		return A2(
+			$elm$html$Html$map,
+			$author$project$SaleData$UpdateNotes,
+			A2(
+				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						A2(
-						$elm$html$Html$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for(id_),
-								A2($elm$html$Html$Attributes$style, 'align-self', 'start')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(label_name)
-							])),
-						A2(
-						$elm$html$Html$textarea,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$id(id_),
-								$elm$html$Html$Events$onInput(updateMsg),
-								$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm),
-								$elm$html$Html$Attributes$classList(
-								_List_fromArray(
-									[
-										_Utils_Tuple2('edit-field', true),
-										_Utils_Tuple2('form-control', true),
-										_Utils_Tuple2('form-control-sm', true)
-									])),
-								A2($elm$html$Html$Attributes$style, 'width', '270px'),
-								$elm$html$Html$Attributes$placeholder(placeholder_),
-								$elm$html$Html$Attributes$value(val)
-							]),
-						_List_Nil)
+						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+						$elm$html$Html$Attributes$class('ungroup'),
+						$elm$html$Html$Attributes$class('form-group')
 					]),
-				A2($elm$core$List$map, $author$project$SaleData$errorView, errors)));
+				_Utils_ap(
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$label,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$for(id_),
+									A2($elm$html$Html$Attributes$style, 'align-self', 'start')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text(label_name)
+								])),
+							A3($author$project$InputResize$view, settings, id_, val)
+						]),
+					A2($elm$core$List$map, $author$project$SaleData$errorView, errors))));
 	});
+var $author$project$SaleData$AttemptSubmitForm = {$: 'AttemptSubmitForm'};
 var $elm$html$Html$input = _VirtualDom_node('input');
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
 var $author$project$SaleData$inputView = F6(
 	function (label_name, id_, placeholder_, errors, updateMsg, val) {
 		return A2(
@@ -8193,13 +8336,12 @@ var $author$project$SaleData$view = function (model) {
 							])),
 						A2($author$project$SaleData$syncStatusView, model.updated, model.icons)
 					])),
-				A6(
+				A5(
 				$author$project$SaleData$inputNotesView,
 				'Notes:',
 				'id_notes',
 				'Notes',
 				A2($author$project$SaleData$findErrors, $author$project$SaleData$Notes, model.errors),
-				$author$project$SaleData$UpdateNotes,
 				model.saleData.notes),
 				A6(
 				$author$project$SaleData$inputView,
@@ -8402,7 +8544,19 @@ var $author$project$SaleData$decodeFieldtoString = F2(
 			return '';
 		}
 	});
-var $author$project$SaleData$newSaleData = {agent: $elm$core$Maybe$Nothing, agentFee: '', amountToArtist: '', artwork: $elm$core$Maybe$Nothing, buyer: $elm$core$Maybe$Nothing, discount: '', id: $elm$core$Maybe$Nothing, notes: '', saleCurrency: '', saleDate: '', salePrice: ''};
+var $author$project$SaleData$newSaleData = {
+	agent: $elm$core$Maybe$Nothing,
+	agentFee: '',
+	amountToArtist: '',
+	artwork: $elm$core$Maybe$Nothing,
+	buyer: $elm$core$Maybe$Nothing,
+	discount: '',
+	id: $elm$core$Maybe$Nothing,
+	notes: $author$project$InputResize$fromContent(''),
+	saleCurrency: '',
+	saleDate: '',
+	salePrice: ''
+};
 var $author$project$SaleData$init = function (flags) {
 	var icons = {
 		failIconURL: A2($author$project$SaleData$decodeFieldtoString, 'fail_icon', flags),
