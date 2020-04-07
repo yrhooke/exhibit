@@ -166,12 +166,12 @@ class Artwork(models.Model):
     def get_image(self):
         """newest image associated with artwork"""
         image_model_instance = ArtworkImage.objects.filter(artwork=self.pk).last()
-        try:
-            result = image_model_instance.image
-            result.pk = image_model_instance.pk
-            return result
-        except AttributeError:
-            return None
+        if not image_model_instance:
+            image_model_instance = ArtworkImage()
+
+        result = image_model_instance.image
+        result.pk = image_model_instance.pk
+        return result
 
     @property
     def sale_data(self):

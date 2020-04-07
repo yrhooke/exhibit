@@ -197,7 +197,7 @@ def artwork_sale_gallery_details(artwork):
         'width_cm': artwork.width_cm,
         'height_cm': artwork.height_cm,
         'url': reverse('catalogue:artwork_detail', args=[artwork.id]),
-        'image': artwork.get_image.url,
+        'image': artwork.get_image.url if artwork.get_image else "",
         'price_nis': artwork.price_nis,
         'price_usd': artwork.price_usd,
         'sale_data': exported_sale_data,

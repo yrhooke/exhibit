@@ -732,3 +732,52 @@ form-control {
 body {
     color: #212529;
 } */
+
+/* -------------------------------------- */
+
+/*  *** SalesGalley *** */
+
+.gallery-item-wrapper-expanded {
+    height: 400px;
+    width: 400px;
+    margin: 20px;
+    z-index: 10;
+}
+
+.gallery-item-hover-expanded {
+    visibility: hidden;
+    z-index: 20;
+        margin-top: -400px;
+    background: rgba(256, 256, 256, 0.65);
+    position: absolute;
+    width: inherit;
+    height: inherit;
+}
+
+
+.gallery-item-wrapper {
+    height: 293px;
+    width: 293px;
+    margin: 20px;
+    /* z-index: 10; */
+}
+
+a.gallery-item-wrapper-expanded:link, a.gallery-item-wrapper-expanded:visited, a.gallery-item-wrapper-expanded:link:active, a.gallery-item-wrapper-expanded:visited:active {
+    color: rgb(44, 45, 52);
+}
+
+
+.gallery-item-image-expanded {
+    height: 400px;
+    width: 400px;
+    overflow: hidden;
+    position: relative;
+    z-index: 10;
+}
+
+
+
+
+.gallery-item-wrapper-expanded:hover .gallery-item-hover-expanded {
+    visibility: visible;
+}

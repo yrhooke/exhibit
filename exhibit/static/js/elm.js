@@ -7659,6 +7659,16 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
+var $elm$html$Html$Attributes$classList = function (classes) {
+	return $elm$html$Html$Attributes$class(
+		A2(
+			$elm$core$String$join,
+			' ',
+			A2(
+				$elm$core$List$map,
+				$elm$core$Tuple$first,
+				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
+};
 var $elm$html$Html$div = _VirtualDom_node('div');
 var $elm$html$Html$Attributes$href = function (url) {
 	return A2(
@@ -7668,6 +7678,7 @@ var $elm$html$Html$Attributes$href = function (url) {
 };
 var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
 var $elm$html$Html$li = _VirtualDom_node('li');
+var $elm$core$Basics$not = _Basics_not;
 var $elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -7701,11 +7712,11 @@ var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
 var $elm$html$Html$ul = _VirtualDom_node('ul');
 var $author$project$SalesGallery$artworkView = F2(
-	function (linkExposed, artwork) {
-		var wrapper = linkExposed ? $elm$html$Html$a(
+	function (expanded, artwork) {
+		var wrapper = expanded ? $elm$html$Html$a(
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('gallery-item-wrapper'),
+					$elm$html$Html$Attributes$class('gallery-item-wrapper-expanded'),
 					$elm$html$Html$Attributes$id(
 					'artwork_wrapper' + $elm$core$String$fromInt(artwork.id)),
 					$elm$html$Html$Attributes$href(artwork.url)
@@ -7729,10 +7740,16 @@ var $author$project$SalesGallery$artworkView = F2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
-					$elm$html$Html$Attributes$class('gallery-item-image'),
+					$elm$html$Html$Attributes$classList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2('gallery-item-image', !expanded),
+							_Utils_Tuple2('gallery-item-image-expanded', expanded)
+						])),
 					A2($elm$html$Html$Attributes$style, 'background', 'darkgrey')
 				]),
 			_List_Nil);
+		var hoverClass = expanded ? 'gallery-item-hover-expanded' : 'gallery-item-hover';
 		return wrapper(
 			_List_fromArray(
 				[
@@ -7741,7 +7758,7 @@ var $author$project$SalesGallery$artworkView = F2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							$elm$html$Html$Attributes$class('gallery-item-hover')
+							$elm$html$Html$Attributes$class(hoverClass)
 						]),
 					_List_fromArray(
 						[
@@ -7849,16 +7866,6 @@ var $author$project$SalesGallery$artworkView = F2(
 						]))
 				]));
 	});
-var $elm$html$Html$Attributes$classList = function (classes) {
-	return $elm$html$Html$Attributes$class(
-		A2(
-			$elm$core$String$join,
-			' ',
-			A2(
-				$elm$core$List$map,
-				$elm$core$Tuple$first,
-				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
-};
 var $author$project$SalesGallery$Deselect = {$: 'Deselect'};
 var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
 var $elm$html$Html$button = _VirtualDom_node('button');

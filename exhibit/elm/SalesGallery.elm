@@ -301,12 +301,12 @@ view model =
 
 
 artworkView : Bool -> Artwork -> Html Msg
-artworkView linkExposed artwork =
+artworkView expanded artwork =
     let
         wrapper =
-            if linkExposed then
+            if expanded then
                 a
-                    [ class "gallery-item-wrapper"
+                    [ class "gallery-item-wrapper-expanded"
                     , id <| "artwork_wrapper" ++ String.fromInt artwork.id
                     , href artwork.url
                     ]
@@ -328,14 +328,24 @@ artworkView linkExposed artwork =
 
             else
                 div
-                    [ class "gallery-item-image"
+                    [ classList
+                        [ ( "gallery-item-image", not expanded )
+                        , ( "gallery-item-image-expanded", expanded )
+                        ]
                     , style "background" "darkgrey"
                     ]
                     []
+
+        hoverClass =
+            if expanded then
+                "gallery-item-hover-expanded"
+
+            else
+                "gallery-item-hover"
     in
     wrapper
         [ imageBox
-        , div [ class "gallery-item-hover" ]
+        , div [ class hoverClass ]
             [ ul [ class "gallery-item-text" ]
                 [ li []
                     [ div [ class "gallery-item-title" ] [ span [] [ text artwork.title ] ]
