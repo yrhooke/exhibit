@@ -1,38 +1,46 @@
-module InputResize exposing (..)
+module InputResize exposing
+    ( Settings
+    , update
+    , view
+    , initResize
+    , defaultSettings
+    )
 
-import Browser
 import Browser.Dom
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
-import Random
 import Task exposing (Task)
-
-
-
--- MAIN
-
-
-main =
-    Browser.element
-        { init = init
-        , update = update
-        , view = view
-        , subscriptions = subscriptions
-        }
 
 
 
 -- MODEL
 
 
-type alias Model =
+type alias InputResize =
     { content : String
     , height : Float
     , divID : String
-    , measuringHeight : Bool
-    , customizeInner : List (Attribute Msg)
-    , customizeOuter : List (Attribute Msg)
+    , isMeasuring : Bool
+    }
+
+
+type alias Settings =
+    { fontSize : String
+    , fontFamily : String
+    , lineHeight : String
+    , width : String
+    , columns : Int
+    }
+
+
+defaultSettings : Settings
+defaultSettings =
+    { fontSize = "17px"
+    , fontFamily = "Arial"
+    , lineHeight = "1.2"
+    , width = "300px"
+    , columns = round 50
     }
 
 
@@ -40,16 +48,14 @@ type alias Model =
 -- INIT
 
 
-init : () -> ( Model, Cmd Msg )
-init _ =
-    ( { content = ""
+initResize : String -> String -> ( InputResize, Cmd ResizeMsg )
+initResize divID content =
+    ( { content = content
       , height = toFloat 20
-      , divID = "text_area_"
-      , measuringHeight = False
-      , customizeInner = []
-      , customizeOuter = []
+      , divID = divID
+      , isMeasuring = False
       }
-    , Random.generate NewID (Random.int 1000 10000)
+    , getSize divID
     )
 
 
@@ -57,23 +63,19 @@ init _ =
 -- UPDATE
 
 
-type Msg
-    = NewID Int
-    | NewContent String
+type ResizeMsg
+    = NewContent String
     | GotSize (Result Browser.Dom.Error Browser.Dom.Viewport)
     | NoOp
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
+update : ResizeMsg -> InputResize -> ( InputResize, Cmd ResizeMsg )
 update msg model =
     case msg of
-        NewID id ->
-            ( { model | divID = "text_area_" ++ String.fromInt id }, Cmd.none )
-
         NewContent content ->
             ( { model
                 | content = content
-                , measuringHeight = True
+                , isMeasuring = True
               }
             , Task.attempt GotSize (Browser.Dom.getViewportOf model.divID)
             )
@@ -86,7 +88,7 @@ update msg model =
                             Debug.log "viewport" <| Debug.toString viewport
                     in
                     --}
-                    ( { model | height = viewport.scene.height, measuringHeight = False }
+                    ( { model | height = viewport.scene.height - 1, isMeasuring = False }
                     , Task.attempt (\_ -> NoOp) (Browser.Dom.focus model.divID)
                     )
 
@@ -97,66 +99,39 @@ update msg model =
             ( model, Cmd.none )
 
 
-
--- SUBSCRIPTIONS
-
-
-subscriptions : Model -> Sub Msg
-subscriptions model =
-    Sub.none
+getSize : String -> Cmd ResizeMsg
+getSize divID =
+    Task.attempt GotSize (Browser.Dom.getViewportOf divID)
 
 
 
--- PORTS
--- port selectedRange : (E.Value -> msg) Sub
 -- VIEW
 
 
-view : Model -> Html Msg
-view model =
+view : Settings -> InputResize -> Html ResizeMsg
+view settings model =
     let
         innerView =
-            if model.measuringHeight then
-                [ textAreaView model.customizeInner "text_area_" model.content model.height
-                , hiddenDivView model.customizeInner model.divID model.content
+            if model.isMeasuring then
+                [ textAreaView settings "text_area_" model.content model.height
+                , hiddenDivView settings model.divID model.content
                 ]
 
             else
-                [ textAreaView model.customizeInner model.divID model.content model.height
-                , hiddenDivView model.customizeInner "text_area_measure" model.content
+                [ textAreaView settings model.divID model.content model.height
+                , hiddenDivView settings "text_area_measure" model.content
                 ]
     in
     div
-        (model.customizeOuter
-            ++ [ style "display" "flex"
-               , style "justify-content" "start"
-               , style "align-items" "start"
-               ]
-        )
+        [ style "display" "flex"
+        , style "justify-content" "start"
+        , style "align-items" "start"
+        ]
         innerView
 
 
-type alias Settings =
-    { fontSize : String
-    , fontFamily : String
-    , lineHeight : String
-    , width : String
-    , columns : Int
-    }
-
-
-settings : Settings
-settings =
-    { fontSize = "17px"
-    , fontFamily = "Arial"
-    , lineHeight = "1.2"
-    , width = "300px"
-    , columns = round 50
-    }
-
-
-innerAttributes : List (Attribute Msg)
-innerAttributes =
+innerAttributes : Settings -> List (Attribute ResizeMsg)
+innerAttributes settings =
     [ style "resize" "none"
     , style "overflow" "hidden"
     , style "white-space" "pre-wrap"
@@ -171,26 +146,24 @@ innerAttributes =
     ]
 
 
-textAreaView : List (Attribute Msg) -> String -> String -> Float -> Html Msg
-textAreaView customAttr id_ content nodeHeight =
+textAreaView : Settings -> String -> String -> Float -> Html ResizeMsg
+textAreaView settings id_ content nodeHeight =
     textarea
-        (customAttr
-            ++ [ id id_
-               , value content
-               , onInput NewContent
-               , style "height" <| String.fromFloat nodeHeight ++ "px"
-               , style "z-index" "3"
-               ]
-            ++ innerAttributes
+        ([ id id_
+         , value content
+         , onInput NewContent
+         , style "height" <| String.fromFloat nodeHeight ++ "px"
+         , style "z-index" "3"
+         ]
+            ++ innerAttributes settings
         )
         [ text content ]
 
 
-hiddenDivView : List (Attribute Msg) -> String -> String -> Html Msg
-hiddenDivView customAttr id_ content =
+hiddenDivView : Settings -> String -> String -> Html ResizeMsg
+hiddenDivView settings id_ content =
     div
-        (customAttr
-            ++ innerAttributes
+        (innerAttributes settings
             ++ [ id id_
                , value content
                , style "height" "min-content"
@@ -198,18 +171,18 @@ hiddenDivView customAttr id_ content =
                , style "z-index" "1"
                ]
         )
-        (htmlEncodeString content)
+        (htmlEncodeString settings.lineHeight content)
 
 
-htmlEncodeString : String -> List (Html Msg)
-htmlEncodeString someString =
+htmlEncodeString : String -> String -> List (Html ResizeMsg)
+htmlEncodeString lineHeight someString =
     let
         lines =
             String.split "\n" someString
 
         htmlMapper line =
             if line == "" then
-                br [ style "line-height" settings.lineHeight ] []
+                br [ style "line-height" lineHeight ] []
 
             else
                 div [] [ text line ]
