@@ -53,9 +53,9 @@ type alias InputResize =
 
 
 type alias Settings =
-    { fontSize : String
+    { fontSize : Float
     , fontFamily : String
-    , lineHeight : String
+    , lineHeight : Float
     , width : String
     , columns : Int
     }
@@ -63,9 +63,9 @@ type alias Settings =
 
 defaultSettings : Settings
 defaultSettings =
-    { fontSize = "17px"
+    { fontSize = 17
     , fontFamily = "Arial"
-    , lineHeight = "1.2"
+    , lineHeight = 1.2
     , width = "300px"
     , columns = round 50
     }
@@ -109,9 +109,9 @@ update msg model =
         GotSize result ->
             case result of
                 Ok viewport ->
-                    {--
+                    {--}
                     let
-                            Debug.log "viewport" <| Debug.toString viewport
+                            log_height = Debug.log "viewport" <| Debug.toString viewport
                     in
                     --}
                     ( { model | height = viewport.scene.height, isMeasuring = False }
@@ -136,12 +136,12 @@ view settings divID model =
     let
         innerView =
             if model.isMeasuring then
-                [ textAreaView settings "text_area_" model.content model.height
+                [ textAreaView settings "text_area_" model
                 , hiddenDivView settings divID model.content
                 ]
 
             else
-                [ textAreaView settings divID model.content model.height
+                [ textAreaView settings divID model
                 , hiddenDivView settings "text_area_measure" model.content
                 ]
     in
@@ -160,8 +160,8 @@ innerAttributes settings =
     , style "white-space" "pre-wrap"
     , style "wordWrap" "break-word"
     , style "width" settings.width
-    , style "line-height" settings.lineHeight
-    , style "font-size" settings.fontSize
+    , style "line-height" (String.fromFloat settings.lineHeight)
+    , style "font-size" (String.fromFloat settings.fontSize ++ "px")
     , style "font-family" settings.fontFamily
     , style "border" "none"
     , style "padding" "0px"
@@ -169,18 +169,19 @@ innerAttributes settings =
     ]
 
 
-textAreaView : Settings -> String -> String -> Float -> Html Msg
-textAreaView settings divID content nodeHeight =
+textAreaView : Settings -> String -> InputResize -> Html Msg
+textAreaView settings divID model =
     textarea
         ([ id divID
-         , value content
+         , value model.content
          , onInput (NewContent divID)
-         , style "height" (String.fromFloat nodeHeight ++ "px")
+         , style "height" (String.fromFloat model.height ++ "px")
+        --  , style "height" (String.fromFloat (model.height - 20) ++ "px")
          , style "z-index" "3"
          ]
             ++ innerAttributes settings
         )
-        [ text content ]
+        [ text model.content ]
 
 
 hiddenDivView : Settings -> String -> String -> Html Msg
@@ -194,10 +195,10 @@ hiddenDivView settings id_ content =
                , style "z-index" "1"
                ]
         )
-        (htmlEncodeString settings.lineHeight content)
+        (htmlEncodeString (settings.lineHeight * settings.fontSize) content)
 
-
-htmlEncodeString : String -> String -> List (Html Msg)
+{--}
+htmlEncodeString : Float -> String -> List (Html Msg)
 htmlEncodeString lineHeight someString =
     let
         lines =
@@ -205,10 +206,30 @@ htmlEncodeString lineHeight someString =
 
         htmlMapper line =
             if line == "" then
-                br [ style "line-height" lineHeight ] []
+               div [style "height" (String.fromFloat lineHeight ++ "px")] []
 
             else
                 div [] [ text line ]
     in
     List.map htmlMapper lines
-        ++ [ br [ style "line-height" "1px" ] [] ]
+        -- ++ [ div [style "height" "1px"] [] ]
+        ++ [ div [style "height" (String.fromFloat lineHeight ++"px")] [] ]
+--}
+{--
+htmlEncodeString : Float -> String -> List (Html Msg)
+htmlEncodeString lineHeight someString =
+    let
+        lines =
+            String.split "\n" someString
+
+        htmlMapper line =
+            [
+                text line
+                ,br [ style "line-height" "1px" ] []
+            ]
+    in
+    List.concatMap htmlMapper lines
+        -- ++ [ br [ style "line-height" "1px" ] []]
+-- ++ [ div [style "height" "1px"] [] ]
+-- ++ [ div [style "height" (String.fromFloat lineHeight ++"px")] [] 
+--}
