@@ -5684,14 +5684,6 @@ var $author$project$SaleData$SaleData = function (id) {
 		};
 	};
 };
-var $elm$core$Basics$round = _Basics_round;
-var $author$project$InputResize$defaultSettings = {
-	columns: $elm$core$Basics$round(50),
-	fontFamily: 'Arial',
-	fontSize: 17,
-	lineHeight: 1.2,
-	width: '300px'
-};
 var $author$project$InputResize$estimateRows = F2(
 	function (settings, content) {
 		var numRows = function (line) {
@@ -5729,6 +5721,22 @@ var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 			A2($elm$json$Json$Decode$field, key, valDecoder),
 			decoder);
 	});
+var $author$project$SaleData$UpdateNotes = function (a) {
+	return {$: 'UpdateNotes', a: a};
+};
+var $elm$core$Basics$round = _Basics_round;
+var $author$project$InputResize$defaultSettings = function (message) {
+	return {
+		columns: $elm$core$Basics$round(50),
+		divID: 'elm-textarea-resize',
+		fontSize: 17,
+		innerAttributes: _List_Nil,
+		lineHeight: 1.2,
+		resizeMsg: message,
+		width: '300px'
+	};
+};
+var $author$project$SaleData$settingsNotes = $author$project$InputResize$defaultSettings($author$project$SaleData$UpdateNotes);
 var $author$project$SaleData$saleDataDecoder = A4(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 	'saleDate',
@@ -5764,9 +5772,9 @@ var $author$project$SaleData$saleDataDecoder = A4(
 							'notes',
 							A2(
 								$elm$json$Json$Decode$map,
-								$author$project$InputResize$fromContent($author$project$InputResize$defaultSettings),
+								$author$project$InputResize$fromContent($author$project$SaleData$settingsNotes),
 								$elm$json$Json$Decode$string),
-							A2($author$project$InputResize$fromContent, $author$project$InputResize$defaultSettings, ''),
+							A2($author$project$InputResize$fromContent, $author$project$SaleData$settingsNotes, ''),
 							A3(
 								$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 								'agent',
@@ -6044,9 +6052,6 @@ var $NoRedInk$list_selection$List$Selection$selected = function (_v0) {
 var $author$project$SaleData$Failed = {$: 'Failed'};
 var $author$project$SaleData$ServerResponse = function (a) {
 	return {$: 'ServerResponse', a: a};
-};
-var $author$project$SaleData$UpdateNotes = function (a) {
-	return {$: 'UpdateNotes', a: a};
 };
 var $author$project$SaleData$Updated = {$: 'Updated'};
 var $author$project$SaleData$Updating = {$: 'Updating'};
@@ -7448,21 +7453,21 @@ var $author$project$InputResize$GotSize = function (a) {
 	return {$: 'GotSize', a: a};
 };
 var $elm$browser$Browser$Dom$getViewportOf = _Browser_getViewportOf;
-var $author$project$InputResize$update = F2(
-	function (msg, model) {
-		if (msg.$ === 'NewContent') {
-			var divID = msg.a;
-			var content = msg.b;
+var $author$project$InputResize$update = F3(
+	function (msg, resizeMsg, model) {
+		if (resizeMsg.$ === 'NewContent') {
+			var divID = resizeMsg.a;
+			var content = resizeMsg.b;
 			return _Utils_Tuple2(
 				_Utils_update(
 					model,
 					{content: content, isMeasuring: true}),
 				A2(
 					$elm$core$Task$attempt,
-					$author$project$InputResize$GotSize,
+					A2($elm$core$Basics$composeL, msg, $author$project$InputResize$GotSize),
 					$elm$browser$Browser$Dom$getViewportOf(divID)));
 		} else {
-			var result = msg.a;
+			var result = resizeMsg.a;
 			if (result.$ === 'Ok') {
 				var viewport = result.a;
 				var log_height = A2(
@@ -7484,7 +7489,7 @@ var $author$project$SaleData$update = F2(
 		switch (msg.$) {
 			case 'UpdateNotes':
 				var resizeMsg = msg.a;
-				var _v1 = A2($author$project$InputResize$update, resizeMsg, model.saleData.notes);
+				var _v1 = A3($author$project$InputResize$update, $author$project$SaleData$UpdateNotes, resizeMsg, model.saleData.notes);
 				var newNotes = _v1.a;
 				var newMsg = _v1.b;
 				return _Utils_Tuple2(
@@ -7494,7 +7499,7 @@ var $author$project$SaleData$update = F2(
 							saleData: A2($author$project$SaleData$setNotes, newNotes, model.saleData),
 							updated: $author$project$SaleData$Behind
 						}),
-					A2($elm$core$Platform$Cmd$map, $author$project$SaleData$UpdateNotes, newMsg));
+					newMsg);
 			case 'UpdateSaleCurrency':
 				var val = msg.a;
 				return _Utils_Tuple2(
@@ -8041,6 +8046,15 @@ var $author$project$SaleData$hiddenInputView = function (saleDataID) {
 				$author$project$SaleData$saleDataIdSelectionView(saleDataID)
 			]));
 };
+var $author$project$SaleData$AttemptSubmitForm = {$: 'AttemptSubmitForm'};
+var $author$project$InputResize$addAttribute = F2(
+	function (attribute, settings) {
+		return _Utils_update(
+			settings,
+			{
+				innerAttributes: A2($elm$core$List$cons, attribute, settings.innerAttributes)
+			});
+	});
 var $elm$html$Html$small = _VirtualDom_node('small');
 var $author$project$SaleData$errorView = function (error) {
 	return A2(
@@ -8058,40 +8072,17 @@ var $author$project$SaleData$errorView = function (error) {
 };
 var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
 var $elm$html$Html$label = _VirtualDom_node('label');
-var $author$project$InputResize$setAttributes = function (settings) {
-	return _List_fromArray(
-		[
-			A2($elm$html$Html$Attributes$style, 'resize', 'none'),
-			A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
-			A2($elm$html$Html$Attributes$style, 'white-space', 'pre-wrap'),
-			A2($elm$html$Html$Attributes$style, 'wordWrap', 'break-word'),
-			A2($elm$html$Html$Attributes$style, 'width', settings.width),
-			A2(
-			$elm$html$Html$Attributes$style,
-			'line-height',
-			$elm$core$String$fromFloat(settings.lineHeight)),
-			A2(
-			$elm$html$Html$Attributes$style,
-			'font-size',
-			$elm$core$String$fromFloat(settings.fontSize) + 'px'),
-			A2($elm$html$Html$Attributes$style, 'font-family', settings.fontFamily),
-			A2($elm$html$Html$Attributes$style, 'border', 'none'),
-			A2($elm$html$Html$Attributes$style, 'padding', '0px'),
-			A2($elm$html$Html$Attributes$style, 'margin', '0px')
-		]);
-};
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
 var $author$project$InputResize$htmlEncodeString = F2(
 	function (lineHeight, someString) {
 		var lines = A2($elm$core$String$split, '\n', someString);
+		var height = $elm$core$String$fromFloat(lineHeight) + 'px';
 		var htmlMapper = function (line) {
 			return (line === '') ? A2(
 				$elm$html$Html$div,
 				_List_fromArray(
 					[
-						A2(
-						$elm$html$Html$Attributes$style,
-						'height',
-						$elm$core$String$fromFloat(lineHeight) + 'px')
+						A2($elm$html$Html$Attributes$style, 'height', height)
 					]),
 				_List_Nil) : A2(
 				$elm$html$Html$div,
@@ -8109,26 +8100,47 @@ var $author$project$InputResize$htmlEncodeString = F2(
 					$elm$html$Html$div,
 					_List_fromArray(
 						[
-							A2(
-							$elm$html$Html$Attributes$style,
-							'height',
-							$elm$core$String$fromFloat(lineHeight) + 'px')
+							A2($elm$html$Html$Attributes$style, 'height', height)
 						]),
 					_List_Nil)
 				]));
 	});
-var $author$project$InputResize$hiddenDivView = F5(
-	function (width, rowHeight, id_, content, attributes) {
+var $author$project$InputResize$setAttributes = function (settings) {
+	return _Utils_ap(
+		$elm$core$List$reverse(settings.innerAttributes),
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'resize', 'none'),
+				A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
+				A2($elm$html$Html$Attributes$style, 'white-space', 'pre-wrap'),
+				A2($elm$html$Html$Attributes$style, 'wordWrap', 'break-word'),
+				A2($elm$html$Html$Attributes$style, 'width', settings.width),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'line-height',
+				$elm$core$String$fromFloat(settings.lineHeight)),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'font-size',
+				$elm$core$String$fromFloat(settings.fontSize) + 'px'),
+				A2($elm$html$Html$Attributes$style, 'padding', '0px'),
+				A2($elm$html$Html$Attributes$style, 'margin', '0px')
+			]));
+};
+var $author$project$InputResize$hiddenDivView = F3(
+	function (settings, divID, content) {
+		var rowHeight = settings.lineHeight * settings.fontSize;
+		var attributes = $author$project$InputResize$setAttributes(settings);
 		return A2(
 			$elm$html$Html$div,
 			_Utils_ap(
 				attributes,
 				_List_fromArray(
 					[
-						$elm$html$Html$Attributes$id(id_),
+						$elm$html$Html$Attributes$id(divID),
 						$elm$html$Html$Attributes$value(content),
 						A2($elm$html$Html$Attributes$style, 'height', 'min-content'),
-						A2($elm$html$Html$Attributes$style, 'margin-left', '-' + width),
+						A2($elm$html$Html$Attributes$style, 'margin-left', '-' + settings.width),
 						A2($elm$html$Html$Attributes$style, 'z-index', '1')
 					])),
 			A2($author$project$InputResize$htmlEncodeString, rowHeight, content));
@@ -8170,7 +8182,8 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 };
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
 var $author$project$InputResize$textAreaView = F3(
-	function (divID, model, attributes) {
+	function (settings, divID, model) {
+		var attributes = $author$project$InputResize$setAttributes(settings);
 		return A2(
 			$elm$html$Html$textarea,
 			_Utils_ap(
@@ -8180,7 +8193,10 @@ var $author$project$InputResize$textAreaView = F3(
 						$elm$html$Html$Attributes$id(divID),
 						$elm$html$Html$Attributes$value(model.content),
 						$elm$html$Html$Events$onInput(
-						$author$project$InputResize$NewContent(divID)),
+						A2(
+							$elm$core$Basics$composeL,
+							settings.resizeMsg,
+							$author$project$InputResize$NewContent(settings.divID))),
 						A2(
 						$elm$html$Html$Attributes$style,
 						'height',
@@ -8192,68 +8208,78 @@ var $author$project$InputResize$textAreaView = F3(
 					$elm$html$Html$text(model.content)
 				]));
 	});
-var $author$project$InputResize$view = F4(
-	function (settings, divID, model, attributes) {
+var $author$project$InputResize$view = F2(
+	function (settings, model) {
 		var rowHeight = settings.lineHeight * settings.fontSize;
 		var innerView = model.isMeasuring ? _List_fromArray(
 			[
-				A3($author$project$InputResize$textAreaView, 'text_area_', model, attributes),
-				A5($author$project$InputResize$hiddenDivView, settings.width, rowHeight, divID, model.content, attributes)
+				A3($author$project$InputResize$textAreaView, settings, 'text_area_', model),
+				A3($author$project$InputResize$hiddenDivView, settings, settings.divID, model.content)
 			]) : _List_fromArray(
 			[
-				A3($author$project$InputResize$textAreaView, divID, model, attributes),
-				A5($author$project$InputResize$hiddenDivView, settings.width, rowHeight, 'text_area_measure', model.content, attributes)
+				A3($author$project$InputResize$textAreaView, settings, settings.divID, model),
+				A3($author$project$InputResize$hiddenDivView, settings, 'text_area_measure', model.content)
 			]);
+		var innerAttributes = $author$project$InputResize$setAttributes(settings);
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
 					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
 					A2($elm$html$Html$Attributes$style, 'justify-content', 'start'),
-					A2($elm$html$Html$Attributes$style, 'align-items', 'start')
+					A2($elm$html$Html$Attributes$style, 'align-items', 'start'),
+					A2($elm$html$Html$Attributes$style, 'padding-left', '0.5rem')
 				]),
 			innerView);
 	});
 var $author$project$SaleData$inputNotesView = F5(
 	function (label_name, id_, placeholder_, errors, val) {
-		var settings = $author$project$InputResize$defaultSettings;
-		return A2(
-			$elm$html$Html$map,
-			$author$project$SaleData$UpdateNotes,
+		var settings = A2(
+			$author$project$InputResize$addAttribute,
+			$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm),
 			A2(
-				$elm$html$Html$div,
+				$author$project$InputResize$addAttribute,
+				$elm$html$Html$Attributes$placeholder(placeholder_),
+				A2(
+					$author$project$InputResize$addAttribute,
+					$elm$html$Html$Attributes$classList(
+						_List_fromArray(
+							[
+								_Utils_Tuple2('edit-field', true),
+								_Utils_Tuple2('form-control', true),
+								_Utils_Tuple2('form-control-sm', true)
+							])),
+					A2(
+						$author$project$InputResize$addAttribute,
+						$elm$html$Html$Attributes$id(id_),
+						$author$project$SaleData$settingsNotes))));
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					$elm$html$Html$Attributes$class('form-group'),
+					A2($elm$html$Html$Attributes$style, 'height', 'min-content')
+				]),
+			_Utils_ap(
 				_List_fromArray(
 					[
-						A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-						$elm$html$Html$Attributes$class('ungroup'),
-						$elm$html$Html$Attributes$class('form-group')
+						A2(
+						$elm$html$Html$label,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$for(id_),
+								A2($elm$html$Html$Attributes$style, 'align-self', 'start')
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(label_name)
+							])),
+						A2($author$project$InputResize$view, settings, val)
 					]),
-				_Utils_ap(
-					_List_fromArray(
-						[
-							A2(
-							$elm$html$Html$label,
-							_List_fromArray(
-								[
-									$elm$html$Html$Attributes$for(id_),
-									A2($elm$html$Html$Attributes$style, 'align-self', 'start')
-								]),
-							_List_fromArray(
-								[
-									$elm$html$Html$text(label_name)
-								])),
-							A4(
-							$author$project$InputResize$view,
-							settings,
-							id_,
-							val,
-							$author$project$InputResize$setAttributes(settings))
-						]),
-					A2($elm$core$List$map, $author$project$SaleData$errorView, errors))));
+				A2($elm$core$List$map, $author$project$SaleData$errorView, errors)));
 	});
-var $author$project$SaleData$AttemptSubmitForm = {$: 'AttemptSubmitForm'};
 var $elm$html$Html$input = _VirtualDom_node('input');
-var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
 var $author$project$SaleData$inputView = F6(
 	function (label_name, id_, placeholder_, errors, updateMsg, val) {
 		return A2(
@@ -8524,10 +8550,6 @@ var $NoRedInk$list_selection$List$Selection$toList = function (_v0) {
 	return items;
 };
 var $author$project$SalesGallery$view = function (model) {
-	var log_model = A2(
-		$elm$core$Debug$log,
-		'view updated',
-		$elm$core$Debug$toString(model));
 	var hasSelected = function () {
 		var _v0 = $NoRedInk$list_selection$List$Selection$selected(model.data);
 		if (_v0.$ === 'Just') {
@@ -8594,7 +8616,7 @@ var $author$project$SaleData$newSaleData = {
 	buyer: $elm$core$Maybe$Nothing,
 	discount: '',
 	id: $elm$core$Maybe$Nothing,
-	notes: A2($author$project$InputResize$fromContent, $author$project$InputResize$defaultSettings, ''),
+	notes: A2($author$project$InputResize$fromContent, $author$project$SaleData$settingsNotes, ''),
 	saleCurrency: '',
 	saleDate: '',
 	salePrice: ''
@@ -8624,18 +8646,11 @@ var $author$project$SaleData$init = function (flags) {
 			$elm$core$Platform$Cmd$none);
 	}
 };
-var $elm$virtual_dom$VirtualDom$lazy = _VirtualDom_lazy;
-var $elm$html$Html$Lazy$lazy = $elm$virtual_dom$VirtualDom$lazy;
 var $author$project$SaleData$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
 };
 var $author$project$SaleData$main = $elm$browser$Browser$element(
-	{
-		init: $author$project$SaleData$init,
-		subscriptions: $author$project$SaleData$subscriptions,
-		update: $author$project$SaleData$update,
-		view: $elm$html$Html$Lazy$lazy($author$project$SaleData$view)
-	});
+	{init: $author$project$SaleData$init, subscriptions: $author$project$SaleData$subscriptions, update: $author$project$SaleData$update, view: $author$project$SaleData$view});
 var $author$project$ImageUpload$Waiting = {$: 'Waiting'};
 var $author$project$ImageUpload$decodeFieldtoMaybeInt = F2(
 	function (field, flags) {

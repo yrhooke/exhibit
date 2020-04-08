@@ -75,7 +75,7 @@ newSaleData =
     , artwork = Nothing
     , buyer = Nothing
     , agent = Nothing
-    , notes = InputResize.fromContent InputResize.defaultSettings ""
+    , notes = InputResize.fromContent settingsNotes ""
     , saleCurrency = ""
     , salePrice = ""
     , discount = ""
@@ -93,8 +93,8 @@ saleDataDecoder =
         |> Pipeline.required "buyer" (D.int |> D.maybe)
         |> Pipeline.required "agent" (D.int |> D.maybe)
         |> Pipeline.optional "notes"
-            (D.map (InputResize.fromContent InputResize.defaultSettings) D.string)
-            (InputResize.fromContent InputResize.defaultSettings "")
+            (D.map (InputResize.fromContent settingsNotes) D.string)
+            (InputResize.fromContent settingsNotes "")
         |> Pipeline.optional "saleCurrency" D.string ""
         |> Pipeline.optional "salePrice" D.string ""
         |> Pipeline.optional "discount" D.string ""
@@ -318,9 +318,9 @@ update msg model =
         UpdateNotes resizeMsg ->
             let
                 ( newNotes, newMsg ) =
-                    InputResize.update resizeMsg model.saleData.notes
+                    InputResize.update UpdateNotes resizeMsg model.saleData.notes
             in
-            ( { model | saleData = setNotes newNotes model.saleData, updated = Behind }, Cmd.map UpdateNotes newMsg )
+            ( { model | saleData = setNotes newNotes model.saleData, updated = Behind }, newMsg )
 
         -- | UpdateAgent List (I)
         UpdateSaleCurrency val ->
@@ -543,43 +543,57 @@ view model =
         ]
 
 
+settingsNotes : InputResize.Settings Msg
+settingsNotes =
+    InputResize.defaultSettings UpdateNotes
+
+
 inputNotesView : String -> String -> String -> List String -> InputResize.InputResize -> Html Msg
 inputNotesView label_name id_ placeholder_ errors val =
     let
         settings =
-            InputResize.defaultSettings
+            settingsNotes
+                |> InputResize.addAttribute (id id_)
+                |> InputResize.addAttribute
+                    (classList
+                        [ ( "edit-field", True )
+                        , ( "form-control", True )
+                        , ( "form-control-sm", True )
+                        ]
+                    )
+                |> InputResize.addAttribute (placeholder placeholder_)
+                |> InputResize.addAttribute (onBlur AttemptSubmitForm)
     in
-    Html.map UpdateNotes
-        (div
-            [ style "display" "flex"
-            , class "ungroup"
-            , class "form-group"
-            ]
-            ([ label
-                [ for id_
-                , style "align-self" "start"
-                ]
-                [ text label_name ]
-             , (InputResize.setAttributes settings
-                 |> InputResize.view settings id_ val )
+    div
+        [ style "display" "flex"
 
-             --  , textarea
-             --     [ id id_
-             --     , onInput updateMsg
-             --     , onBlur AttemptSubmitForm
-             --     , classList
-             --         [ ( "edit-field", True )
-             --         , ( "form-control", True )
-             --         , ( "form-control-sm", True )
-             --         ]
-             --     , style "width" "270px"
-             --     , placeholder placeholder_
-             --     , value val
-             --     ]
-             --     []
-             ]
-                ++ List.map errorView errors
-            )
+        -- , class "ungroup"
+        , class "form-group"
+        , style "height" "min-content"
+        ]
+        ([ label
+            [ for id_
+            , style "align-self" "start"
+            ]
+            [ text label_name ]
+         , InputResize.view settings val
+
+         --  , textarea
+         --     [ id id_
+         --     , onInput updateMsg
+         --     , onBlur AttemptSubmitForm
+         --     , classList
+         --         [ ( "edit-field", True )
+         --         , ( "form-control", True )
+         --         , ( "form-control-sm", True )
+         --         ]
+         --     , style "width" "270px"
+         --     , placeholder placeholder_
+         --     , value val
+         --     ]
+         --     []
+         ]
+            ++ List.map errorView errors
         )
 
 

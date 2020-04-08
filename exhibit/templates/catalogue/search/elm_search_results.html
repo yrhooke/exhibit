@@ -37,10 +37,16 @@
         console.log(artwork_data)
         let csrftoken = document.getElementById('elm-sale-data-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
         artwork_data.forEach(element => {
+            console.log(element);
+            let artwork_id = element["id"];
+            if (! element["sale_data"]["artwork"]) {
+                element["sale_data"]["artwork"]= artwork_id;
+            }
             element["sale_data"]["csrftoken"] = csrftoken;
             element["sale_data"]['loader_icon'] = "{% static 'images/spinner.svg' %}";
             element["sale_data"]['success_icon'] = "{% static 'images/upload_success.svg' %}";
             element["sale_data"]['fail_icon'] = "{% static 'images/upload_fail.svg' %}";
+            console.log(element);
         });
         close_icon = "{% static 'images/gallery_close.svg' %}";
         return {

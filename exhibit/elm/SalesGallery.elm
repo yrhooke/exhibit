@@ -264,8 +264,8 @@ subscriptions _ =
 view : Model -> Html Msg
 view model =
     let
-        log_model =
-            Debug.log "view updated" (Debug.toString model)
+        -- log_model =
+            -- Debug.log "view updated" (Debug.toString model)
 
         hasSelected =
             case List.Selection.selected model.data of
