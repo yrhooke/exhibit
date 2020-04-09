@@ -5686,16 +5686,17 @@ var $author$project$SaleData$SaleData = function (id) {
 };
 var $author$project$InputResize$estimateRows = F2(
 	function (settings, content) {
+		var rowHeight = settings.fontSize * settings.lineHeight;
 		var numRows = function (line) {
 			return (line === '') ? 1 : $elm$core$Basics$ceiling(
 				$elm$core$String$length(line) / settings.columns);
 		};
 		var lines = A2($elm$core$String$split, '\n', content);
-		return settings.lineHeight * (settings.fontSize * A3(
+		return rowHeight * A3(
 			$elm$core$List$foldl,
 			$elm$core$Basics$add,
 			1,
-			A2($elm$core$List$map, numRows, lines)));
+			A2($elm$core$List$map, numRows, lines));
 	});
 var $author$project$InputResize$fromContent = F2(
 	function (settings, content) {
@@ -8130,6 +8131,8 @@ var $author$project$InputResize$setAttributes = function (settings) {
 var $author$project$InputResize$hiddenDivView = F3(
 	function (settings, divID, content) {
 		var rowHeight = settings.lineHeight * settings.fontSize;
+		var textDivs = A2($author$project$InputResize$htmlEncodeString, rowHeight, content);
+		var height = rowHeight * $elm$core$List$length(textDivs);
 		var attributes = $author$project$InputResize$setAttributes(settings);
 		return A2(
 			$elm$html$Html$div,
@@ -8139,11 +8142,14 @@ var $author$project$InputResize$hiddenDivView = F3(
 					[
 						$elm$html$Html$Attributes$id(divID),
 						$elm$html$Html$Attributes$value(content),
-						A2($elm$html$Html$Attributes$style, 'height', 'min-content'),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'height',
+						$elm$core$String$fromFloat(height) + 'px'),
 						A2($elm$html$Html$Attributes$style, 'margin-left', '-' + settings.width),
 						A2($elm$html$Html$Attributes$style, 'z-index', '1')
 					])),
-			A2($author$project$InputResize$htmlEncodeString, rowHeight, content));
+			textDivs);
 	});
 var $author$project$InputResize$NewContent = F2(
 	function (a, b) {
@@ -8210,7 +8216,6 @@ var $author$project$InputResize$textAreaView = F3(
 	});
 var $author$project$InputResize$view = F2(
 	function (settings, model) {
-		var rowHeight = settings.lineHeight * settings.fontSize;
 		var innerView = model.isMeasuring ? _List_fromArray(
 			[
 				A3($author$project$InputResize$textAreaView, settings, 'text_area_', model),
@@ -8220,7 +8225,6 @@ var $author$project$InputResize$view = F2(
 				A3($author$project$InputResize$textAreaView, settings, settings.divID, model),
 				A3($author$project$InputResize$hiddenDivView, settings, 'text_area_measure', model.content)
 			]);
-		var innerAttributes = $author$project$InputResize$setAttributes(settings);
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
@@ -8578,7 +8582,8 @@ var $author$project$SalesGallery$view = function (model) {
 								_Utils_Tuple2('center-block', true)
 							]))
 					]),
-				$NoRedInk$list_selection$List$Selection$toList(
+				($elm$core$List$length(
+					$NoRedInk$list_selection$List$Selection$toList(model.data)) > 0) ? $NoRedInk$list_selection$List$Selection$toList(
 					A2(
 						$NoRedInk$list_selection$List$Selection$mapSelected,
 						{
@@ -8589,7 +8594,16 @@ var $author$project$SalesGallery$view = function (model) {
 								return A2($author$project$SalesGallery$selectedArtworkView, model.closeIconURL, artwork);
 							}
 						},
-						model.data)))
+						model.data)) : _List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('No Results Found')
+							]))
+					]))
 			]));
 };
 var $author$project$SalesGallery$main = $elm$browser$Browser$element(

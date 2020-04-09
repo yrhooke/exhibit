@@ -177,12 +177,6 @@ addAttribute attribute settings =
 view : Settings msg -> InputResize -> Html msg
 view settings model =
     let
-        rowHeight =
-            settings.lineHeight * settings.fontSize
-
-        innerAttributes =
-            setAttributes settings
-
         innerView =
             if model.isMeasuring then
                 [ textAreaView settings "text_area_" model
@@ -229,17 +223,23 @@ hiddenDivView settings divID content =
 
         attributes =
             setAttributes settings
+
+        textDivs =
+            htmlEncodeString rowHeight content
+
+        height =
+            rowHeight * toFloat (List.length textDivs)
     in
     div
         (attributes
             ++ [ id divID
                , value content
-               , style "height" "min-content"
+               , style "height" (String.fromFloat height ++ "px")
                , style "margin-left" ("-" ++ settings.width)
                , style "z-index" "1"
                ]
         )
-        (htmlEncodeString rowHeight content)
+        textDivs
 
 
 htmlEncodeString : Float -> String -> List (Html msg)
@@ -276,9 +276,11 @@ estimateRows settings content =
                 toFloat (String.length line)
                     / toFloat settings.columns
                     |> ceiling
+
+        rowHeight =
+            settings.fontSize * settings.lineHeight
     in
     List.map numRows lines
         |> List.foldl (+) 1
         |> toFloat
-        |> (*) settings.fontSize
-        |> (*) settings.lineHeight
+        |> (*) rowHeight

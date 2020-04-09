@@ -211,15 +211,19 @@
       for (let i of textareas) {
         (function (i) {
 
-          // add hidden div initially to set height
-          addHiddenArea(i);
-
-          // Note: Use 'keyup' instead of 'input'
-          // if you want older IE support
-          i.addEventListener('input', function () {
+          // don't include textarea that are being resized by elm 
+          // This is awful code
+          if (i.id !== "elm-textarea-resize") {
+            // add hidden div initially to set height
             addHiddenArea(i);
-
-          });
+  
+            // Note: Use 'keyup' instead of 'input'
+            // if you want older IE support
+            i.addEventListener('input', function () {
+              addHiddenArea(i);
+              
+            });
+          }
         })(i);
       }
       // TEXT AREA RESIZE DONE

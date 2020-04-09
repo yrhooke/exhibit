@@ -18,6 +18,7 @@ import Validate exposing (validate)
 -- MAIN
 
 
+main : Program D.Value Model Msg
 main =
     Browser.element
         { init = init

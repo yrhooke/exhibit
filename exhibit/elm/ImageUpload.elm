@@ -16,6 +16,7 @@ import Url.Builder as Url
 -- MAIN
 
 
+main : Program D.Value Model Msg
 main =
     Browser.element
         { init = init

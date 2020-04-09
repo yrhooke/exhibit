@@ -19,6 +19,7 @@ import Task
 -- MAIN
 
 
+main : Program D.Value Model Msg
 main =
     Browser.element
         { init = init
@@ -265,8 +266,7 @@ view : Model -> Html Msg
 view model =
     let
         -- log_model =
-            -- Debug.log "view updated" (Debug.toString model)
-
+        -- Debug.log "view updated" (Debug.toString model)
         hasSelected =
             case List.Selection.selected model.data of
                 Just _ ->
@@ -284,12 +284,16 @@ view model =
                 , ( "center-block", True )
                 ]
             ]
-            (List.Selection.mapSelected
-                { selected = \artwork -> selectedArtworkView model.closeIconURL artwork
-                , rest = \artwork -> artworkView False artwork
-                }
-                model.data
-                |> List.Selection.toList
+            (if (List.length <| List.Selection.toList model.data) > 0 then
+                List.Selection.mapSelected
+                    { selected = \artwork -> selectedArtworkView model.closeIconURL artwork
+                    , rest = \artwork -> artworkView False artwork
+                    }
+                    model.data
+                    |> List.Selection.toList
+
+             else
+                [ div [] [ text "No Results Found" ] ]
             )
 
         -- (List.map (artworkView hasSelected) (List.Selection.toList model))
