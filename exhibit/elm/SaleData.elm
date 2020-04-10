@@ -504,42 +504,54 @@ view model =
             (findErrors Notes model.errors)
             -- UpdateNotes
             model.saleData.notes
-        , inputView "Sale Currency:"
-            "id_sale_currency"
-            "Sale Currency"
-            (findErrors SaleCurrency model.errors)
-            UpdateSaleCurrency
-            model.saleData.saleCurrency
-        , inputView "Sale Price:"
-            "id_sale_price"
-            "Sale Prince"
-            (findErrors SalePrice model.errors)
-            UpdateSalePrice
-            model.saleData.salePrice
-        , inputView "Discount:"
-            "id_discount"
-            "(Number or Percentage)"
-            (findErrors Discount model.errors)
-            UpdateDiscount
-            model.saleData.discount
-        , inputView "Agent Fee:"
-            "id_agent_fee"
-            "Amount to Agent"
-            (findErrors AgentFee model.errors)
-            UpdateAgentFee
-            model.saleData.agentFee
-        , inputView "Amount to Artist:"
-            "id_amount_to_artist"
-            "Amount to Artist"
-            (findErrors AmountToArtist model.errors)
-            UpdateAmountToArtist
-            model.saleData.amountToArtist
-        , inputView "Sale Date:"
-            "id_sale_date"
-            "Date"
-            (findErrors SaleDate model.errors)
-            UpdateSaleDate
-            model.saleData.saleDate
+        , inputView
+            { label = "Sale Currency:"
+            , id = "id_sale_currency"
+            , placeholder = "Sale Currency"
+            , errors = findErrors SaleCurrency model.errors
+            , onInput = UpdateSaleCurrency
+            , value = model.saleData.saleCurrency
+            }
+        , inputView
+            { label = "Sale Price:"
+            , id = "id_sale_price"
+            , placeholder = "Sale Prince"
+            , errors = findErrors SalePrice model.errors
+            , onInput = UpdateSalePrice
+            , value = model.saleData.salePrice
+            }
+        , inputView
+            { label = "Discount:"
+            , id = "id_discount"
+            , placeholder = "(Number or Percentage)"
+            , errors = findErrors Discount model.errors
+            , onInput = UpdateDiscount
+            , value = model.saleData.discount
+            }
+        , inputView
+            { label = "Agent Fee:"
+            , id = "id_agent_fee"
+            , placeholder = "Amount to Agent"
+            , errors = findErrors AgentFee model.errors
+            , onInput = UpdateAgentFee
+            , value = model.saleData.agentFee
+            }
+        , inputView
+            { label = "Amount to Artist:"
+            , id = "id_amount_to_artist"
+            , placeholder = "Amount to Artist"
+            , errors = findErrors AmountToArtist model.errors
+            , onInput = UpdateAmountToArtist
+            , value = model.saleData.amountToArtist
+            }
+        , inputView
+            { label = "Sale Date:"
+            , id = "id_sale_date"
+            , placeholder = "Date"
+            , errors = findErrors SaleDate model.errors
+            , onInput = UpdateSaleDate
+            , value = model.saleData.saleDate
+            }
         , hiddenInputView model.saleData.id
         ]
 
@@ -598,28 +610,38 @@ inputNotesView label_name id_ placeholder_ errors val =
         )
 
 
-inputView : String -> String -> String -> List String -> (String -> Msg) -> String -> Html Msg
-inputView label_name id_ placeholder_ errors updateMsg val =
+type alias Props msg =
+    { id : String
+    , label : String
+    , placeholder : String
+    , errors : List String
+    , onInput : String -> msg
+    , value : String
+    }
+
+
+inputView : Props Msg -> Html Msg
+inputView props =
     div
         [ style "display" "flex"
         , class "form-group"
         ]
-        ([ label [ for id_ ] [ text label_name ]
+        ([ label [ for props.id ] [ text props.label ]
          , input
-            [ id id_
-            , onInput updateMsg
+            [ id props.id
+            , onInput props.onInput
             , onBlur AttemptSubmitForm
             , classList
                 [ ( "edit-field", True )
                 , ( "form-control", True )
                 , ( "form-control-sm", True )
                 ]
-            , placeholder placeholder_
-            , value val
+            , placeholder props.placeholder
+            , value props.value
             ]
             []
          ]
-            ++ List.map errorView errors
+            ++ List.map errorView props.errors
         )
 
 
