@@ -23,6 +23,20 @@
 - Change text to invalid format - see that validators pop up
 - update in bad network connection - see fail icon
 
+## Location detail screen
+
+- location create can create
+- edit location
+- gallery
+  - location create - don't see gallery
+  - open gallery if there are no results
+  - open gallery if there are results
+  - see sales data for artwork with sales data
+  - edit sales data for artwork with sales data
+  - add sales data for artwork without sales data - saved
+  - filter artworks - filters
+  - add artwork to location - shows up
+
 ## Migration tests
 
 - have owner, all else default - 2

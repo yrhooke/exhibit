@@ -1,0 +1,61 @@
+{% load static %}
+{% load url_replace %}
+
+<div id="elm-sale-data-flags">
+    {% csrf_token %}
+</div>
+<div class="mx-auto" id="search-results-container">
+    <div id="elm-sales-gallery-app"></div>
+    {% if search_results.has_other_pages %}
+    <div id="pagination-wrapper">
+        <ul class="pagination mx-auto">
+            {% if search_results.has_previous %}
+            <li><a href="?{% url_replace page=search_results.previous_page_number %}">&laquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&laquo;</span></li>
+            {% endif %}
+            {% for i in search_results.paginator.page_range %}
+            {% if search_results.number == i %}
+            <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
+            {% else %}
+            <li><a href="?{% url_replace page=i %}">{{ i }}</a></li>
+            {% endif %}
+            {% endfor %}
+            {% if search_results.has_next %}
+            <li><a href="?{% url_replace page=search_results.next_page_number %}">&raquo;</a></li>
+            {% else %}
+            <li class="disabled"><span>&raquo;</span></li>
+            {% endif %}
+        </ul>
+    </div>
+    {% endif %}
+</div>
+<script>
+    function elm_sales_gallery_flags() {
+        let artwork_data = JSON.parse("{{sales_gallery_info|escapejs|default:'{}'}}");
+        console.log('downloaded sales gallery info:')
+        console.log(artwork_data)
+        let csrftoken = document.getElementById('elm-sale-data-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
+        artwork_data.forEach(element => {
+            console.log(element);
+            let artwork_id = element["id"];
+            if (! element["sale_data"]["artwork"]) {
+                element["sale_data"]["artwork"]= artwork_id;
+            }
+            element["sale_data"]["csrftoken"] = csrftoken;
+            element["sale_data"]['loader_icon'] = "{% static 'images/spinner.svg' %}";
+            element["sale_data"]['success_icon'] = "{% static 'images/upload_success.svg' %}";
+            element["sale_data"]['fail_icon'] = "{% static 'images/upload_fail.svg' %}";
+            console.log(element);
+        });
+        close_icon = "{% static 'images/gallery_close.svg' %}";
+        return {
+            "data" : artwork_data,
+            "closeIconURL" : close_icon
+        }
+    }
+    var app = Elm.SalesGallery.init({
+        node: document.getElementById("elm-sales-gallery-app"),
+        flags: elm_sales_gallery_flags()
+    });        
+</script>

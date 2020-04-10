@@ -8,6 +8,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
+import InputResize
 import Json.Decode as D
 import Json.Decode.Pipeline as Pipeline
 import Validate exposing (validate)
@@ -17,6 +18,7 @@ import Validate exposing (validate)
 -- MAIN
 
 
+main : Program D.Value Model Msg
 main =
     Browser.element
         { init = init
@@ -58,7 +60,7 @@ type alias SaleData =
     , artwork : Maybe Int
     , buyer : Maybe Int
     , agent : Maybe Int
-    , notes : String
+    , notes : InputResize.InputResize
     , saleCurrency : String
     , salePrice : String
     , discount : String
@@ -74,7 +76,7 @@ newSaleData =
     , artwork = Nothing
     , buyer = Nothing
     , agent = Nothing
-    , notes = ""
+    , notes = InputResize.fromContent settingsNotes ""
     , saleCurrency = ""
     , salePrice = ""
     , discount = ""
@@ -91,7 +93,9 @@ saleDataDecoder =
         |> Pipeline.required "artwork" (D.int |> D.maybe)
         |> Pipeline.required "buyer" (D.int |> D.maybe)
         |> Pipeline.required "agent" (D.int |> D.maybe)
-        |> Pipeline.optional "notes" D.string ""
+        |> Pipeline.optional "notes"
+            (D.map (InputResize.fromContent settingsNotes) D.string)
+            (InputResize.fromContent settingsNotes "")
         |> Pipeline.optional "saleCurrency" D.string ""
         |> Pipeline.optional "salePrice" D.string ""
         |> Pipeline.optional "discount" D.string ""
@@ -184,7 +188,7 @@ saleDataToForm record =
         ++ includeJustIntField "artwork" record.artwork
         ++ includeJustIntField "buyer" record.buyer
         ++ includeJustIntField "agent" record.agent
-        ++ [ Http.stringPart "notes" record.notes
+        ++ [ Http.stringPart "notes" record.notes.content
            , Http.stringPart "sale_currency" record.saleCurrency
            , Http.stringPart "sale_price" record.salePrice
            , Http.stringPart "discount" record.discount
@@ -210,7 +214,7 @@ type alias ValidationError =
     ( Field, String )
 
 
-setNotes : String -> SaleData -> SaleData
+setNotes : InputResize.InputResize -> SaleData -> SaleData
 setNotes newNotes saleData =
     { saleData | notes = newNotes }
 
@@ -298,7 +302,7 @@ decodeFieldtoString field flags =
 
 
 type Msg
-    = UpdateNotes String
+    = UpdateNotes InputResize.Msg
     | UpdateSaleCurrency String
     | UpdateSalePrice String
     | UpdateDiscount String
@@ -312,8 +316,12 @@ type Msg
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
-        UpdateNotes val ->
-            ( { model | saleData = setNotes val model.saleData, updated = Behind }, Cmd.none )
+        UpdateNotes resizeMsg ->
+            let
+                ( newNotes, newMsg ) =
+                    InputResize.update UpdateNotes resizeMsg model.saleData.notes
+            in
+            ( { model | saleData = setNotes newNotes model.saleData, updated = Behind }, newMsg )
 
         -- | UpdateAgent List (I)
         UpdateSaleCurrency val ->
@@ -494,7 +502,7 @@ view model =
             "id_notes"
             "Notes"
             (findErrors Notes model.errors)
-            UpdateNotes
+            -- UpdateNotes
             model.saleData.notes
         , inputView "Sale Currency:"
             "id_sale_currency"
@@ -536,32 +544,55 @@ view model =
         ]
 
 
-inputNotesView : String -> String -> String -> List String -> (String -> Msg) -> String -> Html Msg
-inputNotesView label_name id_ placeholder_ errors updateMsg val =
+settingsNotes : InputResize.Settings Msg
+settingsNotes =
+    InputResize.defaultSettings UpdateNotes
+
+
+inputNotesView : String -> String -> String -> List String -> InputResize.InputResize -> Html Msg
+inputNotesView label_name id_ placeholder_ errors val =
+    let
+        settings =
+            settingsNotes
+                |> InputResize.addAttribute (id id_)
+                |> InputResize.addAttribute
+                    (classList
+                        [ ( "edit-field", True )
+                        , ( "form-control", True )
+                        , ( "form-control-sm", True )
+                        ]
+                    )
+                |> InputResize.addAttribute (placeholder placeholder_)
+                |> InputResize.addAttribute (onBlur AttemptSubmitForm)
+    in
     div
         [ style "display" "flex"
-        , class "ungroup"
+
+        -- , class "ungroup"
         , class "form-group"
+        , style "height" "min-content"
         ]
         ([ label
             [ for id_
             , style "align-self" "start"
             ]
             [ text label_name ]
-         , textarea
-            [ id id_
-            , onInput updateMsg
-            , onBlur AttemptSubmitForm
-            , classList
-                [ ( "edit-field", True )
-                , ( "form-control", True )
-                , ( "form-control-sm", True )
-                ]
-            , style "width" "270px"
-            , placeholder placeholder_
-            , value val
-            ]
-            []
+         , InputResize.view settings val
+
+         --  , textarea
+         --     [ id id_
+         --     , onInput updateMsg
+         --     , onBlur AttemptSubmitForm
+         --     , classList
+         --         [ ( "edit-field", True )
+         --         , ( "form-control", True )
+         --         , ( "form-control-sm", True )
+         --         ]
+         --     , style "width" "270px"
+         --     , placeholder placeholder_
+         --     , value val
+         --     ]
+         --     []
          ]
             ++ List.map errorView errors
         )

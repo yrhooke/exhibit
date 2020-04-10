@@ -35,7 +35,7 @@
 
 
   <!-- Project specific CSS -->
-  <link rel="stylesheet" href="{% static 'css/style.css' %}?version='0.4.0">
+  <link rel="stylesheet" href="{% static 'css/style.css' %}?version='0.5.0">
 
 
 
@@ -105,6 +105,7 @@
   <!-- place project specific Javascript in this file -->
 
   <script src="{% static 'js/project.js' %}" type="text/javascript"></script>
+  <script src="{% static 'js/elm.js' %}"></script>
 
   <!-- functionality for search, textarea resize, enable size2 everywhere - needs refactoring -->
   <script>
@@ -210,15 +211,19 @@
       for (let i of textareas) {
         (function (i) {
 
-          // add hidden div initially to set height
-          addHiddenArea(i);
-
-          // Note: Use 'keyup' instead of 'input'
-          // if you want older IE support
-          i.addEventListener('input', function () {
+          // don't include textarea that are being resized by elm 
+          // This is awful code
+          if (i.id !== "elm-textarea-resize") {
+            // add hidden div initially to set height
             addHiddenArea(i);
-
-          });
+  
+            // Note: Use 'keyup' instead of 'input'
+            // if you want older IE support
+            i.addEventListener('input', function () {
+              addHiddenArea(i);
+              
+            });
+          }
         })(i);
       }
       // TEXT AREA RESIZE DONE

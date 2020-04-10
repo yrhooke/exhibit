@@ -187,7 +187,6 @@
 {% endblock javascript %}
 
 {% block object_details %}
-<script src="{% static 'js/elm.js' %}"></script>
 <form action="." method="POST" enctype="multipart/form-data">
     {% csrf_token %}
     <div id="page-header" class="">
@@ -222,7 +221,6 @@
     <div class="row mx-auto" id="artwork-details-wrapper" style="max-width:999px;">
         <div class="col-6" style="padding:0px;display:flex;align-items:center;flex-direction:column">
             <div id="artwork-image" class="card">
-                <!-- {{ form.artwork_image }} -->
                 <div class="card-body">
                     <div id="elm-stuff">
                         <div id="elm-image-upload-flags">
@@ -231,13 +229,17 @@
                             <img src="{% static 'images/upload_check.svg' %}" style="display:none;">
                         </div>
                         <div id="elm-image-upload"></div>
-                        <!-- <script src="{% static 'js/imageUpload.js' %}"></script> -->
                         <script>
                             function elm_image_upload_flags() {
                                 let csrftoken = document.getElementById('elm-image-upload-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
                                 let artwork_id = {{ object.pk |default:"null" }};
+                            {% if object.get_image %}
                             let image_url = "{{ object.get_image.url }}";
-                            let image_id = {{ object.get_image.pk |default:"null"}};
+                            let image_id = {{ object.get_image.pk |default:'null'}};
+                            {% else %}
+                            let image_url = "";
+                            let image_id = "";
+                            {% endif %}
                             let loader_icon = "{% static 'images/spinner.svg' %}";
                             let success_icon = "{% static 'images/upload_success.svg' %}";
                             let fail_icon = "{% static 'images/upload_fail.svg' %}";
@@ -260,26 +262,6 @@
                             });        
                         </script>
                     </div>
-                    <!-- <div style="height:405px;">
-                        {% if object.get_image %}
-                        <div class="bounding-box" id="id_image"
-                            style="background-image:url('{{ object.get_image.url }}')"></div>
-                        {% else %}
-                        <div class="bounding-box" id="id_image" style="background-color:darkgrey;"></div>
-                        {% endif %}
-                    </div> -->
-                    <!-- <label for="id_image" class="action-button btn hidden-file-upload-label">
-                        Upload Image
-                    </label>
-                    {render_field form.image class="hidden-file-upload action-button" onchange="loadFile(event)" %}
-                    <script>
-                        var loadFile = function (event) {
-                            let pathToImage = URL.createObjectURL(event.target.files[0]);
-                            $("#id_image").replaceWith(
-                                `<div class="bounding-box" id="id_image" style="background-image:url(${pathToImage})"></div>`
-                            )
-                        };
-                    </script> -->
                 </div>
             </div>
             <div id="sales-info" class="card">

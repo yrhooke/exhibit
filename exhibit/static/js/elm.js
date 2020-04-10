@@ -5551,6 +5551,10 @@ var $elm$core$Task$perform = F2(
 				A2($elm$core$Task$map, toMessage, task)));
 	});
 var $elm$browser$Browser$element = _Browser_element;
+var $author$project$SalesGallery$Model = F2(
+	function (data, closeIconURL) {
+		return {closeIconURL: closeIconURL, data: data};
+	});
 var $author$project$SalesGallery$Artwork = function (id) {
 	return function (url) {
 		return function (image) {
@@ -5680,6 +5684,28 @@ var $author$project$SaleData$SaleData = function (id) {
 		};
 	};
 };
+var $author$project$InputResize$estimateRows = F2(
+	function (settings, content) {
+		var rowHeight = settings.fontSize * settings.lineHeight;
+		var numRows = function (line) {
+			return (line === '') ? 1 : $elm$core$Basics$ceiling(
+				$elm$core$String$length(line) / settings.columns);
+		};
+		var lines = A2($elm$core$String$split, '\n', content);
+		return rowHeight * A3(
+			$elm$core$List$foldl,
+			$elm$core$Basics$add,
+			1,
+			A2($elm$core$List$map, numRows, lines));
+	});
+var $author$project$InputResize$fromContent = F2(
+	function (settings, content) {
+		return {
+			content: content,
+			height: A2($author$project$InputResize$estimateRows, settings, content),
+			isMeasuring: false
+		};
+	});
 var $elm$json$Json$Decode$int = _Json_decodeInt;
 var $elm$json$Json$Decode$maybe = function (decoder) {
 	return $elm$json$Json$Decode$oneOf(
@@ -5696,6 +5722,22 @@ var $NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required = F3(
 			A2($elm$json$Json$Decode$field, key, valDecoder),
 			decoder);
 	});
+var $author$project$SaleData$UpdateNotes = function (a) {
+	return {$: 'UpdateNotes', a: a};
+};
+var $elm$core$Basics$round = _Basics_round;
+var $author$project$InputResize$defaultSettings = function (message) {
+	return {
+		columns: $elm$core$Basics$round(50),
+		divID: 'elm-textarea-resize',
+		fontSize: 17,
+		innerAttributes: _List_Nil,
+		lineHeight: 1.2,
+		resizeMsg: message,
+		width: '300px'
+	};
+};
+var $author$project$SaleData$settingsNotes = $author$project$InputResize$defaultSettings($author$project$SaleData$UpdateNotes);
 var $author$project$SaleData$saleDataDecoder = A4(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 	'saleDate',
@@ -5729,8 +5771,11 @@ var $author$project$SaleData$saleDataDecoder = A4(
 						A4(
 							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 							'notes',
-							$elm$json$Json$Decode$string,
-							'',
+							A2(
+								$elm$json$Json$Decode$map,
+								$author$project$InputResize$fromContent($author$project$SaleData$settingsNotes),
+								$elm$json$Json$Decode$string),
+							A2($author$project$InputResize$fromContent, $author$project$SaleData$settingsNotes, ''),
 							A3(
 								$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 								'agent',
@@ -5766,6 +5811,8 @@ var $author$project$SaleData$decode = A2(
 					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
 					$author$project$SaleData$saleDataDecoder,
 					$elm$json$Json$Decode$succeed($author$project$SaleData$Model))))));
+var $elm$json$Json$Decode$float = _Json_decodeFloat;
+var $elm$core$String$fromFloat = _String_fromNumber;
 var $author$project$SalesGallery$Size = F3(
 	function (width, height, unit) {
 		return {height: height, unit: unit, width: width};
@@ -5779,16 +5826,16 @@ var $author$project$SalesGallery$sizeDecoder = function (unit) {
 		A3(
 			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 			height,
-			$elm$json$Json$Decode$string,
+			A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float),
 			A3(
 				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 				width,
-				$elm$json$Json$Decode$string,
+				A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float),
 				$elm$json$Json$Decode$succeed($author$project$SalesGallery$Size))));
 };
 var $author$project$SalesGallery$artworkDecoder = A2(
 	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
-	$author$project$SaleData$decode,
+	A2($elm$json$Json$Decode$field, 'sale_data', $author$project$SaleData$decode),
 	A2(
 		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
 		$author$project$SalesGallery$sizeDecoder('in'),
@@ -5798,15 +5845,17 @@ var $author$project$SalesGallery$artworkDecoder = A2(
 			A3(
 				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 				'price_usd',
-				$elm$json$Json$Decode$maybe($elm$json$Json$Decode$string),
+				$elm$json$Json$Decode$maybe(
+					A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float)),
 				A3(
 					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 					'price_nis',
-					$elm$json$Json$Decode$maybe($elm$json$Json$Decode$string),
+					$elm$json$Json$Decode$maybe(
+						A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float)),
 					A3(
 						$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 						'year',
-						$elm$json$Json$Decode$string,
+						A2($elm$json$Json$Decode$map, $elm$core$String$fromInt, $elm$json$Json$Decode$int),
 						A3(
 							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 							'series',
@@ -5817,11 +5866,11 @@ var $author$project$SalesGallery$artworkDecoder = A2(
 								$elm$json$Json$Decode$string,
 								A3(
 									$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-									'image_url',
+									'image',
 									$elm$json$Json$Decode$string,
 									A3(
 										$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-										'artwork_url',
+										'url',
 										$elm$json$Json$Decode$string,
 										A3(
 											$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
@@ -5840,20 +5889,34 @@ var $elm$core$Debug$log = _Debug_log;
 var $elm$core$Platform$Cmd$batch = _Platform_batch;
 var $elm$core$Platform$Cmd$none = $elm$core$Platform$Cmd$batch(_List_Nil);
 var $author$project$SalesGallery$init = function (flags) {
-	var _v0 = A2(
-		$elm$json$Json$Decode$decodeValue,
-		$elm$json$Json$Decode$list($author$project$SalesGallery$artworkDecoder),
-		flags);
+	var modelDecoder = A4(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+		'closeIconURL',
+		$elm$json$Json$Decode$string,
+		'',
+		A4(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+			'data',
+			A2(
+				$elm$json$Json$Decode$map,
+				function (a) {
+					return $NoRedInk$list_selection$List$Selection$fromList(a);
+				},
+				$elm$json$Json$Decode$list($author$project$SalesGallery$artworkDecoder)),
+			$NoRedInk$list_selection$List$Selection$fromList(_List_Nil),
+			$elm$json$Json$Decode$succeed($author$project$SalesGallery$Model)));
+	var _v0 = A2($elm$json$Json$Decode$decodeValue, modelDecoder, flags);
 	if (_v0.$ === 'Ok') {
-		var artworkList = _v0.a;
-		return _Utils_Tuple2(
-			$NoRedInk$list_selection$List$Selection$fromList(artworkList),
-			$elm$core$Platform$Cmd$none);
+		var model = _v0.a;
+		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 	} else {
 		var e = _v0.a;
 		var debug_init = A2($elm$core$Debug$log, 'error initializing list:', e);
 		return _Utils_Tuple2(
-			$NoRedInk$list_selection$List$Selection$fromList(_List_Nil),
+			{
+				closeIconURL: '',
+				data: $NoRedInk$list_selection$List$Selection$fromList(_List_Nil)
+			},
 			$elm$core$Platform$Cmd$none);
 	}
 };
@@ -5862,10 +5925,47 @@ var $elm$core$Platform$Sub$none = $elm$core$Platform$Sub$batch(_List_Nil);
 var $author$project$SalesGallery$subscriptions = function (_v0) {
 	return $elm$core$Platform$Sub$none;
 };
+var $author$project$SalesGallery$NoOp = {$: 'NoOp'};
 var $NoRedInk$list_selection$List$Selection$deselect = function (_v0) {
 	var items = _v0.b;
 	return A2($NoRedInk$list_selection$List$Selection$Selection, $elm$core$Maybe$Nothing, items);
 };
+var $author$project$SalesGallery$GotViewPort = function (a) {
+	return {$: 'GotViewPort', a: a};
+};
+var $elm$core$Basics$composeL = F3(
+	function (g, f, x) {
+		return g(
+			f(x));
+	});
+var $elm$core$Task$onError = _Scheduler_onError;
+var $elm$core$Task$attempt = F2(
+	function (resultToMessage, task) {
+		return $elm$core$Task$command(
+			$elm$core$Task$Perform(
+				A2(
+					$elm$core$Task$onError,
+					A2(
+						$elm$core$Basics$composeL,
+						A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+						$elm$core$Result$Err),
+					A2(
+						$elm$core$Task$andThen,
+						A2(
+							$elm$core$Basics$composeL,
+							A2($elm$core$Basics$composeL, $elm$core$Task$succeed, resultToMessage),
+							$elm$core$Result$Ok),
+						task))));
+	});
+var $elm$browser$Browser$Dom$getElement = _Browser_getElement;
+var $author$project$SalesGallery$getArtworkPosition = function (artworkID) {
+	return A2(
+		$elm$core$Task$attempt,
+		$author$project$SalesGallery$GotViewPort,
+		$elm$browser$Browser$Dom$getElement(
+			'artwork_wrapper' + $elm$core$String$fromInt(artworkID)));
+};
+var $elm$browser$Browser$Navigation$load = _Browser_load;
 var $elm$core$List$filter = F2(
 	function (isGood, list) {
 		return A3(
@@ -5921,6 +6021,7 @@ var $NoRedInk$list_selection$List$Selection$selectBy = F2(
 						A2($elm$core$List$filter, query, items)))),
 			items);
 	});
+var $elm$browser$Browser$Dom$setViewport = _Browser_setViewport;
 var $author$project$SalesGallery$SaleDataUpdated = function (a) {
 	return {$: 'SaleDataUpdated', a: a};
 };
@@ -7297,7 +7398,7 @@ var $author$project$SaleData$saleDataToForm = function (record) {
 					_Utils_ap(
 						_List_fromArray(
 							[
-								A2($elm$http$Http$stringPart, 'notes', record.notes),
+								A2($elm$http$Http$stringPart, 'notes', record.notes.content),
 								A2($elm$http$Http$stringPart, 'sale_currency', record.saleCurrency),
 								A2($elm$http$Http$stringPart, 'sale_price', record.salePrice),
 								A2($elm$http$Http$stringPart, 'discount', record.discount),
@@ -7349,19 +7450,57 @@ var $author$project$SaleData$setSalePrice = F2(
 			{salePrice: newSalePrice});
 	});
 var $elm$core$Debug$toString = _Debug_toString;
+var $author$project$InputResize$GotSize = function (a) {
+	return {$: 'GotSize', a: a};
+};
+var $elm$browser$Browser$Dom$getViewportOf = _Browser_getViewportOf;
+var $author$project$InputResize$update = F3(
+	function (msg, resizeMsg, model) {
+		if (resizeMsg.$ === 'NewContent') {
+			var divID = resizeMsg.a;
+			var content = resizeMsg.b;
+			return _Utils_Tuple2(
+				_Utils_update(
+					model,
+					{content: content, isMeasuring: true}),
+				A2(
+					$elm$core$Task$attempt,
+					A2($elm$core$Basics$composeL, msg, $author$project$InputResize$GotSize),
+					$elm$browser$Browser$Dom$getViewportOf(divID)));
+		} else {
+			var result = resizeMsg.a;
+			if (result.$ === 'Ok') {
+				var viewport = result.a;
+				var log_height = A2(
+					$elm$core$Debug$log,
+					'viewport',
+					$elm$core$Debug$toString(viewport));
+				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{height: viewport.scene.height, isMeasuring: false}),
+					$elm$core$Platform$Cmd$none);
+			} else {
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+			}
+		}
+	});
 var $author$project$SaleData$update = F2(
 	function (msg, model) {
 		switch (msg.$) {
 			case 'UpdateNotes':
-				var val = msg.a;
+				var resizeMsg = msg.a;
+				var _v1 = A3($author$project$InputResize$update, $author$project$SaleData$UpdateNotes, resizeMsg, model.saleData.notes);
+				var newNotes = _v1.a;
+				var newMsg = _v1.b;
 				return _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{
-							saleData: A2($author$project$SaleData$setNotes, val, model.saleData),
+							saleData: A2($author$project$SaleData$setNotes, newNotes, model.saleData),
 							updated: $author$project$SaleData$Behind
 						}),
-					$elm$core$Platform$Cmd$none);
+					newMsg);
 			case 'UpdateSaleCurrency':
 				var val = msg.a;
 				return _Utils_Tuple2(
@@ -7432,8 +7571,8 @@ var $author$project$SaleData$update = F2(
 					$elm$core$Debug$log,
 					'Submitting: ' + $elm$core$Debug$toString(model),
 					'');
-				var _v1 = A2($rtfeldman$elm_validate$Validate$validate, $author$project$SaleData$saleDataValidator, model.saleData);
-				if (_v1.$ === 'Ok') {
+				var _v2 = A2($rtfeldman$elm_validate$Validate$validate, $author$project$SaleData$saleDataValidator, model.saleData);
+				if (_v2.$ === 'Ok') {
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -7453,7 +7592,7 @@ var $author$project$SaleData$update = F2(
 								url: '/c/api/saledata'
 							}));
 				} else {
-					var errors = _v1.a;
+					var errors = _v2.a;
 					return _Utils_Tuple2(
 						_Utils_update(
 							model,
@@ -7488,7 +7627,7 @@ var $author$project$SalesGallery$updateSaleData = F2(
 			return A2($author$project$SaleData$update, saleDataMsg, oldSaleData).b;
 		};
 		var subCmd = function () {
-			var _v0 = $NoRedInk$list_selection$List$Selection$selected(model);
+			var _v0 = $NoRedInk$list_selection$List$Selection$selected(model.data);
 			if (_v0.$ === 'Just') {
 				var artwork = _v0.a;
 				return newSubMsg(artwork.saleData);
@@ -7507,15 +7646,19 @@ var $author$project$SalesGallery$updateSaleData = F2(
 				});
 		};
 		return _Utils_Tuple2(
-			A2(
-				$NoRedInk$list_selection$List$Selection$mapSelected,
+			_Utils_update(
+				model,
 				{
-					rest: $elm$core$Basics$identity,
-					selected: function (a) {
-						return newArtwork(a);
-					}
-				},
-				model),
+					data: A2(
+						$NoRedInk$list_selection$List$Selection$mapSelected,
+						{
+							rest: $elm$core$Basics$identity,
+							selected: function (a) {
+								return newArtwork(a);
+							}
+						},
+						model.data)
+				}),
 			A2($elm$core$Platform$Cmd$map, $author$project$SalesGallery$SaleDataUpdated, subCmd));
 	});
 var $author$project$SalesGallery$update = F2(
@@ -7523,23 +7666,68 @@ var $author$project$SalesGallery$update = F2(
 		switch (msg.$) {
 			case 'Select':
 				var artworkID = msg.a;
+				var log_selected = A2($elm$core$Debug$log, 'artwork selected', artworkID);
 				return _Utils_Tuple2(
-					A2(
-						$NoRedInk$list_selection$List$Selection$selectBy,
-						function (a) {
-							return _Utils_eq(a.id, artworkID);
-						},
-						model),
-					$elm$core$Platform$Cmd$none);
+					_Utils_update(
+						model,
+						{
+							data: A2(
+								$NoRedInk$list_selection$List$Selection$selectBy,
+								function (a) {
+									return _Utils_eq(a.id, artworkID);
+								},
+								model.data)
+						}),
+					$author$project$SalesGallery$getArtworkPosition(artworkID));
+			case 'GotViewPort':
+				var result = msg.a;
+				if (result.$ === 'Ok') {
+					var element = result.a;
+					var oldOffset = element.viewport.y;
+					var height = element.viewport.height;
+					var elementOffset = element.element.y;
+					var elementHeight = element.element.height;
+					var newOffset = (_Utils_cmp(height, elementHeight) < 1) ? elementOffset : (elementOffset - ((height - elementHeight) / 2));
+					return _Utils_Tuple2(
+						model,
+						A2(
+							$elm$core$Task$perform,
+							function (_v2) {
+								return $author$project$SalesGallery$NoOp;
+							},
+							A2($elm$browser$Browser$Dom$setViewport, element.viewport.x, newOffset)));
+				} else {
+					var e = result.a;
+					var viewport_log = A2($elm$core$Debug$log, 'error getting height', e);
+					return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+				}
 			case 'Deselect':
+				var log_deselect = $elm$core$Debug$log('artwork deselected');
 				return _Utils_Tuple2(
-					$NoRedInk$list_selection$List$Selection$deselect(model),
+					_Utils_update(
+						model,
+						{
+							data: $NoRedInk$list_selection$List$Selection$deselect(model.data)
+						}),
 					$elm$core$Platform$Cmd$none);
-			default:
+			case 'GoTo':
+				var url = msg.a;
+				return _Utils_Tuple2(
+					model,
+					$elm$browser$Browser$Navigation$load(url));
+			case 'SaleDataUpdated':
 				var saleDataMsg = msg.a;
 				return A2($author$project$SalesGallery$updateSaleData, saleDataMsg, model);
+			default:
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$SalesGallery$GoTo = function (a) {
+	return {$: 'GoTo', a: a};
+};
+var $author$project$SalesGallery$Select = function (a) {
+	return {$: 'Select', a: a};
+};
 var $elm$html$Html$a = _VirtualDom_node('a');
 var $elm$json$Json$Encode$string = _Json_wrap;
 var $elm$html$Html$Attributes$stringProperty = F2(
@@ -7550,162 +7738,6 @@ var $elm$html$Html$Attributes$stringProperty = F2(
 			$elm$json$Json$Encode$string(string));
 	});
 var $elm$html$Html$Attributes$class = $elm$html$Html$Attributes$stringProperty('className');
-var $elm$html$Html$div = _VirtualDom_node('div');
-var $elm$html$Html$Attributes$href = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'href',
-		_VirtualDom_noJavaScriptUri(url));
-};
-var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
-var $elm$html$Html$li = _VirtualDom_node('li');
-var $author$project$SalesGallery$sizeText = function (size) {
-	return size.width + ('x' + (size.height + size.unit));
-};
-var $elm$html$Html$span = _VirtualDom_node('span');
-var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
-var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
-var $elm$html$Html$ul = _VirtualDom_node('ul');
-var $author$project$SalesGallery$artworkView = function (artwork) {
-	var imageBox = (artwork.image !== '') ? A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('gallery-bounding box'),
-				A2($elm$html$Html$Attributes$style, 'background-image', 'url(' + (artwork.image + ')'))
-			]),
-		_List_Nil) : A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('gallery-item-image'),
-				A2($elm$html$Html$Attributes$style, 'background', 'darkgrey')
-			]),
-		_List_Nil);
-	return A2(
-		$elm$html$Html$a,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$class('gallery-item-wrapper'),
-				$elm$html$Html$Attributes$href(artwork.url)
-			]),
-		_List_fromArray(
-			[
-				imageBox,
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$class('gallery-item-hover')
-					]),
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$ul,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$class('gallery-item-text')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								$elm$html$Html$li,
-								_List_Nil,
-								_List_fromArray(
-									[
-										A2(
-										$elm$html$Html$div,
-										_List_fromArray(
-											[
-												$elm$html$Html$Attributes$class('gallery-item-title')
-											]),
-										_List_fromArray(
-											[
-												A2(
-												$elm$html$Html$span,
-												_List_Nil,
-												_List_fromArray(
-													[
-														$elm$html$Html$text(artwork.title)
-													]))
-											]))
-									])),
-								A2(
-								$elm$html$Html$li,
-								_List_Nil,
-								_List_fromArray(
-									[
-										A2(
-										$elm$html$Html$span,
-										_List_fromArray(
-											[
-												$elm$html$Html$Attributes$id(
-												'artwork_series_' + $elm$core$String$fromInt(artwork.id))
-											]),
-										_List_fromArray(
-											[
-												$elm$html$Html$text(artwork.series)
-											])),
-										A2(
-										$elm$html$Html$span,
-										_List_fromArray(
-											[
-												$elm$html$Html$Attributes$class('separator')
-											]),
-										_List_fromArray(
-											[
-												$elm$html$Html$text(' | ')
-											])),
-										A2(
-										$elm$html$Html$span,
-										_List_fromArray(
-											[
-												$elm$html$Html$Attributes$id(
-												'artwork_year_' + $elm$core$String$fromInt(artwork.id))
-											]),
-										_List_fromArray(
-											[
-												$elm$html$Html$text(artwork.year)
-											]))
-									])),
-								A2(
-								$elm$html$Html$li,
-								_List_Nil,
-								_List_fromArray(
-									[
-										A2(
-										$elm$html$Html$span,
-										_List_Nil,
-										_List_fromArray(
-											[
-												$elm$html$Html$text(
-												$author$project$SalesGallery$sizeText(artwork.sizeCm))
-											])),
-										A2(
-										$elm$html$Html$span,
-										_List_fromArray(
-											[
-												$elm$html$Html$Attributes$class('separator')
-											]),
-										_List_fromArray(
-											[
-												$elm$html$Html$text(' | ')
-											])),
-										A2(
-										$elm$html$Html$span,
-										_List_Nil,
-										_List_fromArray(
-											[
-												$elm$html$Html$text(
-												$author$project$SalesGallery$sizeText(artwork.sizeIn))
-											]))
-									]))
-							]))
-					]))
-			]));
-};
 var $elm$html$Html$Attributes$classList = function (classes) {
 	return $elm$html$Html$Attributes$class(
 		A2(
@@ -7716,85 +7748,226 @@ var $elm$html$Html$Attributes$classList = function (classes) {
 				$elm$core$Tuple$first,
 				A2($elm$core$List$filter, $elm$core$Tuple$second, classes))));
 };
-var $NoRedInk$list_selection$List$Selection$toList = function (_v0) {
-	var items = _v0.b;
-	return items;
-};
-var $author$project$SalesGallery$view = function (model) {
-	var log_model = A2(
-		$elm$core$Debug$log,
-		'view updated',
-		$elm$core$Debug$toString(model));
+var $elm$html$Html$div = _VirtualDom_node('div');
+var $elm$html$Html$Attributes$href = function (url) {
 	return A2(
-		$elm$html$Html$div,
-		_List_fromArray(
-			[
-				$elm$html$Html$Attributes$id('search-results-wrapper')
-			]),
-		_List_fromArray(
-			[
-				A2(
-				$elm$html$Html$div,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$id('searchResults'),
-						$elm$html$Html$Attributes$classList(
-						_List_fromArray(
-							[
-								_Utils_Tuple2('gallery-list', true),
-								_Utils_Tuple2('center-block', true)
-							]))
-					]),
-				A2(
-					$elm$core$List$map,
-					$author$project$SalesGallery$artworkView,
-					$NoRedInk$list_selection$List$Selection$toList(model)))
-			]));
+		$elm$html$Html$Attributes$stringProperty,
+		'href',
+		_VirtualDom_noJavaScriptUri(url));
 };
-var $author$project$SalesGallery$main = $elm$browser$Browser$element(
-	{init: $author$project$SalesGallery$init, subscriptions: $author$project$SalesGallery$subscriptions, update: $author$project$SalesGallery$update, view: $author$project$SalesGallery$view});
-var $author$project$SaleData$decodeFieldtoString = F2(
-	function (field, flags) {
-		var _v0 = A2(
-			$elm$json$Json$Decode$decodeValue,
-			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$string),
-			flags);
-		if (_v0.$ === 'Ok') {
-			var str = _v0.a;
-			return str;
-		} else {
-			var message = _v0.a;
-			return '';
-		}
+var $elm$html$Html$Attributes$id = $elm$html$Html$Attributes$stringProperty('id');
+var $elm$html$Html$li = _VirtualDom_node('li');
+var $elm$core$Basics$not = _Basics_not;
+var $elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var $elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			$elm$virtual_dom$VirtualDom$on,
+			event,
+			$elm$virtual_dom$VirtualDom$Normal(decoder));
 	});
-var $author$project$SaleData$newSaleData = {agent: $elm$core$Maybe$Nothing, agentFee: '', amountToArtist: '', artwork: $elm$core$Maybe$Nothing, buyer: $elm$core$Maybe$Nothing, discount: '', id: $elm$core$Maybe$Nothing, notes: '', saleCurrency: '', saleDate: '', salePrice: ''};
-var $author$project$SaleData$init = function (flags) {
-	var icons = {
-		failIconURL: A2($author$project$SaleData$decodeFieldtoString, 'fail_icon', flags),
-		loaderIconURL: A2($author$project$SaleData$decodeFieldtoString, 'loader_icon', flags),
-		successIconURL: A2($author$project$SaleData$decodeFieldtoString, 'success_icon', flags)
-	};
-	var _v0 = A2($elm$json$Json$Decode$decodeValue, $author$project$SaleData$decode, flags);
-	if (_v0.$ === 'Ok') {
-		var data = _v0.a;
-		var log_init = A2($elm$core$Debug$log, 'initial saleData:', data);
-		return _Utils_Tuple2(data, $elm$core$Platform$Cmd$none);
-	} else {
-		var e = _v0.a;
-		var log_init = A2($elm$core$Debug$log, 'error reading flags', e);
-		return _Utils_Tuple2(
-			{
-				csrftoken: A2($author$project$SaleData$decodeFieldtoString, 'csrftoken', flags),
-				errors: _List_Nil,
-				icons: icons,
-				saleData: $author$project$SaleData$newSaleData,
-				updated: $author$project$SaleData$Behind
-			},
-			$elm$core$Platform$Cmd$none);
-	}
+var $elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'click',
+		$elm$json$Json$Decode$succeed(msg));
 };
-var $author$project$SaleData$subscriptions = function (model) {
-	return $elm$core$Platform$Sub$none;
+var $elm$html$Html$Events$onDoubleClick = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'dblclick',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $author$project$SalesGallery$sizeText = function (size) {
+	return size.width + ('x' + (size.height + size.unit));
+};
+var $elm$html$Html$span = _VirtualDom_node('span');
+var $elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var $elm$html$Html$Attributes$style = $elm$virtual_dom$VirtualDom$style;
+var $elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var $elm$html$Html$text = $elm$virtual_dom$VirtualDom$text;
+var $elm$html$Html$ul = _VirtualDom_node('ul');
+var $author$project$SalesGallery$artworkView = F2(
+	function (expanded, artwork) {
+		var wrapper = expanded ? $elm$html$Html$a(
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('gallery-item-wrapper-expanded'),
+					$elm$html$Html$Attributes$id(
+					'artwork_wrapper' + $elm$core$String$fromInt(artwork.id)),
+					$elm$html$Html$Attributes$href(artwork.url)
+				])) : $elm$html$Html$div(
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('gallery-item-wrapper'),
+					$elm$html$Html$Events$onClick(
+					$author$project$SalesGallery$Select(artwork.id)),
+					$elm$html$Html$Events$onDoubleClick(
+					$author$project$SalesGallery$GoTo(artwork.url))
+				]));
+		var imageBox = (artwork.image !== '') ? A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$class('gallery-bounding-box'),
+					A2($elm$html$Html$Attributes$style, 'background-image', 'url(\'' + (artwork.image + '\')'))
+				]),
+			_List_Nil) : A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$classList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2('gallery-item-image', !expanded),
+							_Utils_Tuple2('gallery-item-image-expanded', expanded)
+						])),
+					A2($elm$html$Html$Attributes$style, 'background', 'darkgrey')
+				]),
+			_List_Nil);
+		var hoverClass = expanded ? 'gallery-item-hover-expanded' : 'gallery-item-hover';
+		return wrapper(
+			_List_fromArray(
+				[
+					imageBox,
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class(hoverClass)
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$ul,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('gallery-item-text')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$div,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('gallery-item-title')
+												]),
+											_List_fromArray(
+												[
+													A2(
+													$elm$html$Html$span,
+													_List_Nil,
+													_List_fromArray(
+														[
+															$elm$html$Html$text(artwork.title)
+														]))
+												]))
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$span,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$id(
+													'artwork_series_' + $elm$core$String$fromInt(artwork.id))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text(artwork.series)
+												])),
+											A2(
+											$elm$html$Html$span,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('separator')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text(' | ')
+												])),
+											A2(
+											$elm$html$Html$span,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$id(
+													'artwork_year_' + $elm$core$String$fromInt(artwork.id))
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text(artwork.year)
+												]))
+										])),
+									A2(
+									$elm$html$Html$li,
+									_List_Nil,
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$span,
+											_List_Nil,
+											_List_fromArray(
+												[
+													$elm$html$Html$text(
+													$author$project$SalesGallery$sizeText(artwork.sizeCm))
+												])),
+											A2(
+											$elm$html$Html$span,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$class('separator')
+												]),
+											_List_fromArray(
+												[
+													$elm$html$Html$text(' | ')
+												])),
+											A2(
+											$elm$html$Html$span,
+											_List_Nil,
+											_List_fromArray(
+												[
+													$elm$html$Html$text(
+													$author$project$SalesGallery$sizeText(artwork.sizeIn))
+												]))
+										]))
+								]))
+						]))
+				]));
+	});
+var $author$project$SalesGallery$Deselect = {$: 'Deselect'};
+var $elm$html$Html$Attributes$alt = $elm$html$Html$Attributes$stringProperty('alt');
+var $elm$html$Html$button = _VirtualDom_node('button');
+var $elm$html$Html$img = _VirtualDom_node('img');
+var $elm$virtual_dom$VirtualDom$map = _VirtualDom_map;
+var $elm$html$Html$map = $elm$virtual_dom$VirtualDom$map;
+var $elm$html$Html$Events$onBlur = function (msg) {
+	return A2(
+		$elm$html$Html$Events$on,
+		'blur',
+		$elm$json$Json$Decode$succeed(msg));
+};
+var $elm$html$Html$Attributes$src = function (url) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'src',
+		_VirtualDom_noJavaScriptOrHtmlUri(url));
+};
+var $elm$html$Html$Attributes$tabindex = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'tabIndex',
+		$elm$core$String$fromInt(n));
 };
 var $author$project$SaleData$Discount = {$: 'Discount'};
 var $author$project$SaleData$Notes = {$: 'Notes'};
@@ -7806,9 +7979,6 @@ var $author$project$SaleData$UpdateAmountToArtist = function (a) {
 };
 var $author$project$SaleData$UpdateDiscount = function (a) {
 	return {$: 'UpdateDiscount', a: a};
-};
-var $author$project$SaleData$UpdateNotes = function (a) {
-	return {$: 'UpdateNotes', a: a};
 };
 var $author$project$SaleData$UpdateSaleCurrency = function (a) {
 	return {$: 'UpdateSaleCurrency', a: a};
@@ -7878,6 +8048,14 @@ var $author$project$SaleData$hiddenInputView = function (saleDataID) {
 			]));
 };
 var $author$project$SaleData$AttemptSubmitForm = {$: 'AttemptSubmitForm'};
+var $author$project$InputResize$addAttribute = F2(
+	function (attribute, settings) {
+		return _Utils_update(
+			settings,
+			{
+				innerAttributes: A2($elm$core$List$cons, attribute, settings.innerAttributes)
+			});
+	});
 var $elm$html$Html$small = _VirtualDom_node('small');
 var $author$project$SaleData$errorView = function (error) {
 	return A2(
@@ -7895,23 +8073,88 @@ var $author$project$SaleData$errorView = function (error) {
 };
 var $elm$html$Html$Attributes$for = $elm$html$Html$Attributes$stringProperty('htmlFor');
 var $elm$html$Html$label = _VirtualDom_node('label');
-var $elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var $elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var $elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			$elm$virtual_dom$VirtualDom$on,
-			event,
-			$elm$virtual_dom$VirtualDom$Normal(decoder));
+var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
+var $author$project$InputResize$htmlEncodeString = F2(
+	function (lineHeight, someString) {
+		var lines = A2($elm$core$String$split, '\n', someString);
+		var height = $elm$core$String$fromFloat(lineHeight) + 'px';
+		var htmlMapper = function (line) {
+			return (line === '') ? A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						A2($elm$html$Html$Attributes$style, 'height', height)
+					]),
+				_List_Nil) : A2(
+				$elm$html$Html$div,
+				_List_Nil,
+				_List_fromArray(
+					[
+						$elm$html$Html$text(line)
+					]));
+		};
+		return _Utils_ap(
+			A2($elm$core$List$map, htmlMapper, lines),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'height', height)
+						]),
+					_List_Nil)
+				]));
 	});
-var $elm$html$Html$Events$onBlur = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'blur',
-		$elm$json$Json$Decode$succeed(msg));
+var $author$project$InputResize$setAttributes = function (settings) {
+	return _Utils_ap(
+		$elm$core$List$reverse(settings.innerAttributes),
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'resize', 'none'),
+				A2($elm$html$Html$Attributes$style, 'overflow', 'hidden'),
+				A2($elm$html$Html$Attributes$style, 'white-space', 'pre-wrap'),
+				A2($elm$html$Html$Attributes$style, 'wordWrap', 'break-word'),
+				A2($elm$html$Html$Attributes$style, 'width', settings.width),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'line-height',
+				$elm$core$String$fromFloat(settings.lineHeight)),
+				A2(
+				$elm$html$Html$Attributes$style,
+				'font-size',
+				$elm$core$String$fromFloat(settings.fontSize) + 'px'),
+				A2($elm$html$Html$Attributes$style, 'padding', '0px'),
+				A2($elm$html$Html$Attributes$style, 'margin', '0px')
+			]));
 };
+var $author$project$InputResize$hiddenDivView = F3(
+	function (settings, divID, content) {
+		var rowHeight = settings.lineHeight * settings.fontSize;
+		var textDivs = A2($author$project$InputResize$htmlEncodeString, rowHeight, content);
+		var height = rowHeight * $elm$core$List$length(textDivs);
+		var attributes = $author$project$InputResize$setAttributes(settings);
+		return A2(
+			$elm$html$Html$div,
+			_Utils_ap(
+				attributes,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id(divID),
+						$elm$html$Html$Attributes$value(content),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'height',
+						$elm$core$String$fromFloat(height) + 'px'),
+						A2($elm$html$Html$Attributes$style, 'margin-left', '-' + settings.width),
+						A2($elm$html$Html$Attributes$style, 'z-index', '1')
+					])),
+			textDivs);
+	});
+var $author$project$InputResize$NewContent = F2(
+	function (a, b) {
+		return {$: 'NewContent', a: a, b: b};
+	});
 var $elm$html$Html$Events$alwaysStop = function (x) {
 	return _Utils_Tuple2(x, true);
 };
@@ -7943,17 +8186,84 @@ var $elm$html$Html$Events$onInput = function (tagger) {
 			$elm$html$Html$Events$alwaysStop,
 			A2($elm$json$Json$Decode$map, tagger, $elm$html$Html$Events$targetValue)));
 };
-var $elm$html$Html$Attributes$placeholder = $elm$html$Html$Attributes$stringProperty('placeholder');
 var $elm$html$Html$textarea = _VirtualDom_node('textarea');
-var $author$project$SaleData$inputNotesView = F6(
-	function (label_name, id_, placeholder_, errors, updateMsg, val) {
+var $author$project$InputResize$textAreaView = F3(
+	function (settings, divID, model) {
+		var attributes = $author$project$InputResize$setAttributes(settings);
+		return A2(
+			$elm$html$Html$textarea,
+			_Utils_ap(
+				attributes,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id(divID),
+						$elm$html$Html$Attributes$value(model.content),
+						$elm$html$Html$Events$onInput(
+						A2(
+							$elm$core$Basics$composeL,
+							settings.resizeMsg,
+							$author$project$InputResize$NewContent(settings.divID))),
+						A2(
+						$elm$html$Html$Attributes$style,
+						'height',
+						$elm$core$String$fromFloat(model.height) + 'px'),
+						A2($elm$html$Html$Attributes$style, 'z-index', '3')
+					])),
+			_List_fromArray(
+				[
+					$elm$html$Html$text(model.content)
+				]));
+	});
+var $author$project$InputResize$view = F2(
+	function (settings, model) {
+		var innerView = model.isMeasuring ? _List_fromArray(
+			[
+				A3($author$project$InputResize$textAreaView, settings, 'text_area_', model),
+				A3($author$project$InputResize$hiddenDivView, settings, settings.divID, model.content)
+			]) : _List_fromArray(
+			[
+				A3($author$project$InputResize$textAreaView, settings, settings.divID, model),
+				A3($author$project$InputResize$hiddenDivView, settings, 'text_area_measure', model.content)
+			]);
 		return A2(
 			$elm$html$Html$div,
 			_List_fromArray(
 				[
 					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-					$elm$html$Html$Attributes$class('ungroup'),
-					$elm$html$Html$Attributes$class('form-group')
+					A2($elm$html$Html$Attributes$style, 'justify-content', 'start'),
+					A2($elm$html$Html$Attributes$style, 'align-items', 'start'),
+					A2($elm$html$Html$Attributes$style, 'padding-left', '0.5rem')
+				]),
+			innerView);
+	});
+var $author$project$SaleData$inputNotesView = F5(
+	function (label_name, id_, placeholder_, errors, val) {
+		var settings = A2(
+			$author$project$InputResize$addAttribute,
+			$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm),
+			A2(
+				$author$project$InputResize$addAttribute,
+				$elm$html$Html$Attributes$placeholder(placeholder_),
+				A2(
+					$author$project$InputResize$addAttribute,
+					$elm$html$Html$Attributes$classList(
+						_List_fromArray(
+							[
+								_Utils_Tuple2('edit-field', true),
+								_Utils_Tuple2('form-control', true),
+								_Utils_Tuple2('form-control-sm', true)
+							])),
+					A2(
+						$author$project$InputResize$addAttribute,
+						$elm$html$Html$Attributes$id(id_),
+						$author$project$SaleData$settingsNotes))));
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					$elm$html$Html$Attributes$class('form-group'),
+					A2($elm$html$Html$Attributes$style, 'height', 'min-content')
 				]),
 			_Utils_ap(
 				_List_fromArray(
@@ -7969,25 +8279,7 @@ var $author$project$SaleData$inputNotesView = F6(
 							[
 								$elm$html$Html$text(label_name)
 							])),
-						A2(
-						$elm$html$Html$textarea,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$id(id_),
-								$elm$html$Html$Events$onInput(updateMsg),
-								$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm),
-								$elm$html$Html$Attributes$classList(
-								_List_fromArray(
-									[
-										_Utils_Tuple2('edit-field', true),
-										_Utils_Tuple2('form-control', true),
-										_Utils_Tuple2('form-control-sm', true)
-									])),
-								A2($elm$html$Html$Attributes$style, 'width', '270px'),
-								$elm$html$Html$Attributes$placeholder(placeholder_),
-								$elm$html$Html$Attributes$value(val)
-							]),
-						_List_Nil)
+						A2($author$project$InputResize$view, settings, val)
 					]),
 				A2($elm$core$List$map, $author$project$SaleData$errorView, errors)));
 	});
@@ -8035,13 +8327,6 @@ var $author$project$SaleData$inputView = F6(
 					]),
 				A2($elm$core$List$map, $author$project$SaleData$errorView, errors)));
 	});
-var $elm$html$Html$img = _VirtualDom_node('img');
-var $elm$html$Html$Attributes$src = function (url) {
-	return A2(
-		$elm$html$Html$Attributes$stringProperty,
-		'src',
-		_VirtualDom_noJavaScriptOrHtmlUri(url));
-};
 var $author$project$SaleData$syncStatusView = F2(
 	function (status, icons) {
 		var icon = function () {
@@ -8123,13 +8408,12 @@ var $author$project$SaleData$view = function (model) {
 							])),
 						A2($author$project$SaleData$syncStatusView, model.updated, model.icons)
 					])),
-				A6(
+				A5(
 				$author$project$SaleData$inputNotesView,
 				'Notes:',
 				'id_notes',
 				'Notes',
 				A2($author$project$SaleData$findErrors, $author$project$SaleData$Notes, model.errors),
-				$author$project$SaleData$UpdateNotes,
 				model.saleData.notes),
 				A6(
 				$author$project$SaleData$inputView,
@@ -8181,6 +8465,203 @@ var $author$project$SaleData$view = function (model) {
 				model.saleData.saleDate),
 				$author$project$SaleData$hiddenInputView(model.saleData.id)
 			]));
+};
+var $author$project$SalesGallery$selectedArtworkView = F2(
+	function (closeIconURL, artwork) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'width', '100%'),
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					A2($elm$html$Html$Attributes$style, 'justify-content', 'center'),
+					A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+					$elm$html$Html$Events$onBlur($author$project$SalesGallery$Deselect),
+					$elm$html$Html$Attributes$id(
+					'artwork_wrapper' + $elm$core$String$fromInt(artwork.id))
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+							A2($elm$html$Html$Attributes$style, 'align-self', 'center'),
+							A2($elm$html$Html$Attributes$style, 'background-color', 'rgb(222, 222, 212)'),
+							A2($elm$html$Html$Attributes$style, 'width', 'min-content'),
+							A2($elm$html$Html$Attributes$style, 'border-radius', '5px'),
+							$elm$html$Html$Attributes$tabindex(1)
+						]),
+					_List_fromArray(
+						[
+							A2($author$project$SalesGallery$artworkView, true, artwork),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$id('sales-info'),
+									$elm$html$Html$Attributes$class('card'),
+									A2($elm$html$Html$Attributes$style, 'width', '400px'),
+									A2($elm$html$Html$Attributes$style, 'margin', '40px 15px 20px 10px')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('card-body'),
+											$elm$html$Html$Attributes$class('sale-form')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$map,
+											$author$project$SalesGallery$SaleDataUpdated,
+											$author$project$SaleData$view(artwork.saleData))
+										]))
+								])),
+							A2(
+							$elm$html$Html$button,
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick($author$project$SalesGallery$Deselect),
+									A2($elm$html$Html$Attributes$style, 'background-color', 'inherit'),
+									A2($elm$html$Html$Attributes$style, 'align-self', 'start'),
+									A2($elm$html$Html$Attributes$style, 'margin', '10px 10px 0 0'),
+									A2($elm$html$Html$Attributes$style, 'padding', '0')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$img,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$src(closeIconURL),
+											A2($elm$html$Html$Attributes$style, 'height', '25px'),
+											$elm$html$Html$Attributes$alt('x'),
+											A2($elm$html$Html$Attributes$style, 'font-size', '34px'),
+											A2($elm$html$Html$Attributes$style, 'color', 'rgba(0,0,0,0.125)')
+										]),
+									_List_Nil)
+								]))
+						]))
+				]));
+	});
+var $NoRedInk$list_selection$List$Selection$toList = function (_v0) {
+	var items = _v0.b;
+	return items;
+};
+var $author$project$SalesGallery$view = function (model) {
+	var hasSelected = function () {
+		var _v0 = $NoRedInk$list_selection$List$Selection$selected(model.data);
+		if (_v0.$ === 'Just') {
+			return true;
+		} else {
+			return false;
+		}
+	}();
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$id('search-results-wrapper')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$div,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id('searchResults'),
+						$elm$html$Html$Attributes$classList(
+						_List_fromArray(
+							[
+								_Utils_Tuple2('gallery-list', true),
+								_Utils_Tuple2('center-block', true)
+							]))
+					]),
+				($elm$core$List$length(
+					$NoRedInk$list_selection$List$Selection$toList(model.data)) > 0) ? $NoRedInk$list_selection$List$Selection$toList(
+					A2(
+						$NoRedInk$list_selection$List$Selection$mapSelected,
+						{
+							rest: function (artwork) {
+								return A2($author$project$SalesGallery$artworkView, false, artwork);
+							},
+							selected: function (artwork) {
+								return A2($author$project$SalesGallery$selectedArtworkView, model.closeIconURL, artwork);
+							}
+						},
+						model.data)) : _List_fromArray(
+					[
+						A2(
+						$elm$html$Html$div,
+						_List_Nil,
+						_List_fromArray(
+							[
+								$elm$html$Html$text('No Results Found')
+							]))
+					]))
+			]));
+};
+var $author$project$SalesGallery$main = $elm$browser$Browser$element(
+	{init: $author$project$SalesGallery$init, subscriptions: $author$project$SalesGallery$subscriptions, update: $author$project$SalesGallery$update, view: $author$project$SalesGallery$view});
+var $author$project$SaleData$decodeFieldtoString = F2(
+	function (field, flags) {
+		var _v0 = A2(
+			$elm$json$Json$Decode$decodeValue,
+			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$string),
+			flags);
+		if (_v0.$ === 'Ok') {
+			var str = _v0.a;
+			return str;
+		} else {
+			var message = _v0.a;
+			return '';
+		}
+	});
+var $author$project$SaleData$newSaleData = {
+	agent: $elm$core$Maybe$Nothing,
+	agentFee: '',
+	amountToArtist: '',
+	artwork: $elm$core$Maybe$Nothing,
+	buyer: $elm$core$Maybe$Nothing,
+	discount: '',
+	id: $elm$core$Maybe$Nothing,
+	notes: A2($author$project$InputResize$fromContent, $author$project$SaleData$settingsNotes, ''),
+	saleCurrency: '',
+	saleDate: '',
+	salePrice: ''
+};
+var $author$project$SaleData$init = function (flags) {
+	var icons = {
+		failIconURL: A2($author$project$SaleData$decodeFieldtoString, 'fail_icon', flags),
+		loaderIconURL: A2($author$project$SaleData$decodeFieldtoString, 'loader_icon', flags),
+		successIconURL: A2($author$project$SaleData$decodeFieldtoString, 'success_icon', flags)
+	};
+	var _v0 = A2($elm$json$Json$Decode$decodeValue, $author$project$SaleData$decode, flags);
+	if (_v0.$ === 'Ok') {
+		var data = _v0.a;
+		var log_init = A2($elm$core$Debug$log, 'initial saleData:', data);
+		return _Utils_Tuple2(data, $elm$core$Platform$Cmd$none);
+	} else {
+		var e = _v0.a;
+		var log_init = A2($elm$core$Debug$log, 'error reading flags', e);
+		return _Utils_Tuple2(
+			{
+				csrftoken: A2($author$project$SaleData$decodeFieldtoString, 'csrftoken', flags),
+				errors: _List_Nil,
+				icons: icons,
+				saleData: $author$project$SaleData$newSaleData,
+				updated: $author$project$SaleData$Behind
+			},
+			$elm$core$Platform$Cmd$none);
+	}
+};
+var $author$project$SaleData$subscriptions = function (model) {
+	return $elm$core$Platform$Sub$none;
 };
 var $author$project$SaleData$main = $elm$browser$Browser$element(
 	{init: $author$project$SaleData$init, subscriptions: $author$project$SaleData$subscriptions, update: $author$project$SaleData$update, view: $author$project$SaleData$view});
@@ -8630,13 +9111,6 @@ var $author$project$ImageUpload$imageView = function (model) {
 		_List_Nil);
 };
 var $author$project$ImageUpload$Pick = {$: 'Pick'};
-var $elm$html$Html$button = _VirtualDom_node('button');
-var $elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		$elm$html$Html$Events$on,
-		'click',
-		$elm$json$Json$Decode$succeed(msg));
-};
 var $elm$html$Html$Attributes$type_ = $elm$html$Html$Attributes$stringProperty('type');
 var $author$project$ImageUpload$uploaderView = F3(
 	function (successIconURL, failIconURL, status) {

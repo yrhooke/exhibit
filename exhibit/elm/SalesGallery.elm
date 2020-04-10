@@ -3,6 +3,8 @@ module SalesGallery exposing (..)
 -- import Http
 
 import Browser
+import Browser.Dom
+import Browser.Navigation as Navigation
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -10,12 +12,14 @@ import Json.Decode as D
 import Json.Decode.Pipeline as Pipeline
 import List.Selection exposing (Selection)
 import SaleData
+import Task
 
 
 
 -- MAIN
 
 
+main : Program D.Value Model Msg
 main =
     Browser.element
         { init = init
@@ -30,7 +34,9 @@ main =
 
 
 type alias Model =
-    Selection Artwork
+    { data : Selection Artwork
+    , closeIconURL : String
+    }
 
 
 type alias Artwork =
@@ -63,16 +69,16 @@ artworkDecoder : D.Decoder Artwork
 artworkDecoder =
     D.succeed Artwork
         |> Pipeline.required "id" D.int
-        |> Pipeline.required "artwork_url" D.string
-        |> Pipeline.required "image_url" D.string
+        |> Pipeline.required "url" D.string
+        |> Pipeline.required "image" D.string
         |> Pipeline.required "title" D.string
         |> Pipeline.required "series" D.string
-        |> Pipeline.required "year" D.string
-        |> Pipeline.required "price_nis" (D.string |> D.maybe)
-        |> Pipeline.required "price_usd" (D.string |> D.maybe)
+        |> Pipeline.required "year" (D.map String.fromInt D.int)
+        |> Pipeline.required "price_nis" (D.map String.fromFloat D.float |> D.maybe)
+        |> Pipeline.required "price_usd" (D.map String.fromFloat D.float |> D.maybe)
         |> Pipeline.custom (sizeDecoder "cm")
         |> Pipeline.custom (sizeDecoder "in")
-        |> Pipeline.custom SaleData.decode
+        |> Pipeline.custom (D.field "sale_data" SaleData.decode)
 
 
 sizeDecoder : String -> D.Decoder Size
@@ -85,8 +91,8 @@ sizeDecoder unit =
             "height_" ++ unit
     in
     D.succeed Size
-        |> Pipeline.required width D.string
-        |> Pipeline.required height D.string
+        |> Pipeline.required width (D.map String.fromFloat D.float)
+        |> Pipeline.required height (D.map String.fromFloat D.float)
         |> Pipeline.hardcoded unit
 
 
@@ -96,18 +102,29 @@ sizeDecoder unit =
 
 init : D.Value -> ( Model, Cmd Msg )
 init flags =
-    case D.decodeValue (D.list artworkDecoder) flags of
-        Ok artworkList ->
-            ( List.Selection.fromList artworkList
-            , Cmd.none
-            )
+    let
+        modelDecoder =
+            D.succeed Model
+                |> Pipeline.optional "data"
+                    (D.map
+                        (\a -> List.Selection.fromList a)
+                        (D.list artworkDecoder)
+                    )
+                    (List.Selection.fromList [])
+                |> Pipeline.optional "closeIconURL" D.string ""
+    in
+    case D.decodeValue modelDecoder flags of
+        Ok model ->
+            ( model, Cmd.none )
 
         Err e ->
             let
                 debug_init =
                     Debug.log "error initializing list:" e
             in
-            ( List.Selection.fromList []
+            ( { data = List.Selection.fromList []
+              , closeIconURL = ""
+              }
             , Cmd.none
             )
 
@@ -118,23 +135,77 @@ init flags =
 
 type Msg
     = Select Int
+    | GotViewPort (Result Browser.Dom.Error Browser.Dom.Element)
     | Deselect
+    | GoTo String
     | SaleDataUpdated SaleData.Msg
+    | NoOp
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Select artworkID ->
-            ( List.Selection.selectBy (\a -> a.id == artworkID) model
-            , Cmd.none
+            let
+                log_selected =
+                    Debug.log "artwork selected" artworkID
+            in
+            ( { model
+                | data = List.Selection.selectBy (\a -> a.id == artworkID) model.data
+              }
+            , getArtworkPosition artworkID
             )
 
+        GotViewPort result ->
+            case result of
+                Ok element ->
+                    let
+                        height =
+                            element.viewport.height
+
+                        oldOffset =
+                            element.viewport.y
+
+                        elementOffset =
+                            element.element.y
+
+                        elementHeight =
+                            element.element.height
+
+                        newOffset =
+                            if height <= elementHeight then
+                                elementOffset
+
+                            else
+                                elementOffset - (height - elementHeight) / 2
+                    in
+                    ( model
+                    , Browser.Dom.setViewport element.viewport.x newOffset
+                        |> Task.perform (\_ -> NoOp)
+                    )
+
+                Err e ->
+                    let
+                        viewport_log =
+                            Debug.log "error getting height" e
+                    in
+                    ( model, Cmd.none )
+
         Deselect ->
-            ( List.Selection.deselect model, Cmd.none )
+            let
+                log_deselect =
+                    Debug.log "artwork deselected"
+            in
+            ( { model | data = List.Selection.deselect model.data }, Cmd.none )
+
+        GoTo url ->
+            ( model, Navigation.load url )
 
         SaleDataUpdated saleDataMsg ->
             updateSaleData saleDataMsg model
+
+        NoOp ->
+            ( model, Cmd.none )
 
 
 updateSaleData : SaleData.Msg -> Model -> ( Model, Cmd Msg )
@@ -153,20 +224,29 @@ updateSaleData saleDataMsg model =
             { oldArtwork | saleData = newSaleData oldArtwork.saleData }
 
         subCmd =
-            case List.Selection.selected model of
+            case List.Selection.selected model.data of
                 Just artwork ->
                     newSubMsg artwork.saleData
 
                 Nothing ->
                     Cmd.none
     in
-    ( List.Selection.mapSelected
-        { selected = \a -> newArtwork a
-        , rest = identity
-        }
-        model
+    ( { model
+        | data =
+            List.Selection.mapSelected
+                { selected = \a -> newArtwork a
+                , rest = identity
+                }
+                model.data
+      }
     , Cmd.map SaleDataUpdated subCmd
     )
+
+
+getArtworkPosition : Int -> Cmd Msg
+getArtworkPosition artworkID =
+    Browser.Dom.getElement ("artwork_wrapper" ++ String.fromInt artworkID)
+        |> Task.attempt GotViewPort
 
 
 
@@ -185,8 +265,15 @@ subscriptions _ =
 view : Model -> Html Msg
 view model =
     let
-        log_model =
-            Debug.log "view updated" (Debug.toString model)
+        -- log_model =
+        -- Debug.log "view updated" (Debug.toString model)
+        hasSelected =
+            case List.Selection.selected model.data of
+                Just _ ->
+                    True
+
+                Nothing ->
+                    False
     in
     div
         [ id "search-results-wrapper" ]
@@ -197,8 +284,19 @@ view model =
                 , ( "center-block", True )
                 ]
             ]
-            (List.map artworkView (List.Selection.toList model))
+            (if (List.length <| List.Selection.toList model.data) > 0 then
+                List.Selection.mapSelected
+                    { selected = \artwork -> selectedArtworkView model.closeIconURL artwork
+                    , rest = \artwork -> artworkView False artwork
+                    }
+                    model.data
+                    |> List.Selection.toList
 
+             else
+                [ div [] [ text "No Results Found" ] ]
+            )
+
+        -- (List.map (artworkView hasSelected) (List.Selection.toList model))
         -- {% empty %}
         -- <div>
         --     No Results Found
@@ -206,56 +304,52 @@ view model =
         ]
 
 
-
--- {% if search_results.has_other_pages %}
--- <div id="pagination-wrapper">
---         <ul class="pagination mx-auto">
---           {% if search_results.has_previous %}
---           <li><a href="?{% url_replace page=search_results.previous_page_number %}">&laquo;</a></li>
---           {% else %}
---           <li class="disabled"><span>&laquo;</span></li>
---           {% endif %}
---           {% for i in search_results.paginator.page_range %}
---           {% if search_results.number == i %}
---           <li class="active"><span>{{ i }} <span class="sr-only">(current)</span></span></li>
---           {% else %}
---           <li><a href="?{% url_replace page=i %}">{{ i }}</a></li>
---           {% endif %}
---           {% endfor %}
---           {% if search_results.has_next %}
---           <li><a href="?{% url_replace page=search_results.next_page_number %}">&raquo;</a></li>
---           {% else %}
---             <li class="disabled"><span>&raquo;</span></li>
---           {% endif %}
---         </ul>
--- </div>
--- {% endif %}
-
-
-artworkView : Artwork -> Html Msg
-artworkView artwork =
+artworkView : Bool -> Artwork -> Html Msg
+artworkView expanded artwork =
     let
+        wrapper =
+            if expanded then
+                a
+                    [ class "gallery-item-wrapper-expanded"
+                    , id <| "artwork_wrapper" ++ String.fromInt artwork.id
+                    , href artwork.url
+                    ]
+
+            else
+                div
+                    [ class "gallery-item-wrapper"
+                    , onClick (Select artwork.id)
+                    , onDoubleClick (GoTo artwork.url)
+                    ]
+
         imageBox =
             if artwork.image /= "" then
                 div
-                    [ class "gallery-bounding box"
-                    , style "background-image" ("url(" ++ artwork.image ++ ")")
+                    [ class "gallery-bounding-box"
+                    , style "background-image" ("url('" ++ artwork.image ++ "')")
                     ]
                     []
 
             else
                 div
-                    [ class "gallery-item-image"
+                    [ classList
+                        [ ( "gallery-item-image", not expanded )
+                        , ( "gallery-item-image-expanded", expanded )
+                        ]
                     , style "background" "darkgrey"
                     ]
                     []
+
+        hoverClass =
+            if expanded then
+                "gallery-item-hover-expanded"
+
+            else
+                "gallery-item-hover"
     in
-    a
-        [ class "gallery-item-wrapper"
-        , href artwork.url
-        ]
+    wrapper
         [ imageBox
-        , div [ class "gallery-item-hover" ]
+        , div [ class hoverClass ]
             [ ul [ class "gallery-item-text" ]
                 [ li []
                     [ div [ class "gallery-item-title" ] [ span [] [ text artwork.title ] ]
@@ -272,6 +366,58 @@ artworkView artwork =
                     , span [ class "separator" ] [ text " | " ]
                     , span [] [ text (sizeText artwork.sizeIn) ]
                     ]
+                ]
+            ]
+        ]
+
+
+selectedArtworkView : String -> Artwork -> Html Msg
+selectedArtworkView closeIconURL artwork =
+    div
+        [ style "width" "100%"
+        , style "display" "flex"
+        , style "justify-content" "center"
+        , style "align-items" "center"
+        , onBlur Deselect
+        , id <| "artwork_wrapper" ++ String.fromInt artwork.id
+        ]
+        [ div
+            [ style "display" "flex"
+            , style "align-self" "center"
+            , style "background-color" "rgb(222, 222, 212)"
+            , style "width" "min-content"
+            , style "border-radius" "5px"
+            , tabindex 1
+            ]
+            [ artworkView True artwork
+            , div
+                [ id "sales-info"
+                , class "card"
+                , style "width" "400px"
+                , style "margin" "40px 15px 20px 10px"
+                ]
+                [ div
+                    [ class "card-body"
+                    , class "sale-form"
+                    ]
+                    [ Html.map SaleDataUpdated (SaleData.view artwork.saleData)
+                    ]
+                ]
+            , button
+                [ onClick Deselect
+                , style "background-color" "inherit"
+                , style "align-self" "start"
+                , style "margin" "10px 10px 0 0"
+                , style "padding" "0"
+                ]
+                [ img
+                    [ src closeIconURL
+                    , style "height" "25px"
+                    , alt "x"
+                    , style "font-size" "34px"
+                    , style "color" "rgba(0,0,0,0.125)"
+                    ]
+                    []
                 ]
             ]
         ]

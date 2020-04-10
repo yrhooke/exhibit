@@ -5,6 +5,7 @@ from django.urls import reverse
 from datetime import date
 from operator import itemgetter
 
+from catalogue.models.activity import SaleData
 
 class ArtworkImage(models.Model):
     """A model representing an image file"""
@@ -165,12 +166,18 @@ class Artwork(models.Model):
     def get_image(self):
         """newest image associated with artwork"""
         image_model_instance = ArtworkImage.objects.filter(artwork=self.pk).last()
-        try:
-            result = image_model_instance.image
-            result.pk = image_model_instance.pk
-            return result
-        except AttributeError:
-            return None
+        if not image_model_instance:
+            image_model_instance = ArtworkImage()
+
+        result = image_model_instance.image
+        result.pk = image_model_instance.pk
+        return result
+
+    @property
+    def sale_data(self):
+        """newest image associated with artwork"""
+        sale_data_instance = SaleData.objects.filter(artwork=self.pk).last()
+        return sale_data_instance
 
     searchable_fields = [
         series,
