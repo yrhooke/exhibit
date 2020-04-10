@@ -8,6 +8,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
 import Json.Decode as D
+import Json.Decode.Pipeline as Pipeline
 import Task
 import Url.Builder as Url
 
@@ -54,68 +55,63 @@ type alias ImageData =
     }
 
 
+decoder : D.Decoder Model
+decoder =
+    D.succeed Model
+        |> Pipeline.required "csrftoken" D.string
+        |> Pipeline.required "artwork_id" (D.int |> D.maybe)
+        |> Pipeline.custom
+            (D.map2
+                (\id url -> { image_id = id, image_url = url })
+                (D.field "image_id" (D.int |> D.maybe))
+                (D.field "image_url" (D.string |> D.maybe)
+                    |> D.andThen
+                        (\result ->
+                            if result == Just "" then
+                                D.fail "no URL"
+
+                            else
+                                D.succeed result
+                        )
+                )
+            )
+        |> Pipeline.optional "loader_icon" D.string ""
+        |> Pipeline.optional "success_icon" D.string ""
+        |> Pipeline.optional "fail_icon" D.string ""
+        |> Pipeline.hardcoded Waiting
+
+
 
 -- INIT
 
 
+blank : Model
+blank =
+    { csrftoken = ""
+    , artwork_id = Nothing
+    , image_data =
+        { image_id = Nothing
+        , image_url = Nothing
+        }
+    , loaderURL = ""
+    , successIconURL = ""
+    , failIconURL = ""
+    , status = Waiting
+    }
+
+
 init : D.Value -> ( Model, Cmd Msg )
 init flags =
-    ( { csrftoken = decodeFieldtoString "csrftoken" flags
-      , artwork_id = decodeFieldtoMaybeInt "artwork_id" flags
-      , image_data =
-            { image_id = decodeFieldtoMaybeInt "image_id" flags
-            , image_url = decodeImageURL flags
-            }
-      , loaderURL = decodeFieldtoString "loader_icon" flags
-      , successIconURL = decodeFieldtoString "success_icon" flags
-      , failIconURL = decodeFieldtoString "fail_icon" flags
-      , status = Waiting
-      }
-    , Cmd.none
-    )
+    case D.decodeValue decoder flags of
+        Ok model ->
+            ( model, Cmd.none )
 
-
-decodeFieldtoString : String -> D.Value -> String
-decodeFieldtoString field flags =
-    case D.decodeValue (D.field field D.string) flags of
-        Ok str ->
-            str
-
-        Err message ->
-            ""
-
-
-decodeFieldtoMaybeString : String -> D.Value -> Maybe String
-decodeFieldtoMaybeString field flags =
-    case D.decodeValue (D.field field D.string) flags of
-        Ok str ->
-            Just str
-
-        Err message ->
-            Nothing
-
-
-decodeFieldtoMaybeInt : String -> D.Value -> Maybe Int
-decodeFieldtoMaybeInt field flags =
-    case D.decodeValue (D.field field D.int) flags of
-        Ok num ->
-            Just num
-
-        Err message ->
-            Nothing
-
-
-decodeImageURL flags =
-    case D.decodeValue (D.field "image_url" D.string) flags of
-        Ok url ->
-            if url /= "" then
-                Just url
-
-            else
-                Nothing
-
-        Err message ->
-            Nothing
+        Err e ->
+            let
+                init_log =
+                    Debug.log "failt imageUpload init" e
+            in
+            ( blank, Cmd.none )
 
 
 
