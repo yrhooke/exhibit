@@ -4,7 +4,7 @@ module Dropdown exposing (..)
 
 import Browser
 import Browser.Dom
-import Browser.Events
+import ClickAway exposing (clickOutsideTarget)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onBlur, onClick, onInput)
@@ -116,68 +116,7 @@ update msg model =
 
 subscriptions : Model -> Sub Msg
 subscriptions _ =
-    {-- close the select whenever you click outside it. 
-        Built following the instructions in:
-        https://dev.to/margaretkrutikova/elm-dom-node-decoder-to-detect-click-outside-3ioh
-    --}
-    Browser.Events.onMouseDown (outsideTarget "dropdown")
-
-
-type DomNode
-    = RootNode String
-    | ChildNode { id : String, parentNode : DomNode }
-
-
-domNode : D.Decoder DomNode
-domNode =
-    D.oneOf [ childNode, rootNode ]
-
-
-rootNode : D.Decoder DomNode
-rootNode =
-    D.map (\nodeId -> RootNode nodeId)
-        (D.field "id" D.string)
-
-
-childNode : D.Decoder DomNode
-childNode =
-    D.map2 (\nodeId parentNode -> ChildNode { id = nodeId, parentNode = parentNode })
-        (D.field "id" D.string)
-        (D.field "parentNode" (D.lazy (\_ -> domNode)))
-
-
-isOutSideDropdown : String -> D.Decoder Bool
-isOutSideDropdown dropDownId =
-    D.oneOf
-        [ D.field "id" D.string
-            |> D.andThen
-                (\id ->
-                    if id == dropDownId then
-                        -- found match by id
-                        D.succeed False
-
-                    else
-                        -- continue to next decoder
-                        D.fail (id ++ "proceed to parent")
-                )
-        , D.lazy (\_ -> isOutSideDropdown dropDownId |> D.field "parentNode")
-
-        -- if haven't hit dropDownId through entire parent tree
-        , D.succeed True
-        ]
-
-
-outsideTarget : String -> D.Decoder Msg
-outsideTarget dropDownId =
-    D.field "target" (isOutSideDropdown dropDownId)
-        |> D.andThen
-            (\isOutside ->
-                if isOutside then
-                    D.succeed SelectClosed
-
-                else
-                    D.fail "inside dropdown"
-            )
+    clickOutsideTarget "dropdown" SelectClosed
 
 
 
@@ -242,8 +181,7 @@ view model =
                     []
     in
     div
-        [
-            id "dropdown"
+        [ id "dropdown"
         ]
         [ header
         , div [] cellList
