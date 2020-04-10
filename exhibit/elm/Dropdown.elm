@@ -7,8 +7,7 @@ import Browser.Dom
 import ClickAway exposing (clickOutsideTarget)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing (onBlur, onClick, onInput)
-import Json.Decode as D
+import Html.Events exposing ( onClick, onInput)
 import List.Selection exposing (Selection)
 import Process
 import Task
@@ -22,12 +21,12 @@ main : Program () Model Msg
 main =
     Browser.element
         { init = init
-        , view = view
-        , update = update
-        , subscriptions = subscriptions
+        , view = view testConfig
+        , update = update testConfig 
+        , subscriptions = subscriptions testConfig
         }
 
-
+testConfig = newConfig "dropdown" "dropdown-input"
 
 -- MODEL
 
@@ -79,12 +78,12 @@ type Msg
     | NoOp
 
 
-update : Msg -> Model -> ( Model, Cmd Msg )
-update msg model =
+update : Config -> Msg -> Model -> ( Model, Cmd Msg )
+update config msg model =
     case msg of
         OpenWithFilter filter ->
             ( { model | isOpen = Open filter }
-            , Task.attempt (\_ -> NoOp) (Browser.Dom.focus "select-input-field")
+            , Task.attempt (\_ -> NoOp) (Browser.Dom.focus config.inputId)
             )
 
         SelectClosed ->
@@ -114,17 +113,40 @@ update msg model =
 -- SUBSCRIPTIONS
 
 
-subscriptions : Model -> Sub Msg
-subscriptions _ =
-    clickOutsideTarget "dropdown" SelectClosed
+subscriptions : Config -> Model -> Sub Msg
+subscriptions config _ =
+    clickOutsideTarget config.wrapperId SelectClosed
 
 
 
 -- VIEW
 
 
-view : Model -> Html Msg
-view model =
+type alias Config =
+    { cell : List (Html.Attribute Msg)
+     , cellSelected : List (Html.Attribute Msg)
+    , closed : List (Html.Attribute Msg)
+    , results : List (Html.Attribute Msg)
+    , input : List (Html.Attribute Msg)
+    , wrapper : List (Html.Attribute Msg)
+    , inputId : String
+    , wrapperId : String
+    }
+
+newConfig : String -> String -> Config
+newConfig wrapperId inputId=
+    { cell =[]
+     , cellSelected =[]
+    , closed =[]
+    , results =[]
+    , input =[]
+    , wrapper =[]
+    , inputId = inputId
+    , wrapperId = wrapperId
+    }
+
+view : Config -> Model -> Html Msg
+view config model =
     let
         header =
             case model.isOpen of
@@ -132,24 +154,24 @@ view model =
                     case List.Selection.selected model.options of
                         Just option ->
                             button
-                                [ onClick (OpenWithFilter "")
-                                ]
+                                (onClick (OpenWithFilter "")
+                                :: config.closed)
                                 [ text (Tuple.second option) ]
 
                         Nothing ->
                             button
-                                [ onClick (OpenWithFilter "")
-                                ]
+                                (onClick (OpenWithFilter "")
+                                :: config.closed)
                                 [ text model.placeholder ]
 
                 Open filter ->
                     input
-                        [ onInput OpenWithFilter
+                        ([ onInput OpenWithFilter
 
                         -- , onBlur InputDeselected
                         , value filter
-                        , id "select-input-field"
-                        ]
+                        , id config.inputId 
+                        ] ++ config.input)
                         [ text filter ]
 
         cell : Bool -> ( Int, String ) -> Html Msg
@@ -157,10 +179,10 @@ view model =
             div
                 (onClick (OptionSelected (Tuple.first optionItem))
                     :: (if selected then
-                            [ style "color" "blue" ]
+                            config.cellSelected
 
                         else
-                            []
+                            config.cell
                        )
                 )
                 [ text (Tuple.second optionItem) ]
@@ -181,10 +203,10 @@ view model =
                     []
     in
     div
-        [ id "dropdown"
-        ]
+       ( id config.wrapperId
+        :: config.wrapper)
         [ header
-        , div [] cellList
+        , div config.results cellList
         ]
 
 

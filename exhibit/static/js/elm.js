@@ -8236,97 +8236,95 @@ var $author$project$InputResize$view = F2(
 				]),
 			innerView);
 	});
-var $author$project$SaleData$inputNotesView = F5(
-	function (label_name, id_, placeholder_, errors, val) {
-		var settings = A2(
+var $author$project$SaleData$inputNotesView = function (props) {
+	var settings = A2(
+		$author$project$InputResize$addAttribute,
+		$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm),
+		A2(
 			$author$project$InputResize$addAttribute,
-			$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm),
+			$elm$html$Html$Attributes$placeholder(props.placeholder),
 			A2(
 				$author$project$InputResize$addAttribute,
-				$elm$html$Html$Attributes$placeholder(placeholder_),
+				$elm$html$Html$Attributes$classList(
+					_List_fromArray(
+						[
+							_Utils_Tuple2('edit-field', true),
+							_Utils_Tuple2('form-control', true),
+							_Utils_Tuple2('form-control-sm', true)
+						])),
 				A2(
 					$author$project$InputResize$addAttribute,
-					$elm$html$Html$Attributes$classList(
-						_List_fromArray(
-							[
-								_Utils_Tuple2('edit-field', true),
-								_Utils_Tuple2('form-control', true),
-								_Utils_Tuple2('form-control-sm', true)
-							])),
+					$elm$html$Html$Attributes$id(props.id),
+					$author$project$SaleData$settingsNotes))));
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				$elm$html$Html$Attributes$class('form-group'),
+				A2($elm$html$Html$Attributes$style, 'height', 'min-content')
+			]),
+		_Utils_ap(
+			_List_fromArray(
+				[
 					A2(
-						$author$project$InputResize$addAttribute,
-						$elm$html$Html$Attributes$id(id_),
-						$author$project$SaleData$settingsNotes))));
-		return A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-					$elm$html$Html$Attributes$class('form-group'),
-					A2($elm$html$Html$Attributes$style, 'height', 'min-content')
+					$elm$html$Html$label,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$for(props.id),
+							A2($elm$html$Html$Attributes$style, 'align-self', 'start')
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(props.label)
+						])),
+					A2($author$project$InputResize$view, settings, props.value)
 				]),
-			_Utils_ap(
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for(id_),
-								A2($elm$html$Html$Attributes$style, 'align-self', 'start')
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(label_name)
-							])),
-						A2($author$project$InputResize$view, settings, val)
-					]),
-				A2($elm$core$List$map, $author$project$SaleData$errorView, errors)));
-	});
+			A2($elm$core$List$map, $author$project$SaleData$errorView, props.errors)));
+};
 var $elm$html$Html$input = _VirtualDom_node('input');
-var $author$project$SaleData$inputView = F6(
-	function (label_name, id_, placeholder_, errors, updateMsg, val) {
-		return A2(
-			$elm$html$Html$div,
+var $author$project$SaleData$inputView = function (props) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+				$elm$html$Html$Attributes$class('form-group')
+			]),
+		_Utils_ap(
 			_List_fromArray(
 				[
-					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-					$elm$html$Html$Attributes$class('form-group')
+					A2(
+					$elm$html$Html$label,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$for(props.id)
+						]),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(props.label)
+						])),
+					A2(
+					$elm$html$Html$input,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$id(props.id),
+							$elm$html$Html$Events$onInput(props.onInput),
+							$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm),
+							$elm$html$Html$Attributes$classList(
+							_List_fromArray(
+								[
+									_Utils_Tuple2('edit-field', true),
+									_Utils_Tuple2('form-control', true),
+									_Utils_Tuple2('form-control-sm', true)
+								])),
+							$elm$html$Html$Attributes$placeholder(props.placeholder),
+							$elm$html$Html$Attributes$value(props.value)
+						]),
+					_List_Nil)
 				]),
-			_Utils_ap(
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for(id_)
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(label_name)
-							])),
-						A2(
-						$elm$html$Html$input,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$id(id_),
-								$elm$html$Html$Events$onInput(updateMsg),
-								$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm),
-								$elm$html$Html$Attributes$classList(
-								_List_fromArray(
-									[
-										_Utils_Tuple2('edit-field', true),
-										_Utils_Tuple2('form-control', true),
-										_Utils_Tuple2('form-control-sm', true)
-									])),
-								$elm$html$Html$Attributes$placeholder(placeholder_),
-								$elm$html$Html$Attributes$value(val)
-							]),
-						_List_Nil)
-					]),
-				A2($elm$core$List$map, $author$project$SaleData$errorView, errors)));
-	});
+			A2($elm$core$List$map, $author$project$SaleData$errorView, props.errors)));
+};
 var $author$project$SaleData$syncStatusView = F2(
 	function (status, icons) {
 		var icon = function () {
@@ -8408,61 +8406,68 @@ var $author$project$SaleData$view = function (model) {
 							])),
 						A2($author$project$SaleData$syncStatusView, model.updated, model.icons)
 					])),
-				A5(
-				$author$project$SaleData$inputNotesView,
-				'Notes:',
-				'id_notes',
-				'Notes',
-				A2($author$project$SaleData$findErrors, $author$project$SaleData$Notes, model.errors),
-				model.saleData.notes),
-				A6(
-				$author$project$SaleData$inputView,
-				'Sale Currency:',
-				'id_sale_currency',
-				'Sale Currency',
-				A2($author$project$SaleData$findErrors, $author$project$SaleData$SaleCurrency, model.errors),
-				$author$project$SaleData$UpdateSaleCurrency,
-				model.saleData.saleCurrency),
-				A6(
-				$author$project$SaleData$inputView,
-				'Sale Price:',
-				'id_sale_price',
-				'Sale Prince',
-				A2($author$project$SaleData$findErrors, $author$project$SaleData$SalePrice, model.errors),
-				$author$project$SaleData$UpdateSalePrice,
-				model.saleData.salePrice),
-				A6(
-				$author$project$SaleData$inputView,
-				'Discount:',
-				'id_discount',
-				'(Number or Percentage)',
-				A2($author$project$SaleData$findErrors, $author$project$SaleData$Discount, model.errors),
-				$author$project$SaleData$UpdateDiscount,
-				model.saleData.discount),
-				A6(
-				$author$project$SaleData$inputView,
-				'Agent Fee:',
-				'id_agent_fee',
-				'Amount to Agent',
-				A2($author$project$SaleData$findErrors, $author$project$SaleData$AgentFee, model.errors),
-				$author$project$SaleData$UpdateAgentFee,
-				model.saleData.agentFee),
-				A6(
-				$author$project$SaleData$inputView,
-				'Amount to Artist:',
-				'id_amount_to_artist',
-				'Amount to Artist',
-				A2($author$project$SaleData$findErrors, $author$project$SaleData$AmountToArtist, model.errors),
-				$author$project$SaleData$UpdateAmountToArtist,
-				model.saleData.amountToArtist),
-				A6(
-				$author$project$SaleData$inputView,
-				'Sale Date:',
-				'id_sale_date',
-				'Date',
-				A2($author$project$SaleData$findErrors, $author$project$SaleData$SaleDate, model.errors),
-				$author$project$SaleData$UpdateSaleDate,
-				model.saleData.saleDate),
+				$author$project$SaleData$inputNotesView(
+				{
+					errors: A2($author$project$SaleData$findErrors, $author$project$SaleData$Notes, model.errors),
+					id: 'id_notes',
+					label: 'Notes:',
+					placeholder: 'Notes',
+					value: model.saleData.notes
+				}),
+				$author$project$SaleData$inputView(
+				{
+					errors: A2($author$project$SaleData$findErrors, $author$project$SaleData$SaleCurrency, model.errors),
+					id: 'id_sale_currency',
+					label: 'Sale Currency:',
+					onInput: $author$project$SaleData$UpdateSaleCurrency,
+					placeholder: 'Sale Currency',
+					value: model.saleData.saleCurrency
+				}),
+				$author$project$SaleData$inputView(
+				{
+					errors: A2($author$project$SaleData$findErrors, $author$project$SaleData$SalePrice, model.errors),
+					id: 'id_sale_price',
+					label: 'Sale Price:',
+					onInput: $author$project$SaleData$UpdateSalePrice,
+					placeholder: 'Sale Prince',
+					value: model.saleData.salePrice
+				}),
+				$author$project$SaleData$inputView(
+				{
+					errors: A2($author$project$SaleData$findErrors, $author$project$SaleData$Discount, model.errors),
+					id: 'id_discount',
+					label: 'Discount:',
+					onInput: $author$project$SaleData$UpdateDiscount,
+					placeholder: '(Number or Percentage)',
+					value: model.saleData.discount
+				}),
+				$author$project$SaleData$inputView(
+				{
+					errors: A2($author$project$SaleData$findErrors, $author$project$SaleData$AgentFee, model.errors),
+					id: 'id_agent_fee',
+					label: 'Agent Fee:',
+					onInput: $author$project$SaleData$UpdateAgentFee,
+					placeholder: 'Amount to Agent',
+					value: model.saleData.agentFee
+				}),
+				$author$project$SaleData$inputView(
+				{
+					errors: A2($author$project$SaleData$findErrors, $author$project$SaleData$AmountToArtist, model.errors),
+					id: 'id_amount_to_artist',
+					label: 'Amount to Artist:',
+					onInput: $author$project$SaleData$UpdateAmountToArtist,
+					placeholder: 'Amount to Artist',
+					value: model.saleData.amountToArtist
+				}),
+				$author$project$SaleData$inputView(
+				{
+					errors: A2($author$project$SaleData$findErrors, $author$project$SaleData$SaleDate, model.errors),
+					id: 'id_sale_date',
+					label: 'Sale Date:',
+					onInput: $author$project$SaleData$UpdateSaleDate,
+					placeholder: 'Date',
+					value: model.saleData.saleDate
+				}),
 				$author$project$SaleData$hiddenInputView(model.saleData.id)
 			]));
 };

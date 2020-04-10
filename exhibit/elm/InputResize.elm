@@ -47,7 +47,7 @@ init _ =
 
 
 subscriptions : InputResize -> Sub msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 

@@ -498,12 +498,13 @@ view model =
 
             -- , div [ style "color" "blue" ] [ text (printSyncStatus model.updated) ]
             ]
-        , inputNotesView "Notes:"
-            "id_notes"
-            "Notes"
-            (findErrors Notes model.errors)
-            -- UpdateNotes
-            model.saleData.notes
+        , inputNotesView
+            { label = "Notes:"
+            , id = "id_notes"
+            , placeholder = "Notes"
+            , errors = findErrors Notes model.errors
+            , value = model.saleData.notes
+            }
         , inputView
             { label = "Sale Currency:"
             , id = "id_sale_currency"
@@ -561,12 +562,12 @@ settingsNotes =
     InputResize.defaultSettings UpdateNotes
 
 
-inputNotesView : String -> String -> String -> List String -> InputResize.InputResize -> Html Msg
-inputNotesView label_name id_ placeholder_ errors val =
+inputNotesView : ResizeProps -> Html Msg
+inputNotesView props =
     let
         settings =
             settingsNotes
-                |> InputResize.addAttribute (id id_)
+                |> InputResize.addAttribute (id props.id)
                 |> InputResize.addAttribute
                     (classList
                         [ ( "edit-field", True )
@@ -574,7 +575,7 @@ inputNotesView label_name id_ placeholder_ errors val =
                         , ( "form-control-sm", True )
                         ]
                     )
-                |> InputResize.addAttribute (placeholder placeholder_)
+                |> InputResize.addAttribute (placeholder props.placeholder)
                 |> InputResize.addAttribute (onBlur AttemptSubmitForm)
     in
     div
@@ -585,42 +586,36 @@ inputNotesView label_name id_ placeholder_ errors val =
         , style "height" "min-content"
         ]
         ([ label
-            [ for id_
+            [ for props.id
             , style "align-self" "start"
             ]
-            [ text label_name ]
-         , InputResize.view settings val
-
-         --  , textarea
-         --     [ id id_
-         --     , onInput updateMsg
-         --     , onBlur AttemptSubmitForm
-         --     , classList
-         --         [ ( "edit-field", True )
-         --         , ( "form-control", True )
-         --         , ( "form-control-sm", True )
-         --         ]
-         --     , style "width" "270px"
-         --     , placeholder placeholder_
-         --     , value val
-         --     ]
-         --     []
+            [ text props.label ]
+         , InputResize.view settings props.value
          ]
-            ++ List.map errorView errors
+            ++ List.map errorView props.errors
         )
 
 
-type alias Props msg =
+type alias Props a msg =
     { id : String
     , label : String
     , placeholder : String
     , errors : List String
-    , onInput : String -> msg
-    , value : String
+    , onInput : a -> msg
+    , value : a
     }
 
 
-inputView : Props Msg -> Html Msg
+type alias ResizeProps =
+    { id : String
+    , label : String
+    , placeholder : String
+    , errors : List String
+    , value : InputResize.InputResize
+    }
+
+
+inputView : Props String Msg -> Html Msg
 inputView props =
     div
         [ style "display" "flex"
