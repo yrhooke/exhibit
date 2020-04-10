@@ -9351,4 +9351,993 @@ var $author$project$ImageUpload$view = function (model) {
 };
 var $author$project$ImageUpload$main = $elm$browser$Browser$element(
 	{init: $author$project$ImageUpload$init, subscriptions: $author$project$ImageUpload$subscriptions, update: $author$project$ImageUpload$update, view: $author$project$ImageUpload$view});
-_Platform_export({'ImageUpload':{'init':$author$project$ImageUpload$main($elm$json$Json$Decode$value)(0)},'SalesGallery':{'init':$author$project$SalesGallery$main($elm$json$Json$Decode$value)(0)},'SaleData':{'init':$author$project$SaleData$main($elm$json$Json$Decode$value)(0)}});}(this));
+var $author$project$ArtworkDetail$Create = F2(
+	function (a, b) {
+		return {$: 'Create', a: a, b: b};
+	});
+var $author$project$ArtworkDetail$initImage = {
+	artwork_id: $elm$core$Maybe$Nothing,
+	csrftoken: '',
+	failIconURL: '',
+	image_data: {image_id: $elm$core$Maybe$Nothing, image_url: $elm$core$Maybe$Nothing},
+	loaderURL: '',
+	status: $author$project$ImageUpload$Waiting,
+	successIconURL: ''
+};
+var $author$project$ArtworkDetail$initSize = {depth: '', height: '', unit: '', width: ''};
+var $elm$json$Json$Encode$object = function (pairs) {
+	return _Json_wrap(
+		A3(
+			$elm$core$List$foldl,
+			F2(
+				function (_v0, obj) {
+					var k = _v0.a;
+					var v = _v0.b;
+					return A3(_Json_addField, k, v, obj);
+				}),
+			_Json_emptyObject(_Utils_Tuple0),
+			pairs));
+};
+var $author$project$ArtworkDetail$newArtwork = {
+	additional: '',
+	framed: '',
+	image: $author$project$ArtworkDetail$initImage,
+	location: '',
+	medium: '',
+	priceNIS: '',
+	priceUSD: '',
+	rolled: '',
+	saleData: $author$project$SaleData$init(
+		$elm$json$Json$Encode$object(_List_Nil)).a,
+	series: _Utils_Tuple2(1, ''),
+	size: '',
+	sizeCm: $author$project$ArtworkDetail$initSize,
+	sizeIn: $author$project$ArtworkDetail$initSize,
+	status: '',
+	title: '',
+	worksInExhibition: _List_Nil,
+	year: ''
+};
+var $author$project$ArtworkDetail$init = function (_v0) {
+	return _Utils_Tuple2(
+		A2($author$project$ArtworkDetail$Create, '', $author$project$ArtworkDetail$newArtwork),
+		$elm$core$Platform$Cmd$none);
+};
+var $author$project$ArtworkDetail$subscriptions = function (model) {
+	return $elm$core$Platform$Sub$none;
+};
+var $author$project$ArtworkDetail$Edit = F3(
+	function (a, b, c) {
+		return {$: 'Edit', a: a, b: b, c: c};
+	});
+var $author$project$ArtworkDetail$updateAdditional = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{additional: val});
+	});
+var $author$project$ArtworkDetail$updateFramed = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{framed: val});
+	});
+var $author$project$ArtworkDetail$updateImage = F2(
+	function (msg, artwork) {
+		return _Utils_update(
+			artwork,
+			{
+				image: A2($author$project$ImageUpload$update, msg, artwork.image).a
+			});
+	});
+var $author$project$ArtworkDetail$updateLocation = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{location: val});
+	});
+var $author$project$ArtworkDetail$updateMedium = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{medium: val});
+	});
+var $author$project$ArtworkDetail$updatePriceNIS = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{priceNIS: val});
+	});
+var $author$project$ArtworkDetail$updatePriceUSD = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{priceUSD: val});
+	});
+var $author$project$ArtworkDetail$updateRolled = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{rolled: val});
+	});
+var $author$project$ArtworkDetail$updateSaleData = F2(
+	function (msg, artwork) {
+		return _Utils_update(
+			artwork,
+			{
+				saleData: A2($author$project$SaleData$update, msg, artwork.saleData).a
+			});
+	});
+var $author$project$ArtworkDetail$updateSeries = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{
+				series: _Utils_Tuple2(artwork.series.a, val)
+			});
+	});
+var $author$project$ArtworkDetail$updateSize = F2(
+	function (msg, size) {
+		switch (msg.$) {
+			case 'UpdateHeight':
+				var height = msg.a;
+				return _Utils_update(
+					size,
+					{height: height});
+			case 'UpdateWidth':
+				var width = msg.a;
+				return _Utils_update(
+					size,
+					{width: width});
+			default:
+				var depth = msg.a;
+				return _Utils_update(
+					size,
+					{depth: depth});
+		}
+	});
+var $author$project$ArtworkDetail$updateSizeCm = F2(
+	function (msg, artwork) {
+		return _Utils_update(
+			artwork,
+			{
+				sizeCm: A2($author$project$ArtworkDetail$updateSize, msg, artwork.sizeCm)
+			});
+	});
+var $author$project$ArtworkDetail$updateSizeField = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{size: val});
+	});
+var $author$project$ArtworkDetail$updateSizeIn = F2(
+	function (msg, artwork) {
+		return _Utils_update(
+			artwork,
+			{
+				sizeIn: A2($author$project$ArtworkDetail$updateSize, msg, artwork.sizeIn)
+			});
+	});
+var $author$project$ArtworkDetail$updateTitle = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{title: val});
+	});
+var $author$project$ArtworkDetail$updateYear = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{year: val});
+	});
+var $author$project$ArtworkDetail$update = F2(
+	function (msg, model) {
+		var updateArtwork = F2(
+			function (updateField, val) {
+				if (model.$ === 'Create') {
+					var csrf = model.a;
+					var artwork = model.b;
+					return A2(
+						$author$project$ArtworkDetail$Create,
+						csrf,
+						A2(updateField, val, artwork));
+				} else {
+					var csrf = model.a;
+					var id = model.b;
+					var artwork = model.c;
+					return A3(
+						$author$project$ArtworkDetail$Edit,
+						csrf,
+						id,
+						A2(updateField, val, artwork));
+				}
+			});
+		switch (msg.$) {
+			case 'UpdateTitle':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateTitle, val),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateSeries':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateSeries, val),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateImage':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateImage, val),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateYear':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateYear, val),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateSizeField':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateSizeField, val),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateLocation':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateLocation, val),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateRolled':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateRolled, val),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateFramed':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateFramed, val),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateMedium':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateMedium, val),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdatePriceUSD':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updatePriceUSD, val),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdatePriceNIS':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updatePriceNIS, val),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateSizeIn':
+				var sizeMsg = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateSizeIn, sizeMsg),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateSizeCm':
+				var sizeMsg = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateSizeCm, sizeMsg),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateAdditional':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateAdditional, val),
+					$elm$core$Platform$Cmd$none);
+			case 'UpdateSaleData':
+				var val = msg.a;
+				return _Utils_Tuple2(
+					A2(updateArtwork, $author$project$ArtworkDetail$updateSaleData, val),
+					$elm$core$Platform$Cmd$none);
+			default:
+				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+		}
+	});
+var $elm$html$Html$Attributes$action = function (uri) {
+	return A2(
+		$elm$html$Html$Attributes$stringProperty,
+		'action',
+		_VirtualDom_noJavaScriptUri(uri));
+};
+var $elm$html$Html$Attributes$enctype = $elm$html$Html$Attributes$stringProperty('enctype');
+var $elm$html$Html$form = _VirtualDom_node('form');
+var $elm$html$Html$Attributes$method = $elm$html$Html$Attributes$stringProperty('method');
+var $elm$html$Html$h3 = _VirtualDom_node('h3');
+var $author$project$ArtworkDetail$viewField = function (value_) {
+	return A2(
+		$elm$html$Html$div,
+		_List_fromArray(
+			[
+				$elm$html$Html$Attributes$class('{% if ungroup %}ungroup{% endif %}'),
+				$elm$html$Html$Attributes$class('form-group'),
+				A2($elm$html$Html$Attributes$style, 'display', 'flex')
+			]),
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$input,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$value(value_),
+						$elm$html$Html$Attributes$class('edit-field'),
+						$elm$html$Html$Attributes$class('form-control'),
+						$elm$html$Html$Attributes$class('form-control-sm')
+					]),
+				_List_fromArray(
+					[
+						$elm$html$Html$text(value_)
+					]))
+			]));
+};
+var $author$project$ArtworkDetail$viewDetails = F2(
+	function (edit_mode, artwork) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$id('artwork-details'),
+					$elm$html$Html$Attributes$class('card')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('card-body')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$h3,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('card-title')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Details')
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$id('object-details-body'),
+									$elm$html$Html$Attributes$class('details-list'),
+									$elm$html$Html$Attributes$class('form-inline')
+								]),
+							_List_fromArray(
+								[
+									$author$project$ArtworkDetail$viewField(artwork.year),
+									$author$project$ArtworkDetail$viewField(artwork.size),
+									$author$project$ArtworkDetail$viewField(artwork.location),
+									$author$project$ArtworkDetail$viewField(artwork.rolled),
+									$author$project$ArtworkDetail$viewField(artwork.framed),
+									$author$project$ArtworkDetail$viewField(artwork.medium),
+									A2(
+									$elm$html$Html$label,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$for('size-fields-measures')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Size ( h w d ):')
+										])),
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$id('size-field-measures'),
+											A2($elm$html$Html$Attributes$style, 'margin-top', '-0.5rem;')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$div,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$id('size-fields-in'),
+													$elm$html$Html$Attributes$class('form-group'),
+													A2($elm$html$Html$Attributes$style, 'display', 'flex;')
+												]),
+											_List_fromArray(
+												[
+													A2(
+													$elm$html$Html$div,
+													_List_fromArray(
+														[
+															$elm$html$Html$Attributes$id('id_size_in'),
+															$elm$html$Html$Attributes$class('size-field-container')
+														]),
+													_List_fromArray(
+														[
+															$author$project$ArtworkDetail$viewField(artwork.sizeIn.height),
+															A2(
+															$elm$html$Html$span,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$class('size-field-separator')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('x')
+																])),
+															$author$project$ArtworkDetail$viewField(artwork.sizeIn.width),
+															A2(
+															$elm$html$Html$span,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$class('size-field-separator')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('x')
+																])),
+															$author$project$ArtworkDetail$viewField(artwork.sizeIn.depth)
+														])),
+													A2(
+													$elm$html$Html$label,
+													_List_fromArray(
+														[
+															$elm$html$Html$Attributes$for('id_size_in')
+														]),
+													_List_fromArray(
+														[
+															$elm$html$Html$text('in')
+														]))
+												])),
+											A2(
+											$elm$html$Html$div,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$id('size-fields-cm'),
+													$elm$html$Html$Attributes$class('form-group'),
+													A2($elm$html$Html$Attributes$style, 'display', 'flex;')
+												]),
+											_List_fromArray(
+												[
+													A2(
+													$elm$html$Html$div,
+													_List_fromArray(
+														[
+															$elm$html$Html$Attributes$id('id_size_cm'),
+															$elm$html$Html$Attributes$class('size-field-container')
+														]),
+													_List_fromArray(
+														[
+															$author$project$ArtworkDetail$viewField(artwork.sizeCm.height),
+															A2(
+															$elm$html$Html$span,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$class('size-field-separator')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('x')
+																])),
+															$author$project$ArtworkDetail$viewField(artwork.sizeCm.width),
+															A2(
+															$elm$html$Html$span,
+															_List_fromArray(
+																[
+																	$elm$html$Html$Attributes$class('size-field-separator')
+																]),
+															_List_fromArray(
+																[
+																	$elm$html$Html$text('x')
+																])),
+															$author$project$ArtworkDetail$viewField(artwork.sizeCm.depth)
+														])),
+													A2(
+													$elm$html$Html$label,
+													_List_fromArray(
+														[
+															$elm$html$Html$Attributes$for('id_size_cm')
+														]),
+													_List_fromArray(
+														[
+															$elm$html$Html$text('cm')
+														]))
+												]))
+										])),
+									$author$project$ArtworkDetail$viewField(artwork.additional)
+								]))
+						]))
+				]));
+	});
+var $elm$html$Html$Attributes$selected = $elm$html$Html$Attributes$boolProperty('selected');
+var $elm$html$Html$table = _VirtualDom_node('table');
+var $author$project$ArtworkDetail$viewExhibitions = F2(
+	function (edit_mode, artwork) {
+		return edit_mode ? A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$id('exhibitions'),
+					$elm$html$Html$Attributes$class('card')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('card-body')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$h3,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('card-title')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('All Exhibitions')
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('form-inline'),
+									$elm$html$Html$Attributes$id('add-work-to-exhibition')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$select,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('collapse'),
+											$elm$html$Html$Attributes$id('workinexhibition-artwork')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$option,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$value('{{ object.pk }}'),
+													$elm$html$Html$Attributes$selected(true)
+												]),
+											_List_Nil)
+										])),
+									$author$project$ArtworkDetail$viewField('exhibitionForm'),
+									A2(
+									$elm$html$Html$button,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$type_('button'),
+											$elm$html$Html$Attributes$class('btn'),
+											$elm$html$Html$Attributes$class('btn-primary'),
+											$elm$html$Html$Attributes$class('btn-sm'),
+											$elm$html$Html$Attributes$id('new-exhibition-submit')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Add new')
+										]))
+								])),
+							A2(
+							$elm$html$Html$ul,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$id('workinexhibition-form-errors')
+								]),
+							_List_Nil),
+							A2(
+							$elm$html$Html$table,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('table'),
+									$elm$html$Html$Attributes$class('table-striped'),
+									$elm$html$Html$Attributes$class('table-hover'),
+									$elm$html$Html$Attributes$id('related-exhibitions')
+								]),
+							_List_Nil)
+						]))
+				])) : A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$id('exhibitions')
+				]),
+			_List_Nil);
+	});
+var $author$project$ArtworkDetail$viewHeader = F2(
+	function (edit_mode, artwork) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$id('page-header'),
+					$elm$html$Html$Attributes$class('')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('form-inline')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('form-group'),
+									$elm$html$Html$Attributes$id('series-select')
+								]),
+							_List_fromArray(
+								[
+									$author$project$ArtworkDetail$viewField(artwork.series.b),
+									A2(
+									$elm$html$Html$span,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('header-item'),
+											$elm$html$Html$Attributes$class('separator'),
+											A2($elm$html$Html$Attributes$style, 'margin-left', '1rem'),
+											A2($elm$html$Html$Attributes$style, 'margin-right', '1.5rem')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text(':')
+										]))
+								]))
+						])),
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('form-inline'),
+							A2($elm$html$Html$Attributes$style, 'flex-wrap', 'nowrap')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('form-group')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$span,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('header-item'),
+											$elm$html$Html$Attributes$class('separator'),
+											A2($elm$html$Html$Attributes$style, 'padding-left', '0rem'),
+											A2($elm$html$Html$Attributes$style, 'padding-right', '2rem'),
+											A2($elm$html$Html$Attributes$style, 'margin-left', '1rem'),
+											A2($elm$html$Html$Attributes$style, 'margin-right', '1.5rem')
+										]),
+									_List_Nil),
+									$author$project$ArtworkDetail$viewField(artwork.title),
+									$author$project$ArtworkDetail$viewField(artwork.status),
+									A2(
+									$elm$html$Html$span,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('header-item'),
+											$elm$html$Html$Attributes$class('separator'),
+											A2($elm$html$Html$Attributes$style, 'margin-left', '1.5rem'),
+											A2($elm$html$Html$Attributes$style, 'margin-right', '1.5rem')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('/')
+										])),
+									A2(
+									$elm$html$Html$label,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$class('header-item'),
+											$elm$html$Html$Attributes$id('breadcrumb'),
+											$elm$html$Html$Attributes$for('{{ form.title.auto_id }}')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Artwork')
+										]))
+								])),
+							edit_mode ? A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('form-group')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$a,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$id('clone-artwork'),
+											$elm$html$Html$Attributes$class('btn'),
+											$elm$html$Html$Attributes$href('{% url \'catalogue:artwork_clone\' artwork_pk=artwork.pk %}'),
+											A2($elm$html$Html$Attributes$style, 'margin-left', '5rem')
+										]),
+									_List_fromArray(
+										[
+											$elm$html$Html$text('Copy')
+										]))
+								])) : A2($elm$html$Html$div, _List_Nil, _List_Nil),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('form-group')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$input,
+									_Utils_ap(
+										edit_mode ? _List_fromArray(
+											[
+												$elm$html$Html$Attributes$class('header-action'),
+												A2($elm$html$Html$Attributes$style, 'margin-left', '1rem')
+											]) : _List_Nil,
+										_List_fromArray(
+											[
+												$elm$html$Html$Attributes$type_('submit'),
+												$elm$html$Html$Attributes$id('detail-submit'),
+												$elm$html$Html$Attributes$class('action-button'),
+												$elm$html$Html$Attributes$class('btn'),
+												$elm$html$Html$Attributes$value('{{ action_name }}')
+											])),
+									_List_Nil)
+								]))
+						]))
+				]));
+	});
+var $author$project$ArtworkDetail$UpdateImage = function (a) {
+	return {$: 'UpdateImage', a: a};
+};
+var $author$project$ArtworkDetail$viewImage = F2(
+	function (edit_mode, artwork) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$id('artwork-image'),
+					$elm$html$Html$Attributes$class('card')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('card-body')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$id('elm-stuff')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$div,
+									_List_fromArray(
+										[
+											$elm$html$Html$Attributes$id('elm-image-upload-flags')
+										]),
+									_List_fromArray(
+										[
+											A2(
+											$elm$html$Html$img,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$src('{%, static \'images/spinner.svg\' %}'),
+													A2($elm$html$Html$Attributes$style, 'display', 'none')
+												]),
+											_List_Nil),
+											A2(
+											$elm$html$Html$img,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$src('{%, static \'images/upload_check.svg\' %}'),
+													A2($elm$html$Html$Attributes$style, 'display', 'none')
+												]),
+											_List_Nil),
+											A2(
+											$elm$html$Html$div,
+											_List_fromArray(
+												[
+													$elm$html$Html$Attributes$id('elm-image-upload')
+												]),
+											_List_fromArray(
+												[
+													A2(
+													$elm$html$Html$map,
+													$author$project$ArtworkDetail$UpdateImage,
+													$author$project$ImageUpload$view(artwork.image))
+												]))
+										]))
+								]))
+						]))
+				]));
+	});
+var $author$project$ArtworkDetail$UpdateSaleData = function (a) {
+	return {$: 'UpdateSaleData', a: a};
+};
+var $elm$html$Html$h4 = _VirtualDom_node('h4');
+var $author$project$ArtworkDetail$viewSales = F2(
+	function (edit_mode, artwork) {
+		return A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					$elm$html$Html$Attributes$id('sales-info'),
+					$elm$html$Html$Attributes$class('card')
+				]),
+			_List_fromArray(
+				[
+					A2(
+					$elm$html$Html$div,
+					_List_fromArray(
+						[
+							$elm$html$Html$Attributes$class('card-body'),
+							$elm$html$Html$Attributes$class('sale-form')
+						]),
+					_List_fromArray(
+						[
+							A2(
+							$elm$html$Html$h3,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('card-title')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Sale Info')
+								])),
+							A2(
+							$elm$html$Html$h4,
+							_List_fromArray(
+								[
+									A2($elm$html$Html$Attributes$style, 'font-size', '18px')
+								]),
+							_List_fromArray(
+								[
+									$elm$html$Html$text('Pricing')
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$class('details-list'),
+									$elm$html$Html$Attributes$class('form-inline'),
+									A2($elm$html$Html$Attributes$style, 'margin-bottom', '1rem')
+								]),
+							_List_fromArray(
+								[
+									$author$project$ArtworkDetail$viewField(artwork.priceNIS),
+									$author$project$ArtworkDetail$viewField(artwork.priceUSD)
+								])),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$id('elm-sale-data-flags')
+								]),
+							_List_Nil),
+							A2(
+							$elm$html$Html$div,
+							_List_fromArray(
+								[
+									$elm$html$Html$Attributes$id('elm-sale-data-app')
+								]),
+							_List_fromArray(
+								[
+									A2(
+									$elm$html$Html$map,
+									$author$project$ArtworkDetail$UpdateSaleData,
+									$author$project$SaleData$view(artwork.saleData))
+								]))
+						]))
+				]));
+	});
+var $author$project$ArtworkDetail$view = function (model) {
+	var edit_mode = function () {
+		if (model.$ === 'Create') {
+			return false;
+		} else {
+			return true;
+		}
+	}();
+	var artwork = function () {
+		if (model.$ === 'Create') {
+			var a = model.b;
+			return a;
+		} else {
+			var a = model.c;
+			return a;
+		}
+	}();
+	return A2(
+		$elm$html$Html$div,
+		_List_Nil,
+		_List_fromArray(
+			[
+				A2(
+				$elm$html$Html$form,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$action('.'),
+						$elm$html$Html$Attributes$method('POST'),
+						$elm$html$Html$Attributes$enctype('multipart/form-data')
+					]),
+				_List_fromArray(
+					[
+						A2($author$project$ArtworkDetail$viewHeader, edit_mode, artwork),
+						A2(
+						$elm$html$Html$div,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$class('row'),
+								$elm$html$Html$Attributes$class('mx-auto'),
+								$elm$html$Html$Attributes$id('artwork-details-wrapper'),
+								A2($elm$html$Html$Attributes$style, 'max-width', '999px')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('col-6'),
+										A2($elm$html$Html$Attributes$style, 'padding', '0px'),
+										A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+										A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+										A2($elm$html$Html$Attributes$style, 'flex-direction', 'column')
+									]),
+								_List_fromArray(
+									[
+										A2($author$project$ArtworkDetail$viewImage, edit_mode, artwork),
+										A2($author$project$ArtworkDetail$viewSales, edit_mode, artwork)
+									])),
+								A2(
+								$elm$html$Html$div,
+								_List_fromArray(
+									[
+										$elm$html$Html$Attributes$class('col-6'),
+										A2($elm$html$Html$Attributes$style, 'padding', '0px'),
+										A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+										A2($elm$html$Html$Attributes$style, 'align-items', 'center'),
+										A2($elm$html$Html$Attributes$style, 'flex-direction', 'column')
+									]),
+								_List_fromArray(
+									[
+										A2($author$project$ArtworkDetail$viewDetails, edit_mode, artwork),
+										A2($author$project$ArtworkDetail$viewExhibitions, edit_mode, artwork)
+									]))
+							]))
+					])),
+				A2(
+				$elm$html$Html$form,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$class('collapse'),
+						$elm$html$Html$Attributes$action('{%, url \'catalogue:add_workinexhibition\' %}'),
+						$elm$html$Html$Attributes$method('POST'),
+						$elm$html$Html$Attributes$id('workinexhibition-form')
+					]),
+				_List_Nil)
+			]));
+};
+var $author$project$ArtworkDetail$main = $elm$browser$Browser$element(
+	{init: $author$project$ArtworkDetail$init, subscriptions: $author$project$ArtworkDetail$subscriptions, update: $author$project$ArtworkDetail$update, view: $author$project$ArtworkDetail$view});
+_Platform_export({'ArtworkDetail':{'init':$author$project$ArtworkDetail$main($elm$json$Json$Decode$value)(0)},'SalesGallery':{'init':$author$project$SalesGallery$main($elm$json$Json$Decode$value)(0)},'SaleData':{'init':$author$project$SaleData$main($elm$json$Json$Decode$value)(0)},'ImageUpload':{'init':$author$project$ImageUpload$main($elm$json$Json$Decode$value)(0)}});}(this));

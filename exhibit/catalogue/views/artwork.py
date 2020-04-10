@@ -23,7 +23,7 @@ class ArtworkList(LoginRequiredMixin, SearchMixin, ListView):
 class ArtworkCreate(LoginRequiredMixin, genericCreateView):
     model = Artwork
     form_class = ArtworkDetailForm
-    template_name = 'catalogue/detail/artwork_detail.html'
+    template_name = 'catalogue/detail/artwork_detail_elm.html'
 
     def get_form(self, form_class=None):
         form = super().get_form(form_class)
@@ -49,7 +49,7 @@ class ArtworkCreate(LoginRequiredMixin, genericCreateView):
 class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
     model = Artwork
     form_class = ArtworkDetailForm
-    template_name = 'catalogue/detail/artwork_detail.html'
+    template_name = 'catalogue/detail/artwork_detail_elm.html'
 
     def get_context_data(self, **kwargs):
         # Call the base implementation first to get a context
