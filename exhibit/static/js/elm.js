@@ -8671,62 +8671,79 @@ var $author$project$SaleData$subscriptions = function (model) {
 var $author$project$SaleData$main = $elm$browser$Browser$element(
 	{init: $author$project$SaleData$init, subscriptions: $author$project$SaleData$subscriptions, update: $author$project$SaleData$update, view: $author$project$SaleData$view});
 var $author$project$ImageUpload$Waiting = {$: 'Waiting'};
-var $author$project$ImageUpload$decodeFieldtoMaybeInt = F2(
-	function (field, flags) {
-		var _v0 = A2(
-			$elm$json$Json$Decode$decodeValue,
-			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$int),
-			flags);
-		if (_v0.$ === 'Ok') {
-			var num = _v0.a;
-			return $elm$core$Maybe$Just(num);
-		} else {
-			var message = _v0.a;
-			return $elm$core$Maybe$Nothing;
-		}
-	});
-var $author$project$ImageUpload$decodeFieldtoString = F2(
-	function (field, flags) {
-		var _v0 = A2(
-			$elm$json$Json$Decode$decodeValue,
-			A2($elm$json$Json$Decode$field, field, $elm$json$Json$Decode$string),
-			flags);
-		if (_v0.$ === 'Ok') {
-			var str = _v0.a;
-			return str;
-		} else {
-			var message = _v0.a;
-			return '';
-		}
-	});
-var $author$project$ImageUpload$decodeImageURL = function (flags) {
-	var _v0 = A2(
-		$elm$json$Json$Decode$decodeValue,
-		A2($elm$json$Json$Decode$field, 'image_url', $elm$json$Json$Decode$string),
-		flags);
-	if (_v0.$ === 'Ok') {
-		var url = _v0.a;
-		return (url !== '') ? $elm$core$Maybe$Just(url) : $elm$core$Maybe$Nothing;
-	} else {
-		var message = _v0.a;
-		return $elm$core$Maybe$Nothing;
-	}
+var $author$project$ImageUpload$blank = {
+	artwork_id: $elm$core$Maybe$Nothing,
+	csrftoken: '',
+	failIconURL: '',
+	image_data: {image_id: $elm$core$Maybe$Nothing, image_url: $elm$core$Maybe$Nothing},
+	loaderURL: '',
+	status: $author$project$ImageUpload$Waiting,
+	successIconURL: ''
 };
+var $author$project$ImageUpload$Model = F7(
+	function (csrftoken, artwork_id, image_data, loaderURL, successIconURL, failIconURL, status) {
+		return {artwork_id: artwork_id, csrftoken: csrftoken, failIconURL: failIconURL, image_data: image_data, loaderURL: loaderURL, status: status, successIconURL: successIconURL};
+	});
+var $author$project$ImageUpload$decoder = A2(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$hardcoded,
+	$author$project$ImageUpload$Waiting,
+	A4(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+		'fail_icon',
+		$elm$json$Json$Decode$string,
+		'',
+		A4(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+			'success_icon',
+			$elm$json$Json$Decode$string,
+			'',
+			A4(
+				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+				'loader_icon',
+				$elm$json$Json$Decode$string,
+				'',
+				A2(
+					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+					A3(
+						$elm$json$Json$Decode$map2,
+						F2(
+							function (id, url) {
+								return {image_id: id, image_url: url};
+							}),
+						A2(
+							$elm$json$Json$Decode$field,
+							'image_id',
+							$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int)),
+						A2(
+							$elm$json$Json$Decode$andThen,
+							function (result) {
+								return _Utils_eq(
+									result,
+									$elm$core$Maybe$Just('')) ? $elm$json$Json$Decode$fail('no URL') : $elm$json$Json$Decode$succeed(result);
+							},
+							A2(
+								$elm$json$Json$Decode$field,
+								'image_url',
+								$elm$json$Json$Decode$maybe($elm$json$Json$Decode$string)))),
+					A3(
+						$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+						'artwork_id',
+						$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int),
+						A3(
+							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+							'csrftoken',
+							$elm$json$Json$Decode$string,
+							$elm$json$Json$Decode$succeed($author$project$ImageUpload$Model))))))));
 var $author$project$ImageUpload$init = function (flags) {
-	return _Utils_Tuple2(
-		{
-			artwork_id: A2($author$project$ImageUpload$decodeFieldtoMaybeInt, 'artwork_id', flags),
-			csrftoken: A2($author$project$ImageUpload$decodeFieldtoString, 'csrftoken', flags),
-			failIconURL: A2($author$project$ImageUpload$decodeFieldtoString, 'fail_icon', flags),
-			image_data: {
-				image_id: A2($author$project$ImageUpload$decodeFieldtoMaybeInt, 'image_id', flags),
-				image_url: $author$project$ImageUpload$decodeImageURL(flags)
-			},
-			loaderURL: A2($author$project$ImageUpload$decodeFieldtoString, 'loader_icon', flags),
-			status: $author$project$ImageUpload$Waiting,
-			successIconURL: A2($author$project$ImageUpload$decodeFieldtoString, 'success_icon', flags)
-		},
-		$elm$core$Platform$Cmd$none);
+	var _v0 = A2($elm$json$Json$Decode$decodeValue, $author$project$ImageUpload$decoder, flags);
+	if (_v0.$ === 'Ok') {
+		var model = _v0.a;
+		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+	} else {
+		var e = _v0.a;
+		var init_log = A2($elm$core$Debug$log, 'failt imageUpload init', e);
+		return _Utils_Tuple2($author$project$ImageUpload$blank, $elm$core$Platform$Cmd$none);
+	}
 };
 var $author$project$ImageUpload$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;
@@ -9355,6 +9372,135 @@ var $author$project$ArtworkDetail$Create = F2(
 	function (a, b) {
 		return {$: 'Create', a: a, b: b};
 	});
+var $author$project$ArtworkDetail$Artwork = function (title) {
+	return function (status) {
+		return function (series) {
+			return function (image) {
+				return function (year) {
+					return function (size) {
+						return function (location) {
+							return function (rolled) {
+								return function (framed) {
+									return function (medium) {
+										return function (priceUSD) {
+											return function (priceNIS) {
+												return function (sizeCm) {
+													return function (sizeIn) {
+														return function (additional) {
+															return function (saleData) {
+																return function (worksInExhibition) {
+																	return {additional: additional, framed: framed, image: image, location: location, medium: medium, priceNIS: priceNIS, priceUSD: priceUSD, rolled: rolled, saleData: saleData, series: series, size: size, sizeCm: sizeCm, sizeIn: sizeIn, status: status, title: title, worksInExhibition: worksInExhibition, year: year};
+																};
+															};
+														};
+													};
+												};
+											};
+										};
+									};
+								};
+							};
+						};
+					};
+				};
+			};
+		};
+	};
+};
+var $elm$json$Json$Decode$map4 = _Json_map4;
+var $author$project$ArtworkDetail$sizeDecoder = function (unit) {
+	var widthField = 'width_' + unit;
+	var heightField = 'height_' + unit;
+	var depthField = 'depth_' + unit;
+	return A5(
+		$elm$json$Json$Decode$map4,
+		F4(
+			function (w, h, d, u) {
+				return {depth: d, height: h, unit: u, width: w};
+			}),
+		A2($elm$json$Json$Decode$field, heightField, $elm$json$Json$Decode$string),
+		A2($elm$json$Json$Decode$field, widthField, $elm$json$Json$Decode$string),
+		A2($elm$json$Json$Decode$field, depthField, $elm$json$Json$Decode$string),
+		$elm$json$Json$Decode$succeed(unit));
+};
+var $author$project$ArtworkDetail$artworkDecoder = A4(
+	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
+	'worksInExhibition',
+	$elm$json$Json$Decode$list($elm$json$Json$Decode$string),
+	_List_Nil,
+	A2(
+		$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+		A2($elm$json$Json$Decode$field, 'sale_data', $author$project$SaleData$decode),
+		A3(
+			$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+			'additional',
+			$elm$json$Json$Decode$string,
+			A2(
+				$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+				$author$project$ArtworkDetail$sizeDecoder('in'),
+				A2(
+					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+					$author$project$ArtworkDetail$sizeDecoder('cm'),
+					A3(
+						$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+						'price_usd',
+						A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float),
+						A3(
+							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+							'price_nis',
+							A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float),
+							A3(
+								$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+								'medium',
+								$elm$json$Json$Decode$string,
+								A3(
+									$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+									'framed',
+									$elm$json$Json$Decode$string,
+									A3(
+										$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+										'rolled',
+										$elm$json$Json$Decode$string,
+										A3(
+											$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+											'location',
+											$elm$json$Json$Decode$string,
+											A3(
+												$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+												'size',
+												$elm$json$Json$Decode$string,
+												A3(
+													$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+													'year',
+													A2($elm$json$Json$Decode$map, $elm$core$String$fromInt, $elm$json$Json$Decode$int),
+													A2(
+														$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+														$author$project$ImageUpload$decoder,
+														A2(
+															$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+															A3(
+																$elm$json$Json$Decode$map2,
+																F2(
+																	function (index, name) {
+																		return _Utils_Tuple2(index, name);
+																	}),
+																A2($elm$json$Json$Decode$field, 'series_id', $elm$json$Json$Decode$int),
+																A2($elm$json$Json$Decode$field, 'series_name', $elm$json$Json$Decode$string)),
+															A3(
+																$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+																'status',
+																$elm$json$Json$Decode$string,
+																A3(
+																	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+																	'title',
+																	$elm$json$Json$Decode$string,
+																	$elm$json$Json$Decode$succeed($author$project$ArtworkDetail$Artwork))))))))))))))))));
+var $author$project$ArtworkDetail$decoder = A2(
+	$elm$json$Json$Decode$map,
+	function (artwork) {
+		return A2($author$project$ArtworkDetail$Create, '', artwork);
+	},
+	$author$project$ArtworkDetail$artworkDecoder);
 var $author$project$ArtworkDetail$initImage = {
 	artwork_id: $elm$core$Maybe$Nothing,
 	csrftoken: '',
@@ -9398,10 +9544,18 @@ var $author$project$ArtworkDetail$newArtwork = {
 	worksInExhibition: _List_Nil,
 	year: ''
 };
-var $author$project$ArtworkDetail$init = function (_v0) {
-	return _Utils_Tuple2(
-		A2($author$project$ArtworkDetail$Create, '', $author$project$ArtworkDetail$newArtwork),
-		$elm$core$Platform$Cmd$none);
+var $author$project$ArtworkDetail$init = function (flags) {
+	var _v0 = A2($elm$json$Json$Decode$decodeValue, $author$project$ArtworkDetail$decoder, flags);
+	if (_v0.$ === 'Ok') {
+		var model = _v0.a;
+		return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
+	} else {
+		var e = _v0.a;
+		var debug_init = A2($elm$core$Debug$log, 'error initializing ArtworkDetail', e);
+		return _Utils_Tuple2(
+			A2($author$project$ArtworkDetail$Create, '', $author$project$ArtworkDetail$newArtwork),
+			$elm$core$Platform$Cmd$none);
+	}
 };
 var $author$project$ArtworkDetail$subscriptions = function (model) {
 	return $elm$core$Platform$Sub$none;

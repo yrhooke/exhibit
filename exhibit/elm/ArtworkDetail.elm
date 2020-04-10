@@ -33,6 +33,9 @@ type Model
     = Create String Artwork
     | Edit String Int Artwork
 
+decoder : D.Decoder Model
+decoder = 
+    D.map (\artwork -> Create "" artwork) artworkDecoder
 
 type alias Artwork =
     { title : String
@@ -151,8 +154,16 @@ newArtwork =
 
 
 init : D.Value -> ( Model, Cmd Msg )
-init _ =
-    ( Create "" newArtwork, Cmd.none )
+init flags =
+    case D.decodeValue decoder flags of
+        Ok model ->
+            ( model, Cmd.none )
+
+        Err e ->
+            let
+                debug_init = Debug.log "error initializing ArtworkDetail" e
+            in
+            ( Create "" newArtwork, Cmd.none )
 
 
 initImage : ImageUpload.Model
