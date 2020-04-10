@@ -6,6 +6,7 @@ import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import ImageUpload
 import Json.Decode as D
+import Json.Decode.Pipeline as Pipeline
 import Json.Encode as E
 import SaleData
 
@@ -54,12 +55,64 @@ type alias Artwork =
     }
 
 
+artworkDecoder : D.Decoder Artwork
+artworkDecoder =
+    D.succeed Artwork
+        |> Pipeline.required "title" D.string
+        |> Pipeline.required "status" D.string
+        |> Pipeline.custom
+            (D.map2 (\index name -> ( index, name ))
+                (D.field "series_id" D.int)
+                (D.field "series_name" D.string)
+            )
+        |> Pipeline.custom ImageUpload.decoder
+        |> Pipeline.required "year" (D.map String.fromInt D.int)
+        |> Pipeline.required "size" D.string
+        |> Pipeline.required "location" D.string
+        |> Pipeline.required "rolled" D.string
+        |> Pipeline.required "framed" D.string
+        |> Pipeline.required "medium" D.string
+        |> Pipeline.required "price_nis" (D.map String.fromFloat D.float)
+        |> Pipeline.required "price_usd" (D.map String.fromFloat D.float)
+        |> Pipeline.custom (sizeDecoder "cm")
+        |> Pipeline.custom (sizeDecoder "in")
+        |> Pipeline.required "additional" D.string
+        |> Pipeline.custom (D.field "sale_data" SaleData.decode)
+        |> Pipeline.optional "worksInExhibition" (D.list D.string)[]
+
+
 type alias Size =
     { width : String
     , height : String
     , depth : String
     , unit : String
     }
+
+
+sizeDecoder : String -> D.Decoder Size
+sizeDecoder unit =
+    let
+        heightField =
+            "height_" ++ unit
+
+        widthField =
+            "width_" ++ unit
+
+        depthField =
+            "depth_" ++ unit
+    in
+    D.map4
+        (\w h d u ->
+            { width = w
+            , height = h
+            , depth = d
+            , unit = u
+            }
+        )
+        (D.field heightField D.string)
+        (D.field widthField D.string)
+        (D.field depthField D.string)
+        (D.succeed unit)
 
 
 
