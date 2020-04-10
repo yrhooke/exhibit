@@ -65,6 +65,8 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
 
         context['sale_data_info'] = json.dumps(export_sale_data(sale_data_instance), cls=DjangoJSONEncoder)
         print(context['sale_data_info'])
+
+        context['artwork_json'] = json.dumps(extract_artwork_fields(self.object), cls=DjangoJSONEncoder)
         return context
 
     def get_form(self, form_class=None):
@@ -100,6 +102,67 @@ class ArtworkUpdate(LoginRequiredMixin, genericUpdateView):
         return prev
 
 
+def extract_artwork_fields(artwork):
+    """extract relevant fields from artwork for exporting to JSON"""
+
+    if not isinstance(artwork, Artwork):
+        raise TypeError("artwork parameter must be Artwork")
+
+    image = ArtworkImage.objects.filter(artwork=artwork.pk).last()
+    saleData = SaleData.objects.filter(artwork=artwork.pk).last()
+
+    try:
+        image_data = extract_artworkimage_fields(image)
+    except TypeError:
+        image_data = extract_artworkimage_fields(ArtworkImage())
+
+    try:
+        sale_data = export_sale_data(saleData)
+    except TypeError: 
+        sale_data = export_sale_data(SaleData())
+
+
+    data = {
+        'id' : artwork.id,
+        'title' : artwork.title,
+        'series_id' : artwork.series.id,
+        'series_name' : artwork.series.name,
+        'status' : artwork.status,
+        'year' : artwork.year,
+        'location' : artwork.location.name,
+        'size' : artwork.size,
+        'rolled' : artwork.rolled,
+        'framed' : artwork.framed,
+        'medium' : artwork.medium,
+        'price_nis' : artwork.price_nis,
+        'price_usd' : artwork.price_usd,
+        'height_in' : artwork.height_in,
+        'width_in' : artwork.width_in,
+        'depth_in' : artwork.depth_in,
+        'height_cm' : artwork.height_cm,
+        'width_cm' : artwork.width_cm,
+        'depth_cm' : artwork.depth_cm,
+        'additional' : artwork.additional,
+        'sale_data' : sale_data,
+     }
+
+    data.update(image_data)
+
+    return data
+
+def extract_artworkimage_fields(image):
+    """extract relevant fields from artwork for exporting to JSON"""
+
+    if not isinstance(image, ArtworkImage):
+        raise TypeError('image param must be ArtworkImage')
+    data = {
+     "image_id" : image.id,
+     "image_url" : image.image.url if image.image else "",
+     "artwork_id" : image.artwork.id if image.artwork else None,
+    }
+    return data
+
+     
 class CloneArtwork(LoginRequiredMixin, View):
     """creates a copy of an existing Artwork"""
 

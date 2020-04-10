@@ -161,6 +161,9 @@ class HttpResponseUnauthorized(HttpResponse):
 
 def export_sale_data(saledata):
     """returns dict of relevant fields from SaleData object"""
+    if not isinstance(saledata, SaleData):
+        raise TypeError("saledata parameter must be a SaleData")
+
     if saledata.sale_date:
         sale_date = saledata.sale_date.strftime('%d %B %Y')
     else:

@@ -9407,6 +9407,7 @@ var $author$project$ArtworkDetail$Artwork = function (title) {
 		};
 	};
 };
+var $elm$json$Json$Decode$bool = _Json_decodeBool;
 var $elm$json$Json$Decode$map4 = _Json_map4;
 var $author$project$ArtworkDetail$sizeDecoder = function (unit) {
 	var widthField = 'width_' + unit;
@@ -9418,9 +9419,18 @@ var $author$project$ArtworkDetail$sizeDecoder = function (unit) {
 			function (w, h, d, u) {
 				return {depth: d, height: h, unit: u, width: w};
 			}),
-		A2($elm$json$Json$Decode$field, heightField, $elm$json$Json$Decode$string),
-		A2($elm$json$Json$Decode$field, widthField, $elm$json$Json$Decode$string),
-		A2($elm$json$Json$Decode$field, depthField, $elm$json$Json$Decode$string),
+		A2(
+			$elm$json$Json$Decode$field,
+			heightField,
+			A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float)),
+		A2(
+			$elm$json$Json$Decode$field,
+			widthField,
+			A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float)),
+		A2(
+			$elm$json$Json$Decode$field,
+			depthField,
+			A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float)),
 		$elm$json$Json$Decode$succeed(unit));
 };
 var $author$project$ArtworkDetail$artworkDecoder = A4(
@@ -9441,14 +9451,16 @@ var $author$project$ArtworkDetail$artworkDecoder = A4(
 				A2(
 					$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
 					$author$project$ArtworkDetail$sizeDecoder('cm'),
-					A3(
-						$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+					A4(
+						$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 						'price_usd',
 						A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float),
-						A3(
-							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
+						'',
+						A4(
+							$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$optional,
 							'price_nis',
 							A2($elm$json$Json$Decode$map, $elm$core$String$fromFloat, $elm$json$Json$Decode$float),
+							'',
 							A3(
 								$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 								'medium',
@@ -9456,7 +9468,7 @@ var $author$project$ArtworkDetail$artworkDecoder = A4(
 								A3(
 									$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 									'framed',
-									$elm$json$Json$Decode$string,
+									$elm$json$Json$Decode$bool,
 									A3(
 										$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 										'rolled',
@@ -9526,7 +9538,7 @@ var $elm$json$Json$Encode$object = function (pairs) {
 };
 var $author$project$ArtworkDetail$newArtwork = {
 	additional: '',
-	framed: '',
+	framed: false,
 	image: $author$project$ArtworkDetail$initImage,
 	location: '',
 	medium: '',
@@ -9572,9 +9584,7 @@ var $author$project$ArtworkDetail$updateAdditional = F2(
 	});
 var $author$project$ArtworkDetail$updateFramed = F2(
 	function (val, artwork) {
-		return _Utils_update(
-			artwork,
-			{framed: val});
+		return artwork;
 	});
 var $author$project$ArtworkDetail$updateImage = F2(
 	function (msg, artwork) {
@@ -9865,7 +9875,10 @@ var $author$project$ArtworkDetail$viewDetails = F2(
 									$author$project$ArtworkDetail$viewField(artwork.size),
 									$author$project$ArtworkDetail$viewField(artwork.location),
 									$author$project$ArtworkDetail$viewField(artwork.rolled),
-									$author$project$ArtworkDetail$viewField(artwork.framed),
+									$author$project$ArtworkDetail$viewField(
+									function (a) {
+										return a ? 'True' : 'False';
+									}(artwork.framed)),
 									$author$project$ArtworkDetail$viewField(artwork.medium),
 									A2(
 									$elm$html$Html$label,

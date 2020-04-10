@@ -187,14 +187,29 @@
 {% endblock javascript %}
 
 {% block object_details %}
+<div id="elm-artwork-detail-flags">
+                            {% csrf_token %}
+</div>
 <div id="elm-artwork-data"></div>
 <script>
     function elm_flags() {
     return {}
     }
+    function elm_artwork_detail_flags() {
+                            let elm_flags = JSON.parse("{{artwork_json|escapejs|default:'{}'}}");
+                            console.log('downloaded artwork data:')
+                            console.log(elm_flags)
+                            let csrftoken = document.getElementById('elm-artwork-detail-flags').querySelector('input[name=csrfmiddlewaretoken]').value;
+                            elm_flags['csrftoken'] = csrftoken;
+                            elm_flags['artwork_id'] = {{ object.pk |default:"null" }};
+                            elm_flags['loader_icon']  = "{% static 'images/spinner.svg' %}";
+                            elm_flags['success_icon'] = "{% static 'images/upload_success.svg' %}";
+                            elm_flags['fail_icon'] = "{% static 'images/upload_fail.svg' %}"; 
+                        return elm_flags
+                        }
     var app = Elm.ArtworkDetail.init({
         node: document.getElementById("elm-artwork-data"),
-        flags: elm_flags()
+        flags: elm_artwork_detail_flags()
     });        
 </script>
 {% endblock object_details %}

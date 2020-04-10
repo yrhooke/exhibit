@@ -33,9 +33,11 @@ type Model
     = Create String Artwork
     | Edit String Int Artwork
 
+
 decoder : D.Decoder Model
-decoder = 
+decoder =
     D.map (\artwork -> Create "" artwork) artworkDecoder
+
 
 type alias Artwork =
     { title : String
@@ -46,7 +48,7 @@ type alias Artwork =
     , size : String
     , location : String
     , rolled : String
-    , framed : String
+    , framed : Bool
     , medium : String
     , priceUSD : String
     , priceNIS : String
@@ -73,15 +75,15 @@ artworkDecoder =
         |> Pipeline.required "size" D.string
         |> Pipeline.required "location" D.string
         |> Pipeline.required "rolled" D.string
-        |> Pipeline.required "framed" D.string
+        |> Pipeline.required "framed" D.bool
         |> Pipeline.required "medium" D.string
-        |> Pipeline.required "price_nis" (D.map String.fromFloat D.float)
-        |> Pipeline.required "price_usd" (D.map String.fromFloat D.float)
+        |> Pipeline.optional "price_nis" (D.map String.fromFloat D.float) ""
+        |> Pipeline.optional "price_usd" (D.map String.fromFloat D.float) ""
         |> Pipeline.custom (sizeDecoder "cm")
         |> Pipeline.custom (sizeDecoder "in")
         |> Pipeline.required "additional" D.string
         |> Pipeline.custom (D.field "sale_data" SaleData.decode)
-        |> Pipeline.optional "worksInExhibition" (D.list D.string)[]
+        |> Pipeline.optional "worksInExhibition" (D.list D.string) []
 
 
 type alias Size =
@@ -112,9 +114,9 @@ sizeDecoder unit =
             , unit = u
             }
         )
-        (D.field heightField D.string)
-        (D.field widthField D.string)
-        (D.field depthField D.string)
+        (D.field heightField (D.map String.fromFloat D.float))
+        (D.field widthField (D.map String.fromFloat D.float))
+        (D.field depthField (D.map String.fromFloat D.float))
         (D.succeed unit)
 
 
@@ -141,7 +143,7 @@ newArtwork =
     , size = ""
     , location = ""
     , rolled = ""
-    , framed = ""
+    , framed = False 
     , medium = ""
     , priceUSD = ""
     , priceNIS = ""
@@ -161,7 +163,8 @@ init flags =
 
         Err e ->
             let
-                debug_init = Debug.log "error initializing ArtworkDetail" e
+                debug_init =
+                    Debug.log "error initializing ArtworkDetail" e
             in
             ( Create "" newArtwork, Cmd.none )
 
@@ -260,7 +263,8 @@ updateRolled val artwork =
 
 updateFramed : String -> Artwork -> Artwork
 updateFramed val artwork =
-    { artwork | framed = val }
+    artwork
+    -- { artwork | framed = val }
 
 
 updateMedium : String -> Artwork -> Artwork
@@ -629,7 +633,15 @@ viewDetails edit_mode artwork =
 
                 -- {% include "catalogue/utils/field.html" with field=form.rolled %}
                 , viewField
-                    artwork.framed
+                    (artwork.framed
+                        |> (\a ->
+                                if a then
+                                    "True"
+
+                                else
+                                    "False"
+                           )
+                    )
 
                 -- {% include "catalogue/utils/field.html" with field=form.framed %}
                 , viewField
