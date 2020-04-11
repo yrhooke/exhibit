@@ -8,6 +8,7 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http
+import Input
 import InputResize
 import Json.Decode as D
 import Json.Decode.Pipeline as Pipeline
@@ -102,14 +103,6 @@ saleDataDecoder =
         |> Pipeline.optional "agentFee" D.string ""
         |> Pipeline.optional "amountToArtist" D.string ""
         |> Pipeline.optional "saleDate" D.string ""
-
-
-
--- nullableStringDecoder : D.Decoder String
--- nullableStringDecoder =
---     D.string
---         |> D.maybe
---         |> D.map (Maybe.withDefault "")
 
 
 iconsDecoder : D.Decoder Icons
@@ -495,153 +488,99 @@ view model =
             ]
             [ div [ style "font-size" "18px" ] [ text "Sale Details" ]
             , syncStatusView model.updated model.icons
-
-            -- , div [ style "color" "blue" ] [ text (printSyncStatus model.updated) ]
             ]
-        , inputNotesView
+        , Input.resizeView
             { label = "Notes:"
-            , id = "id_notes"
             , placeholder = "Notes"
             , errors = findErrors Notes model.errors
+            , onInput = UpdateNotes
+            , innerAttributes =
+                [ onBlur AttemptSubmitForm
+                ]
+            , outerAttributes = []
+            , name = "notes"
+            , settings = settingsNotes
             , value = model.saleData.notes
             }
-        , inputView
+        , Input.inputView
             { label = "Sale Currency:"
             , id = "id_sale_currency"
             , placeholder = "Sale Currency"
             , errors = findErrors SaleCurrency model.errors
-            , onInput = UpdateSaleCurrency
+            , attributes =
+                [ onInput UpdateSaleCurrency
+                , onBlur AttemptSubmitForm
+                ]
             , value = model.saleData.saleCurrency
+            , name = "sale_currency"
             }
-        , inputView
+        , Input.inputView
             { label = "Sale Price:"
             , id = "id_sale_price"
             , placeholder = "Sale Prince"
             , errors = findErrors SalePrice model.errors
-            , onInput = UpdateSalePrice
+            , attributes =
+                [ onInput UpdateSalePrice
+                , onBlur AttemptSubmitForm
+                ]
             , value = model.saleData.salePrice
+            , name = "sale_price"
             }
-        , inputView
+        , Input.inputView
             { label = "Discount:"
             , id = "id_discount"
             , placeholder = "(Number or Percentage)"
             , errors = findErrors Discount model.errors
-            , onInput = UpdateDiscount
+            , attributes =
+                [ onInput UpdateDiscount
+                , onBlur AttemptSubmitForm
+                ]
             , value = model.saleData.discount
+            , name = "discount"
             }
-        , inputView
+        , Input.inputView
             { label = "Agent Fee:"
             , id = "id_agent_fee"
             , placeholder = "Amount to Agent"
             , errors = findErrors AgentFee model.errors
-            , onInput = UpdateAgentFee
+            , name = "agent_fee"
+            , attributes =
+                [ onInput UpdateAgentFee
+                , onBlur AttemptSubmitForm
+                ]
             , value = model.saleData.agentFee
             }
-        , inputView
+        , Input.inputView
             { label = "Amount to Artist:"
             , id = "id_amount_to_artist"
             , placeholder = "Amount to Artist"
             , errors = findErrors AmountToArtist model.errors
-            , onInput = UpdateAmountToArtist
+            , name = "amount_to_artist"
+            , attributes =
+                [ onInput UpdateAmountToArtist
+                , onBlur AttemptSubmitForm
+                ]
             , value = model.saleData.amountToArtist
             }
-        , inputView
+        , Input.inputView
             { label = "Sale Date:"
             , id = "id_sale_date"
             , placeholder = "Date"
             , errors = findErrors SaleDate model.errors
-            , onInput = UpdateSaleDate
+            , name = "sale_date"
+            , attributes =
+                [ onInput UpdateSaleDate
+                , onBlur AttemptSubmitForm
+                ]
             , value = model.saleData.saleDate
             }
         , hiddenInputView model.saleData.id
         ]
 
 
-settingsNotes : InputResize.Settings Msg
+settingsNotes : InputResize.Settings
 settingsNotes =
-    InputResize.defaultSettings UpdateNotes
-
-
-inputNotesView : ResizeProps -> Html Msg
-inputNotesView props =
-    let
-        settings =
-            settingsNotes
-                |> InputResize.addAttribute (id props.id)
-                |> InputResize.addAttribute
-                    (classList
-                        [ ( "edit-field", True )
-                        , ( "form-control", True )
-                        , ( "form-control-sm", True )
-                        ]
-                    )
-                |> InputResize.addAttribute (placeholder props.placeholder)
-                |> InputResize.addAttribute (onBlur AttemptSubmitForm)
-    in
-    div
-        [ style "display" "flex"
-
-        -- , class "ungroup"
-        , class "form-group"
-        , style "height" "min-content"
-        ]
-        ([ label
-            [ for props.id
-            , style "align-self" "start"
-            ]
-            [ text props.label ]
-         , InputResize.view settings props.value
-         ]
-            ++ List.map errorView props.errors
-        )
-
-
-type alias Props a msg =
-    { id : String
-    , label : String
-    , placeholder : String
-    , errors : List String
-    , onInput : a -> msg
-    , value : a
-    }
-
-
-type alias ResizeProps =
-    { id : String
-    , label : String
-    , placeholder : String
-    , errors : List String
-    , value : InputResize.InputResize
-    }
-
-
-inputView : Props String Msg -> Html Msg
-inputView props =
-    div
-        [ style "display" "flex"
-        , class "form-group"
-        ]
-        ([ label [ for props.id ] [ text props.label ]
-         , input
-            [ id props.id
-            , onInput props.onInput
-            , onBlur AttemptSubmitForm
-            , classList
-                [ ( "edit-field", True )
-                , ( "form-control", True )
-                , ( "form-control-sm", True )
-                ]
-            , placeholder props.placeholder
-            , value props.value
-            ]
-            []
-         ]
-            ++ List.map errorView props.errors
-        )
-
-
-errorView error =
-    small [ class "form-test", class "text-muted", style "width" "86px" ] [ text error ]
+    InputResize.defaultSettings
 
 
 hiddenInputView saleDataID =
@@ -668,28 +607,6 @@ saleDataIdSelectionView saleDataID =
                 [ value ""
                 ]
                 []
-
-
-inputNumberView label_name id_ updateMsg val =
-    let
-        presented_value =
-            case val of
-                Just number ->
-                    String.fromFloat number
-
-                Nothing ->
-                    ""
-    in
-    div []
-        [ label [ for "id" ] [ text label_name ]
-        , input
-            [ type_ "number"
-            , id id_
-            , onInput (updateMsg << String.toFloat)
-            , value presented_value
-            ]
-            []
-        ]
 
 
 syncStatusView : SyncStatus -> Icons -> Html Msg

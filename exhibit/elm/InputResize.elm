@@ -2,7 +2,6 @@ module InputResize exposing
     ( InputResize
     , Msg
     , Settings
-    , addAttribute
     , defaultSettings
     , fromContent
     , update
@@ -20,7 +19,7 @@ import Task
 
 -- Testing
 
-
+main : Program () InputResize OuterMsg
 main =
     Browser.element
         { init = init
@@ -34,14 +33,9 @@ type OuterMsg
     = OuterMsg Msg
 
 
-testSettings : Settings OuterMsg
-testSettings =
-    defaultSettings OuterMsg
-
-
 init : () -> ( InputResize, Cmd OuterMsg )
 init _ =
-    ( fromContent testSettings "something\ninvolving\nseveral\nnewlines"
+    ( fromContent defaultSettings "something\ninvolving\nseveral\nnewlines"
     , getSize OuterMsg "myinput"
     )
 
@@ -50,9 +44,9 @@ subscriptions : InputResize -> Sub msg
 subscriptions _ =
     Sub.none
 
-
+testView : InputResize -> Html OuterMsg
 testView model =
-    view testSettings model
+    view OuterMsg defaultSettings [] [] model
 
 
 testUpdate : OuterMsg -> InputResize -> ( InputResize, Cmd OuterMsg )
@@ -73,25 +67,21 @@ type alias InputResize =
     }
 
 
-type alias Settings msg =
+type alias Settings =
     { fontSize : Float
     , lineHeight : Float
     , width : String
     , columns : Int
-    , resizeMsg : Msg -> msg
-    , innerAttributes : List (Attribute msg)
     , divID : String
     }
 
 
-defaultSettings : (Msg -> msg) -> Settings msg
-defaultSettings message =
+defaultSettings : Settings
+defaultSettings =
     { fontSize = 17
     , lineHeight = 1.2
     , width = "300px"
     , columns = round 50
-    , resizeMsg = message
-    , innerAttributes = []
     , divID = "elm-textarea-resize"
     }
 
@@ -100,7 +90,7 @@ defaultSettings message =
 -- INIT
 
 
-fromContent : Settings msg -> String -> InputResize
+fromContent : Settings -> String -> InputResize
 fromContent settings content =
     { content = content
     , height = estimateRows settings content
@@ -125,7 +115,7 @@ update msg resizeMsg model =
                 | content = content
                 , isMeasuring = True
               }
-            , Task.attempt (msg << GotSize) (Browser.Dom.getViewportOf divID)
+            , getSize msg divID
             )
 
         GotSize result ->
@@ -154,60 +144,57 @@ getSize msg divID =
 -- VIEW
 
 
-setAttributes : Settings msg -> List (Attribute msg)
+setAttributes : Settings -> List (Attribute msg)
 setAttributes settings =
-    List.reverse settings.innerAttributes
-        ++ [ style "resize" "none"
-           , style "overflow" "hidden"
-           , style "white-space" "pre-wrap"
-           , style "wordWrap" "break-word"
-           , style "width" settings.width
-           , style "line-height" (String.fromFloat settings.lineHeight)
-           , style "font-size" (String.fromFloat settings.fontSize ++ "px")
-           , style "padding" "0px"
-           , style "margin" "0px"
-           ]
+    [ style "resize" "none"
+    , style "overflow" "hidden"
+    , style "white-space" "pre-wrap"
+    , style "wordWrap" "break-word"
+    , style "width" settings.width
+    , style "line-height" (String.fromFloat settings.lineHeight)
+    , style "font-size" (String.fromFloat settings.fontSize ++ "px")
+    , style "padding" "0px"
+    , style "margin" "0px"
+    ]
 
 
-addAttribute : Attribute msg -> Settings msg -> Settings msg
-addAttribute attribute settings =
-    { settings | innerAttributes = attribute :: settings.innerAttributes }
-
-
-view : Settings msg -> InputResize -> Html msg
-view settings model =
+view : (Msg -> msg) -> Settings -> List (Attribute msg) -> List (Attribute msg) -> InputResize -> Html msg
+view msg settings innerAttributes outerAttributes model =
     let
         innerView =
             if model.isMeasuring then
-                [ textAreaView settings "text_area_" model
-                , hiddenDivView settings settings.divID model.content
+                [ textAreaView msg settings "text_area_measure" innerAttributes model
+                , hiddenDivView settings settings.divID innerAttributes model.content
                 ]
 
             else
-                [ textAreaView settings settings.divID model
-                , hiddenDivView settings "text_area_measure" model.content
+                [ textAreaView msg settings settings.divID innerAttributes model
+                , hiddenDivView settings "text_area_measure" innerAttributes model.content
                 ]
     in
     div
-        [ style "display" "flex"
-        , style "justify-content" "start"
-        , style "align-items" "start"
-        , style "padding-left" "0.5rem"
-        ]
+        (outerAttributes
+            ++ [ style "display" "flex"
+               , style "justify-content" "start"
+               , style "align-items" "start"
+               , style "padding-left" "0.5rem"
+               ]
+        )
         innerView
 
 
-textAreaView : Settings msg -> String -> InputResize -> Html msg
-textAreaView settings divID model =
+textAreaView : (Msg -> msg) -> Settings -> String -> List (Attribute msg) -> InputResize -> Html msg
+textAreaView msg settings divID customAttributes model =
     let
         attributes =
-            setAttributes settings
+            customAttributes
+                ++ setAttributes settings
     in
     textarea
         (attributes
             ++ [ id divID
                , value model.content
-               , onInput (settings.resizeMsg << NewContent settings.divID)
+               , onInput (msg << NewContent settings.divID)
                , style "height" (String.fromFloat model.height ++ "px")
                , style "z-index" "3"
                ]
@@ -215,14 +202,15 @@ textAreaView settings divID model =
         [ text model.content ]
 
 
-hiddenDivView : Settings msg -> String -> String -> Html msg
-hiddenDivView settings divID content =
+hiddenDivView : Settings -> String -> List (Attribute msg) -> String -> Html msg
+hiddenDivView settings divID customAttributes content =
     let
         rowHeight =
             settings.lineHeight * settings.fontSize
 
         attributes =
-            setAttributes settings
+            customAttributes
+                ++ setAttributes settings
 
         textDivs =
             htmlEncodeString rowHeight content
@@ -262,7 +250,7 @@ htmlEncodeString lineHeight someString =
         ++ [ div [ style "height" height ] [] ]
 
 
-estimateRows : Settings msg -> String -> Float
+estimateRows : Settings -> String -> Float
 estimateRows settings content =
     let
         lines =
