@@ -8314,7 +8314,7 @@ var $author$project$Input$resizeView = function (props) {
 						[
 							$elm$html$Html$text(props.label + ':')
 						])),
-					A5($author$project$InputResize$view, props.onInput, props.settings, innerAttributes, props.outerAttributes, props.value)
+					A5($author$project$InputResize$view, props.msg, props.settings, innerAttributes, props.outerAttributes, props.value)
 				]),
 			A2($elm$core$List$map, $author$project$Input$errorView, props.errors)));
 };
@@ -8407,8 +8407,8 @@ var $author$project$SaleData$view = function (model) {
 							$elm$html$Html$Events$onBlur($author$project$SaleData$AttemptSubmitForm)
 						]),
 					label: 'Notes',
+					msg: $author$project$SaleData$UpdateNotes,
 					name: 'notes',
-					onInput: $author$project$SaleData$UpdateNotes,
 					outerAttributes: _List_Nil,
 					placeholder: 'Notes',
 					settings: $author$project$SaleData$settingsNotes,
@@ -10109,7 +10109,7 @@ var $author$project$ArtworkDetail$viewDetails = F2(
 									{attributes: _List_Nil, errors: _List_Nil, id: 'id_medium', label: 'Medium', name: 'medium', placeholder: 'Medium of creation', value: artwork.medium}),
 									A2($author$project$ArtworkDetail$sizeFieldsView, edit_mode, artwork),
 									$author$project$Input$resizeView(
-									{errors: _List_Nil, innerAttributes: _List_Nil, label: 'Additional info', name: 'additional', onInput: $author$project$ArtworkDetail$UpdateAdditional, outerAttributes: _List_Nil, placeholder: 'Anything else of interest', settings: $author$project$ArtworkDetail$additionalSettings, value: artwork.additional})
+									{errors: _List_Nil, innerAttributes: _List_Nil, label: 'Additional info', msg: $author$project$ArtworkDetail$UpdateAdditional, name: 'additional', outerAttributes: _List_Nil, placeholder: 'Anything else of interest', settings: $author$project$ArtworkDetail$additionalSettings, value: artwork.additional})
 								]))
 						]))
 				]));

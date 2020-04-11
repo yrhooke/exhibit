@@ -493,7 +493,7 @@ view model =
             { label = "Notes"
             , placeholder = "Notes"
             , errors = findErrors Notes model.errors
-            , onInput = UpdateNotes
+            , msg = UpdateNotes
             , innerAttributes =
                 [ onBlur AttemptSubmitForm
                 ]

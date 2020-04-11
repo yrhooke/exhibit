@@ -1,12 +1,15 @@
 module Input exposing
     ( BoolProps
+    , DropdownProps
     , InputProps
     , ResizeProps
     , checkboxView
+    , dropdownView
     , inputView
     , resizeView
     )
 
+import Dropdown
 import Html exposing (Attribute, Html, div, input, label, small, text)
 import Html.Attributes
     exposing
@@ -154,7 +157,7 @@ type alias ResizeProps msg =
 
     This module needs to bind to onInput to resize itself, and thus needs 
     a msg that takes a InputResize.Msg parameter.
-        That's what the onInput field is for. 
+        That's what the msg field is for. 
 
     innerAttributes is for managing any attributes of the inner textArea
     outerAttributes is for managing attributes of the surrounding div.
@@ -162,7 +165,7 @@ type alias ResizeProps msg =
     { label : String
     , placeholder : String
     , errors : List String
-    , onInput : InputResize.Msg -> msg
+    , msg : InputResize.Msg -> msg
     , innerAttributes : List (Attribute msg)
     , outerAttributes : List (Attribute msg)
     , value : InputResize.InputResize
@@ -197,13 +200,70 @@ resizeView props =
             ]
             [ text (props.label ++ ":") ]
          , InputResize.view
-            props.onInput
+            props.msg
             props.settings
             innerAttributes
             props.outerAttributes
             props.value
          ]
             ++ List.map errorView props.errors
+        )
+
+
+type alias DropdownProps msg =
+    {--DropdownProps is selects managed using the Dropdown module
+
+    This module needs to bind to an msg for internal updates.
+        That's what the msg field is for. 
+    
+    config is for customizing Html attributes
+    Note: 
+        You cannot add an Attribute Msg to the Dropwodn
+        using these props, only Attribute msg
+    --}
+    { label : String
+    , placeholder : String
+    , errors : List String
+    , msg : Dropdown.Msg -> msg
+    , config : Dropdown.Config
+    , value : Dropdown.Model
+    , name : String
+    }
+
+
+dropdownView : DropdownProps msg -> Html msg
+dropdownView props =
+    let
+        oldconfig =
+            props.config
+
+        newconfig =
+            { oldconfig
+                | wrapper =
+                    oldconfig.wrapper
+                        ++ [ name props.name
+                           , placeholder props.placeholder
+                           , classList
+                                [ ( "edit-field", True )
+                                , ( "form-control", True )
+                                , ( "form-control-sm", True )
+                                ]
+                           ]
+            }
+    in
+    Html.map props.msg
+        (div
+            [ style "display" "flex"
+            , class "form-group"
+            , style "height" "min-content"
+            ]
+            ([ label
+                [ for props.config.wrapperId ]
+                [ text (props.label ++ ":") ]
+             , Dropdown.view newconfig props.value
+             ]
+                ++ List.map errorView props.errors
+            )
         )
 
 

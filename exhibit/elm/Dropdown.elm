@@ -7,7 +7,7 @@ import Browser.Dom
 import ClickAway exposing (clickOutsideTarget)
 import Html exposing (..)
 import Html.Attributes exposing (..)
-import Html.Events exposing ( onClick, onInput)
+import Html.Events exposing (onClick, onInput)
 import List.Selection exposing (Selection)
 import Process
 import Task
@@ -22,11 +22,15 @@ main =
     Browser.element
         { init = init
         , view = view testConfig
-        , update = update testConfig 
+        , update = update testConfig
         , subscriptions = subscriptions testConfig
         }
 
-testConfig = newConfig "dropdown" "dropdown-input"
+
+testConfig =
+    newConfig "dropdown" "dropdown-input"
+
+
 
 -- MODEL
 
@@ -124,7 +128,7 @@ subscriptions config _ =
 
 type alias Config =
     { cell : List (Html.Attribute Msg)
-     , cellSelected : List (Html.Attribute Msg)
+    , cellSelected : List (Html.Attribute Msg)
     , closed : List (Html.Attribute Msg)
     , results : List (Html.Attribute Msg)
     , input : List (Html.Attribute Msg)
@@ -133,17 +137,19 @@ type alias Config =
     , wrapperId : String
     }
 
+
 newConfig : String -> String -> Config
-newConfig wrapperId inputId=
-    { cell =[]
-     , cellSelected =[]
-    , closed =[]
-    , results =[]
-    , input =[]
-    , wrapper =[]
+newConfig wrapperId inputId =
+    { cell = []
+    , cellSelected = []
+    , closed = []
+    , results = []
+    , input = []
+    , wrapper = []
     , inputId = inputId
     , wrapperId = wrapperId
     }
+
 
 view : Config -> Model -> Html Msg
 view config model =
@@ -155,23 +161,27 @@ view config model =
                         Just option ->
                             button
                                 (onClick (OpenWithFilter "")
-                                :: config.closed)
+                                    :: config.closed
+                                )
                                 [ text (Tuple.second option) ]
 
                         Nothing ->
                             button
                                 (onClick (OpenWithFilter "")
-                                :: config.closed)
+                                    :: config.closed
+                                )
                                 [ text model.placeholder ]
 
                 Open filter ->
                     input
                         ([ onInput OpenWithFilter
 
-                        -- , onBlur InputDeselected
-                        , value filter
-                        , id config.inputId 
-                        ] ++ config.input)
+                         -- , onBlur InputDeselected
+                         , value filter
+                         , id config.inputId
+                         ]
+                            ++ config.input
+                        )
                         [ text filter ]
 
         cell : Bool -> ( Int, String ) -> Html Msg
@@ -203,8 +213,9 @@ view config model =
                     []
     in
     div
-       ( id config.wrapperId
-        :: config.wrapper)
+        (id config.wrapperId
+            :: config.wrapper
+        )
         [ header
         , div config.results cellList
         ]
