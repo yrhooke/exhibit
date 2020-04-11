@@ -18,6 +18,7 @@ import Html.Attributes
         , name
         , placeholder
         , style
+        , type_
         , value
         )
 import InputResize
@@ -90,7 +91,7 @@ inputView props =
         [ style "display" "flex"
         , class "form-group"
         ]
-        ([ label [ for props.id ] [ text props.label ]
+        ([ label [ for props.id ] [ text (props.label ++ ":") ]
          , input
             ([ id props.id
              , classList
@@ -127,9 +128,10 @@ checkboxView props =
         [ style "display" "flex"
         , class "form-group"
         ]
-        ([ label [ for props.id ] [ text props.label ]
+        ([ label [ for props.id ] [ text (props.label ++ ":") ]
          , input
             ([ id props.id
+             , type_ "checkbox"
              , classList
                 [ ( "edit-field", True )
                 , ( "form-control", True )
@@ -187,12 +189,13 @@ resizeView props =
         [ style "display" "flex"
         , class "form-group"
         , style "height" "min-content"
+        , class "ungroup"
         ]
         ([ label
             [ for props.settings.divID
             , style "align-self" "start"
             ]
-            [ text props.label ]
+            [ text (props.label ++ ":") ]
          , InputResize.view
             props.onInput
             props.settings

@@ -490,7 +490,7 @@ view model =
             , syncStatusView model.updated model.icons
             ]
         , Input.resizeView
-            { label = "Notes:"
+            { label = "Notes"
             , placeholder = "Notes"
             , errors = findErrors Notes model.errors
             , onInput = UpdateNotes
@@ -503,7 +503,7 @@ view model =
             , value = model.saleData.notes
             }
         , Input.inputView
-            { label = "Sale Currency:"
+            { label = "Sale Currency"
             , id = "id_sale_currency"
             , placeholder = "Sale Currency"
             , errors = findErrors SaleCurrency model.errors
@@ -515,7 +515,7 @@ view model =
             , name = "sale_currency"
             }
         , Input.inputView
-            { label = "Sale Price:"
+            { label = "Sale Price"
             , id = "id_sale_price"
             , placeholder = "Sale Prince"
             , errors = findErrors SalePrice model.errors
@@ -527,7 +527,7 @@ view model =
             , name = "sale_price"
             }
         , Input.inputView
-            { label = "Discount:"
+            { label = "Discount"
             , id = "id_discount"
             , placeholder = "(Number or Percentage)"
             , errors = findErrors Discount model.errors
@@ -539,7 +539,7 @@ view model =
             , name = "discount"
             }
         , Input.inputView
-            { label = "Agent Fee:"
+            { label = "Agent Fee"
             , id = "id_agent_fee"
             , placeholder = "Amount to Agent"
             , errors = findErrors AgentFee model.errors
@@ -551,7 +551,7 @@ view model =
             , value = model.saleData.agentFee
             }
         , Input.inputView
-            { label = "Amount to Artist:"
+            { label = "Amount to Artist"
             , id = "id_amount_to_artist"
             , placeholder = "Amount to Artist"
             , errors = findErrors AmountToArtist model.errors
@@ -563,7 +563,7 @@ view model =
             , value = model.saleData.amountToArtist
             }
         , Input.inputView
-            { label = "Sale Date:"
+            { label = "Sale Date"
             , id = "id_sale_date"
             , placeholder = "Date"
             , errors = findErrors SaleDate model.errors

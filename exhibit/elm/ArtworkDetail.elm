@@ -5,6 +5,8 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import ImageUpload
+import Input
+import InputResize
 import Json.Decode as D
 import Json.Decode.Pipeline as Pipeline
 import Json.Encode as E
@@ -54,7 +56,7 @@ type alias Artwork =
     , priceNIS : String
     , sizeCm : Size
     , sizeIn : Size
-    , additional : String
+    , additional : InputResize.InputResize
     , saleData : SaleData.Model
     , worksInExhibition : List String
     }
@@ -81,7 +83,7 @@ artworkDecoder =
         |> Pipeline.optional "price_usd" (D.map String.fromFloat D.float) ""
         |> Pipeline.custom (sizeDecoder "cm")
         |> Pipeline.custom (sizeDecoder "in")
-        |> Pipeline.required "additional" D.string
+        |> Pipeline.required "additional" (D.map (InputResize.fromContent additionalSettings) D.string)
         |> Pipeline.custom (D.field "sale_data" SaleData.decode)
         |> Pipeline.optional "worksInExhibition" (D.list D.string) []
 
@@ -143,13 +145,13 @@ newArtwork =
     , size = ""
     , location = ""
     , rolled = ""
-    , framed = False 
+    , framed = False
     , medium = ""
     , priceUSD = ""
     , priceNIS = ""
     , sizeCm = initSize
     , sizeIn = initSize
-    , additional = ""
+    , additional = InputResize.fromContent additionalSettings ""
     , saleData = Tuple.first <| SaleData.init (E.object [])
     , worksInExhibition = []
     }
@@ -215,13 +217,13 @@ type Msg
     | UpdateSizeField String
     | UpdateLocation String
     | UpdateRolled String
-    | UpdateFramed String
+    | UpdateFramed Bool
     | UpdateMedium String
     | UpdatePriceUSD String
     | UpdatePriceNIS String
     | UpdateSizeIn SizeMsg
     | UpdateSizeCm SizeMsg
-    | UpdateAdditional String
+    | UpdateAdditional InputResize.Msg
     | UpdateSaleData SaleData.Msg
     | AttemptSubmitForm
 
@@ -261,10 +263,9 @@ updateRolled val artwork =
     { artwork | rolled = val }
 
 
-updateFramed : String -> Artwork -> Artwork
+updateFramed : Bool -> Artwork -> Artwork
 updateFramed val artwork =
-    artwork
-    -- { artwork | framed = val }
+    { artwork | framed = val }
 
 
 updateMedium : String -> Artwork -> Artwork
@@ -292,9 +293,13 @@ updateSizeIn msg artwork =
     { artwork | sizeIn = updateSize msg artwork.sizeIn }
 
 
-updateAdditional : String -> Artwork -> Artwork
-updateAdditional val artwork =
-    { artwork | additional = val }
+updateAdditional : InputResize.Msg -> Artwork -> Artwork
+updateAdditional resizeMsg artwork =
+    let
+        ( newAdditional, newMsg ) =
+            InputResize.update UpdateAdditional resizeMsg artwork.additional
+    in
+    { artwork | additional = newAdditional }
 
 
 updateSaleData : SaleData.Msg -> Artwork -> Artwork
@@ -354,8 +359,8 @@ update msg model =
         UpdateSizeCm sizeMsg ->
             ( updateArtwork updateSizeCm sizeMsg, Cmd.none )
 
-        UpdateAdditional val ->
-            ( updateArtwork updateAdditional val, Cmd.none )
+        UpdateAdditional resizeMsg ->
+            ( updateArtwork updateAdditional resizeMsg, Cmd.none )
 
         UpdateSaleData val ->
             ( updateArtwork updateSaleData val, Cmd.none )
@@ -582,16 +587,33 @@ viewSales edit_mode artwork =
                 , class "form-inline"
                 , style "margin-bottom" "1rem"
                 ]
-                [ viewField artwork.priceNIS
+                [ Input.inputView
+                    { id = "id_price_nis"
+                    , label = "Price in NIS"
+                    , placeholder = "Price NIS"
+                    , errors = []
+                    , attributes = []
+                    , value = artwork.priceNIS
+                    , name = "price_nis"
+                    }
 
+                -- ,viewField artwork.priceNIS
                 -- {% include "catalogue/utils/field.html" with field=form.price_nis %}
-                , viewField artwork.priceUSD
+                , Input.inputView
+                    { id = "id_price_usd"
+                    , label = "Price in US Dollars:"
+                    , placeholder = "Price USD"
+                    , errors = []
+                    , attributes = []
+                    , value = artwork.priceUSD
+                    , name = "price_usd"
+                    }
 
+                -- , viewField artwork.priceUSD
                 -- {% include "catalogue/utils/field.html" with field=form.price_usd %}
                 ]
             , div [ id "elm-sale-data-flags" ]
-                [-- {% csrf_token %}
-                ]
+                []
             , div [ id "elm-sale-data-app" ]
                 [ Html.map UpdateSaleData (SaleData.view artwork.saleData)
                 ]
@@ -617,98 +639,172 @@ viewDetails edit_mode artwork =
                 , class "form-inline"
                 ]
                 [ -- <!-- NOTE: year field used to have artwork-year class -->
-                  viewField artwork.year
-
-                -- {% include "catalogue/utils/field.html" with field=form.year %}
-                , viewField
-                    artwork.size
+                  -- {% include "catalogue/utils/field.html" with field=form.year %}
+                  --   viewField artwork.year
+                  Input.inputView
+                    { id = "id_year"
+                    , label = "Year"
+                    , placeholder = "Year of Creation"
+                    , errors = []
+                    , attributes = []
+                    , value = artwork.year
+                    , name = "year"
+                    }
 
                 -- {% include "catalogue/utils/field.html" with field=form.size %}
-                , viewField
-                    artwork.location
+                -- , viewField artwork.size
+                , Input.inputView
+                    { id = "id_size"
+                    , label = "Size Category"
+                    , placeholder = "Size"
+                    , errors = []
+                    , attributes = []
+                    , value = artwork.size
+                    , name = "size"
+                    }
 
                 -- {% include "catalogue/utils/field.html" with field=form.location %}
-                , viewField
-                    artwork.rolled
+                -- , viewField
+                --     artwork.location
+                , Input.inputView
+                    { id = "id_location"
+                    , label = "Location"
+                    , placeholder = "Current Location"
+                    , errors = []
+                    , attributes = []
+                    , value = artwork.location
+                    , name = "location"
+                    }
 
+                -- , viewField
+                --     artwork.rolled
                 -- {% include "catalogue/utils/field.html" with field=form.rolled %}
-                , viewField
-                    (artwork.framed
-                        |> (\a ->
-                                if a then
-                                    "True"
-
-                                else
-                                    "False"
-                           )
-                    )
+                , Input.inputView
+                    { id = "id_rolled"
+                    , label = "Rolled/Streched"
+                    , placeholder = "Rolled/Streched"
+                    , errors = []
+                    , attributes = []
+                    , value = artwork.year
+                    , name = "rolled"
+                    }
 
                 -- {% include "catalogue/utils/field.html" with field=form.framed %}
-                , viewField
-                    artwork.medium
+                -- , viewField
+                --     (artwork.framed
+                --         |> (\a ->
+                --                 if a then
+                --                     "True"
+                --                 else
+                --                     "False"
+                --            )
+                --     )
+                , Input.checkboxView
+                    { id = "id_framed"
+                    , label = "Framed"
+                    , placeholder = "Framed"
+                    , errors = []
+                    , attributes = []
+                    , checked = artwork.framed
+                    , name = "framed"
+                    }
 
                 -- {% include "catalogue/utils/field.html" with field=form.medium %}
-                , label
-                    [ for "size-fields-measures" ]
-                    [ text "Size ( h w d ):" ]
-                , div
-                    [ id "size-field-measures"
-                    , style "margin-top" "-0.5rem;"
-                    ]
-                    [ div
-                        [ id "size-fields-in"
-                        , class "form-group"
-                        , style "display" "flex;"
-                        ]
-                        [ div
-                            [ id "id_size_in"
-                            , class "size-field-container"
-                            ]
-                            [ viewField artwork.sizeIn.height
-
-                            -- {% render_field form.height_in class="size-field edit-field" %}
-                            , span
-                                [ class "size-field-separator" ]
-                                [ text "x" ]
-                            , viewField
-                                artwork.sizeIn.width
-
-                            -- {% render_field form.width_in class="size-field edit-field" %}
-                            , span [ class "size-field-separator" ]
-                                [ text "x" ]
-                            , viewField
-                                artwork.sizeIn.depth
-
-                            -- {% render_field form.depth_in class="size-field edit-field" %}
-                            ]
-                        , label [ for "id_size_in" ] [ text "in" ]
-                        ]
-                    , div [ id "size-fields-cm", class "form-group", style "display" "flex;" ]
-                        [ div [ id "id_size_cm", class "size-field-container" ]
-                            [ viewField artwork.sizeCm.height
-
-                            -- {% render_field form.height_cm class="size-field edit-field" %}
-                            , span
-                                [ class "size-field-separator" ]
-                                [ text "x" ]
-                            , viewField
-                                artwork.sizeCm.width
-
-                            -- {% render_field form.width_cm class="size-field edit-field" %}
-                            , span [ class "size-field-separator" ]
-                                [ text "x" ]
-                            , viewField
-                                artwork.sizeCm.depth
-
-                            -- {% render_field form.depth_cm class="size-field edit-field" %}
-                            ]
-                        , label [ for "id_size_cm" ] [ text "cm" ]
-                        ]
-                    ]
-                , viewField
-                    artwork.additional
+                -- , viewField
+                --     artwork.medium
+                , Input.inputView
+                    { id = "id_medium"
+                    , label = "Medium"
+                    , placeholder = "Medium of creation"
+                    , errors = []
+                    , attributes = []
+                    , value = artwork.medium
+                    , name = "medium"
+                    }
+                , sizeFieldsView edit_mode artwork
 
                 -- {% include "catalogue/utils/field.html" with field=form.additional ungroup=True %}
+                -- , viewField
+                --     artwork.additional
+                , Input.resizeView
+                    { label = "Additional info"
+                    , placeholder = "Anything else of interest"
+                    , errors = []
+                    , onInput = UpdateAdditional
+                    , innerAttributes = []
+                    , outerAttributes = []
+                    , value = artwork.additional
+                    , settings = additionalSettings
+                    , name = "additional"
+                    }
+                ]
+            ]
+        ]
+
+
+additionalSettings : InputResize.Settings
+additionalSettings =
+    InputResize.defaultSettings
+
+
+sizeFieldsView : Bool -> Artwork -> Html Msg
+sizeFieldsView edit_mode artwork =
+    div []
+        [ label
+            [ for "size-fields-measures" ]
+            [ text "Size ( h w d ):" ]
+        , div
+            [ id "size-field-measures"
+            , style "margin-top" "-0.5rem;"
+            ]
+            [ div
+                [ id "size-fields-in"
+                , class "form-group"
+                , style "display" "flex;"
+                ]
+                [ div
+                    [ id "id_size_in"
+                    , class "size-field-container"
+                    ]
+                    [ viewField artwork.sizeIn.height
+
+                    -- {% render_field form.height_in class="size-field edit-field" %}
+                    , span
+                        [ class "size-field-separator" ]
+                        [ text "x" ]
+                    , viewField
+                        artwork.sizeIn.width
+
+                    -- {% render_field form.width_in class="size-field edit-field" %}
+                    , span [ class "size-field-separator" ]
+                        [ text "x" ]
+                    , viewField
+                        artwork.sizeIn.depth
+
+                    -- {% render_field form.depth_in class="size-field edit-field" %}
+                    ]
+                , label [ for "id_size_in" ] [ text "in" ]
+                ]
+            , div [ id "size-fields-cm", class "form-group", style "display" "flex;" ]
+                [ div [ id "id_size_cm", class "size-field-container" ]
+                    [ viewField artwork.sizeCm.height
+
+                    -- {% render_field form.height_cm class="size-field edit-field" %}
+                    , span
+                        [ class "size-field-separator" ]
+                        [ text "x" ]
+                    , viewField
+                        artwork.sizeCm.width
+
+                    -- {% render_field form.width_cm class="size-field edit-field" %}
+                    , span [ class "size-field-separator" ]
+                        [ text "x" ]
+                    , viewField
+                        artwork.sizeCm.depth
+
+                    -- {% render_field form.depth_cm class="size-field edit-field" %}
+                    ]
+                , label [ for "id_size_cm" ] [ text "cm" ]
                 ]
             ]
         ]
