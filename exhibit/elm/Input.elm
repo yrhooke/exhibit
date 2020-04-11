@@ -222,7 +222,6 @@ type alias DropdownProps msg =
         using these props, only Attribute msg
     --}
     { label : String
-    , placeholder : String
     , errors : List String
     , msg : Dropdown.Msg -> msg
     , config : Dropdown.Config
@@ -242,7 +241,6 @@ dropdownView props =
                 | wrapper =
                     oldconfig.wrapper
                         ++ [ name props.name
-                           , placeholder props.placeholder
                            , classList
                                 [ ( "edit-field", True )
                                 , ( "form-control", True )

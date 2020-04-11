@@ -1,6 +1,7 @@
 module ArtworkDetail exposing (..)
 
 import Browser
+import Dropdown
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -10,6 +11,7 @@ import InputResize
 import Json.Decode as D
 import Json.Decode.Pipeline as Pipeline
 import Json.Encode as E
+import List.Selection
 import SaleData
 
 
@@ -44,7 +46,7 @@ decoder =
 type alias Artwork =
     { title : String
     , status : String
-    , series : ( Int, String )
+    , series : Dropdown.Model
     , image : ImageUpload.Model
     , year : String
     , size : String
@@ -68,9 +70,11 @@ artworkDecoder =
         |> Pipeline.required "title" D.string
         |> Pipeline.required "status" D.string
         |> Pipeline.custom
-            (D.map2 (\index name -> ( index, name ))
-                (D.field "series_id" D.int)
-                (D.field "series_name" D.string)
+            (D.field "selected_series_id" (D.int |> D.maybe)
+                |> D.andThen
+                    (\selected ->
+                        D.field "series" (Dropdown.decoder selected)
+                    )
             )
         |> Pipeline.custom ImageUpload.decoder
         |> Pipeline.required "year" (D.map String.fromInt D.int)
@@ -135,11 +139,11 @@ initSize =
     }
 
 
-newArtwork : Artwork
-newArtwork =
+emptyArtwork : Artwork
+emptyArtwork =
     { title = ""
     , status = ""
-    , series = ( 1, "" )
+    , series = Dropdown.fromSelection (List.Selection.fromList [])
     , image = initImage
     , year = ""
     , size = ""
@@ -168,7 +172,7 @@ init flags =
                 debug_init =
                     Debug.log "error initializing ArtworkDetail" e
             in
-            ( Create "" newArtwork, Cmd.none )
+            ( Create "" emptyArtwork, Cmd.none )
 
 
 initImage : ImageUpload.Model
@@ -211,7 +215,7 @@ updateSize msg size =
 
 type Msg
     = UpdateTitle String
-    | UpdateSeries String
+    | UpdateSeries Dropdown.Msg
     | UpdateImage ImageUpload.Msg
     | UpdateYear String
     | UpdateSizeField String
@@ -228,19 +232,31 @@ type Msg
     | AttemptSubmitForm
 
 
+
+-- UPDATE ARTWORK FROM INDIVIDUAL FIELDS
+
+
 updateTitle : String -> Artwork -> Artwork
 updateTitle val artwork =
     { artwork | title = val }
 
 
-updateSeries : String -> Artwork -> Artwork
-updateSeries val artwork =
-    { artwork | series = ( Tuple.first artwork.series, val ) }
+updateSeries : Dropdown.Msg -> Artwork -> ( Artwork, Cmd Msg )
+updateSeries msg artwork =
+    let
+        ( newSeries, newMsg ) =
+            Dropdown.update seriesConfig msg artwork.series
+    in
+    ( { artwork | series = newSeries }, Cmd.map UpdateSeries newMsg )
 
 
-updateImage : ImageUpload.Msg -> Artwork -> Artwork
+updateImage : ImageUpload.Msg -> Artwork -> ( Artwork, Cmd Msg )
 updateImage msg artwork =
-    { artwork | image = Tuple.first <| ImageUpload.update msg artwork.image }
+    let
+        ( newImage, newMsg ) =
+            ImageUpload.update msg artwork.image
+    in
+    ( { artwork | image = newImage }, Cmd.map UpdateImage newMsg )
 
 
 updateYear : String -> Artwork -> Artwork
@@ -293,41 +309,69 @@ updateSizeIn msg artwork =
     { artwork | sizeIn = updateSize msg artwork.sizeIn }
 
 
-updateAdditional : InputResize.Msg -> Artwork -> Artwork
+updateAdditional : InputResize.Msg -> Artwork -> ( Artwork, Cmd Msg )
 updateAdditional resizeMsg artwork =
     let
         ( newAdditional, newMsg ) =
             InputResize.update UpdateAdditional resizeMsg artwork.additional
     in
-    { artwork | additional = newAdditional }
+    ( { artwork | additional = newAdditional }, newMsg )
 
 
-updateSaleData : SaleData.Msg -> Artwork -> Artwork
+updateSaleData : SaleData.Msg -> Artwork -> ( Artwork, Cmd Msg )
 updateSaleData msg artwork =
-    { artwork | saleData = Tuple.first <| SaleData.update msg artwork.saleData }
+    let
+        ( newSaleData, newMsg ) =
+            SaleData.update msg artwork.saleData
+    in
+    ( { artwork | saleData = newSaleData }, Cmd.map UpdateSaleData newMsg )
+
+
+
+-- GENERAL UPDATE FUNCTIONS
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     let
         updateArtwork : (a -> Artwork -> Artwork) -> a -> Model
-        updateArtwork updateField val =
+        updateArtwork updateField newVal =
             case model of
                 Create csrf artwork ->
-                    Create csrf (updateField val artwork)
+                    Create csrf (updateField newVal artwork)
 
                 Edit csrf id artwork ->
-                    Edit csrf id (updateField val artwork)
+                    Edit csrf id (updateField newVal artwork)
+
+        updateWithMsg :
+            a
+            -> (a -> Artwork -> ( Artwork, Cmd Msg ))
+            -> ( Model, Cmd Msg )
+        updateWithMsg newVal updateField =
+            case model of
+                Create csrf artwork ->
+                    let
+                        ( newArtwork, newMsg ) =
+                            updateField newVal artwork
+                    in
+                    ( Create csrf newArtwork, newMsg )
+
+                Edit csrf id artwork ->
+                    let
+                        ( newArtwork, newMsg ) =
+                            updateField newVal artwork
+                    in
+                    ( Edit csrf id newArtwork, newMsg )
     in
     case msg of
         UpdateTitle val ->
             ( updateArtwork updateTitle val, Cmd.none )
 
         UpdateSeries val ->
-            ( updateArtwork updateSeries val, Cmd.none )
+            updateWithMsg val updateSeries
 
         UpdateImage val ->
-            ( updateArtwork updateImage val, Cmd.none )
+            updateWithMsg val updateImage
 
         UpdateYear val ->
             ( updateArtwork updateYear val, Cmd.none )
@@ -360,10 +404,10 @@ update msg model =
             ( updateArtwork updateSizeCm sizeMsg, Cmd.none )
 
         UpdateAdditional resizeMsg ->
-            ( updateArtwork updateAdditional resizeMsg, Cmd.none )
+            updateWithMsg resizeMsg updateAdditional
 
-        UpdateSaleData val ->
-            ( updateArtwork updateSaleData val, Cmd.none )
+        UpdateSaleData saleDataMsg ->
+            updateWithMsg saleDataMsg updateSaleData
 
         AttemptSubmitForm ->
             ( model, Cmd.none )
@@ -470,12 +514,23 @@ viewField value_ =
         ]
 
 
+seriesConfig =
+    Dropdown.newConfig "id_series" "id_series_input"
+
+
 viewHeader : Bool -> Artwork -> Html Msg
 viewHeader edit_mode artwork =
     div [ id "page-header", class "" ]
         [ div [ class "form-inline" ]
             [ div [ class "form-group", id "series-select" ]
-                [ viewField (Tuple.second artwork.series)
+                [ Input.dropdownView
+                    { label = "Series"
+                    , errors = []
+                    , msg = UpdateSeries
+                    , config = seriesConfig
+                    , value = artwork.series
+                    , name = "series"
+                    }
 
                 -- {% render_field form.series class="page-title header-item edit-field form-control" %}
                 , span [ class "header-item", class "separator", style "margin-left" "1rem", style "margin-right" "1.5rem" ] [ text ":" ]
@@ -536,7 +591,13 @@ viewHeader edit_mode artwork =
                            , id "detail-submit"
                            , class "action-button"
                            , class "btn"
-                           , value "{{ action_name }}"
+                           , value
+                                (if edit_mode then
+                                    "Save"
+
+                                 else
+                                    "Create"
+                                )
                            ]
                     )
                     []

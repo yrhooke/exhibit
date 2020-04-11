@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect, render
 from django.core.serializers.json import DjangoJSONEncoder
 
-from catalogue.models import Artwork,  ArtworkImage, SaleData
+from catalogue.models import Artwork,  ArtworkImage, SaleData, Series
 from catalogue.forms import ArtworkDetailForm
 from catalogue.forms import WorkInExhibitionForm
 from catalogue.views.utils import SearchMixin, genericCreateView, genericUpdateView
@@ -125,8 +125,8 @@ def extract_artwork_fields(artwork):
     data = {
         'id' : artwork.id,
         'title' : artwork.title,
-        'series_id' : artwork.series.id,
-        'series_name' : artwork.series.name,
+        'selected_series_id' : artwork.series.id,
+        'series' : [[s.id, s.name] for s in Series.objects.all()],
         'status' : artwork.status,
         'year' : artwork.year,
         'location' : artwork.location.name,

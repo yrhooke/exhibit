@@ -2,6 +2,40 @@
 {% load widget_tweaks %}
 {% load static %}
 
+{% block custom_headers %}
+{% if edit_mode %}
+<style>
+    .edit-field {
+        background: transparent;
+        vertical-align: middle;
+        border: none;
+        box-shadow: none;
+    }
+
+    .edit-field:focus {
+        background-color: #ffffff;
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, .075);
+        outline: none;
+    }
+
+    #object-details .select2-container .select2-selection--single,
+    #object-details .select2-container--default .select2-selection--single .select2-selection__rendered,
+    #object-details .select2-container--default .select2-selection--single .select2-selection__arrow {
+        background-color: rgb(235, 235, 228);
+        border: none;
+    }
+
+    .details-list .form-group {
+        height: 1.8rem;
+    }
+
+    .details-list .ungroup {
+        height: unset;
+    }
+</style>
+{% endif %}
+{% endblock custom_headers %}
+
 {% block javascript %}
 <script>
     function updateExhibitions() {
@@ -66,10 +100,10 @@
         //     event.target.style.width = ((event.target.value.length) * 9 + 5) + 'px';
         // });
 
-        $('#artwork-location').select2({ 'placeholder': 'Location' });
-        $('#workinexhibition-exhibition').select2({ 'placeholder': 'New Exhibition' });
-        $('#id_location').select2({ 'placeholder': '{{form.location.field.placeholder}}', 'width': '140px' })
-        $('#id_rolled').select2({ 'placeholder': '{{form.rolled.field.placeholder}}', 'width': '140px' })
+        // $('#artwork-location').select2({ 'placeholder': 'Location' });
+        // $('#workinexhibition-exhibition').select2({ 'placeholder': 'New Exhibition' });
+        // $('#id_location').select2({ 'placeholder': '{{form.location.field.placeholder}}', 'width': '140px' })
+        // $('#id_rolled').select2({ 'placeholder': '{{form.rolled.field.placeholder}}', 'width': '140px' })
 
         updateExhibitions();
 

@@ -8,6 +8,7 @@ import ClickAway exposing (clickOutsideTarget)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (onClick, onInput)
+import Json.Decode as D
 import List.Selection exposing (Selection)
 import Process
 import Task
@@ -36,10 +37,60 @@ testConfig =
 
 
 type alias Model =
-    { options : Selection ( Int, String )
+    { options : Selection Option
     , isOpen : Open
-    , placeholder : String
     }
+
+
+type alias Option =
+    ( Int, String )
+
+
+fromSelection : Selection Option -> Model
+fromSelection selection =
+    { options = selection
+    , isOpen = Closed
+    }
+
+
+decoder : Maybe Int -> D.Decoder Model
+decoder selected =
+    D.map
+        (\o ->
+            { options = o
+            , isOpen = Closed
+            }
+        )
+        (selectionDecoder selected)
+
+
+optionDecoder : D.Decoder Option
+optionDecoder =
+    D.map2 (\index value -> ( index, value ))
+        (D.index 0 D.int)
+        (D.index 1 D.string)
+
+
+optionListDecoder : D.Decoder (List Option)
+optionListDecoder =
+    D.list optionDecoder
+
+
+selectionDecoder : Maybe Int -> D.Decoder (Selection Option)
+selectionDecoder selected =
+    let
+        fromListWithSelected : Int -> (List Option -> Selection Option)
+        fromListWithSelected index =
+            List.Selection.fromList
+                >> List.Selection.selectBy
+                    (\a -> Tuple.first a == index)
+    in
+    case selected of
+        Just index ->
+            D.map (fromListWithSelected index) optionListDecoder
+
+        option2 ->
+            D.map List.Selection.fromList optionListDecoder
 
 
 type Open
@@ -63,7 +114,6 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     ( { options = List.Selection.fromList options
       , isOpen = Closed
-      , placeholder = "Series type"
       }
     , Cmd.none
     )
@@ -135,6 +185,7 @@ type alias Config =
     , wrapper : List (Html.Attribute Msg)
     , inputId : String
     , wrapperId : String
+    , placeholder : String
     }
 
 
@@ -148,6 +199,7 @@ newConfig wrapperId inputId =
     , wrapper = []
     , inputId = inputId
     , wrapperId = wrapperId
+    , placeholder = "Series type"
     }
 
 
@@ -160,17 +212,21 @@ view config model =
                     case List.Selection.selected model.options of
                         Just option ->
                             button
-                                (onClick (OpenWithFilter "")
-                                    :: config.closed
+                                ([ onClick (OpenWithFilter "")
+                                 , type_ "button"
+                                 ]
+                                    ++ config.closed
                                 )
                                 [ text (Tuple.second option) ]
 
                         Nothing ->
                             button
-                                (onClick (OpenWithFilter "")
-                                    :: config.closed
+                                ([ onClick (OpenWithFilter "")
+                                 , type_ "button"
+                                 ]
+                                    ++ config.closed
                                 )
-                                [ text model.placeholder ]
+                                [ text config.placeholder ]
 
                 Open filter ->
                     input
@@ -213,8 +269,9 @@ view config model =
                     []
     in
     div
-        (id config.wrapperId
-            :: config.wrapper
+        ([id config.wrapperId
+        , style "z-index" "1"]
+            ++ config.wrapper
         )
         [ header
         , div config.results cellList
