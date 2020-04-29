@@ -158,6 +158,11 @@ class HttpResponseUnauthorized(HttpResponse):
     def __init__(self):
         self.status_code = 401
 
+class HttpResponseNotImplemented(HttpResponse):
+    def __init__(self):
+        self.status_code = 501
+
+
 
 def export_sale_data(saledata):
     """returns dict of relevant fields from SaleData object"""

@@ -1,5 +1,5 @@
 
-from django.conf import settings
+# from django.conf import settings
 from django.views.generic import View
 
 from django.http import JsonResponse, HttpResponseBadRequest
@@ -15,10 +15,16 @@ from catalogue.models import Artwork,  SaleData
 from catalogue.forms import WorkInExhibitionForm
 from catalogue.forms import ArtworkImageUploadForm
 from catalogue.forms import SaleDataUpdateForm
-from catalogue.views.utils import export_sale_data
+from catalogue.views.utils import export_sale_data, HttpResponseNotImplemented
+from catalogue.serializers import SeriesSerializer
 
+# 1. image - GET, POST, DELETE . post saves new image, get downloads image with good filename
+class ImageView(LoginRequiredMixin, View):
+    # class ArtworkImageUpload(LoginRequiredMixin, View):
 
-class ArtworkImageUpload(LoginRequiredMixin, View):
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
     def post(self, request, *args, **kwargs):
         form = ArtworkImageUploadForm(request.POST, request.FILES)
         if form.is_valid():
@@ -29,6 +35,194 @@ class ArtworkImageUpload(LoginRequiredMixin, View):
             })
         else:
             return HttpResponseBadRequest()
+
+    def delete(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+
+
+
+# 2. Activity - POST, PUT, DELETE - creates or edits activity, associated sale data or workinExhibition also
+class ActivityView(LoginRequiredMixin, View):
+    # class ArtworkImageUpload(LoginRequiredMixin, View):
+
+    # def get(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented()
+
+    def post(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented())
+
+    def put(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented())
+
+    def delete(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+# 3. series - GET, POST, PUT, DELETE
+class SeriesView(LoginRequiredMixin, View):
+    # class ArtworkImageUpload(LoginRequiredMixin, View):
+
+    def get(self, request, pk, *args, **kwargs):
+        try:
+            series = Series.objects.get(pk=pk)
+        except Series.DoesNotExist:
+            return HttpResponseNotFound()
+        
+        serializer = SeriesSerializer(series)
+        return JsonResponse(serializer.data)
+
+    def post(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented())
+
+    def put(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented())
+
+    def delete(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+# 4. artwork -  GET, POST, PUT, DELETE
+class ArtworkView(LoginRequiredMixin, View):
+    # class ArtworkImageUpload(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+    def post(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented())
+
+    def put(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented())
+
+    def delete(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+# 5. location -  GET, POST, PUT, DELETE
+class LocationView(LoginRequiredMixin, View):
+    # class ArtworkImageUpload(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+    def post(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented())
+
+    def put(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented())
+
+    def delete(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+# 6. Exhibition -  GET, POST, PUT, DELETE
+class ExhibitionView(LoginRequiredMixin, View):
+    # class ArtworkImageUpload(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+    def post(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented())
+
+    def put(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented())
+
+    def delete(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+# 7. Activity list - GET POST- get activities for artwork (gets associated saledata or workinexhibition also), batch add
+class ActivityListView(LoginRequiredMixin, View):
+    # class ArtworkImageUpload(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+    def post(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented())
+
+    # def put(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented())
+
+    # def delete(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented()
+
+# 8. artwork list - GET - list of artworks matching params
+class ArtworkListView(LoginRequiredMixin, View):
+    # class ArtworkImageUpload(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+    # def post(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented())
+
+    # def put(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented())
+
+    # def delete(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented()
+
+# 9. series list - GET -list of series matching params
+class SeriesListView(LoginRequiredMixin, View):
+    # class ArtworkImageUpload(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+    # def post(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented())
+
+    # def put(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented())
+
+    # def delete(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented()
+
+# 10. location list - GET -list of locations matching params
+class LocationListView(LoginRequiredMixin, View):
+    # class ArtworkImageUpload(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+    # def post(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented())
+
+    # def put(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented())
+
+    # def delete(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented()
+
+# 11. exhibition list - GET - list of exhibitions matching params
+class ExhibitionListView(LoginRequiredMixin, View):
+    # class ArtworkImageUpload(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented()
+
+    # def post(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented())
+
+    # def put(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented())
+
+    # def delete(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented()
+
+# 12. series_order - post - reorders all series
+class SeriesReorderView(LoginRequiredMixin, View):
+    # class ArtworkImageUpload(LoginRequiredMixin, View):
+
+    # def get(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented()
+
+    def post(self, request, *args, **kwargs):
+        return HttpResponseNotImplemented())
+
+    # def put(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented())
+
+    # def delete(self, request, *args, **kwargs):
+    #     return HttpResponseNotImplemented()
 
 
 def add_work_in_exhibition(request):

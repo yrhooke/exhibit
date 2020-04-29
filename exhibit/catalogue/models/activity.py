@@ -19,7 +19,7 @@ class Activity(models.Model):
         ('S', 'Sold'),
     )
 
-    type = models.CharField('Activity type', max_length=1, choices=ACTIVITY_TYPES, default='M')
+    activity_type = models.CharField('Activity type', max_length=1, choices=ACTIVITY_TYPES, default='M')
 
 
 
