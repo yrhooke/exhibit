@@ -45,13 +45,13 @@ decoder =
 
 type alias Artwork =
     { title : String
-    , status : String
+    , status : Dropdown.Model
     , series : Dropdown.Model
     , image : ImageUpload.Model
     , year : String
-    , size : String
-    , location : String
-    , rolled : String
+    , size : Dropdown.Model
+    , location : Dropdown.Model
+    , rolled : Dropdown.Model
     , framed : Bool
     , medium : String
     , priceUSD : String
@@ -68,19 +68,43 @@ artworkDecoder : D.Decoder Artwork
 artworkDecoder =
     D.succeed Artwork
         |> Pipeline.required "title" D.string
-        |> Pipeline.required "status" D.string
         |> Pipeline.custom
-            (D.field "selected_series_id" (D.int |> D.maybe)
+            (D.at ["status", "selected"] (D.int |> D.maybe)
                 |> D.andThen
                     (\selected ->
-                        D.field "series" (Dropdown.decoder selected)
+                        D.at ["status", "options"] (Dropdown.decoder selected)
+                    )
+            )
+        |> Pipeline.custom
+            (D.at ["series", "selected"] (D.int |> D.maybe)
+                |> D.andThen
+                    (\selected ->
+                        D.at ["series", "options"] (Dropdown.decoder selected)
                     )
             )
         |> Pipeline.custom ImageUpload.decoder
         |> Pipeline.required "year" (D.map String.fromInt D.int)
-        |> Pipeline.required "size" D.string
-        |> Pipeline.required "location" D.string
-        |> Pipeline.required "rolled" D.string
+        |> Pipeline.custom
+            (D.at ["size", "selected"] (D.int |> D.maybe)
+                |> D.andThen
+                    (\selected ->
+                        D.at ["size", "options"] (Dropdown.decoder selected)
+                    )
+            )
+        |> Pipeline.custom
+            (D.at ["location", "selected"] (D.int |> D.maybe)
+                |> D.andThen
+                    (\selected ->
+                        D.at ["location", "options"] (Dropdown.decoder selected)
+                    )
+            )
+        |> Pipeline.custom
+            (D.at ["rolled", "selected"] (D.int |> D.maybe)
+                |> D.andThen
+                    (\selected ->
+                        D.at ["rolled", "options"] (Dropdown.decoder selected)
+                    )
+            )
         |> Pipeline.required "framed" D.bool
         |> Pipeline.required "medium" D.string
         |> Pipeline.optional "price_nis" (D.map String.fromFloat D.float) ""
@@ -142,13 +166,13 @@ initSize =
 emptyArtwork : Artwork
 emptyArtwork =
     { title = ""
-    , status = ""
+    , status = Dropdown.fromSelection (List.Selection.fromList [])
     , series = Dropdown.fromSelection (List.Selection.fromList [])
     , image = initImage
     , year = ""
-    , size = ""
-    , location = ""
-    , rolled = ""
+    , size = Dropdown.fromSelection (List.Selection.fromList [])
+    , location = Dropdown.fromSelection (List.Selection.fromList [])
+    , rolled = Dropdown.fromSelection (List.Selection.fromList [])
     , framed = False
     , medium = ""
     , priceUSD = ""
@@ -215,12 +239,13 @@ updateSize msg size =
 
 type Msg
     = UpdateTitle String
+    | UpdateStatus Dropdown.Msg
     | UpdateSeries Dropdown.Msg
     | UpdateImage ImageUpload.Msg
     | UpdateYear String
-    | UpdateSizeField String
-    | UpdateLocation String
-    | UpdateRolled String
+    | UpdateSizeField Dropdown.Msg
+    | UpdateLocation Dropdown.Msg
+    | UpdateRolled Dropdown.Msg
     | UpdateFramed Bool
     | UpdateMedium String
     | UpdatePriceUSD String
@@ -249,7 +274,14 @@ updateSeries msg artwork =
     in
     ( { artwork | series = newSeries }, Cmd.map UpdateSeries newMsg )
 
-
+updateStatus : Dropdown.Msg -> Artwork -> ( Artwork, Cmd Msg )
+updateStatus msg artwork =
+    let
+        ( newStatus, newMsg ) =
+            Dropdown.update statusConfig msg artwork.status
+    in
+    ( { artwork | status = newStatus }, Cmd.map UpdateStatus newMsg )
+    
 updateImage : ImageUpload.Msg -> Artwork -> ( Artwork, Cmd Msg )
 updateImage msg artwork =
     let
@@ -264,20 +296,32 @@ updateYear val artwork =
     { artwork | year = val }
 
 
-updateSizeField : String -> Artwork -> Artwork
-updateSizeField val artwork =
-    { artwork | size = val }
+
+updateSizeField : Dropdown.Msg -> Artwork -> ( Artwork, Cmd Msg )
+updateSizeField msg artwork =
+    let
+        ( newSize, newMsg ) =
+            Dropdown.update sizeConfig msg artwork.size
+    in
+    ( { artwork | size = newSize }, Cmd.map UpdateSizeField newMsg )
 
 
-updateLocation : String -> Artwork -> Artwork
-updateLocation val artwork =
-    { artwork | location = val }
 
+updateLocation : Dropdown.Msg -> Artwork -> ( Artwork, Cmd Msg )
+updateLocation msg artwork =
+    let
+        ( newLocation , newMsg ) =
+            Dropdown.update locationConfig msg artwork.location
+    in
+    ( { artwork | location = newLocation }, Cmd.map UpdateLocation newMsg )
 
-updateRolled : String -> Artwork -> Artwork
-updateRolled val artwork =
-    { artwork | rolled = val }
-
+updateRolled : Dropdown.Msg -> Artwork -> ( Artwork, Cmd Msg )
+updateRolled msg artwork =
+    let
+        ( newRolled , newMsg ) =
+            Dropdown.update rolledConfig msg artwork.rolled
+    in
+    ( { artwork | rolled = newRolled }, Cmd.map UpdateRolled newMsg )
 
 updateFramed : Bool -> Artwork -> Artwork
 updateFramed val artwork =
@@ -369,7 +413,8 @@ update msg model =
 
         UpdateSeries val ->
             updateWithMsg val updateSeries
-
+        UpdateStatus val ->
+            updateWithMsg val updateStatus
         UpdateImage val ->
             updateWithMsg val updateImage
 
@@ -377,13 +422,13 @@ update msg model =
             ( updateArtwork updateYear val, Cmd.none )
 
         UpdateSizeField val ->
-            ( updateArtwork updateSizeField val, Cmd.none )
+            updateWithMsg val updateSizeField
 
         UpdateLocation val ->
-            ( updateArtwork updateLocation val, Cmd.none )
+            updateWithMsg val updateLocation
 
         UpdateRolled val ->
-            ( updateArtwork updateRolled val, Cmd.none )
+            updateWithMsg val updateRolled
 
         UpdateFramed val ->
             ( updateArtwork updateFramed val, Cmd.none )
@@ -516,6 +561,14 @@ viewField value_ =
 
 seriesConfig =
     Dropdown.newConfig "id_series" "id_series_input"
+statusConfig =
+    Dropdown.newConfig "id_status" "id_status_input"
+locationConfig =
+    Dropdown.newConfig "id_location" "id_location_input"
+sizeConfig =
+    Dropdown.newConfig "id_size" "id_size_input"
+rolledConfig =
+    Dropdown.newConfig "id_rolled" "id_rolled_input"
 
 
 viewHeader : Bool -> Artwork -> Html Msg
@@ -550,7 +603,14 @@ viewHeader edit_mode artwork =
                 , viewField artwork.title
 
                 -- {% render_field form.title class="object-name header-item edit-field form-control" style="width:300px;font-size:29px;" %}
-                , viewField artwork.status
+                ,Input.dropdownView
+                    { label = "Status"
+                    , errors = []
+                    , msg = UpdateStatus
+                    , config = statusConfig
+                    , value = artwork.status
+                    , name = "status"
+                    }
 
                 -- {% render_field form.status class="header-item edit-field form-control" %}
                 , span
@@ -714,25 +774,26 @@ viewDetails edit_mode artwork =
 
                 -- {% include "catalogue/utils/field.html" with field=form.size %}
                 -- , viewField artwork.size
-                , Input.inputView
-                    { id = "id_size"
-                    , label = "Size Category"
-                    , placeholder = "Size"
+                , Input.dropdownView
+                    { 
+                     label = "Size Category"
+                    --  ,placeholder = "Size"
                     , errors = []
-                    , attributes = []
+                    , config = sizeConfig
                     , value = artwork.size
                     , name = "size"
+                    , msg = UpdateSizeField
                     }
 
                 -- {% include "catalogue/utils/field.html" with field=form.location %}
                 -- , viewField
                 --     artwork.location
-                , Input.inputView
-                    { id = "id_location"
-                    , label = "Location"
-                    , placeholder = "Current Location"
+                , Input.dropdownView
+                    {label = "Location"
+                    -- , placeholder = "Current Location"
                     , errors = []
-                    , attributes = []
+                    , config = locationConfig
+                    , msg= UpdateLocation
                     , value = artwork.location
                     , name = "location"
                     }
@@ -740,13 +801,14 @@ viewDetails edit_mode artwork =
                 -- , viewField
                 --     artwork.rolled
                 -- {% include "catalogue/utils/field.html" with field=form.rolled %}
-                , Input.inputView
-                    { id = "id_rolled"
-                    , label = "Rolled/Streched"
-                    , placeholder = "Rolled/Streched"
+                , Input.dropdownView
+                    { --id = "id_rolled"
+                     label = "Rolled/Streched"
+                    -- , placeholder = "Rolled/Streched"
                     , errors = []
-                    , attributes = []
-                    , value = artwork.year
+                    , config = rolledConfig
+                    , msg = UpdateRolled
+                    , value = artwork.rolled
                     , name = "rolled"
                     }
 

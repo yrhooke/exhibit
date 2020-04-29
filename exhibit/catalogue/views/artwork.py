@@ -111,6 +111,7 @@ def extract_artwork_fields(artwork):
     image = ArtworkImage.objects.filter(artwork=artwork.pk).last()
     saleData = SaleData.objects.filter(artwork=artwork.pk).last()
 
+    form = ArtworkDetailForm()
     try:
         image_data = extract_artworkimage_fields(image)
     except TypeError:
@@ -125,13 +126,27 @@ def extract_artwork_fields(artwork):
     data = {
         'id' : artwork.id,
         'title' : artwork.title,
-        'selected_series_id' : artwork.series.id,
-        'series' : [[s.id, s.name] for s in Series.objects.all()],
-        'status' : artwork.status,
+        'series' : {
+            "selected" : artwork.series.id,
+            "options" : [s for s in form.fields['series'].choices]
+        },
+        'status' : {
+            "selected" : artwork.status,
+            "options" : form.fields['status'].choices
+        },
         'year' : artwork.year,
-        'location' : artwork.location.name,
-        'size' : artwork.size,
-        'rolled' : artwork.rolled,
+        'location' : {
+            "selected" : artwork.location.id,
+            "options" : [s for s in form.fields['series'].choices]
+        },
+        'size' :  {
+            "selected" : artwork.size,
+            "options" : form.fields['size'].choices
+        },
+        'rolled' :  {
+            "selected" : artwork.rolled,
+            "options" : form.fields['rolled'].choices
+        },
         'framed' : artwork.framed,
         'medium' : artwork.medium,
         'price_nis' : artwork.price_nis,

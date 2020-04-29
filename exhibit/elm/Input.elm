@@ -225,7 +225,7 @@ type alias DropdownProps msg =
     , errors : List String
     , msg : Dropdown.Msg -> msg
     , config : Dropdown.Config
-    , value : Dropdown.Model
+    , value : Dropdown.Options
     , name : String
     }
 

@@ -9467,7 +9467,6 @@ var $author$project$Dropdown$selectionDecoder = function (selected) {
 			fromListWithSelected(index),
 			$author$project$Dropdown$optionListDecoder);
 	} else {
-		var option2 = selected;
 		return A2($elm$json$Json$Decode$map, $NoRedInk$list_selection$List$Selection$fromList, $author$project$Dropdown$optionListDecoder);
 	}
 };
@@ -9543,18 +9542,54 @@ var $author$project$ArtworkDetail$artworkDecoder = A4(
 									$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 									'framed',
 									$elm$json$Json$Decode$bool,
-									A3(
-										$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-										'rolled',
-										$elm$json$Json$Decode$string,
-										A3(
-											$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-											'location',
-											$elm$json$Json$Decode$string,
-											A3(
-												$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-												'size',
-												$elm$json$Json$Decode$string,
+									A2(
+										$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+										A2(
+											$elm$json$Json$Decode$andThen,
+											function (selected) {
+												return A2(
+													$elm$json$Json$Decode$at,
+													_List_fromArray(
+														['rolled', 'options']),
+													$author$project$Dropdown$decoder(selected));
+											},
+											A2(
+												$elm$json$Json$Decode$at,
+												_List_fromArray(
+													['rolled', 'selected']),
+												$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int))),
+										A2(
+											$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+											A2(
+												$elm$json$Json$Decode$andThen,
+												function (selected) {
+													return A2(
+														$elm$json$Json$Decode$at,
+														_List_fromArray(
+															['location', 'options']),
+														$author$project$Dropdown$decoder(selected));
+												},
+												A2(
+													$elm$json$Json$Decode$at,
+													_List_fromArray(
+														['location', 'selected']),
+													$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int))),
+											A2(
+												$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+												A2(
+													$elm$json$Json$Decode$andThen,
+													function (selected) {
+														return A2(
+															$elm$json$Json$Decode$at,
+															_List_fromArray(
+																['size', 'options']),
+															$author$project$Dropdown$decoder(selected));
+													},
+													A2(
+														$elm$json$Json$Decode$at,
+														_List_fromArray(
+															['size', 'selected']),
+														$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int))),
 												A3(
 													$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 													'year',
@@ -9568,18 +9603,32 @@ var $author$project$ArtworkDetail$artworkDecoder = A4(
 																$elm$json$Json$Decode$andThen,
 																function (selected) {
 																	return A2(
-																		$elm$json$Json$Decode$field,
-																		'series',
+																		$elm$json$Json$Decode$at,
+																		_List_fromArray(
+																			['series', 'options']),
 																		$author$project$Dropdown$decoder(selected));
 																},
 																A2(
-																	$elm$json$Json$Decode$field,
-																	'selected_series_id',
+																	$elm$json$Json$Decode$at,
+																	_List_fromArray(
+																		['series', 'selected']),
 																	$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int))),
-															A3(
-																$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
-																'status',
-																$elm$json$Json$Decode$string,
+															A2(
+																$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$custom,
+																A2(
+																	$elm$json$Json$Decode$andThen,
+																	function (selected) {
+																		return A2(
+																			$elm$json$Json$Decode$at,
+																			_List_fromArray(
+																				['status', 'options']),
+																			$author$project$Dropdown$decoder(selected));
+																	},
+																	A2(
+																		$elm$json$Json$Decode$at,
+																		_List_fromArray(
+																			['status', 'selected']),
+																		$elm$json$Json$Decode$maybe($elm$json$Json$Decode$int))),
 																A3(
 																	$NoRedInk$elm_json_decode_pipeline$Json$Decode$Pipeline$required,
 																	'title',
@@ -9621,19 +9670,23 @@ var $author$project$ArtworkDetail$emptyArtwork = {
 	additional: A2($author$project$InputResize$fromContent, $author$project$ArtworkDetail$additionalSettings, ''),
 	framed: false,
 	image: $author$project$ArtworkDetail$initImage,
-	location: '',
+	location: $author$project$Dropdown$fromSelection(
+		$NoRedInk$list_selection$List$Selection$fromList(_List_Nil)),
 	medium: '',
 	priceNIS: '',
 	priceUSD: '',
-	rolled: '',
+	rolled: $author$project$Dropdown$fromSelection(
+		$NoRedInk$list_selection$List$Selection$fromList(_List_Nil)),
 	saleData: $author$project$SaleData$init(
 		$elm$json$Json$Encode$object(_List_Nil)).a,
 	series: $author$project$Dropdown$fromSelection(
 		$NoRedInk$list_selection$List$Selection$fromList(_List_Nil)),
-	size: '',
+	size: $author$project$Dropdown$fromSelection(
+		$NoRedInk$list_selection$List$Selection$fromList(_List_Nil)),
 	sizeCm: $author$project$ArtworkDetail$initSize,
 	sizeIn: $author$project$ArtworkDetail$initSize,
-	status: '',
+	status: $author$project$Dropdown$fromSelection(
+		$NoRedInk$list_selection$List$Selection$fromList(_List_Nil)),
 	title: '',
 	worksInExhibition: _List_Nil,
 	year: ''
@@ -9692,58 +9745,14 @@ var $author$project$ArtworkDetail$updateImage = F2(
 				{image: newImage}),
 			A2($elm$core$Platform$Cmd$map, $author$project$ArtworkDetail$UpdateImage, newMsg));
 	});
-var $author$project$ArtworkDetail$updateLocation = F2(
-	function (val, artwork) {
-		return _Utils_update(
-			artwork,
-			{location: val});
-	});
-var $author$project$ArtworkDetail$updateMedium = F2(
-	function (val, artwork) {
-		return _Utils_update(
-			artwork,
-			{medium: val});
-	});
-var $author$project$ArtworkDetail$updatePriceNIS = F2(
-	function (val, artwork) {
-		return _Utils_update(
-			artwork,
-			{priceNIS: val});
-	});
-var $author$project$ArtworkDetail$updatePriceUSD = F2(
-	function (val, artwork) {
-		return _Utils_update(
-			artwork,
-			{priceUSD: val});
-	});
-var $author$project$ArtworkDetail$updateRolled = F2(
-	function (val, artwork) {
-		return _Utils_update(
-			artwork,
-			{rolled: val});
-	});
-var $author$project$ArtworkDetail$UpdateSaleData = function (a) {
-	return {$: 'UpdateSaleData', a: a};
-};
-var $author$project$ArtworkDetail$updateSaleData = F2(
-	function (msg, artwork) {
-		var _v0 = A2($author$project$SaleData$update, msg, artwork.saleData);
-		var newSaleData = _v0.a;
-		var newMsg = _v0.b;
-		return _Utils_Tuple2(
-			_Utils_update(
-				artwork,
-				{saleData: newSaleData}),
-			A2($elm$core$Platform$Cmd$map, $author$project$ArtworkDetail$UpdateSaleData, newMsg));
-	});
-var $author$project$ArtworkDetail$UpdateSeries = function (a) {
-	return {$: 'UpdateSeries', a: a};
+var $author$project$ArtworkDetail$UpdateLocation = function (a) {
+	return {$: 'UpdateLocation', a: a};
 };
 var $author$project$Dropdown$newConfig = F2(
 	function (wrapperId, inputId) {
 		return {cell: _List_Nil, cellSelected: _List_Nil, closed: _List_Nil, input: _List_Nil, inputId: inputId, placeholder: 'Series type', results: _List_Nil, wrapper: _List_Nil, wrapperId: wrapperId};
 	});
-var $author$project$ArtworkDetail$seriesConfig = A2($author$project$Dropdown$newConfig, 'id_series', 'id_series_input');
+var $author$project$ArtworkDetail$locationConfig = A2($author$project$Dropdown$newConfig, 'id_location', 'id_location_input');
 var $author$project$Dropdown$NoOp = {$: 'NoOp'};
 var $author$project$Dropdown$Open = function (a) {
 	return {$: 'Open', a: a};
@@ -9810,6 +9819,68 @@ var $author$project$Dropdown$update = F3(
 				return _Utils_Tuple2(model, $elm$core$Platform$Cmd$none);
 		}
 	});
+var $author$project$ArtworkDetail$updateLocation = F2(
+	function (msg, artwork) {
+		var _v0 = A3($author$project$Dropdown$update, $author$project$ArtworkDetail$locationConfig, msg, artwork.location);
+		var newLocation = _v0.a;
+		var newMsg = _v0.b;
+		return _Utils_Tuple2(
+			_Utils_update(
+				artwork,
+				{location: newLocation}),
+			A2($elm$core$Platform$Cmd$map, $author$project$ArtworkDetail$UpdateLocation, newMsg));
+	});
+var $author$project$ArtworkDetail$updateMedium = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{medium: val});
+	});
+var $author$project$ArtworkDetail$updatePriceNIS = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{priceNIS: val});
+	});
+var $author$project$ArtworkDetail$updatePriceUSD = F2(
+	function (val, artwork) {
+		return _Utils_update(
+			artwork,
+			{priceUSD: val});
+	});
+var $author$project$ArtworkDetail$UpdateRolled = function (a) {
+	return {$: 'UpdateRolled', a: a};
+};
+var $author$project$ArtworkDetail$rolledConfig = A2($author$project$Dropdown$newConfig, 'id_rolled', 'id_rolled_input');
+var $author$project$ArtworkDetail$updateRolled = F2(
+	function (msg, artwork) {
+		var _v0 = A3($author$project$Dropdown$update, $author$project$ArtworkDetail$rolledConfig, msg, artwork.rolled);
+		var newRolled = _v0.a;
+		var newMsg = _v0.b;
+		return _Utils_Tuple2(
+			_Utils_update(
+				artwork,
+				{rolled: newRolled}),
+			A2($elm$core$Platform$Cmd$map, $author$project$ArtworkDetail$UpdateRolled, newMsg));
+	});
+var $author$project$ArtworkDetail$UpdateSaleData = function (a) {
+	return {$: 'UpdateSaleData', a: a};
+};
+var $author$project$ArtworkDetail$updateSaleData = F2(
+	function (msg, artwork) {
+		var _v0 = A2($author$project$SaleData$update, msg, artwork.saleData);
+		var newSaleData = _v0.a;
+		var newMsg = _v0.b;
+		return _Utils_Tuple2(
+			_Utils_update(
+				artwork,
+				{saleData: newSaleData}),
+			A2($elm$core$Platform$Cmd$map, $author$project$ArtworkDetail$UpdateSaleData, newMsg));
+	});
+var $author$project$ArtworkDetail$UpdateSeries = function (a) {
+	return {$: 'UpdateSeries', a: a};
+};
+var $author$project$ArtworkDetail$seriesConfig = A2($author$project$Dropdown$newConfig, 'id_series', 'id_series_input');
 var $author$project$ArtworkDetail$updateSeries = F2(
 	function (msg, artwork) {
 		var _v0 = A3($author$project$Dropdown$update, $author$project$ArtworkDetail$seriesConfig, msg, artwork.series);
@@ -9849,11 +9920,20 @@ var $author$project$ArtworkDetail$updateSizeCm = F2(
 				sizeCm: A2($author$project$ArtworkDetail$updateSize, msg, artwork.sizeCm)
 			});
 	});
+var $author$project$ArtworkDetail$UpdateSizeField = function (a) {
+	return {$: 'UpdateSizeField', a: a};
+};
+var $author$project$ArtworkDetail$sizeConfig = A2($author$project$Dropdown$newConfig, 'id_size', 'id_size_input');
 var $author$project$ArtworkDetail$updateSizeField = F2(
-	function (val, artwork) {
-		return _Utils_update(
-			artwork,
-			{size: val});
+	function (msg, artwork) {
+		var _v0 = A3($author$project$Dropdown$update, $author$project$ArtworkDetail$sizeConfig, msg, artwork.size);
+		var newSize = _v0.a;
+		var newMsg = _v0.b;
+		return _Utils_Tuple2(
+			_Utils_update(
+				artwork,
+				{size: newSize}),
+			A2($elm$core$Platform$Cmd$map, $author$project$ArtworkDetail$UpdateSizeField, newMsg));
 	});
 var $author$project$ArtworkDetail$updateSizeIn = F2(
 	function (msg, artwork) {
@@ -9862,6 +9942,21 @@ var $author$project$ArtworkDetail$updateSizeIn = F2(
 			{
 				sizeIn: A2($author$project$ArtworkDetail$updateSize, msg, artwork.sizeIn)
 			});
+	});
+var $author$project$ArtworkDetail$UpdateStatus = function (a) {
+	return {$: 'UpdateStatus', a: a};
+};
+var $author$project$ArtworkDetail$statusConfig = A2($author$project$Dropdown$newConfig, 'id_status', 'id_status_input');
+var $author$project$ArtworkDetail$updateStatus = F2(
+	function (msg, artwork) {
+		var _v0 = A3($author$project$Dropdown$update, $author$project$ArtworkDetail$statusConfig, msg, artwork.status);
+		var newStatus = _v0.a;
+		var newMsg = _v0.b;
+		return _Utils_Tuple2(
+			_Utils_update(
+				artwork,
+				{status: newStatus}),
+			A2($elm$core$Platform$Cmd$map, $author$project$ArtworkDetail$UpdateStatus, newMsg));
 	});
 var $author$project$ArtworkDetail$updateTitle = F2(
 	function (val, artwork) {
@@ -9929,6 +10024,9 @@ var $author$project$ArtworkDetail$update = F2(
 			case 'UpdateSeries':
 				var val = msg.a;
 				return A2(updateWithMsg, val, $author$project$ArtworkDetail$updateSeries);
+			case 'UpdateStatus':
+				var val = msg.a;
+				return A2(updateWithMsg, val, $author$project$ArtworkDetail$updateStatus);
 			case 'UpdateImage':
 				var val = msg.a;
 				return A2(updateWithMsg, val, $author$project$ArtworkDetail$updateImage);
@@ -9939,19 +10037,13 @@ var $author$project$ArtworkDetail$update = F2(
 					$elm$core$Platform$Cmd$none);
 			case 'UpdateSizeField':
 				var val = msg.a;
-				return _Utils_Tuple2(
-					A2(updateArtwork, $author$project$ArtworkDetail$updateSizeField, val),
-					$elm$core$Platform$Cmd$none);
+				return A2(updateWithMsg, val, $author$project$ArtworkDetail$updateSizeField);
 			case 'UpdateLocation':
 				var val = msg.a;
-				return _Utils_Tuple2(
-					A2(updateArtwork, $author$project$ArtworkDetail$updateLocation, val),
-					$elm$core$Platform$Cmd$none);
+				return A2(updateWithMsg, val, $author$project$ArtworkDetail$updateLocation);
 			case 'UpdateRolled':
 				var val = msg.a;
-				return _Utils_Tuple2(
-					A2(updateArtwork, $author$project$ArtworkDetail$updateRolled, val),
-					$elm$core$Platform$Cmd$none);
+				return A2(updateWithMsg, val, $author$project$ArtworkDetail$updateRolled);
 			case 'UpdateFramed':
 				var val = msg.a;
 				return _Utils_Tuple2(
@@ -10045,6 +10137,196 @@ var $author$project$Input$checkboxView = function (props) {
 					_List_Nil)
 				]),
 			A2($elm$core$List$map, $author$project$Input$errorView, props.errors)));
+};
+var $author$project$Dropdown$OpenWithFilter = function (a) {
+	return {$: 'OpenWithFilter', a: a};
+};
+var $author$project$Dropdown$OptionSelected = function (a) {
+	return {$: 'OptionSelected', a: a};
+};
+var $NoRedInk$list_selection$List$Selection$select = F2(
+	function (el, selection) {
+		return A2(
+			$NoRedInk$list_selection$List$Selection$selectBy,
+			$elm$core$Basics$eq(el),
+			selection);
+	});
+var $NoRedInk$list_selection$List$Selection$filter = F2(
+	function (predicate, _v0) {
+		var selectedItem = _v0.a;
+		var items = _v0.b;
+		var filteredSelection = $NoRedInk$list_selection$List$Selection$fromList(
+			A2($elm$core$List$filter, predicate, items));
+		if (selectedItem.$ === 'Just') {
+			var selection = selectedItem.a;
+			return A2($NoRedInk$list_selection$List$Selection$select, selection, filteredSelection);
+		} else {
+			return filteredSelection;
+		}
+	});
+var $author$project$Dropdown$matchesFilter = F2(
+	function (filter, testString) {
+		var clean = function (str) {
+			return $elm$core$String$toLower(
+				$elm$core$String$trim(str));
+		};
+		return A2(
+			$elm$core$String$contains,
+			clean(filter),
+			clean(testString));
+	});
+var $author$project$Dropdown$view = F2(
+	function (config, model) {
+		var header = function () {
+			var _v1 = model.isOpen;
+			if (_v1.$ === 'Closed') {
+				var _v2 = $NoRedInk$list_selection$List$Selection$selected(model.options);
+				if (_v2.$ === 'Just') {
+					var option = _v2.a;
+					return A2(
+						$elm$html$Html$button,
+						_Utils_ap(
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick(
+									$author$project$Dropdown$OpenWithFilter('')),
+									$elm$html$Html$Attributes$type_('button')
+								]),
+							config.closed),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(option.b)
+							]));
+				} else {
+					return A2(
+						$elm$html$Html$button,
+						_Utils_ap(
+							_List_fromArray(
+								[
+									$elm$html$Html$Events$onClick(
+									$author$project$Dropdown$OpenWithFilter('')),
+									$elm$html$Html$Attributes$type_('button')
+								]),
+							config.closed),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(config.placeholder)
+							]));
+				}
+			} else {
+				var filter = _v1.a;
+				return A2(
+					$elm$html$Html$input,
+					_Utils_ap(
+						_List_fromArray(
+							[
+								$elm$html$Html$Events$onInput($author$project$Dropdown$OpenWithFilter),
+								$elm$html$Html$Attributes$value(filter),
+								$elm$html$Html$Attributes$id(config.inputId)
+							]),
+						config.input),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(filter)
+						]));
+			}
+		}();
+		var cell = F2(
+			function (selected, optionItem) {
+				return A2(
+					$elm$html$Html$div,
+					A2(
+						$elm$core$List$cons,
+						$elm$html$Html$Events$onClick(
+							$author$project$Dropdown$OptionSelected(optionItem.a)),
+						selected ? config.cellSelected : config.cell),
+					_List_fromArray(
+						[
+							$elm$html$Html$text(optionItem.b)
+						]));
+			});
+		var cellList = function () {
+			var _v0 = model.isOpen;
+			if (_v0.$ === 'Open') {
+				var filter = _v0.a;
+				return $NoRedInk$list_selection$List$Selection$toList(
+					A2(
+						$NoRedInk$list_selection$List$Selection$mapSelected,
+						{
+							rest: cell(false),
+							selected: cell(true)
+						},
+						A2(
+							$NoRedInk$list_selection$List$Selection$filter,
+							function (option) {
+								return A2($author$project$Dropdown$matchesFilter, filter, option.b);
+							},
+							model.options)));
+			} else {
+				return _List_Nil;
+			}
+		}();
+		return A2(
+			$elm$html$Html$div,
+			_Utils_ap(
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$id(config.wrapperId),
+						A2($elm$html$Html$Attributes$style, 'z-index', '1')
+					]),
+				config.wrapper),
+			_List_fromArray(
+				[
+					header,
+					A2($elm$html$Html$div, config.results, cellList)
+				]));
+	});
+var $author$project$Input$dropdownView = function (props) {
+	var oldconfig = props.config;
+	var newconfig = _Utils_update(
+		oldconfig,
+		{
+			wrapper: _Utils_ap(
+				oldconfig.wrapper,
+				_List_fromArray(
+					[
+						$elm$html$Html$Attributes$name(props.name),
+						$elm$html$Html$Attributes$classList(
+						_List_fromArray(
+							[
+								_Utils_Tuple2('edit-field', true),
+								_Utils_Tuple2('form-control', true),
+								_Utils_Tuple2('form-control-sm', true)
+							]))
+					]))
+		});
+	return A2(
+		$elm$html$Html$map,
+		props.msg,
+		A2(
+			$elm$html$Html$div,
+			_List_fromArray(
+				[
+					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
+					$elm$html$Html$Attributes$class('form-group'),
+					A2($elm$html$Html$Attributes$style, 'height', 'min-content')
+				]),
+			_Utils_ap(
+				_List_fromArray(
+					[
+						A2(
+						$elm$html$Html$label,
+						_List_fromArray(
+							[
+								$elm$html$Html$Attributes$for(props.config.wrapperId)
+							]),
+						_List_fromArray(
+							[
+								$elm$html$Html$text(props.label + ':')
+							])),
+						A2($author$project$Dropdown$view, newconfig, props.value)
+					]),
+				A2($elm$core$List$map, $author$project$Input$errorView, props.errors))));
 };
 var $elm$html$Html$h3 = _VirtualDom_node('h3');
 var $author$project$ArtworkDetail$viewField = function (value_) {
@@ -10251,12 +10533,12 @@ var $author$project$ArtworkDetail$viewDetails = F2(
 								[
 									$author$project$Input$inputView(
 									{attributes: _List_Nil, errors: _List_Nil, id: 'id_year', label: 'Year', name: 'year', placeholder: 'Year of Creation', value: artwork.year}),
-									$author$project$Input$inputView(
-									{attributes: _List_Nil, errors: _List_Nil, id: 'id_size', label: 'Size Category', name: 'size', placeholder: 'Size', value: artwork.size}),
-									$author$project$Input$inputView(
-									{attributes: _List_Nil, errors: _List_Nil, id: 'id_location', label: 'Location', name: 'location', placeholder: 'Current Location', value: artwork.location}),
-									$author$project$Input$inputView(
-									{attributes: _List_Nil, errors: _List_Nil, id: 'id_rolled', label: 'Rolled/Streched', name: 'rolled', placeholder: 'Rolled/Streched', value: artwork.year}),
+									$author$project$Input$dropdownView(
+									{config: $author$project$ArtworkDetail$sizeConfig, errors: _List_Nil, label: 'Size Category', msg: $author$project$ArtworkDetail$UpdateSizeField, name: 'size', value: artwork.size}),
+									$author$project$Input$dropdownView(
+									{config: $author$project$ArtworkDetail$locationConfig, errors: _List_Nil, label: 'Location', msg: $author$project$ArtworkDetail$UpdateLocation, name: 'location', value: artwork.location}),
+									$author$project$Input$dropdownView(
+									{config: $author$project$ArtworkDetail$rolledConfig, errors: _List_Nil, label: 'Rolled/Streched', msg: $author$project$ArtworkDetail$UpdateRolled, name: 'rolled', value: artwork.rolled}),
 									$author$project$Input$checkboxView(
 									{attributes: _List_Nil, checked: artwork.framed, errors: _List_Nil, id: 'id_framed', label: 'Framed', name: 'framed', placeholder: 'Framed'}),
 									$author$project$Input$inputView(
@@ -10368,196 +10650,6 @@ var $author$project$ArtworkDetail$viewExhibitions = F2(
 				]),
 			_List_Nil);
 	});
-var $author$project$Dropdown$OpenWithFilter = function (a) {
-	return {$: 'OpenWithFilter', a: a};
-};
-var $author$project$Dropdown$OptionSelected = function (a) {
-	return {$: 'OptionSelected', a: a};
-};
-var $NoRedInk$list_selection$List$Selection$select = F2(
-	function (el, selection) {
-		return A2(
-			$NoRedInk$list_selection$List$Selection$selectBy,
-			$elm$core$Basics$eq(el),
-			selection);
-	});
-var $NoRedInk$list_selection$List$Selection$filter = F2(
-	function (predicate, _v0) {
-		var selectedItem = _v0.a;
-		var items = _v0.b;
-		var filteredSelection = $NoRedInk$list_selection$List$Selection$fromList(
-			A2($elm$core$List$filter, predicate, items));
-		if (selectedItem.$ === 'Just') {
-			var selection = selectedItem.a;
-			return A2($NoRedInk$list_selection$List$Selection$select, selection, filteredSelection);
-		} else {
-			return filteredSelection;
-		}
-	});
-var $author$project$Dropdown$matchesFilter = F2(
-	function (filter, testString) {
-		var clean = function (str) {
-			return $elm$core$String$toLower(
-				$elm$core$String$trim(str));
-		};
-		return A2(
-			$elm$core$String$contains,
-			clean(filter),
-			clean(testString));
-	});
-var $author$project$Dropdown$view = F2(
-	function (config, model) {
-		var header = function () {
-			var _v1 = model.isOpen;
-			if (_v1.$ === 'Closed') {
-				var _v2 = $NoRedInk$list_selection$List$Selection$selected(model.options);
-				if (_v2.$ === 'Just') {
-					var option = _v2.a;
-					return A2(
-						$elm$html$Html$button,
-						_Utils_ap(
-							_List_fromArray(
-								[
-									$elm$html$Html$Events$onClick(
-									$author$project$Dropdown$OpenWithFilter('')),
-									$elm$html$Html$Attributes$type_('button')
-								]),
-							config.closed),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(option.b)
-							]));
-				} else {
-					return A2(
-						$elm$html$Html$button,
-						_Utils_ap(
-							_List_fromArray(
-								[
-									$elm$html$Html$Events$onClick(
-									$author$project$Dropdown$OpenWithFilter('')),
-									$elm$html$Html$Attributes$type_('button')
-								]),
-							config.closed),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(config.placeholder)
-							]));
-				}
-			} else {
-				var filter = _v1.a;
-				return A2(
-					$elm$html$Html$input,
-					_Utils_ap(
-						_List_fromArray(
-							[
-								$elm$html$Html$Events$onInput($author$project$Dropdown$OpenWithFilter),
-								$elm$html$Html$Attributes$value(filter),
-								$elm$html$Html$Attributes$id(config.inputId)
-							]),
-						config.input),
-					_List_fromArray(
-						[
-							$elm$html$Html$text(filter)
-						]));
-			}
-		}();
-		var cell = F2(
-			function (selected, optionItem) {
-				return A2(
-					$elm$html$Html$div,
-					A2(
-						$elm$core$List$cons,
-						$elm$html$Html$Events$onClick(
-							$author$project$Dropdown$OptionSelected(optionItem.a)),
-						selected ? config.cellSelected : config.cell),
-					_List_fromArray(
-						[
-							$elm$html$Html$text(optionItem.b)
-						]));
-			});
-		var cellList = function () {
-			var _v0 = model.isOpen;
-			if (_v0.$ === 'Open') {
-				var filter = _v0.a;
-				return $NoRedInk$list_selection$List$Selection$toList(
-					A2(
-						$NoRedInk$list_selection$List$Selection$mapSelected,
-						{
-							rest: cell(false),
-							selected: cell(true)
-						},
-						A2(
-							$NoRedInk$list_selection$List$Selection$filter,
-							function (option) {
-								return A2($author$project$Dropdown$matchesFilter, filter, option.b);
-							},
-							model.options)));
-			} else {
-				return _List_Nil;
-			}
-		}();
-		return A2(
-			$elm$html$Html$div,
-			_Utils_ap(
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$id(config.wrapperId),
-						A2($elm$html$Html$Attributes$style, 'z-index', '1')
-					]),
-				config.wrapper),
-			_List_fromArray(
-				[
-					header,
-					A2($elm$html$Html$div, config.results, cellList)
-				]));
-	});
-var $author$project$Input$dropdownView = function (props) {
-	var oldconfig = props.config;
-	var newconfig = _Utils_update(
-		oldconfig,
-		{
-			wrapper: _Utils_ap(
-				oldconfig.wrapper,
-				_List_fromArray(
-					[
-						$elm$html$Html$Attributes$name(props.name),
-						$elm$html$Html$Attributes$classList(
-						_List_fromArray(
-							[
-								_Utils_Tuple2('edit-field', true),
-								_Utils_Tuple2('form-control', true),
-								_Utils_Tuple2('form-control-sm', true)
-							]))
-					]))
-		});
-	return A2(
-		$elm$html$Html$map,
-		props.msg,
-		A2(
-			$elm$html$Html$div,
-			_List_fromArray(
-				[
-					A2($elm$html$Html$Attributes$style, 'display', 'flex'),
-					$elm$html$Html$Attributes$class('form-group'),
-					A2($elm$html$Html$Attributes$style, 'height', 'min-content')
-				]),
-			_Utils_ap(
-				_List_fromArray(
-					[
-						A2(
-						$elm$html$Html$label,
-						_List_fromArray(
-							[
-								$elm$html$Html$Attributes$for(props.config.wrapperId)
-							]),
-						_List_fromArray(
-							[
-								$elm$html$Html$text(props.label + ':')
-							])),
-						A2($author$project$Dropdown$view, newconfig, props.value)
-					]),
-				A2($elm$core$List$map, $author$project$Input$errorView, props.errors))));
-};
 var $author$project$ArtworkDetail$viewHeader = F2(
 	function (edit_mode, artwork) {
 		return A2(
@@ -10633,7 +10725,8 @@ var $author$project$ArtworkDetail$viewHeader = F2(
 										]),
 									_List_Nil),
 									$author$project$ArtworkDetail$viewField(artwork.title),
-									$author$project$ArtworkDetail$viewField(artwork.status),
+									$author$project$Input$dropdownView(
+									{config: $author$project$ArtworkDetail$statusConfig, errors: _List_Nil, label: 'Status', msg: $author$project$ArtworkDetail$UpdateStatus, name: 'status', value: artwork.status}),
 									A2(
 									$elm$html$Html$span,
 									_List_fromArray(

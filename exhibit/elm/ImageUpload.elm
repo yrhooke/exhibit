@@ -34,7 +34,7 @@ main =
 type alias Model =
     { csrftoken : String
     , artwork_id : Maybe Int
-    , image_data : ImageData
+    , image_data : Image
     , loaderURL : String
     , successIconURL : String
     , failIconURL : String
@@ -49,7 +49,7 @@ type Status
     | Fail
 
 
-type alias ImageData =
+type alias Image =
     { image_id : Maybe Int
     , image_url : Maybe String
     }
@@ -124,7 +124,7 @@ type Msg
     | GotPreview String
     | GotCredentials File (Result Http.Error UploadCredentials) -- Credentials to upload
     | FileUploaded String (Result Http.Error String)
-    | ImageSaved (Result Http.Error ImageData)
+    | ImageSaved (Result Http.Error Image)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -240,7 +240,7 @@ update msg model =
                     ( { model | status = Fail }, Cmd.none )
 
 
-updateImageURL : String -> ImageData -> ImageData
+updateImageURL : String -> Image -> Image
 updateImageURL url data =
     { data | image_url = Just url }
 
@@ -255,9 +255,9 @@ stringifyArtworkID artwork_id =
             ""
 
 
-saveImageResultDecoder : D.Decoder ImageData
+saveImageResultDecoder : D.Decoder Image
 saveImageResultDecoder =
-    D.map2 ImageData
+    D.map2 Image
         (D.maybe (D.field "image_id" D.int))
         (D.maybe (D.field "image_url" D.string))
 
@@ -520,3 +520,4 @@ imageIdSelectionView image_id =
 filesDecoder : D.Decoder (List File)
 filesDecoder =
     D.at [ "target", "files" ] (D.list File.decoder)
+

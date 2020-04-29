@@ -18,7 +18,7 @@ import Task
 -- MAIN
 
 
-main : Program () Model Msg
+main : Program () Options Msg
 main =
     Browser.element
         { init = init
@@ -36,24 +36,24 @@ testConfig =
 -- MODEL
 
 
-type alias Model =
+type alias Options =
     { options : Selection Option
     , isOpen : Open
     }
 
 
 type alias Option =
-    ( Int, String )
+    ( String, String )
 
 
-fromSelection : Selection Option -> Model
+fromSelection : Selection Option -> Options
 fromSelection selection =
     { options = selection
     , isOpen = Closed
     }
 
 
-decoder : Maybe Int -> D.Decoder Model
+decoder : Maybe String -> D.Decoder Options
 decoder selected =
     D.map
         (\o ->
@@ -67,7 +67,7 @@ decoder selected =
 optionDecoder : D.Decoder Option
 optionDecoder =
     D.map2 (\index value -> ( index, value ))
-        (D.index 0 D.int)
+        (D.index 0 D.string)
         (D.index 1 D.string)
 
 
@@ -76,10 +76,10 @@ optionListDecoder =
     D.list optionDecoder
 
 
-selectionDecoder : Maybe Int -> D.Decoder (Selection Option)
+selectionDecoder : Maybe String -> D.Decoder (Selection Option)
 selectionDecoder selected =
     let
-        fromListWithSelected : Int -> (List Option -> Selection Option)
+        fromListWithSelected : String -> (List Option -> Selection Option)
         fromListWithSelected index =
             List.Selection.fromList
                 >> List.Selection.selectBy
@@ -89,7 +89,7 @@ selectionDecoder selected =
         Just index ->
             D.map (fromListWithSelected index) optionListDecoder
 
-        option2 ->
+        Nothing ->
             D.map List.Selection.fromList optionListDecoder
 
 
@@ -103,14 +103,14 @@ type Open
 
 
 options =
-    [ ( 0, "Gallery" )
-    , ( 1, "Client" )
-    , ( 2, "Permanent" )
-    , ( 3, "Other" )
+    [ ( "0", "Gallery" )
+    , ( "1", "Client" )
+    , ( "2", "Permanent" )
+    , ( "3", "Other" )
     ]
 
 
-init : () -> ( Model, Cmd Msg )
+init : () -> ( Options, Cmd Msg )
 init _ =
     ( { options = List.Selection.fromList options
       , isOpen = Closed
@@ -127,12 +127,12 @@ type Msg
     = OpenWithFilter String
     | SelectClosed
     | InputDeselected
-    | OptionSelected Int
+    | OptionSelected String
     | OptionDeselected
     | NoOp
 
 
-update : Config -> Msg -> Model -> ( Model, Cmd Msg )
+update : Config -> Msg -> Options -> ( Options, Cmd Msg )
 update config msg model =
     case msg of
         OpenWithFilter filter ->
@@ -167,7 +167,7 @@ update config msg model =
 -- SUBSCRIPTIONS
 
 
-subscriptions : Config -> Model -> Sub Msg
+subscriptions : Config -> Options -> Sub Msg
 subscriptions config _ =
     clickOutsideTarget config.wrapperId SelectClosed
 
@@ -203,7 +203,7 @@ newConfig wrapperId inputId =
     }
 
 
-view : Config -> Model -> Html Msg
+view : Config -> Options -> Html Msg
 view config model =
     let
         header =
@@ -240,7 +240,7 @@ view config model =
                         )
                         [ text filter ]
 
-        cell : Bool -> ( Int, String ) -> Html Msg
+        cell : Bool -> ( String, String ) -> Html Msg
         cell selected optionItem =
             div
                 (onClick (OptionSelected (Tuple.first optionItem))
