@@ -196,6 +196,8 @@ class Series(models.Model):
 
     name = models.CharField("Name", max_length=200, help_text="Series name")
     description = models.TextField("Description", blank=True)
+    position = models.CharField(max_length=20, default=0)
+    profile = models.ForeignKey('Artwork', related_name="profile", on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
         """string representation of model"""
@@ -224,7 +226,7 @@ class Series(models.Model):
         return {'first': artworks_in_series.first().year, 'last': artworks_in_series.last().year}
 
     @property
-    def image(self):
+    def get_image(self):
         """image field for newest artwork in Series"""
         if self.count == 0:
             return None

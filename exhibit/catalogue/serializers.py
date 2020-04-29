@@ -23,5 +23,5 @@ class SeriesSerializer(serializers.ModelSerializer):
             'name', 
             'description',
             'position',
-            'image',
+            'profile',
         )

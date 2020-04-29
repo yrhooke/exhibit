@@ -1,22 +1,49 @@
-from django.test import TestCase
-from catalogue.models import Series
+import sys
+from django.test import TestCase, Client
+from ...models import Series
 from django.utils import timezone
+from django.shortcuts import reverse
+from exhibit.users.models import User
 from catalogue.forms import SeriesDetailForm
+from catalogue.serializers import SeriesSerializer
+import json
 
-
+endpoint_prefix = "catalogue:series"
 class SeriesViewGETTest(TestCase):
+    
+    def setUp(self):
+        self.client.force_login(User.objects.get_or_create(username='testuser')[0])
+        self.endpoint = endpoint_prefix + "_detail"
 
     def create_series(self, name="series 1", description="some description"):
         return Series.objects.create(name=name, description=description)
 
     def test_get_series(self):
-        self.fail("test")
+        s = self.create_series()
+        url = reverse(self.endpoint, args=[s.pk])
+        response = self.client.get(url, follow=True)
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.content, 
+            bytes(json.dumps(SeriesSerializer(s).data), encoding="utf-8")
+            )
+        
 
     def test_get_series_invalid_pk(self):
-        self.fail("test")
-
+        latest_series = Series.objects.all().order_by("pk").last()
+        if latest_series:
+            max_pk = latest_series.pk
+        else:
+            max_pk = 0 # no series in db
+        url = reverse(self.endpoint, args=[max_pk + 1])
+        response = self.client.get(url, follow=True)
+        self.assertEqual(response.status_code, 404)
+ 
     def test_get_series_unauthorized(self):
-        self.fail("test")
+        client = Client()
+        s = self.create_series()
+        url = reverse(self.endpoint, args=[s.pk])
+        response = client.get(url, follow=False)
+        self.assertEqual(response.status_code, 302)
 
 
 class SeriesViewPOSTTest(TestCase):

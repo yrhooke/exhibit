@@ -2,7 +2,7 @@
 # from django.conf import settings
 from django.views.generic import View
 
-from django.http import JsonResponse, HttpResponseBadRequest
+from django.http import JsonResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.views.generic import ListView
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import render
@@ -11,7 +11,7 @@ from django.core.exceptions import ObjectDoesNotExist
 import boto3
 from botocore.exceptions import ClientError
 
-from catalogue.models import Artwork,  SaleData
+from catalogue.models import Artwork,  SaleData, Series
 from catalogue.forms import WorkInExhibitionForm
 from catalogue.forms import ArtworkImageUploadForm
 from catalogue.forms import SaleDataUpdateForm
