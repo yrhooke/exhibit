@@ -115,7 +115,7 @@ class SearchMixin(object):
                                              exhibitionargs=exhibition_search_args)
 
         page = self.request.GET.get('page', 1)
-        paginator = Paginator(search_results, 50)
+        paginator = Paginator(search_results, 51)
         try:
             context['search_results'] = paginator.page(page)
         except PageNotAnInteger:
